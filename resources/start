@@ -74,6 +74,7 @@ if [ -z "${DB_HOST}" ] || [ "${DB_HOST}" == "localhost" ]; then
 	echo 'GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'root'@'localhost';' | mysql -uroot
 fi
 
+/usr/sbin/sshd
 redis-server > /dev/null &
 
 cd /home/git/gitlab
