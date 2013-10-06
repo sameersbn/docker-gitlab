@@ -83,6 +83,9 @@ sudo -u git -H sed 's/{{DB_NAME}}/'${DB_NAME}'/' -i config/database.yml
 sudo -u git -H sed 's/{{DB_USER}}/'${DB_USER}'/' -i config/database.yml
 sudo -u git -H sed 's/{{DB_PASSWD}}/'${DB_PASSWD}'/' -i config/database.yml
 
+sudo chmod -R ug+rwX,o-rwx /home/git/repositories/
+sudo chmod -R ug-s /home/git/repositories/
+find /home/git/repositories/ -type d -print0 | sudo xargs -0 chmod g+s
 chown -R git:git /home/git/repositories
 
 if [ "$DB_INIT" == "yes" ]; then
