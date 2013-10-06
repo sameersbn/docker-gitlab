@@ -96,9 +96,9 @@ if [ "$DB_INIT" == "yes" ]; then
 	sudo -u git -H force=yes bundle exec rake gitlab:setup RAILS_ENV=production
 fi
 
-sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
+# sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 /etc/init.d/gitlab start
-sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
+# sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
 /etc/init.d/nginx start
 
