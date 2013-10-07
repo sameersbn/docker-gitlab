@@ -11,6 +11,7 @@ chown -R git:git /home/git/gitlab-shell/
 
 cd /home/git/gitlab-shell
 sudo -u git -H cp -a config.yml.example config.yml
+sudo -u git -H sed 's/http:\/\/localhost/http:\/\/gitlab/' -i config.yml
 sudo -u git -H ./bin/install
 
 sudo -u git -H mkdir -p /home/git/gitlab
@@ -21,6 +22,7 @@ cd /home/git/gitlab
 
 sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
 sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+sed 's/host: localhost/host: gitlab/' -i config/gitlab.yml
 
 sudo -u git -H mkdir -p tmp/pids/ tmp/sockets/
 chmod -R u+rwX log tmp
