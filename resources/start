@@ -76,6 +76,7 @@ fi
 
 /usr/sbin/sshd
 redis-server > /dev/null &
+sleep 3
 
 cd /home/git/gitlab
 sudo -u git -H sed 's/{{DB_HOST}}/'${DB_HOST}'/' -i config/database.yml
