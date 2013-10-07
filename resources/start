@@ -66,6 +66,7 @@ while true; do
 	esac
 done
 
+# start mysql server if ${DB_HOST} is localhost
 if [ -z "${DB_HOST}" ] || [ "${DB_HOST}" == "localhost" ]; then
 	DB_HOST="localhost"
 	DB_USER="root"
@@ -80,6 +81,7 @@ if [ -z "${DB_HOST}" ] || [ "${DB_HOST}" == "localhost" ]; then
 	echo 'GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'root'@'localhost';' | mysql -uroot
 fi
 
+# start ssh server
 /usr/sbin/sshd
 redis-server > /dev/null &
 sleep 3
@@ -95,11 +97,13 @@ sudo -u git -H sed 's/{{DB_NAME}}/'${DB_NAME}'/' -i /home/git/gitlab/config/data
 sudo -u git -H sed 's/{{DB_USER}}/'${DB_USER}'/' -i /home/git/gitlab/config/database.yml
 sudo -u git -H sed 's/{{DB_PASSWD}}/'${DB_PASSWD}'/' -i /home/git/gitlab/config/database.yml
 
+# make sure /home/git/repositories/ has the right permissions in case it is mounted as a volume.
 sudo chmod -R ug+rwX,o-rwx /home/git/repositories/
 sudo chmod -R ug-s /home/git/repositories/
 find /home/git/repositories/ -type d -print0 | sudo xargs -0 chmod g+s
 chown -R git:git /home/git/repositories
 
+# make sure /home/git/.ssh/ has the right permissions in case it is mounted as a volume.
 touch /home/git/.ssh/authorized_keys
 chmod 700 /home/git/.ssh
 chmod 600 /home/git/.ssh/authorized_keys
@@ -107,14 +111,18 @@ chown -R git:git /home/git/.ssh
 
 cd /home/git/gitlab/
 
+# reset the database if the --db-init switch was given.
 if [ "$DB_INIT" == "yes" ]; then
 	sudo -u git -H force=yes bundle exec rake gitlab:setup RAILS_ENV=production
 fi
 
+# start the gitlab application
 # sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 /etc/init.d/gitlab start
 sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
+# start the nginx server
 /etc/init.d/nginx start
 
+# watch the access logs
 tail -F /var/log/nginx/${SERVER_URL}_access.log
