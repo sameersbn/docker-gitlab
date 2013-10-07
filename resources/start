@@ -2,6 +2,7 @@
 
 usage() {
 	echo "Usage: $0 [OPTIONS]"
+	echo "  -h,  --server-url   server url (default is gitlab)."
 	echo "  -H,  --db-host      database hostname (default is localhost)."
 	echo "  -d,  --db-name      database name (default is redmine)."
 	echo "  -u,  --db-user      database username (default is root)."
@@ -11,13 +12,14 @@ usage() {
 	exit 1
 }
 
+SERVER_URL="gitlab"
 DB_NAME="localhost"
 DB_NAME="gitlabhq_production"
 DB_USER="root"
 DB_PASSWD=""
 DB_INIT="no"
 
-ARGS=$(getopt -o H:d:u:p:Ih -l "db-host:,db-name:,db-user:,db-passwd:,db-init,help" -n "$0" -- "$@")
+ARGS=$(getopt -o h:H:d:u:p:Ih -l "server-url:,db-host:,db-name:,db-user:,db-passwd:,db-init,help" -n "$0" -- "$@")
 if [ $? -ne 0 ]; then
 	exit 1
 fi
@@ -25,6 +27,10 @@ fi
 eval set -- "$ARGS"
 while true; do
 	case "$1" in
+		-h|--server-url)
+			shift
+			SERVER_URL="${1}"
+			shift			;;
 		-H|--db-host)
 			shift
 			DB_HOST="${1}"
@@ -78,11 +84,16 @@ fi
 redis-server > /dev/null &
 sleep 3
 
-cd /home/git/gitlab
-sudo -u git -H sed 's/{{DB_HOST}}/'${DB_HOST}'/' -i config/database.yml
-sudo -u git -H sed 's/{{DB_NAME}}/'${DB_NAME}'/' -i config/database.yml
-sudo -u git -H sed 's/{{DB_USER}}/'${DB_USER}'/' -i config/database.yml
-sudo -u git -H sed 's/{{DB_PASSWD}}/'${DB_PASSWD}'/' -i config/database.yml
+# configure server url
+sudo -u git -H sed 's/http:\/\/localhost/http:\/\/'${SERVER_URL}'/' -i /home/git/gitlab-shell/config.yml
+sudo -u git -H sed 's/host: localhost/host: '${SERVER_URL}'/' -i /home/git/gitlab/config/gitlab.yml
+sed 's/YOUR_SERVER_FQDN/'${SERVER_URL}'/' -i /etc/nginx/sites-available/gitlab
+
+# configure database
+sudo -u git -H sed 's/{{DB_HOST}}/'${DB_HOST}'/' -i /home/git/gitlab/config/database.yml
+sudo -u git -H sed 's/{{DB_NAME}}/'${DB_NAME}'/' -i /home/git/gitlab/config/database.yml
+sudo -u git -H sed 's/{{DB_USER}}/'${DB_USER}'/' -i /home/git/gitlab/config/database.yml
+sudo -u git -H sed 's/{{DB_PASSWD}}/'${DB_PASSWD}'/' -i /home/git/gitlab/config/database.yml
 
 sudo chmod -R ug+rwX,o-rwx /home/git/repositories/
 sudo chmod -R ug-s /home/git/repositories/
@@ -94,6 +105,8 @@ chmod 700 /home/git/.ssh
 chmod 600 /home/git/.ssh/authorized_keys
 chown -R git:git /home/git/.ssh
 
+cd /home/git/gitlab/
+
 if [ "$DB_INIT" == "yes" ]; then
 	sudo -u git -H force=yes bundle exec rake gitlab:setup RAILS_ENV=production
 fi
@@ -104,4 +117,4 @@ sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
 /etc/init.d/nginx start
 
-tail -F /var/log/nginx/gitlab_access.log
+tail -F /var/log/nginx/${SERVER_URL}_access.log
