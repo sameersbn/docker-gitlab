@@ -22,4 +22,7 @@ ADD resources/install /gitlab/setup/install
 ADD resources/start /gitlab/start
 RUN chmod 755 /gitlab/start /gitlab/setup/install && /gitlab/setup/install
 
+ADD resources/authorized_keys /root/.ssh/
+RUN chmod 700 /root/.ssh && chmod 600 /root/.ssh/authorized_keys && chown root:root -R /root/.ssh
+
 CMD ["/gitlab/start"]
