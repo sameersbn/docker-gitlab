@@ -3,8 +3,10 @@
 # export http_proxy=http://192.168.1.1:3128
 # export ftp_proxy=http://192.168.1.1:3128
 
+# add git user
 adduser --disabled-login --gecos 'GitLab' git
 
+# install gitlab-shell
 sudo -u git -H mkdir -p /home/git/gitlab-shell
 wget "https://github.com/gitlabhq/gitlab-shell/archive/v1.7.1.tar.gz" -O - | tar -zxf - --strip=1 -C /home/git/gitlab-shell/
 chown -R git:git /home/git/gitlab-shell/
@@ -13,27 +15,34 @@ cd /home/git/gitlab-shell
 sudo -u git -H cp -a config.yml.example config.yml
 sudo -u git -H ./bin/install
 
+# install gitlab
 sudo -u git -H mkdir -p /home/git/gitlab
 wget "https://github.com/gitlabhq/gitlabhq/archive/v6.1.0.tar.gz" -O - | tar -zxf - --strip=1 -C /home/git/gitlab/
 chown -R git:git /home/git/gitlab/
 
 cd /home/git/gitlab
 
+# copy default configurations
 sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
 sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
 
+# create required tmp and log directories
 sudo -u git -H mkdir -p tmp/pids/ tmp/sockets/
 chmod -R u+rwX log tmp
 
+# create uploads directory
 sudo -u git -H mkdir -p public/uploads
 chmod -R u+rwX  public/uploads
 
+# create satellites directory
 sudo -u git -H mkdir -p /home/git/gitlab-satellites
 
+# configure git for the 'git' user
 sudo -u git -H git config --global user.name "GitLab"
 sudo -u git -H git config --global user.email "gitlab@localhost"
 sudo -u git -H git config --global core.autocrlf input
 
+# install gems required by gitlab
 gem install charlock_holmes --version '0.6.9.4'
 sudo -u git -H bundle install --deployment --without development test postgres aws
 
@@ -51,10 +60,13 @@ production:
 EOF
 chmod o-rwx config/database.yml
 
+# make sure everything in /home/git is owned by the git user
 chown -R git:git /home/git/
 
+# copy nginx configuration
 cp lib/support/init.d/gitlab /etc/init.d/gitlab
 sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
 sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
+# create the /var/run/sshd directory (required for sshd to start)
 mkdir -p /var/run/sshd
