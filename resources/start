@@ -2,7 +2,7 @@
 
 usage() {
 	echo "Usage: $0 [OPTIONS]"
-	echo "  -h,  --server-url   server url (default is gitlab)."
+	echo "  -a,  --server-url   server url (default is gitlab)."
 	echo "  -H,  --db-host      database hostname (default is localhost)."
 	echo "  -d,  --db-name      database name (default is redmine)."
 	echo "  -u,  --db-user      database username (default is root)."
@@ -19,7 +19,7 @@ DB_USER="root"
 DB_PASSWD=""
 DB_INIT="no"
 
-ARGS=$(getopt -o h:H:d:u:p:Ih -l "server-url:,db-host:,db-name:,db-user:,db-passwd:,db-init,help" -n "$0" -- "$@")
+ARGS=$(getopt -o a:H:d:u:p:Ih -l "server-url:,db-host:,db-name:,db-user:,db-passwd:,db-init,help" -n "$0" -- "$@")
 if [ $? -ne 0 ]; then
 	exit 1
 fi
@@ -27,7 +27,7 @@ fi
 eval set -- "$ARGS"
 while true; do
 	case "$1" in
-		-h|--server-url)
+		-a|--server-url)
 			shift
 			SERVER_URL="${1}"
 			shift			;;
