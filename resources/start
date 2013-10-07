@@ -88,9 +88,10 @@ sudo chmod -R ug-s /home/git/repositories/
 find /home/git/repositories/ -type d -print0 | sudo xargs -0 chmod g+s
 chown -R git:git /home/git/repositories
 
-chmod 700 /home/git/.ssh
 touch /home/git/.ssh/authorized_keys
+chmod 700 /home/git/.ssh
 chmod 600 /home/git/.ssh/authorized_keys
+chown -R git:git /home/git/.ssh
 
 if [ "$DB_INIT" == "yes" ]; then
 	sudo -u git -H force=yes bundle exec rake gitlab:setup RAILS_ENV=production
