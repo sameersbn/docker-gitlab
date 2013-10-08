@@ -98,10 +98,10 @@ sudo -u git -H sed 's/{{DB_USER}}/'${DB_USER}'/' -i /home/git/gitlab/config/data
 sudo -u git -H sed 's/{{DB_PASSWD}}/'${DB_PASSWD}'/' -i /home/git/gitlab/config/database.yml
 
 # make sure /home/git/repositories/ has the right permissions in case it is mounted as a volume.
-sudo chmod -R ug+rwX,o-rwx /home/git/repositories/
-sudo chmod -R ug-s /home/git/repositories/
+sudo chmod ug+rwX,o-rwx /home/git/repositories/
+sudo chmod ug-s /home/git/repositories/
 find /home/git/repositories/ -type d -print0 | sudo xargs -0 chmod g+s
-chown -R git:git /home/git/repositories
+chown git:git /home/git/repositories
 
 # make sure /home/git/.ssh/ has the right permissions in case it is mounted as a volume.
 touch /home/git/.ssh/authorized_keys
