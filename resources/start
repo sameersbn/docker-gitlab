@@ -128,4 +128,4 @@ sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 wget "http://${SERVER_URL}" -O /dev/null
 
 # watch the access logs
-tail -F /var/log/nginx/${SERVER_URL}_access.log
+tail -F /var/log/nginx/gitlab_access.log
