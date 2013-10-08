@@ -94,7 +94,6 @@ sudo -u git -H git config --global core.autocrlf input
 # configure server url
 # sudo -u git -H sed 's/http:\/\/localhost/http:\/\/'${SERVER_URL}'/' -i /home/git/gitlab-shell/config.yml
 sudo -u git -H sed 's/host: localhost/host: '${SERVER_URL}'/' -i /home/git/gitlab/config/gitlab.yml
-sed 's/YOUR_SERVER_FQDN/localhost/' -i /etc/nginx/sites-available/gitlab
 
 # configure database
 sudo -u git -H sed 's/{{DB_HOST}}/'${DB_HOST}'/' -i /home/git/gitlab/config/database.yml
