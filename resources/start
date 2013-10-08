@@ -87,9 +87,9 @@ redis-server > /dev/null &
 sleep 3
 
 # configure server url
-sudo -u git -H sed 's/http:\/\/localhost/http:\/\/'${SERVER_URL}'/' -i /home/git/gitlab-shell/config.yml
+# sudo -u git -H sed 's/http:\/\/localhost/http:\/\/'${SERVER_URL}'/' -i /home/git/gitlab-shell/config.yml
 sudo -u git -H sed 's/host: localhost/host: '${SERVER_URL}'/' -i /home/git/gitlab/config/gitlab.yml
-sed 's/YOUR_SERVER_FQDN/'${SERVER_URL}'/' -i /etc/nginx/sites-available/gitlab
+sed 's/YOUR_SERVER_FQDN/localhost/' -i /etc/nginx/sites-available/gitlab
 
 # configure database
 sudo -u git -H sed 's/{{DB_HOST}}/'${DB_HOST}'/' -i /home/git/gitlab/config/database.yml
@@ -125,7 +125,7 @@ sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 /etc/init.d/nginx start
 
 # kickstart the rails application
-wget "http://${SERVER_URL}" -O /dev/null
+wget "http://localhost" -O /dev/null
 
 # watch the access logs
 tail -F /var/log/nginx/gitlab_access.log
