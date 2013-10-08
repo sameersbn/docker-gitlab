@@ -1,6 +1,7 @@
 #!/bin/bash
 
 GITLAB_HOST=${GITLAB_HOST:-localhost}
+GITLAB_EMAIL=${GITLAB_EMAIL:-gitlab@localhost}
 
 DB_HOST=${DB_HOST:-localhost}
 DB_NAME=${DB_NAME:-gitlabhq_production}
@@ -25,11 +26,12 @@ sleep 3
 
 # configure git for the 'git' user
 sudo -u git -H git config --global user.name "GitLab"
-sudo -u git -H git config --global user.email "gitlab@localhost"
+sudo -u git -H git config --global user.email "${GITLAB_EMAIL}"
 sudo -u git -H git config --global core.autocrlf input
 
 # configure server url
 sudo -u git -H sed 's/host: localhost/host: '${GITLAB_HOST}'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/email_from: gitlab@localhost/email_from: '${GITLAB_EMAIL}'/' -i /home/git/gitlab/config/gitlab.yml
 
 # configure database
 sudo -u git -H sed 's/{{DB_HOST}}/'${DB_HOST}'/' -i /home/git/gitlab/config/database.yml
