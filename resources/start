@@ -86,6 +86,11 @@ fi
 redis-server > /dev/null &
 sleep 3
 
+# configure git for the 'git' user
+sudo -u git -H git config --global user.name "GitLab"
+sudo -u git -H git config --global user.email "gitlab@localhost"
+sudo -u git -H git config --global core.autocrlf input
+
 # configure server url
 # sudo -u git -H sed 's/http:\/\/localhost/http:\/\/'${SERVER_URL}'/' -i /home/git/gitlab-shell/config.yml
 sudo -u git -H sed 's/host: localhost/host: '${SERVER_URL}'/' -i /home/git/gitlab/config/gitlab.yml
