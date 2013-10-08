@@ -65,3 +65,6 @@ sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
 # create the /var/run/sshd directory (required for sshd to start)
 mkdir -p /var/run/sshd
+
+# configure nginx
+sed 's/YOUR_SERVER_FQDN/localhost/' -i /etc/nginx/sites-available/gitlab
