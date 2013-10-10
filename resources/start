@@ -4,6 +4,8 @@ GITLAB_HOST=${GITLAB_HOST:-localhost}
 GITLAB_EMAIL=${GITLAB_EMAIL:-gitlab@localhost}
 GITLAB_SUPPORT=${GITLAB_SUPPORT:-support@localhost}
 
+UNICORN_WORKERS=${UNICORN_WORKERS:-2}
+
 DB_HOST=${DB_HOST:-localhost}
 DB_NAME=${DB_NAME:-gitlabhq_production}
 DB_USER=${DB_USER:-root}
@@ -40,6 +42,9 @@ sudo -u git -H sed 's/{{DB_HOST}}/'${DB_HOST}'/' -i /home/git/gitlab/config/data
 sudo -u git -H sed 's/{{DB_NAME}}/'${DB_NAME}'/' -i /home/git/gitlab/config/database.yml
 sudo -u git -H sed 's/{{DB_USER}}/'${DB_USER}'/' -i /home/git/gitlab/config/database.yml
 sudo -u git -H sed 's/{{DB_PASS}}/'${DB_PASS}'/' -i /home/git/gitlab/config/database.yml
+
+# configure unicorn workers
+sed 's/worker_processes 2/worker_processes '${UNICORN_WORKERS}'/' -i /home/git/gitlab/config/unicorn.rb
 
 # make sure /home/git/repositories/ has the right permissions in case it is mounted as a volume.
 sudo chmod ug+rwX,o-rwx /home/git/repositories/
