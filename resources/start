@@ -28,9 +28,6 @@ if [ "${DB_HOST}" == "localhost" ]; then
 	echo 'GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'root'@'localhost';' | mysql -uroot
 fi
 
-# start ssh server
-/usr/sbin/sshd
-
 if [ "${REDIS_HOST}" == "localhost" ]; then
 	redis-server > /dev/null &
 	sleep 3
