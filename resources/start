@@ -15,6 +15,9 @@ DB_USER=${DB_USER:-root}
 DB_PASS=${DB_PASS:-}
 DB_INIT=${DB_INIT:-}
 
+# start supervisord
+/usr/bin/supervisord
+
 # start mysql server if ${DB_HOST} is localhost
 if [ "${DB_HOST}" == "localhost" ]; then
 	DB_INIT="yes"

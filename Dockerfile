@@ -18,6 +18,8 @@ RUN wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p448.tar.gz -O - | tar 
     cd /tmp/ruby-1.9.3-p448/ext/zlib && ruby extconf.rb && make && make install && cd /tmp \
     rm -rf /tmp/ruby-1.9.3-p448 && gem install --no-ri --no-rdoc bundler
 
+RUN apt-get install -y supervisor
+
 ADD resources/6-1-stable.tar.gz /gitlab/setup/6-1-stable.tar.gz
 ADD resources/v1.7.1.tar.gz /gitlab/setup/v1.7.1.tar.gz
 ADD resources/cache/ /gitlab/setup/cache/
