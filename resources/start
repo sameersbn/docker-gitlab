@@ -40,8 +40,19 @@ echo 'GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, AL
 fi
 
 if [ "${REDIS_HOST}" == "localhost" ]; then
-	redis-server > /dev/null &
-	sleep 3
+sed 's/daemonize yes/daemonize no/' -i /etc/redis/redis.conf
+cat > /etc/supervisor/conf.d/redis-server.conf <<EOF
+[program:redis-server]
+priority=20
+directory=/tmp
+command=/usr/bin/redis-server
+user=root
+autostart=true
+autorestart=true
+stdout_logfile=/var/log/supervisor/%(program_name)s.log
+stderr_logfile=/var/log/supervisor/%(program_name)s.log
+EOF
+supervisorctl update
 fi
 
 # configure git for the 'git' user
