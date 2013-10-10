@@ -74,6 +74,9 @@ fi
 # start the gitlab application
 # sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 /etc/init.d/gitlab start
+
+# create satellite directories
+sudo -u git -H bundle exec rake gitlab:satellites:create RAILS_ENV=production
 sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
 # start the nginx server
