@@ -52,6 +52,12 @@ sudo chmod ug-s /home/git/repositories/
 find /home/git/repositories/ -type d -print0 | sudo xargs -0 chmod g+s
 chown git:git /home/git/repositories
 
+# make sure /home/git/gitlab-satellites/ has the right permissions in case it is mounted as a volume.
+sudo chmod ug+rwX,o-rwx /home/git/gitlab-satellites/
+sudo chmod ug-s /home/git/gitlab-satellites/
+find /home/git/gitlab-satellites/ -type d -print0 | sudo xargs -0 chmod g+s
+chown git:git /home/git/gitlab-satellites
+
 # make sure /home/git/.ssh/ has the right permissions in case it is mounted as a volume.
 touch /home/git/.ssh/authorized_keys
 chmod 700 /home/git/.ssh
