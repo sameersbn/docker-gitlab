@@ -69,6 +69,18 @@ mkdir -p /var/run/sshd
 
 # configure nginx
 sed 's/YOUR_SERVER_FQDN/localhost/' -i /etc/nginx/sites-available/gitlab
+echo "daemon off;" >> /etc/nginx/nginx.conf
+cat > /etc/supervisor/conf.d/nginx.conf <<EOF
+[program:nginx]
+priority=20
+directory=/tmp
+command=/usr/sbin/nginx
+user=root
+autostart=true
+autorestart=true
+stdout_logfile=/var/log/supervisor/%(program_name)s.log
+stderr_logfile=/var/log/supervisor/%(program_name)s.log
+EOF
 
 #
 cat > /etc/supervisor/conf.d/openssh-server.conf <<EOF
