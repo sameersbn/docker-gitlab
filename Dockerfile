@@ -20,6 +20,7 @@ RUN wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p448.tar.gz -O - | tar 
 
 ADD resources/6-1-stable.tar.gz /gitlab/setup/6-1-stable.tar.gz
 ADD resources/v1.7.1.tar.gz /gitlab/setup/v1.7.1.tar.gz
+ADD resources/cache/ /gitlab/setup/cache/
 ADD resources/install /gitlab/setup/install
 ADD resources/start /gitlab/start
 RUN chmod 755 /gitlab/start /gitlab/setup/install && /gitlab/setup/install
