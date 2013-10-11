@@ -80,6 +80,10 @@ sudo -u git -H sed 's/{{SIDEKIQ_CONCURRENCY}}/'${SIDEKIQ_CONCURRENCY}'/' -i /hom
 # configure redis
 sudo -u git -H sed 's/redis.example.com:6379/'${REDIS_HOST}':'${REDIS_PORT}'/' -i /home/git/gitlab/config/resque.yml
 
+# configure gitlab-shell
+sudo -u git -H sed 's/host: 127.0.0.1/host: '${REDIS_HOST}'/' -i /home/git/gitlab-shell/config.yml
+sudo -u git -H sed 's/port: 6379/port: '${REDIS_PORT}'/' -i /home/git/gitlab-shell/config.yml
+
 # configure unicorn workers
 sed 's/worker_processes 2/worker_processes '${UNICORN_WORKERS}'/' -i /home/git/gitlab/config/unicorn.rb
 
