@@ -8,6 +8,7 @@ REDIS_HOST=${REDIS_HOST:-localhost}
 REDIS_PORT=${REDIS_PORT:-6379}
 
 UNICORN_WORKERS=${UNICORN_WORKERS:-2}
+SIDEKIQ_CONCURRENCY=${SIDEKIQ_CONCURRENCY:-5}
 
 DB_HOST=${DB_HOST:-localhost}
 DB_NAME=${DB_NAME:-gitlabhq_production}
@@ -72,6 +73,9 @@ sudo -u git -H sed 's/{{DB_NAME}}/'${DB_NAME}'/' -i /home/git/gitlab/config/data
 sudo -u git -H sed 's/{{DB_USER}}/'${DB_USER}'/' -i /home/git/gitlab/config/database.yml
 sudo -u git -H sed 's/{{DB_PASS}}/'${DB_PASS}'/' -i /home/git/gitlab/config/database.yml
 sudo -u git -H sed 's/{{DB_POOL}}/'${DB_POOL}'/' -i /home/git/gitlab/config/database.yml
+
+# configure sidekiq
+sudo -u git -H sed 's/{{SIDEKIQ_CONCURRENCY}}/'${SIDEKIQ_CONCURRENCY}'/' -i /home/git/gitlab/config/sidekiq.yml
 
 # configure redis
 sudo -u git -H sed 's/redis.example.com:6379/'${REDIS_HOST}':'${REDIS_PORT}'/' -i /home/git/gitlab/config/resque.yml

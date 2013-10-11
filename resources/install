@@ -56,6 +56,11 @@ production:
 EOF
 chmod o-rwx config/database.yml
 
+sudo -u git -H tee config/sidekiq.yml <<EOF
+:concurrency: {{SIDEKIQ_CONCURRENCY}}
+EOF
+chmod o-rwx config/sidekiq.yml
+
 # make sure everything in /home/git is owned by the git user
 chown -R git:git /home/git/
 
