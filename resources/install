@@ -52,7 +52,7 @@ production:
   host: {{DB_HOST}}
   username: {{DB_USER}}
   password: {{DB_PASS}}
-  pool: 10
+  pool: {{DB_POOL}}
 EOF
 chmod o-rwx config/database.yml
 

@@ -14,6 +14,7 @@ DB_NAME=${DB_NAME:-gitlabhq_production}
 DB_USER=${DB_USER:-root}
 DB_PASS=${DB_PASS:-}
 DB_INIT=${DB_INIT:-}
+DB_POOL=${DB_POOL:-5}
 
 # start supervisord
 /usr/bin/supervisord
@@ -70,6 +71,7 @@ sudo -u git -H sed 's/{{DB_HOST}}/'${DB_HOST}'/' -i /home/git/gitlab/config/data
 sudo -u git -H sed 's/{{DB_NAME}}/'${DB_NAME}'/' -i /home/git/gitlab/config/database.yml
 sudo -u git -H sed 's/{{DB_USER}}/'${DB_USER}'/' -i /home/git/gitlab/config/database.yml
 sudo -u git -H sed 's/{{DB_PASS}}/'${DB_PASS}'/' -i /home/git/gitlab/config/database.yml
+sudo -u git -H sed 's/{{DB_POOL}}/'${DB_POOL}'/' -i /home/git/gitlab/config/database.yml
 
 # configure redis
 sudo -u git -H sed 's/redis.example.com:6379/'${REDIS_HOST}':'${REDIS_PORT}'/' -i /home/git/gitlab/config/resque.yml
