@@ -43,7 +43,7 @@ gem install charlock_holmes --version '0.6.9.4'
 sudo -u git -H bundle install --deployment --without development test postgres aws
 
 # add database.yml template
-sudo -u git -H tee config/database.yml <<EOF
+sudo -u git -H cat > config/database.yml <<EOF
 production:
   adapter: mysql2
   encoding: utf8
@@ -56,7 +56,7 @@ production:
 EOF
 chmod o-rwx config/database.yml
 
-sudo -u git -H tee config/sidekiq.yml <<EOF
+sudo -u git -H cat > config/sidekiq.yml <<EOF
 :concurrency: {{SIDEKIQ_CONCURRENCY}}
 EOF
 chmod o-rwx config/sidekiq.yml
