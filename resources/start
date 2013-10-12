@@ -46,7 +46,7 @@ sed 's/daemonize yes/daemonize no/' -i /etc/redis/redis.conf
 cat > /etc/supervisor/conf.d/redis-server.conf <<EOF
 [program:redis-server]
 priority=20
-directory=/var/run/redis
+directory=/tmp
 command=/usr/bin/redis-server /etc/redis/redis.conf
 user=redis
 autostart=true
