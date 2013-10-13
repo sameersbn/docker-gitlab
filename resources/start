@@ -22,9 +22,12 @@ DB_POOL=${DB_POOL:-5}
 
 # start mysql server if ${DB_HOST} is localhost
 if [ "${DB_HOST}" == "localhost" ]; then
-DB_INIT="yes"
-mysql_install_db --user=mysql
-cat > /etc/supervisor/conf.d/mysqld.conf <<EOF
+	if [ ! -d /var/lib/mysql/mysql ]; then
+		DB_INIT="yes"
+		mysql_install_db --user=mysql
+	fi
+
+	cat > /etc/supervisor/conf.d/mysqld.conf <<EOF
 [program:mysqld]
 priority=20
 directory=/tmp
@@ -35,15 +38,18 @@ autorestart=true
 stdout_logfile=/var/log/supervisor/%(program_name)s.log
 stderr_logfile=/var/log/supervisor/%(program_name)s.log
 EOF
-supervisorctl update
-sleep 3
-echo 'CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;' | mysql -uroot
-echo 'GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'root'@'localhost';' | mysql -uroot
+
+	supervisorctl update
+	sleep 3
+	if [ "${DB_INIT}" == "yes" ]; then
+		echo 'CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;' | mysql -uroot
+		echo 'GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'root'@'localhost';' | mysql -uroot
+	fi
 fi
 
 if [ "${REDIS_HOST}" == "localhost" ]; then
-sed 's/daemonize yes/daemonize no/' -i /etc/redis/redis.conf
-cat > /etc/supervisor/conf.d/redis-server.conf <<EOF
+	sed 's/daemonize yes/daemonize no/' -i /etc/redis/redis.conf
+	cat > /etc/supervisor/conf.d/redis-server.conf <<EOF
 [program:redis-server]
 priority=20
 directory=/tmp
@@ -54,7 +60,7 @@ autorestart=true
 stdout_logfile=/var/log/supervisor/%(program_name)s.log
 stderr_logfile=/var/log/supervisor/%(program_name)s.log
 EOF
-supervisorctl update
+	supervisorctl update
 fi
 
 # configure git for the 'git' user
