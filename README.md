@@ -3,21 +3,25 @@
 Dockerfile to build a GitLab container image.
 
 ## Installation
+
 ```bash
 sudo docker build -t="gitlabhq/gitlab" .
 ```
 
 ## Quick Start
 Run the gitlab image
+
 ```bash
 GITLAB=$(sudo docker run -d gitlab)
 GITLAB_IP=$(sudo docker inspect $GITLAB | grep IPAddres | awk -F'"' '{print $4}')
 ```
 
 Access the GitLab application
+
 ```bash
 xdg-open "http://${GITLAB_IP}"
 ```
+
 __NOTE__: Please allow a minute or two for the GitLab application to start.
 
 Login using the default username and password:
@@ -82,6 +86,7 @@ To make sure the database is initialized start the container with DB_INIT=yes en
 **NOTE: This should be done only for the first run**.
 
 *Assuming that the mysql server host is 192.168.1.100*
+
 ```bash
 docker run -d \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" -e "DB_INIT=yes" \
@@ -89,7 +94,9 @@ docker run -d \
   -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
   -v /opt/gitlab/.ssh:/home/git/.ssh gitlabhq/gitlab
 ```
+
 This will initialize the gitlab database. Now that the database is initialized, omit the **-e "DB_INIT=yes"** option from the docker command.
+
 ```bash
 docker run -d \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
@@ -166,6 +173,7 @@ docker run -d -h git.local.host \
 ```
 
 If you are using an external mysql database
+
 ```bash
 docker run -d -h git.local.host \
   -v /opt/gitlab/repositories:/home/git/repositories \
