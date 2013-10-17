@@ -95,7 +95,7 @@ cat > /etc/supervisor/conf.d/openssh-server.conf <<EOF
 [program:openssh-server]
 priority=20
 directory=/tmp
-command=/usr/sbin/sshd
+command=/usr/sbin/sshd -D
 user=root
 autostart=true
 autorestart=true
