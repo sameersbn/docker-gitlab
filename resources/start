@@ -40,7 +40,19 @@ stderr_logfile=/var/log/supervisor/%(program_name)s.log
 EOF
 
 	supervisorctl update
-	sleep 3
+
+	# wait for mysql server to start (max 120 seconds)
+	timeout=120
+	while ! mysqladmin -u root status >/dev/null 2>&1
+	do
+		timeout=$(expr $timeout - 1)
+		if [ $timeout -eq 0 ]; then
+			echo "Failed to start mysql server"
+			exit 1
+		fi
+		sleep 1
+	done
+
 	if [ "${DB_INIT}" == "yes" ]; then
 		echo 'CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;' | mysql -uroot
 		echo 'GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'root'@'localhost';' | mysql -uroot
