@@ -12,7 +12,7 @@ sudo docker build -t="gitlabhq/gitlab" .
 Run the gitlab image
 
 ```bash
-GITLAB=$(sudo docker run -d gitlab)
+GITLAB=$(sudo docker run -d gitlabhq/gitlab)
 GITLAB_IP=$(sudo docker inspect $GITLAB | grep IPAddres | awk -F'"' '{print $4}')
 ```
 
