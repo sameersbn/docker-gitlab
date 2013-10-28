@@ -186,4 +186,5 @@ docker run -d -h git.local.host \
 
 ## References
   https://github.com/gitlabhq/gitlabhq
+
   https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md
