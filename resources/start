@@ -43,7 +43,7 @@ EOF
 
 	# wait for mysql server to start (max 120 seconds)
 	timeout=120
-	while ! mysqladmin -u root status >/dev/null 2>&1
+	while ! mysqladmin -uroot ${DB_PASS:+-p$DB_PASS} status >/dev/null 2>&1
 	do
 		timeout=$(expr $timeout - 1)
 		if [ $timeout -eq 0 ]; then
