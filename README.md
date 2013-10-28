@@ -183,3 +183,7 @@ docker run -d -h git.local.host \
   -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
   gitlabhq/gitlab
 ```
+
+## References
+  https://github.com/gitlabhq/gitlabhq
+  https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md
