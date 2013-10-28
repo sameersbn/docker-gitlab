@@ -5,6 +5,8 @@ Dockerfile to build a GitLab container image.
 ## Installation
 
 ```bash
+git clone https://github.com/sameersbn/docker-gitlab.git
+cd docker-gitlab
 sudo docker build -t="gitlabhq/gitlab" .
 ```
 
