@@ -34,6 +34,10 @@ stdout_logfile=/var/log/supervisor/%(program_name)s.log
 stderr_logfile=/var/log/supervisor/%(program_name)s.log
 EOF
 
+	# make sure /var/lib/mysql/ has the right permissions in case it is mounted as a volume.
+	chown -R mysql:mysql /var/lib/mysql
+	chmod 700 /var/lib/mysql
+
 	supervisorctl update
 
 	# wait for mysql server to start (max 120 seconds)
