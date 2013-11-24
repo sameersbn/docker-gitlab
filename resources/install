@@ -65,6 +65,9 @@ chmod o-rwx config/sidekiq.yml
 # make sure everything in /home/git is owned by the git user
 chown -R git:git /home/git/
 
+# install logrotate configuration
+sudo cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
+
 # copy nginx configuration
 cp lib/support/init.d/gitlab /etc/init.d/gitlab
 sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
@@ -94,6 +97,19 @@ cat > /etc/supervisor/conf.d/openssh-server.conf <<EOF
 priority=20
 directory=/tmp
 command=/usr/sbin/sshd -D
+user=root
+autostart=true
+autorestart=true
+stdout_logfile=/var/log/supervisor/%(program_name)s.log
+stderr_logfile=/var/log/supervisor/%(program_name)s.log
+EOF
+
+# configure supervisord to start cron
+cat > /etc/supervisor/conf.d/cron.conf <<EOF
+[program:cron]
+priority=20
+directory=/tmp
+command=/usr/sbin/cron -f
 user=root
 autostart=true
 autorestart=true
