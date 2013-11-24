@@ -107,6 +107,16 @@ docker run -d \
   -v /opt/gitlab/.ssh:/home/git/.ssh gitlabhq/gitlab
 ```
 
+## Upgrading
+
+If you upgrading from previous version, please make sure you run the container with **migrate** command.
+
+```bash
+docker run -i -t \
+  -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
+  gitlabhq/gitlab migrate
+```
+
 ### Other options
 Below is the complete list of parameters that can be set using environment variables.
 
