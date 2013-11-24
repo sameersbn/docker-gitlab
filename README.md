@@ -8,17 +8,25 @@ Dockerfile to build a GitLab container image.
 
 ## Installation
 
+Pull the docker image from the docker index. This is the recommended method of installation as it is easier to update image in the future. These builds are performed by the Trusted Build service.
+
+```bash
+docker pull sameersbn/gitlab
+```
+
+Alternately you can build the image yourself.
+
 ```bash
 git clone https://github.com/sameersbn/docker-gitlab.git
 cd docker-gitlab
-sudo docker build -t="gitlabhq/gitlab" .
+sudo docker build -t="$USER/gitlab" .
 ```
 
 ## Quick Start
 Run the gitlab image
 
 ```bash
-GITLAB=$(sudo docker run -d gitlabhq/gitlab)
+GITLAB=$(sudo docker run -d sameersbn/gitlab)
 GITLAB_IP=$(sudo docker inspect $GITLAB | grep IPAddres | awk -F'"' '{print $4}')
 ```
 
@@ -55,7 +63,7 @@ mkdir /opt/gitlab/.ssh
 docker run -d \
   -v /opt/gitlab/repositories:/home/git/repositories \
   -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
-  -v /opt/gitlab/.ssh:/home/git/.ssh gitlabhq/gitlab
+  -v /opt/gitlab/.ssh:/home/git/.ssh sameersbn/gitlab
 ```
 
 ### Configuring MySQL database connection
@@ -70,7 +78,7 @@ docker run -d \
   -v /opt/gitlab/repositories:/home/git/repositories \
   -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
   -v /opt/gitlab/.ssh:/home/git/.ssh \
-  -v /opt/gitlab/mysql:/var/lib/mysql gitlabhq/gitlab
+  -v /opt/gitlab/mysql:/var/lib/mysql sameersbn/gitlab
 ```
 
 This will make sure that the data stored in the database is not lost when the image is stopped and started again.
@@ -98,7 +106,7 @@ docker run -d \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/repositories:/home/git/repositories \
   -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
-  -v /opt/gitlab/.ssh:/home/git/.ssh gitlabhq/gitlab initialize
+  -v /opt/gitlab/.ssh:/home/git/.ssh sameersbn/gitlab initialize
 ```
 
 This will initialize the gitlab database. Now that the database is initialized, start the container without the initialize command.
@@ -108,7 +116,7 @@ docker run -d \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/repositories:/home/git/repositories \
   -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
-  -v /opt/gitlab/.ssh:/home/git/.ssh gitlabhq/gitlab
+  -v /opt/gitlab/.ssh:/home/git/.ssh sameersbn/gitlab
 ```
 
 ## Upgrading
@@ -118,7 +126,7 @@ If you upgrading from previous version, please make sure you run the container w
 ```bash
 docker run -i -t \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
-  gitlabhq/gitlab migrate
+  sameersbn/gitlab migrate
 ```
 
 ### Other options
@@ -181,7 +189,7 @@ docker run -d -h git.local.host \
   -v /opt/gitlab/.ssh:/home/git/.ssh \
   -v /opt/gitlab/mysql:/var/lib/mysql \
   -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
-  gitlabhq/gitlab
+  sameersbn/gitlab
 ```
 
 If you are using an external mysql database
@@ -193,7 +201,7 @@ docker run -d -h git.local.host \
   -v /opt/gitlab/.ssh:/home/git/.ssh \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
-  gitlabhq/gitlab
+  sameersbn/gitlab
 ```
 
 ## References
