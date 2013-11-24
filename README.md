@@ -123,10 +123,34 @@ docker run -d \
 
 If you upgrading from previous version, please make sure you run the container with **migrate** command.
 
+**Step 1: Stop the currently running image**
+
 ```bash
-docker run -i -t \
-  -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
-  sameersbn/gitlab migrate
+docker stop <container-id>
+```
+
+**Step 2: Backup the database in case something goes wrong.**
+
+```bash
+mysqldump -h <mysql-server-ip> -ugitlab -p --add-drop-table gitlabhq_production > gitlab.sql
+```
+
+**Step 3: Update the docker image.**
+
+```bash
+docker pull sameersbn/gitlab
+```
+
+**Step 4: Migrate the database.**
+
+```bash
+docker run -i -t [OPTIONS] sameersbn/gitlab migrate
+```
+
+**Step 5: Start the image**
+
+```bash
+docker run -i -d [OPTIONS] sameersbn/gitlab
 ```
 
 ### Other options
