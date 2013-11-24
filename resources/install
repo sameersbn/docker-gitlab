@@ -68,18 +68,20 @@ chmod o-rwx config/sidekiq.yml
 # make sure everything in /home/git is owned by the git user
 chown -R git:git /home/git/
 
+# install gitlab bootscript
+sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
+
 # install logrotate configuration
 sudo cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
 
 # copy nginx configuration
-cp lib/support/init.d/gitlab /etc/init.d/gitlab
 sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
 sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
 # create the /var/run/sshd directory (required for sshd to start)
 mkdir -p /var/run/sshd
 
-# configure nginx
+# configure supervisord to start nginx
 sed 's/YOUR_SERVER_FQDN/localhost/' -i /etc/nginx/sites-available/gitlab
 echo "daemon off;" >> /etc/nginx/nginx.conf
 cat > /etc/supervisor/conf.d/nginx.conf <<EOF
@@ -94,7 +96,7 @@ stdout_logfile=/var/log/supervisor/%(program_name)s.log
 stderr_logfile=/var/log/supervisor/%(program_name)s.log
 EOF
 
-#
+# configure supervisord to start openssh server
 cat > /etc/supervisor/conf.d/openssh-server.conf <<EOF
 [program:openssh-server]
 priority=20
