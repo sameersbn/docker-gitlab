@@ -2,10 +2,11 @@ FROM ubuntu:12.04
 MAINTAINER sameer@damagehead.com
 
 RUN sed 's/main$/main universe/' -i /etc/apt/sources.list
-RUN apt-get update && apt-get upgrade -y && apt-get install -y wget curl unzip && apt-get clean # 20131122
+RUN apt-get update && apt-get upgrade -y && apt-get clean # 20130925
 
-RUN apt-get install -y build-essential checkinstall zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
-	&& apt-get clean
+RUN apt-get install -y wget curl unzip build-essential checkinstall zlib1g-dev libyaml-dev libssl-dev \
+		libgdbm-dev libreadline-dev libncurses5-dev libffi-dev && \
+		apt-get clean
 
 RUN wget ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p247.tar.gz -O - | tar -zxf - -C /tmp/ && \
 	cd /tmp/ruby-2.0.0-p247/ && ./configure --disable-install-rdoc --enable-pthread --prefix=/usr && make && make install && \
