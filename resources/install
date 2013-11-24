@@ -35,6 +35,9 @@ chmod -R u+rwX  public/uploads
 # create satellites directory
 sudo -u git -H mkdir -p /home/git/gitlab-satellites
 
+# create production log
+sudo -u git -H touch log/production.log
+
 # install gems required by gitlab
 mv /gitlab/setup/cache vendor/
 chown -R git:git vendor/cache
