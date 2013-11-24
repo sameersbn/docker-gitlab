@@ -33,4 +33,5 @@ RUN chmod 700 /root/.ssh && chmod 600 /root/.ssh/authorized_keys && chown root:r
 EXPOSE 22
 EXPOSE 80
 
-CMD ["/gitlab/gitlab"]
+ENTRYPOINT ["/gitlab/gitlab"]
+CMD ["start"]
