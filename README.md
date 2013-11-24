@@ -83,7 +83,7 @@ CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8`
 GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'%.%.%.%';
 ```
 
-To make sure the database is initialized start the container with DB_INIT=yes environment variable set.
+To make sure the database is initialized start the container with **initialize** option.
 
 **NOTE: This should be done only for the first run**.
 
@@ -91,13 +91,13 @@ To make sure the database is initialized start the container with DB_INIT=yes en
 
 ```bash
 docker run -d \
-  -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" -e "DB_INIT=yes" \
+  -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/repositories:/home/git/repositories \
   -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
-  -v /opt/gitlab/.ssh:/home/git/.ssh gitlabhq/gitlab
+  -v /opt/gitlab/.ssh:/home/git/.ssh gitlabhq/gitlab initialize
 ```
 
-This will initialize the gitlab database. Now that the database is initialized, omit the **-e "DB_INIT=yes"** option from the docker command.
+This will initialize the gitlab database. Now that the database is initialized, start the container without the initialize command.
 
 ```bash
 docker run -d \
@@ -157,10 +157,6 @@ Below is the complete list of parameters that can be set using environment varia
 * DB_POOL
 
         The mysql database connection pool count. Defaults to 5.
-
-* DB_INIT
-
-        Whether to initial the mysql database. Defaults to no
 
 ### Putting it all together
 
