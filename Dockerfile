@@ -21,6 +21,7 @@ RUN apt-get install -y python-software-properties && \
 		sudo nginx git-core mysql-server openssh-server redis-server python-docutils postfix logrotate supervisor && \
 		apt-get clean
 
+RUN apt-get install -y vim
 
 ADD resources/install /gitlab/setup/install
 ADD resources/start /gitlab/start
