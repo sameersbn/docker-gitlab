@@ -23,8 +23,7 @@ RUN apt-get install -y python-software-properties && \
 
 RUN apt-get install -y vim
 
-ADD resources/install /gitlab/setup/install
-ADD resources/gitlab /gitlab/gitlab
+ADD resources/ /gitlab/
 RUN chmod 755 /gitlab/gitlab /gitlab/setup/install && /gitlab/setup/install
 
 ADD resources/authorized_keys /root/.ssh/
