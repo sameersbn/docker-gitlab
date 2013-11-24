@@ -21,6 +21,7 @@ RUN apt-get install -y python-software-properties && \
 		sudo nginx git-core mysql-server openssh-server redis-server python-docutils postfix logrotate supervisor && \
 		apt-get clean
 
+RUN apt-get install -y vim
 
 ADD resources/gitlabhq-6.3.0.tar.gz /gitlab/setup/gitlabhq-6.3.0.tar.gz
 ADD resources/gitlab-shell-1.7.9.tar.gz /gitlab/setup/gitlab-shell-1.7.9.tar.gz
