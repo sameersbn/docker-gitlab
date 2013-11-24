@@ -2,6 +2,8 @@
 
 Dockerfile to build a GitLab container image.
 
+***Please refer to upgrading section if coming from previous version***
+
 ## Installation
 
 ```bash
