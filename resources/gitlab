@@ -125,11 +125,16 @@ chown -R git:git /home/git/.ssh
 
 cd /home/git/gitlab/
 
+db_initialize () {
+	echo "Initializing database..."
+	sudo -u git -H force=yes bundle exec rake gitlab:setup RAILS_ENV=production
+}
+
 gitlab_start () {
 	echo "Starting gitlab server..."
 	# reset the database if the --db-init switch was given.
 	if [ "$DB_INIT" == "yes" ]; then
-		sudo -u git -H force=yes bundle exec rake gitlab:setup RAILS_ENV=production
+		db_initialize
 	fi
 
 	# start the gitlab application
@@ -150,12 +155,16 @@ gitlab_start () {
 gitlab_help () {
 	echo "Available options:"
 	echo " start       - Starts the gitlab server (default)"
+	echo " initialize  - Initialize the database."
 	echo " help        - Displays the help"
 }
 
 case "$1" in
 	start)
 		gitlab_start
+		;;
+	initialize)
+		db_initialize
 		;;
 	help|*)
 		gitlab_help
