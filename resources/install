@@ -39,6 +39,9 @@ chmod -R u+rwX  public/uploads
 # create satellites directory
 sudo -u git -H mkdir -p /home/git/gitlab-satellites
 
+# create production log
+sudo -u git -H touch log/production.log
+
 # install gems required by gitlab
 gem install charlock_holmes --version '0.6.9.4'
 sudo -u git -H bundle install --deployment --without development test postgres aws
