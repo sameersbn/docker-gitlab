@@ -8,7 +8,7 @@ adduser --disabled-login --gecos 'GitLab' git
 
 # install gitlab-shell
 sudo -u git -H mkdir -p /home/git/gitlab-shell
-sudo -u git -H tar -zvxf /gitlab/setup/gitlab-shell-1.7.9.tar.gz --strip=1 -C /home/git/gitlab-shell/
+sudo -u git -H tar -zvxf /gitlab/setup/gitlab-shell-1.8.0.tar.gz --strip=1 -C /home/git/gitlab-shell/
 cd /home/git/gitlab-shell
 sudo -u git -H cp -a config.yml.example config.yml
 sudo -u git -H ./bin/install
