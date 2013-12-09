@@ -43,8 +43,15 @@ sudo -u git -H mkdir -p /home/git/gitlab-satellites
 sudo -u git -H touch log/production.log
 
 # install gems required by gitlab
-gem install charlock_holmes --version '0.6.9.4'
-sudo -u git -H bundle install --deployment --without development test postgres aws
+if [ -d "/gitlab/setup/cache" ]; then
+  # offline gem installation
+  mv /gitlab/setup/cache vendor/
+  chown -R git:git vendor/cache
+  sudo -u git -H bundle install --local --deployment --without development test postgres aws
+else
+  # online gem installation
+  sudo -u git -H bundle install --deployment --without development test postgres aws
+fi
 
 # add database.yml template
 sudo -u git -H cat > config/database.yml <<EOF
