@@ -8,19 +8,18 @@ RUN apt-get install -y wget curl unzip build-essential checkinstall zlib1g-dev l
 		libgdbm-dev libreadline-dev libncurses5-dev libffi-dev && \
 		apt-get clean
 
-RUN wget ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p247.tar.gz -O - | tar -zxf - -C /tmp/ && \
-		cd /tmp/ruby-2.0.0-p247/ && \
-		./configure --disable-install-rdoc --enable-pthread --prefix=/usr && \
-		make && make install && \
-		cd /tmp && rm -rf /tmp/ruby-2.0.0-p247 && \
-		gem install --no-ri --no-rdoc bundler
-
 RUN apt-get install -y python-software-properties && \
 		add-apt-repository -y ppa:git-core/ppa && \
 		apt-get update && apt-get install -y libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev libmysqlclient-dev \
 		sudo nginx git-core mysql-server openssh-server redis-server python-docutils postfix logrotate supervisor vim && \
 		apt-get clean
 
+RUN wget ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p247.tar.gz -O - | tar -zxf - -C /tmp/ && \
+		cd /tmp/ruby-2.0.0-p247/ && \
+		./configure --disable-install-rdoc --enable-pthread --prefix=/usr && \
+		make && make install && \
+		cd /tmp && rm -rf /tmp/ruby-2.0.0-p247 && \
+		gem install --no-ri --no-rdoc bundler
 
 ADD resources/ /gitlab/
 RUN chmod 755 /gitlab/gitlab /gitlab/setup/install && /gitlab/setup/install
