@@ -14,11 +14,11 @@ RUN apt-get install -y python-software-properties && \
 		sudo nginx git-core mysql-server openssh-server redis-server python-docutils postfix logrotate supervisor vim && \
 		apt-get clean
 
-RUN wget ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p247.tar.gz -O - | tar -zxf - -C /tmp/ && \
-		cd /tmp/ruby-2.0.0-p247/ && \
+RUN wget ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p353.tar.gz -O - | tar -zxf - -C /tmp/ && \
+		cd /tmp/ruby-2.0.0-p353/ && \
 		./configure --disable-install-rdoc --enable-pthread --prefix=/usr && \
 		make && make install && \
-		cd /tmp && rm -rf /tmp/ruby-2.0.0-p247 && \
+		cd /tmp && rm -rf /tmp/ruby-2.0.0-p353 && \
 		gem install --no-ri --no-rdoc bundler
 
 ADD resources/ /gitlab/
