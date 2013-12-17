@@ -174,6 +174,22 @@ Below is the complete list of parameters that can be set using environment varia
 
         The mysql database connection pool count. Defaults to 5.
 
+* SMTP_HOST
+
+        SMTP server host. Defaults to smtp.gmail.com.
+
+* SMTP_PORT
+
+        SMTP server port. Defaults to 587.
+
+* SMTP_USER
+
+        SMTP username.
+
+* SMTP_PASS
+
+        SMTP password.
+
 ### Putting it all together
 
 ```bash
