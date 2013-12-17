@@ -8,6 +8,7 @@ REDIS_HOST=${REDIS_HOST:-localhost}
 REDIS_PORT=${REDIS_PORT:-6379}
 
 UNICORN_WORKERS=${UNICORN_WORKERS:-2}
+UNICORN_TIMEOUT=${UNICORN_TIMEOUT:-60}
 SIDEKIQ_CONCURRENCY=${SIDEKIQ_CONCURRENCY:-5}
 
 DB_HOST=${DB_HOST:-localhost}
@@ -109,6 +110,9 @@ sudo -u git -H sed 's/port: 6379/port: '${REDIS_PORT}'/' -i /home/git/gitlab-she
 
 # configure unicorn workers
 sed 's/worker_processes 2/worker_processes '${UNICORN_WORKERS}'/' -i /home/git/gitlab/config/unicorn.rb
+
+# configure unicorn timeout
+sed 's/timeout 30/timeout '${UNICORN_TIMEOUT}'/' -i /home/git/gitlab/config/unicorn.rb
 
 # make sure /home/git/repositories/ has the right permissions in case it is mounted as a volume.
 sudo chmod ug+rwX,o-rwx /home/git/repositories/
