@@ -180,6 +180,10 @@ Below is the complete list of parameters that can be set using environment varia
 
         The number of unicorn workers to start. Defaults to 2.
 
+* UNICORN_TIMEOUT
+
+        Sets the timeout of unicorn worker processes. Defaults to 60 seconds.
+
 * SIDEKIQ_CONCURRENCY
 
         The number of concurrent sidekiq jobs to run. Defaults to 5
