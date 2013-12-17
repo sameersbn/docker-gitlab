@@ -119,6 +119,30 @@ docker run -d \
   -v /opt/gitlab/.ssh:/home/git/.ssh sameersbn/gitlab
 ```
 
+### Configuring Mail
+The mail configuration should be specified using environment variables while starting the GitLab image. The configuration defaults to using gmail to send emails and requires the specification of a valid username and password to login to the gmail servers.
+
+The following environment variables need to be specified to get mail support to work.
+
+* SMTP_HOST (defaults to smtp.gmail.com)
+* SMTP_PORT (defaults to 587)
+* SMTP_USER
+* SMTP_PASS
+
+```bash
+docker run -d \
+  -e "SMTP_USER=USER@gmail.com" -e "SMTP_PASS=PASSWORD" \
+  -v /opt/gitlab/repositories:/home/git/repositories \
+  -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
+  -v /opt/gitlab/.ssh:/home/git/.ssh sameersbn/gitlab
+```
+
+If you are not using google mail, then please configure the  SMTP host and port using the SMTP_HOST and SMTP_PORT configuration parameters.
+
+__NOTE:__
+
+I have only tested standard gmail and google apps login. I expect that the currently provided configuration parameters should be sufficient for most users. If this is not the case, then please let me know.
+
 ### Other options
 Below is the complete list of parameters that can be set using environment variables.
 
