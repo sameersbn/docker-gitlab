@@ -119,6 +119,30 @@ docker run -d \
   -v /opt/gitlab/.ssh:/home/git/.ssh sameersbn/gitlab
 ```
 
+### Configuring Mail
+The mail configuration should be specified using environment variables while starting the GitLab image. The configuration defaults to using gmail to send emails and requires the specification of a valid username and password to login to the gmail servers.
+
+The following environment variables need to be specified to get mail support to work.
+
+* SMTP_HOST (defaults to smtp.gmail.com)
+* SMTP_PORT (defaults to 587)
+* SMTP_USER
+* SMTP_PASS
+
+```bash
+docker run -d \
+  -e "SMTP_USER=USER@gmail.com" -e "SMTP_PASS=PASSWORD" \
+  -v /opt/gitlab/repositories:/home/git/repositories \
+  -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
+  -v /opt/gitlab/.ssh:/home/git/.ssh sameersbn/gitlab
+```
+
+If you are not using google mail, then please configure the  SMTP host and port using the SMTP_HOST and SMTP_PORT configuration parameters.
+
+__NOTE:__
+
+I have only tested standard gmail and google apps login. I expect that the currently provided configuration parameters should be sufficient for most users. If this is not the case, then please let me know.
+
 ### Other options
 Below is the complete list of parameters that can be set using environment variables.
 
@@ -174,6 +198,22 @@ Below is the complete list of parameters that can be set using environment varia
 
         The mysql database connection pool count. Defaults to 5.
 
+* SMTP_HOST
+
+        SMTP server host. Defaults to smtp.gmail.com.
+
+* SMTP_PORT
+
+        SMTP server port. Defaults to 587.
+
+* SMTP_USER
+
+        SMTP username.
+
+* SMTP_PASS
+
+        SMTP password.
+
 ### Putting it all together
 
 ```bash
@@ -183,6 +223,7 @@ docker run -d -h git.local.host \
   -v /opt/gitlab/.ssh:/home/git/.ssh \
   -v /opt/gitlab/mysql:/var/lib/mysql \
   -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
+  -e "SMTP_USER=USER@gmail.com" -e "SMTP_PASS=PASSWORD" \
   sameersbn/gitlab
 ```
 
@@ -195,6 +236,7 @@ docker run -d -h git.local.host \
   -v /opt/gitlab/.ssh:/home/git/.ssh \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
+  -e "SMTP_USER=USER@gmail.com" -e "SMTP_PASS=PASSWORD" \
   sameersbn/gitlab
 ```
 
@@ -235,3 +277,4 @@ docker run -i -d [OPTIONS] sameersbn/gitlab
 ## References
   * https://github.com/gitlabhq/gitlabhq
   * https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md
+  * https://rtcamp.com/tutorials/linux/ubuntu-postfix-gmail-smtp
