@@ -277,3 +277,4 @@ docker run -i -d [OPTIONS] sameersbn/gitlab
 ## References
   * https://github.com/gitlabhq/gitlabhq
   * https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md
+  * https://rtcamp.com/tutorials/linux/ubuntu-postfix-gmail-smtp
