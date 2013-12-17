@@ -143,6 +143,66 @@ __NOTE:__
 
 I have only tested standard gmail and google apps login. I expect that the currently provided configuration parameters should be sufficient for most users. If this is not the case, then please let me know.
 
+### Putting it all together
+
+```bash
+docker run -d -h git.local.host \
+  -v /opt/gitlab/repositories:/home/git/repositories \
+  -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
+  -v /opt/gitlab/.ssh:/home/git/.ssh \
+  -v /opt/gitlab/mysql:/var/lib/mysql \
+  -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
+  -e "SMTP_USER=USER@gmail.com" -e "SMTP_PASS=PASSWORD" \
+  sameersbn/gitlab
+```
+
+If you are using an external mysql database
+
+```bash
+docker run -d -h git.local.host \
+  -v /opt/gitlab/repositories:/home/git/repositories \
+  -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
+  -v /opt/gitlab/.ssh:/home/git/.ssh \
+  -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
+  -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
+  -e "SMTP_USER=USER@gmail.com" -e "SMTP_PASS=PASSWORD" \
+  sameersbn/gitlab
+```
+
+## Upgrading
+
+If you upgrading from previous version, please make sure you run the container with **migrate** command.
+
+**Step 1: Stop the currently running image**
+
+```bash
+docker stop <container-id>
+```
+
+**Step 2: Backup the database in case something goes wrong.**
+
+```bash
+mysqldump -h <mysql-server-ip> -ugitlab -p --add-drop-table gitlabhq_production > gitlab.sql
+```
+
+**Step 3: Update the docker image.**
+
+```bash
+docker pull sameersbn/gitlab
+```
+
+**Step 4: Migrate the database.**
+
+```bash
+docker run -i -t [OPTIONS] sameersbn/gitlab migrate
+```
+
+**Step 5: Start the image**
+
+```bash
+docker run -i -d [OPTIONS] sameersbn/gitlab
+```
+
 ### Other options
 Below is the complete list of parameters that can be set using environment variables.
 
@@ -213,66 +273,6 @@ Below is the complete list of parameters that can be set using environment varia
 * SMTP_PASS
 
         SMTP password.
-
-### Putting it all together
-
-```bash
-docker run -d -h git.local.host \
-  -v /opt/gitlab/repositories:/home/git/repositories \
-  -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
-  -v /opt/gitlab/.ssh:/home/git/.ssh \
-  -v /opt/gitlab/mysql:/var/lib/mysql \
-  -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
-  -e "SMTP_USER=USER@gmail.com" -e "SMTP_PASS=PASSWORD" \
-  sameersbn/gitlab
-```
-
-If you are using an external mysql database
-
-```bash
-docker run -d -h git.local.host \
-  -v /opt/gitlab/repositories:/home/git/repositories \
-  -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
-  -v /opt/gitlab/.ssh:/home/git/.ssh \
-  -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
-  -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
-  -e "SMTP_USER=USER@gmail.com" -e "SMTP_PASS=PASSWORD" \
-  sameersbn/gitlab
-```
-
-## Upgrading
-
-If you upgrading from previous version, please make sure you run the container with **migrate** command.
-
-**Step 1: Stop the currently running image**
-
-```bash
-docker stop <container-id>
-```
-
-**Step 2: Backup the database in case something goes wrong.**
-
-```bash
-mysqldump -h <mysql-server-ip> -ugitlab -p --add-drop-table gitlabhq_production > gitlab.sql
-```
-
-**Step 3: Update the docker image.**
-
-```bash
-docker pull sameersbn/gitlab
-```
-
-**Step 4: Migrate the database.**
-
-```bash
-docker run -i -t [OPTIONS] sameersbn/gitlab migrate
-```
-
-**Step 5: Start the image**
-
-```bash
-docker run -i -d [OPTIONS] sameersbn/gitlab
-```
 
 ## References
   * https://github.com/gitlabhq/gitlabhq
