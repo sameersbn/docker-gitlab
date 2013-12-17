@@ -119,40 +119,6 @@ docker run -d \
   -v /opt/gitlab/.ssh:/home/git/.ssh sameersbn/gitlab
 ```
 
-## Upgrading
-
-If you upgrading from previous version, please make sure you run the container with **migrate** command.
-
-**Step 1: Stop the currently running image**
-
-```bash
-docker stop <container-id>
-```
-
-**Step 2: Backup the database in case something goes wrong.**
-
-```bash
-mysqldump -h <mysql-server-ip> -ugitlab -p --add-drop-table gitlabhq_production > gitlab.sql
-```
-
-**Step 3: Update the docker image.**
-
-```bash
-docker pull sameersbn/gitlab
-```
-
-**Step 4: Migrate the database.**
-
-```bash
-docker run -i -t [OPTIONS] sameersbn/gitlab migrate
-```
-
-**Step 5: Start the image**
-
-```bash
-docker run -i -d [OPTIONS] sameersbn/gitlab
-```
-
 ### Other options
 Below is the complete list of parameters that can be set using environment variables.
 
@@ -230,6 +196,40 @@ docker run -d -h git.local.host \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
   sameersbn/gitlab
+```
+
+## Upgrading
+
+If you upgrading from previous version, please make sure you run the container with **migrate** command.
+
+**Step 1: Stop the currently running image**
+
+```bash
+docker stop <container-id>
+```
+
+**Step 2: Backup the database in case something goes wrong.**
+
+```bash
+mysqldump -h <mysql-server-ip> -ugitlab -p --add-drop-table gitlabhq_production > gitlab.sql
+```
+
+**Step 3: Update the docker image.**
+
+```bash
+docker pull sameersbn/gitlab
+```
+
+**Step 4: Migrate the database.**
+
+```bash
+docker run -i -t [OPTIONS] sameersbn/gitlab migrate
+```
+
+**Step 5: Start the image**
+
+```bash
+docker run -i -d [OPTIONS] sameersbn/gitlab
 ```
 
 ## References
