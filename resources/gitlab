@@ -18,6 +18,11 @@ DB_PASS=${DB_PASS:-}
 DB_INIT=${DB_INIT:-}
 DB_POOL=${DB_POOL:-5}
 
+SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
+SMTP_PORT=${SMTP_PORT:-587}
+SMTP_USER=${SMTP_USER:-}
+SMTP_PASS=${SMTP_PASS:-}
+
 # start supervisord
 /usr/bin/supervisord
 
@@ -79,6 +84,32 @@ stdout_logfile=/var/log/supervisor/%(program_name)s.log
 stderr_logfile=/var/log/supervisor/%(program_name)s.log
 EOF
 	supervisorctl update
+fi
+
+# configure postfix for mail delivery
+if [ -n "${SMTP_HOST}" -a -n "${SMTP_USER}" -a -n "${SMTP_PASS}" ]; then
+	cat >> /etc/postfix/main.cf <<EOF
+
+relayhost = [${SMTP_HOST}]:${SMTP_PORT}
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_sasl_security_options = noanonymous
+smtp_tls_CAfile = /etc/postfix/cacert.pem
+smtp_use_tls = yes
+EOF
+
+	cat > /etc/postfix/sasl_passwd <<EOF
+[${SMTP_HOST}]:${SMTP_PORT}    ${SMTP_USER}:${SMTP_PASS}
+EOF
+
+	touch /etc/mailname
+	chmod 400 /etc/postfix/sasl_passwd
+	postmap /etc/postfix/sasl_passwd
+
+	cat /etc/ssl/certs/Thawte_Premium_Server_CA.pem | sudo tee -a /etc/postfix/cacert.pem
+
+	# start ppostmap /etc/postfix/sasl_passwdotouch /etc/mailnamestfix mail server
+	/etc/init.d/postfix start
 fi
 
 # configure git for the 'git' user
