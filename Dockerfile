@@ -31,4 +31,4 @@ EXPOSE 22
 EXPOSE 80
 
 ENTRYPOINT ["/gitlab/gitlab"]
-CMD ["start"]
+CMD ["app:start"]
