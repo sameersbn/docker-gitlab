@@ -95,7 +95,7 @@ CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8`
 GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'%.%.%.%';
 ```
 
-To make sure the database is initialized start the container with **initialize** option.
+To make sure the database is initialized start the container with **app:db:initialize** option.
 
 **NOTE: This should be done only for the first run**.
 
@@ -106,7 +106,7 @@ docker run -d \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/repositories:/home/git/repositories \
   -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
-  -v /opt/gitlab/.ssh:/home/git/.ssh sameersbn/gitlab initialize
+  -v /opt/gitlab/.ssh:/home/git/.ssh sameersbn/gitlab app:db:initialize
 ```
 
 This will initialize the gitlab database. Now that the database is initialized, start the container without the initialize command.
@@ -171,7 +171,7 @@ docker run -d -h git.local.host \
 
 ## Upgrading
 
-If you upgrading from previous version, please make sure you run the container with **migrate** command.
+If you upgrading from previous version, please make sure you run the container with **app:db:migrate** command.
 
 **Step 1: Stop the currently running image**
 
@@ -194,7 +194,7 @@ docker pull sameersbn/gitlab
 **Step 4: Migrate the database.**
 
 ```bash
-docker run -i -t [OPTIONS] sameersbn/gitlab migrate
+docker run -i -t [OPTIONS] sameersbn/gitlab app:db:migrate
 ```
 
 **Step 5: Start the image**
