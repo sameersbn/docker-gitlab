@@ -207,9 +207,15 @@ gitlab_start () {
 	tail -F /var/log/nginx/gitlab_access.log
 }
 
+gitlab_backup () {
+	echo "Backing up gitlab..."
+	sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
+}
+
 gitlab_help () {
 	echo "Available options:"
 	echo " app:start          - Starts the gitlab server (default)"
+	echo " app:backup         - Backup the gitlab data"
 	echo " app:db:initialize  - Initialize the database."
 	echo " app:db:migrate     - Migrate the database."
 	echo " app:help           - Displays the help"
@@ -219,6 +225,9 @@ gitlab_help () {
 case "$1" in
 	app:start)
 		gitlab_start
+		;;
+	app:backup)
+		gitlab_backup
 		;;
 	app:db:initialize)
 		db_initialize
