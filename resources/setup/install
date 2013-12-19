@@ -36,6 +36,9 @@ chmod -R u+rwX log tmp
 sudo -u git -H mkdir -p public/uploads
 chmod -R u+rwX  public/uploads
 
+# create backups directory
+sudo -u git -H mkdir -p tmp/backups
+
 # create satellites directory
 sudo -u git -H mkdir -p /home/git/gitlab-satellites
 
