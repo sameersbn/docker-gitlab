@@ -167,6 +167,9 @@ chmod 700 /home/git/.ssh
 chmod 600 /home/git/.ssh/authorized_keys
 chown -R git:git /home/git/.ssh
 
+# make sure /home/git/gitlab/tmp/backups has the right permissions in case it is mounted as a volume.
+chown git:git /home/git/gitlab/tmp/backups
+
 cd /home/git/gitlab/
 
 db_initialize () {
