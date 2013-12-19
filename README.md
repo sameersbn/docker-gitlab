@@ -169,6 +169,28 @@ docker run -d -h git.local.host \
   sameersbn/gitlab
 ```
 
+## Backup
+
+Gitlab defines a rake task to easily take a backup of your gitlab installation. The backup consists of all git repositories, uploaded files and as you might expect, the sql database.
+
+Before taking a backup, please make sure that the gitlab image is not running for obvious reasons
+
+```bash
+docker stop <container-id>
+```
+
+For backups we mount a volume at /home/git/gitlab/tmp/backups so the backups are saved securely. With the volume mounted, all that you need to do is pass the "app:backup" command to the container image.
+
+```bash
+mkdir -p /opt/gitlab/backups
+docker run -d -h git.local.host \
+  -v /opt/gitlab/backups:/home/git/gitlab/tmp/backups \
+  -v /opt/gitlab/repositories:/home/git/repositories \
+  -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
+  -v /opt/gitlab/.ssh:/home/git/.ssh \
+  sameersbn/gitlab app:backup
+```
+
 ## Upgrading
 
 If you upgrading from previous version, please make sure you run the container with **app:db:migrate** command.
