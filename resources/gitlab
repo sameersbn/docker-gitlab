@@ -205,8 +205,8 @@ gitlab_help () {
 	echo " app:start          - Starts the gitlab server (default)"
 	echo " app:db:initialize  - Initialize the database."
 	echo " app:db:migrate     - Migrate the database."
-	echo " bash               - Start interactive bash shell."
 	echo " app:help           - Displays the help"
+	echo " [command]          - Execute the specified linux command eg. bash."
 }
 
 case "$1" in
@@ -219,11 +219,21 @@ case "$1" in
 	app:db:migrate)
 		db_migrate
 		;;
-	bash)
-		/bin/bash -i
-		;;
-	app:help|*)
+	app:help)
 		gitlab_help
+		;;
+	*)
+		if [ -x $1 ]; then
+			$1
+		else
+			prog=$(which $1)
+			if [ -n "${prog}" ] ; then
+				shift 1
+				$prog $@
+			else
+				gitlab_help
+			fi
+		fi
 		;;
 esac
 
