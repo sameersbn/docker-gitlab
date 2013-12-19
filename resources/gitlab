@@ -205,7 +205,7 @@ gitlab_help () {
 	echo " app:start          - Starts the gitlab server (default)"
 	echo " app:db:initialize  - Initialize the database."
 	echo " app:db:migrate     - Migrate the database."
-	echo " bash        - Start interactive bash shell."
+	echo " bash               - Start interactive bash shell."
 	echo " app:help           - Displays the help"
 }
 
