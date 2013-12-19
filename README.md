@@ -218,6 +218,10 @@ Below is the complete list of parameters that can be set using environment varia
 
         The support email address for the GitLab server. Defaults to support@localhost.
 
+* GITLAB_SIGNUP
+
+        Enable or disable gitlab user signup. Default is false. To enable user signup add '-e GITLAB_SIGNUP="true"' to the docker run command parameters.
+
 * REDIS_HOST
 
         The hostname of the redis server. Defaults to localhost
