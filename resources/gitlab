@@ -203,8 +203,8 @@ gitlab_start () {
 gitlab_help () {
 	echo "Available options:"
 	echo " app:start          - Starts the gitlab server (default)"
-	echo " initialize  - Initialize the database."
-	echo " migrate     - Migrate the database."
+	echo " app:db:initialize  - Initialize the database."
+	echo " app:db:migrate     - Migrate the database."
 	echo " bash        - Start interactive bash shell."
 	echo " help        - Displays the help"
 }
@@ -213,10 +213,10 @@ case "$1" in
 	app:start)
 		gitlab_start
 		;;
-	initialize)
+	app:db:initialize)
 		db_initialize
 		;;
-	migrate)
+	app:db:migrate)
 		db_migrate
 		;;
 	bash)
