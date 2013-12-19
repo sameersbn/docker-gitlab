@@ -183,7 +183,7 @@ For backups we mount a volume at /home/git/gitlab/tmp/backups so the backups are
 
 ```bash
 mkdir -p /opt/gitlab/backups
-docker run -d -h git.local.host \
+docker run -i -t -h git.local.host \
   -v /opt/gitlab/backups:/home/git/gitlab/tmp/backups \
   -v /opt/gitlab/repositories:/home/git/repositories \
   -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
