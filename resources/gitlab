@@ -166,14 +166,15 @@ sudo chmod ug-s /home/git/data/gitlab-satellites/
 find /home/git/data/gitlab-satellites/ -type d -print0 | sudo xargs -0 chmod g+s
 chown git:git /home/git/data/gitlab-satellites
 
+# create the backups directory
+sudo -u git -H mkdir -p /home/git/data/backups/
+chown git:git /home/git/data/backups/
+
 # make sure /home/git/.ssh/ has the right permissions in case it is mounted as a volume.
 touch /home/git/.ssh/authorized_keys
 chmod 700 /home/git/.ssh
 chmod 600 /home/git/.ssh/authorized_keys
 chown -R git:git /home/git/.ssh
-
-# make sure /home/git/gitlab/tmp/backups has the right permissions in case it is mounted as a volume.
-chown git:git /home/git/gitlab/tmp/backups
 
 cd /home/git/gitlab/
 
