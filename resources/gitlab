@@ -159,11 +159,12 @@ sudo chmod ug-s /home/git/data/repositories/
 find /home/git/data/repositories/ -type d -print0 | sudo xargs -0 chmod g+s
 chown git:git /home/git/data/repositories
 
-# make sure /home/git/gitlab-satellites/ has the right permissions in case it is mounted as a volume.
-sudo chmod ug+rwX,o-rwx /home/git/gitlab-satellites/
-sudo chmod ug-s /home/git/gitlab-satellites/
-find /home/git/gitlab-satellites/ -type d -print0 | sudo xargs -0 chmod g+s
-chown git:git /home/git/gitlab-satellites
+# create the satellites directory and make sure it has the right permissions
+sudo -u git -H mkdir -p /home/git/data/gitlab-satellites/
+sudo chmod ug+rwX,o-rwx /home/git/data/gitlab-satellites/
+sudo chmod ug-s /home/git/data/gitlab-satellites/
+find /home/git/data/gitlab-satellites/ -type d -print0 | sudo xargs -0 chmod g+s
+chown git:git /home/git/data/gitlab-satellites
 
 # make sure /home/git/.ssh/ has the right permissions in case it is mounted as a volume.
 touch /home/git/.ssh/authorized_keys

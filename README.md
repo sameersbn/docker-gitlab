@@ -51,18 +51,15 @@ You should now have GitLab ready for testing. If you want to use GitLab for more
 GitLab is a code hosting software and as such you don't want to lose your code when the docker container is stopped/deleted. To avoid losing any data, you should mount volumes at.
 
 * /home/git/data
-* /home/git/gitlab-satellites
 * /home/git/.ssh
 
 Volumes can be mounted in docker by specifying the **'-v'** option in the docker run command.
 
 ```bash
 mkdir /opt/gitlab/data
-mkdir /opt/gitlab/gitlab-satellites
 mkdir /opt/gitlab/.ssh
 docker run -d \
   -v /opt/gitlab/data:/home/git/data \
-  -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
   -v /opt/gitlab/.ssh:/home/git/.ssh sameersbn/gitlab
 ```
 
@@ -76,7 +73,6 @@ This docker image is configured to use a MySQL database backend. The database co
 mkdir /opt/gitlab/mysql
 docker run -d \
   -v /opt/gitlab/data:/home/git/data \
-  -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
   -v /opt/gitlab/.ssh:/home/git/.ssh \
   -v /opt/gitlab/mysql:/var/lib/mysql sameersbn/gitlab
 ```
@@ -105,7 +101,6 @@ To make sure the database is initialized start the container with **app:db:initi
 docker run -d \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/data:/home/git/data \
-  -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
   -v /opt/gitlab/.ssh:/home/git/.ssh sameersbn/gitlab app:db:initialize
 ```
 
@@ -115,7 +110,6 @@ This will initialize the gitlab database. Now that the database is initialized, 
 docker run -d \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/data:/home/git/data \
-  -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
   -v /opt/gitlab/.ssh:/home/git/.ssh sameersbn/gitlab
 ```
 
@@ -133,7 +127,6 @@ The following environment variables need to be specified to get mail support to 
 docker run -d \
   -e "SMTP_USER=USER@gmail.com" -e "SMTP_PASS=PASSWORD" \
   -v /opt/gitlab/data:/home/git/data \
-  -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
   -v /opt/gitlab/.ssh:/home/git/.ssh sameersbn/gitlab
 ```
 
@@ -148,7 +141,6 @@ I have only tested standard gmail and google apps login. I expect that the curre
 ```bash
 docker run -d -h git.local.host \
   -v /opt/gitlab/data:/home/git/data \
-  -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
   -v /opt/gitlab/.ssh:/home/git/.ssh \
   -v /opt/gitlab/mysql:/var/lib/mysql \
   -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
@@ -161,7 +153,6 @@ If you are using an external mysql database
 ```bash
 docker run -d -h git.local.host \
   -v /opt/gitlab/data:/home/git/data \
-  -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
   -v /opt/gitlab/.ssh:/home/git/.ssh \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
@@ -186,7 +177,6 @@ mkdir -p /opt/gitlab/backups
 docker run -i -t -h git.local.host \
   -v /opt/gitlab/backups:/home/git/gitlab/tmp/backups \
   -v /opt/gitlab/data:/home/git/data \
-  -v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites \
   -v /opt/gitlab/.ssh:/home/git/.ssh \
   sameersbn/gitlab app:backup
 ```

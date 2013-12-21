@@ -34,6 +34,7 @@ sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers
 
 # configure repositories path
 sudo -u git -H sed 's/repos_path: \/home\/git\/repositories\//repos_path: \/home\/git\/data\/repositories\//' -i config/gitlab.yml
+sudo -u git -H sed 's/path: \/home\/git\/gitlab-satellites\//path: \/home\/git\/data\/gitlab-satellites\//' -i config/gitlab.yml
 
 # create required tmp and log directories
 sudo -u git -H mkdir -p tmp/pids/ tmp/sockets/
@@ -45,9 +46,6 @@ chmod -R u+rwX  public/uploads
 
 # create backups directory
 sudo -u git -H mkdir -p tmp/backups
-
-# create satellites directory
-sudo -u git -H mkdir -p /home/git/gitlab-satellites
 
 # create production log
 sudo -u git -H touch log/production.log
