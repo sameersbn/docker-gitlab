@@ -149,11 +149,15 @@ sed 's/worker_processes 2/worker_processes '${UNICORN_WORKERS}'/' -i /home/git/g
 # configure unicorn timeout
 sed 's/timeout 30/timeout '${UNICORN_TIMEOUT}'/' -i /home/git/gitlab/config/unicorn.rb
 
-# make sure /home/git/repositories/ has the right permissions in case it is mounted as a volume.
-sudo chmod ug+rwX,o-rwx /home/git/repositories/
-sudo chmod ug-s /home/git/repositories/
-find /home/git/repositories/ -type d -print0 | sudo xargs -0 chmod g+s
-chown git:git /home/git/repositories
+# take ownership of /home/git/data
+chown git:git /home/git/data
+
+# create the repositories directory and make sure it has the right permissions
+sudo -u git -H mkdir -p /home/git/data/repositories/
+sudo chmod ug+rwX,o-rwx /home/git/data/repositories/
+sudo chmod ug-s /home/git/data/repositories/
+find /home/git/data/repositories/ -type d -print0 | sudo xargs -0 chmod g+s
+chown git:git /home/git/data/repositories
 
 # make sure /home/git/gitlab-satellites/ has the right permissions in case it is mounted as a volume.
 sudo chmod ug+rwX,o-rwx /home/git/gitlab-satellites/
