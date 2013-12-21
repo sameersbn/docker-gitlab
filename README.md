@@ -170,12 +170,10 @@ Before taking a backup, please make sure that the gitlab image is not running fo
 docker stop <container-id>
 ```
 
-For backups we mount a volume at /home/git/gitlab/tmp/backups so the backups are saved securely. With the volume mounted, all that you need to do is pass the "app:backup" command to the container image.
+To take a backup all you need to do is pass the "app:backup" command to the container image.
 
 ```bash
-mkdir -p /opt/gitlab/backups
-docker run -i -t -h git.local.host \
-  -v /opt/gitlab/backups:/home/git/gitlab/tmp/backups \
+  docker run -i -t -h git.local.host \
   -v /opt/gitlab/data:/home/git/data \
   -v /opt/gitlab/.ssh:/home/git/.ssh \
   sameersbn/gitlab app:backup

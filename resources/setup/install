@@ -44,8 +44,8 @@ chmod -R u+rwX log tmp
 sudo -u git -H mkdir -p public/uploads
 chmod -R u+rwX  public/uploads
 
-# create backups directory
-sudo -u git -H mkdir -p tmp/backups
+# create symlink to backups directory
+sudo -u git -H ln -s /home/git/data/backups tmp/backups
 
 # create production log
 sudo -u git -H touch log/production.log
