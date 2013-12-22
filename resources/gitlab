@@ -175,11 +175,12 @@ sudo -u git -H mkdir -p /home/git/data/uploads/
 chmod -R u+rwX /home/git/data/uploads/
 chown git:git /home/git/data/uploads/
 
-# make sure /home/git/.ssh/ has the right permissions in case it is mounted as a volume.
-touch /home/git/.ssh/authorized_keys
-chmod 700 /home/git/.ssh
-chmod 600 /home/git/.ssh/authorized_keys
-chown -R git:git /home/git/.ssh
+# create the .ssh directory
+sudo -u git -H mkdir -p /home/git/data/.ssh/
+touch /home/git/data/.ssh/authorized_keys
+chmod 700 /home/git/data/.ssh
+chmod 600 /home/git/data/.ssh/authorized_keys
+chown -R git:git /home/git/data/.ssh
 
 cd /home/git/gitlab/
 
