@@ -40,9 +40,8 @@ sudo -u git -H sed 's/path: \/home\/git\/gitlab-satellites\//path: \/home\/git\/
 sudo -u git -H mkdir -p tmp/pids/ tmp/sockets/
 chmod -R u+rwX log tmp
 
-# create uploads directory
-sudo -u git -H mkdir -p public/uploads
-chmod -R u+rwX  public/uploads
+# create symlink to uploads directory
+sudo -u git -H ln -s /home/git/data/uploads public/uploads
 
 # create symlink to backups directory
 sudo -u git -H ln -s /home/git/data/backups tmp/backups

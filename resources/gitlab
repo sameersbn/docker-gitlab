@@ -170,6 +170,11 @@ chown git:git /home/git/data/gitlab-satellites
 sudo -u git -H mkdir -p /home/git/data/backups/
 chown git:git /home/git/data/backups/
 
+# create the uploads directory
+sudo -u git -H mkdir -p /home/git/data/uploads/
+chmod -R u+rwX /home/git/data/uploads/
+chown git:git /home/git/data/uploads/
+
 # make sure /home/git/.ssh/ has the right permissions in case it is mounted as a volume.
 touch /home/git/.ssh/authorized_keys
 chmod 700 /home/git/.ssh
