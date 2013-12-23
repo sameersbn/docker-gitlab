@@ -149,26 +149,38 @@ sed 's/worker_processes 2/worker_processes '${UNICORN_WORKERS}'/' -i /home/git/g
 # configure unicorn timeout
 sed 's/timeout 30/timeout '${UNICORN_TIMEOUT}'/' -i /home/git/gitlab/config/unicorn.rb
 
-# make sure /home/git/repositories/ has the right permissions in case it is mounted as a volume.
-sudo chmod ug+rwX,o-rwx /home/git/repositories/
-sudo chmod ug-s /home/git/repositories/
-find /home/git/repositories/ -type d -print0 | sudo xargs -0 chmod g+s
-chown git:git /home/git/repositories
+# take ownership of /home/git/data
+chown git:git /home/git/data
 
-# make sure /home/git/gitlab-satellites/ has the right permissions in case it is mounted as a volume.
-sudo chmod ug+rwX,o-rwx /home/git/gitlab-satellites/
-sudo chmod ug-s /home/git/gitlab-satellites/
-find /home/git/gitlab-satellites/ -type d -print0 | sudo xargs -0 chmod g+s
-chown git:git /home/git/gitlab-satellites
+# create the repositories directory and make sure it has the right permissions
+sudo -u git -H mkdir -p /home/git/data/repositories/
+sudo chmod ug+rwX,o-rwx /home/git/data/repositories/
+sudo chmod ug-s /home/git/data/repositories/
+find /home/git/data/repositories/ -type d -print0 | sudo xargs -0 chmod g+s
+chown git:git /home/git/data/repositories
 
-# make sure /home/git/.ssh/ has the right permissions in case it is mounted as a volume.
-touch /home/git/.ssh/authorized_keys
-chmod 700 /home/git/.ssh
-chmod 600 /home/git/.ssh/authorized_keys
-chown -R git:git /home/git/.ssh
+# create the satellites directory and make sure it has the right permissions
+sudo -u git -H mkdir -p /home/git/data/gitlab-satellites/
+sudo chmod ug+rwX,o-rwx /home/git/data/gitlab-satellites/
+sudo chmod ug-s /home/git/data/gitlab-satellites/
+find /home/git/data/gitlab-satellites/ -type d -print0 | sudo xargs -0 chmod g+s
+chown git:git /home/git/data/gitlab-satellites
 
-# make sure /home/git/gitlab/tmp/backups has the right permissions in case it is mounted as a volume.
-chown git:git /home/git/gitlab/tmp/backups
+# create the backups directory
+sudo -u git -H mkdir -p /home/git/data/backups/
+chown git:git /home/git/data/backups/
+
+# create the uploads directory
+sudo -u git -H mkdir -p /home/git/data/uploads/
+chmod -R u+rwX /home/git/data/uploads/
+chown git:git /home/git/data/uploads/
+
+# create the .ssh directory
+sudo -u git -H mkdir -p /home/git/data/.ssh/
+touch /home/git/data/.ssh/authorized_keys
+chmod 700 /home/git/data/.ssh
+chmod 600 /home/git/data/.ssh/authorized_keys
+chown -R git:git /home/git/data/.ssh
 
 cd /home/git/gitlab/
 
