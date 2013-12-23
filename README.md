@@ -231,10 +231,10 @@ If you upgrading from previous version, please make sure you run the container w
 docker stop <container-id>
 ```
 
-**Step 2: Backup the database in case something goes wrong.**
+**Step 2: Backup the application data.**
 
 ```bash
-mysqldump -h <mysql-server-ip> -ugitlab -p --add-drop-table gitlabhq_production > gitlab.sql
+docker run -i -t [OPTIONS] sameersbn/gitlab app:backup
 ```
 
 **Step 3: Update the docker image.**
