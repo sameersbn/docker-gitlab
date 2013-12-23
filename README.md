@@ -6,6 +6,36 @@ Dockerfile to build a GitLab container image.
 
 ***Please refer to upgrading section if coming from previous version***
 
+# Important Notice for existing users
+**/home/git/data** is now setup as the base data directory for the gitlab container. The .ssh, repositories, gitlab-satellites, uploads, backups and hooks directories are now all stored within this directory. This means that only one volume needs to be mounted at /home/git/data for all gitlab data.
+
+To change to the new directory structure follow these steps:
+
+```bash
+sudo mkdir -p /opt/gitlab/data
+sudo mv /opt/gitlab/.ssh /opt/gitlab/data/
+sudo mv /opt/gitlab/repositories /opt/gitlab/data/
+sudo mv /opt/gitlab/gitlab-satellites /opt/gitlab/data/
+sudo mv /opt/gitlab/backups /opt/gitlab/data/
+```
+
+Replace the following parameters from the run command
+
+```bash
+-v /opt/gitlab/.ssh:/home/git/.ssh
+-v /opt/gitlab/repositories:/home/git/repositories
+-v /opt/gitlab/gitlab-satellites:/home/git/gitlab-satellites
+-v /opt/gitlab/backups:/home/git/gitlab/tmp/backups
+```
+
+with
+
+```bash
+-v /opt/gitlab/data:/home/git/data
+```
+
+__NOTE__: A seperate volume still needs to be mounted for mysql data if the internal mysql server is used.
+
 ## Installation
 
 Pull the docker image from the docker index. This is the recommended method of installation as it is easier to update image in the future. These builds are performed by the Trusted Build service.
