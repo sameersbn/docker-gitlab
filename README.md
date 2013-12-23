@@ -185,7 +185,7 @@ docker run -d -h git.local.host \
   sameersbn/gitlab
 ```
 
-## Backup
+## Taking backups
 
 Gitlab defines a rake task to easily take a backup of your gitlab installation. The backup consists of all git repositories, uploaded files and as you might expect, the sql database.
 
