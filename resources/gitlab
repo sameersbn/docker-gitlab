@@ -192,9 +192,6 @@ db_initialize () {
 db_migrate () {
 	echo "Migrating database..."
 	sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
-	sudo -u git -H bundle exec rake assets:clean RAILS_ENV=production
-	sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
-	sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 }
 
 gitlab_start () {
@@ -203,6 +200,10 @@ gitlab_start () {
 	if [ "$DB_INIT" == "yes" ]; then
 		db_initialize
 	fi
+
+	sudo -u git -H bundle exec rake assets:clean RAILS_ENV=production
+	sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
+	sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 
 	# start the gitlab application
 	# sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
