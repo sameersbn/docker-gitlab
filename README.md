@@ -203,6 +203,24 @@ To take a backup all you need to do is pass the "app:backup" command to the cont
   sameersbn/gitlab app:backup
 ```
 
+## Restoring Backups
+
+Gitlab defines a rake task to easily restore a backup of your gitlab installation. Before performing the restore operation please make sure that the gitlab image is not running.
+
+```bash
+docker stop <container-id>
+```
+
+To restore a backup, run the image in interactive (-i -t) mode and pass the "app:restore" command to the container image.
+
+```bash
+  docker run -i -t -h git.local.host \
+  -v /opt/gitlab/data:/home/git/data \
+  sameersbn/gitlab app:restore
+```
+
+The restore operation will list all available backups in reverse chronological order. Select the backup you want to restore and gitlab will do its job.
+
 ## Upgrading
 
 If you upgrading from previous version, please make sure you run the container with **app:db:migrate** command.
