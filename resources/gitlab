@@ -41,14 +41,14 @@ stdout_logfile=/var/log/supervisor/%(program_name)s.log
 stderr_logfile=/var/log/supervisor/%(program_name)s.log
 EOF
 
+	# fix permissions and ownership of /var/lib/mysql
+	chown -R mysql:mysql /var/lib/mysql
+	chmod 700 /var/lib/mysql
+
 	# initialize MySQL data directory
 	if [ ! -d /var/lib/mysql/mysql ]; then
 		mysql_install_db --user=mysql
 	fi
-
-	# make sure /var/lib/mysql/ has the right permissions in case it is mounted as a volume.
-	chown -R mysql:mysql /var/lib/mysql
-	chmod 700 /var/lib/mysql
 
 	supervisorctl update
 
