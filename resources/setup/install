@@ -6,7 +6,7 @@
 # add git user
 adduser --disabled-login --gecos 'GitLab' git
 
-sudo -u git -h mkdir -p /home/git/data/.ssh
+sudo -u git -H mkdir -p /home/git/data/.ssh
 sudo -u git -H ln -s /home/git/data/.ssh /home/git/.ssh
 
 # create the data store
