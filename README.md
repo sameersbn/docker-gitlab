@@ -6,7 +6,7 @@ Dockerfile to build a GitLab container image.
 
 ***Please refer to upgrading section if coming from previous version***
 
-# Important Notice for existing users
+# Important notice for existing users
 **/home/git/data** is now setup as the base data directory for the gitlab container. The .ssh, repositories, gitlab-satellites, uploads, backups and hooks directories are now all stored within this directory. This means that only one volume needs to be mounted at /home/git/data for all gitlab data.
 
 To change to the new directory structure follow these steps:
