@@ -140,6 +140,36 @@ docker run -d \
   sameersbn/gitlab
 ```
 
+#### Using an external PostgreSQL server
+The image also supports using an external PostgreSQL Server. This is also controlled via environment variables.
+
+```bash
+createuser gitlab
+createdb -O gitlab gitlabhq_production
+```
+
+To make sure the database is initialized start the container with **app:db:initialize** option.
+
+**NOTE: This should be done only for the first run**.
+
+*Assuming that the PostgreSQL server host is 192.168.1.100*
+
+```bash
+docker run -d \
+  -e "DB_TYPE=postgres" -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
+  -v /opt/gitlab/data:/home/git/data \
+  sameersbn/gitlab app:db:initialize
+```
+
+This will initialize the gitlab database. Now that the database is initialized, start the container without the initialize command.
+
+```bash
+docker run -d \
+  -e "DB_TYPE=postgres" -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
+  -v /opt/gitlab/data:/home/git/data \
+  sameersbn/gitlab
+```
+
 ### Configuring Mail
 The mail configuration should be specified using environment variables while starting the GitLab image. The configuration defaults to using gmail to send emails and requires the specification of a valid username and password to login to the gmail servers.
 
@@ -294,25 +324,29 @@ Below is the complete list of parameters that can be set using environment varia
 
         The number of concurrent sidekiq jobs to run. Defaults to 5
 
+* DB_TYPE
+
+        The database type. Possible values: mysql, postgres. Defaults to mysql.
+
 * DB_HOST
 
-        The mysql server hostname. Defaults to localhost.
+        The database server hostname. Defaults to localhost.
 
 * DB_NAME
 
-        The mysql database name. Defaults to gitlabhq_production
+        The database database name. Defaults to gitlabhq_production
 
 * DB_USER
 
-        The mysql database user. Defaults to root
+        The database database user. Defaults to root
 
 * DB_PASS
 
-        The mysql database password. Defaults to no password
+        The database database password. Defaults to no password
 
 * DB_POOL
 
-        The mysql database connection pool count. Defaults to 5.
+        The database database connection pool count. Defaults to 5.
 
 * SMTP_HOST
 
