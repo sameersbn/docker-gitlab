@@ -57,17 +57,17 @@ if [ -d "/gitlab/setup/cache" ]; then
   # offline gem installation
   mv /gitlab/setup/cache vendor/
   chown -R git:git vendor/cache
-  sudo -u git -H bundle install --local --deployment --without development test postgres aws
+  sudo -u git -H bundle install --local --deployment --without development test aws
 else
   # online gem installation
-  sudo -u git -H bundle install --deployment --without development test postgres aws
+  sudo -u git -H bundle install --deployment --without development test aws
 fi
 
 # add database.yml template
 sudo -u git -H cat > config/database.yml <<EOF
 production:
-  adapter: mysql2
-  encoding: utf8
+  adapter: {{DB_ADAPTER}}
+  encoding: {{DB_ENCODING}}
   reconnect: false
   database: {{DB_NAME}}
   host: {{DB_HOST}}

@@ -10,7 +10,8 @@ RUN apt-get install -y wget curl unzip build-essential checkinstall zlib1g-dev l
 
 RUN apt-get install -y python-software-properties && \
 		add-apt-repository -y ppa:git-core/ppa && \
-		apt-get update && apt-get install -y libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev libmysqlclient-dev \
+		apt-get update && \
+		apt-get install -y libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev libmysqlclient-dev libpq-dev \
 		sudo nginx git-core mysql-server openssh-server redis-server python2.7 python-docutils postfix logrotate supervisor vim && \
 		apt-get clean
 
