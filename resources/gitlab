@@ -12,6 +12,7 @@ UNICORN_WORKERS=${UNICORN_WORKERS:-2}
 UNICORN_TIMEOUT=${UNICORN_TIMEOUT:-60}
 SIDEKIQ_CONCURRENCY=${SIDEKIQ_CONCURRENCY:-5}
 
+DB_TYPE=${DB_TYPE:-mysql}
 DB_HOST=${DB_HOST:-localhost}
 DB_NAME=${DB_NAME:-gitlabhq_production}
 DB_USER=${DB_USER:-root}
@@ -29,6 +30,10 @@ SMTP_PASS=${SMTP_PASS:-}
 
 # start mysql server if ${DB_HOST} is localhost
 if [ "${DB_HOST}" == "localhost" ]; then
+	if [ "${DB_TYPE}" == "postgres" ]; then
+		echo "DB_TYPE 'postgres' is not supported internally. Please provide DB_HOST."
+		exit 1
+	fi
 	cat > /etc/supervisor/conf.d/mysqld.conf <<EOF
 [program:mysqld]
 priority=20
@@ -127,6 +132,17 @@ sudo -u git -H sed 's/support_email: support@localhost/support_email: '${GITLAB_
 sudo -u git -H sed 's/# signup_enabled: true/signup_enabled: '${GITLAB_SIGNUP}'/' -i /home/git/gitlab/config/gitlab.yml
 
 # configure database
+if [ "${DB_TYPE}" == "postgres" ]; then
+	sudo -u git -H sed 's/{{DB_ADAPTER}}/postgresql/' -i /home/git/gitlab/config/database.yml
+	sudo -u git -H sed 's/{{DB_ENCODING}}/unicode/' -i /home/git/gitlab/config/database.yml
+	sudo -u git -H sed 's/reconnect: false/#reconnect: false/' -i /home/git/gitlab/config/database.yml
+elif [ "${DB_TYPE}" == "mysql" ]; then
+	sudo -u git -H sed 's/{{DB_ADAPTER}}/mysql2/' -i /home/git/gitlab/config/database.yml
+	sudo -u git -H sed 's/{{DB_ENCODING}}/utf8/' -i /home/git/gitlab/config/database.yml
+	sudo -u git -H sed 's/#reconnect: false/reconnect: false/' -i /home/git/gitlab/config/database.yml
+else
+	echo "Invalid database type: '$DB_TYPE'. Supported choices: [mysql, postgres]."
+fi
 sudo -u git -H sed 's/{{DB_HOST}}/'${DB_HOST}'/' -i /home/git/gitlab/config/database.yml
 sudo -u git -H sed 's/{{DB_NAME}}/'${DB_NAME}'/' -i /home/git/gitlab/config/database.yml
 sudo -u git -H sed 's/{{DB_USER}}/'${DB_USER}'/' -i /home/git/gitlab/config/database.yml
