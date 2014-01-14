@@ -1,6 +1,7 @@
 #!/bin/bash
 
 GITLAB_HOST=${GITLAB_HOST:-localhost}
+GITLAB_HTTPS=${GITLAB_HTTPS:-false}
 GITLAB_EMAIL=${GITLAB_EMAIL:-gitlab@localhost}
 GITLAB_SUPPORT=${GITLAB_SUPPORT:-support@localhost}
 GITLAB_SIGNUP=${GITLAB_SIGNUP:-false}
@@ -125,6 +126,7 @@ sudo -u git -H git config --global core.autocrlf input
 
 # configure server url
 sudo -u git -H sed 's/host: localhost/host: '${GITLAB_HOST}'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/https: false/https: '${GITLAB_HTTPS}'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/email_from: gitlab@localhost/email_from: '${GITLAB_EMAIL}'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/support_email: support@localhost/support_email: '${GITLAB_SUPPORT}'/' -i /home/git/gitlab/config/gitlab.yml
 
