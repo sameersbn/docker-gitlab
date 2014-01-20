@@ -4,7 +4,16 @@ MAINTAINER sameer@damagehead.com
 RUN sed 's/main$/main universe/' -i /etc/apt/sources.list
 RUN apt-get update && apt-get upgrade -y && apt-get clean # 20130925
 
-RUN apt-get install -y wget curl unzip build-essential checkinstall zlib1g-dev libyaml-dev libssl-dev \
+# essentials
+RUN apt-get install -y vim curl wget sudo net-tools && \
+	apt-get install -y logrotate supervisor openssh-server && \
+	apt-get clean
+
+# build tools
+RUN apt-get install -y gcc make && apt-get clean
+
+# image specific
+RUN apt-get install -y unzip build-essential checkinstall zlib1g-dev libyaml-dev libssl-dev \
 		libgdbm-dev libreadline-dev libncurses5-dev libffi-dev && \
 		apt-get clean
 
@@ -23,6 +32,7 @@ RUN wget ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p353.tar.gz -O - | tar 
 		gem install --no-ri --no-rdoc bundler
 
 ADD resources/ /gitlab/
+RUN mv /gitlab/.vimrc /gitlab/.bash_aliases /root/
 RUN chmod 755 /gitlab/gitlab /gitlab/setup/install && /gitlab/setup/install
 
 ADD authorized_keys /root/.ssh/
