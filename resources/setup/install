@@ -23,7 +23,7 @@ sudo -u git -H ./bin/install
 
 # install gitlab
 sudo -u git -H mkdir -p /home/git/gitlab
-sudo -u git -H tar -zvxf /gitlab/setup/gitlabhq-6.5.0.tar.gz --strip=1 -C /home/git/gitlab/
+sudo -u git -H tar -zvxf /gitlab/setup/gitlabhq-6.5.1.tar.gz --strip=1 -C /home/git/gitlab/
 cd /home/git/gitlab
 
 # copy default configurations
