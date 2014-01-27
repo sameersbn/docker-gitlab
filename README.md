@@ -38,10 +38,16 @@ __NOTE__: A seperate volume still needs to be mounted for mysql data if the inte
 
 ## Installation
 
-Pull the docker image from the docker index. This is the recommended method of installation as it is easier to update image in the future. These builds are performed by the Trusted Build service.
+Pull the latest version of the image from the docker index. This is the recommended method of installation as it is easier to update image in the future. These builds are performed by the **Docker Trusted Build** service.
 
 ```bash
 docker pull sameersbn/gitlab
+```
+
+Since version 6.5.0, the image builds are being tagged. You can now pull a particular version of gitlab by specifying the version number. For example,
+
+```bash
+docker pull sameersbn/gitlab:6.5.1
 ```
 
 Alternately you can build the image yourself.
