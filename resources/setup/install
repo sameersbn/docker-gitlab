@@ -18,7 +18,7 @@ wget "https://github.com/gitlabhq/gitlab-shell/archive/v1.8.0.tar.gz" -O - | tar
 chown -R git:git /home/git/gitlab-shell/
 
 cd /home/git/gitlab-shell
-sudo -u git -H cp -a config.yml.example config.yml
+sudo -u git -H cp -a /gitlab/setup/config/gitlab-shell/config.yml config.yml
 sudo -u git -H sed 's/repos_path: "\/home\/git\/repositories"/repos_path: "\/home\/git\/data\/repositories"/' -i config.yml
 sudo -u git -H ./bin/install
 
