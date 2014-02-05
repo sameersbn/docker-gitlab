@@ -34,6 +34,7 @@ cd /home/git/gitlab
 # copy default configurations
 sudo -u git -H cp /gitlab/setup/config/gitlabhq/gitlab.yml config/gitlab.yml
 sudo -u git -H cp /gitlab/setup/config/gitlabhq/resque.yml config/resque.yml
+sudo -u git -H cp /gitlab/setup/config/gitlabhq/database.yml config/database.yml
 sudo -u git -H cp /gitlab/setup/config/gitlabhq/unicorn.rb config/unicorn.rb
 sudo -u git -H cp /gitlab/setup/config/gitlabhq/rack_attack.rb config/initializers/rack_attack.rb
 
@@ -64,20 +65,6 @@ else
   # online gem installation
   sudo -u git -H bundle install --deployment --without development test aws
 fi
-
-# add database.yml template
-sudo -u git -H cat > config/database.yml <<EOF
-production:
-  adapter: {{DB_ADAPTER}}
-  encoding: {{DB_ENCODING}}
-  reconnect: false
-  database: {{DB_NAME}}
-  host: {{DB_HOST}}
-  username: {{DB_USER}}
-  password: {{DB_PASS}}
-  pool: {{DB_POOL}}
-EOF
-chmod o-rwx config/database.yml
 
 sudo -u git -H cat > config/sidekiq.yml <<EOF
 :concurrency: {{SIDEKIQ_CONCURRENCY}}
