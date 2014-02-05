@@ -27,10 +27,10 @@ sudo -u git -H tar -zvxf /gitlab/setup/gitlabhq-6.5.1.tar.gz --strip=1 -C /home/
 cd /home/git/gitlab
 
 # copy default configurations
-sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
-sudo -u git -H cp config/resque.yml.example config/resque.yml
-sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
-sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
+sudo -u git -H cp /gitlab/setup/config/gitlabhq/gitlab.yml config/gitlab.yml
+sudo -u git -H cp /gitlab/setup/config/gitlabhq/resque.yml config/resque.yml
+sudo -u git -H cp /gitlab/setup/config/gitlabhq/unicorn.rb config/unicorn.rb
+sudo -u git -H cp /gitlab/setup/config/gitlabhq/rack_attack.rb config/initializers/rack_attack.rb
 
 # configure repositories path
 sudo -u git -H sed 's/repos_path: \/home\/git\/repositories\//repos_path: \/home\/git\/data\/repositories\//' -i config/gitlab.yml
