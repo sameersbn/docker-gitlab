@@ -15,7 +15,7 @@ http_settings:
 # Give the canonicalized absolute pathname,
 # REPOS_PATH MUST NOT CONTAIN ANY SYMLINK!!!
 # Check twice that none of the components is a symlink, including "/home".
-repos_path: "/home/git/repositories"
+repos_path: "/home/git/data/repositories"
 
 # File used as authorized_keys for gitlab user
 auth_file: "/home/git/.ssh/authorized_keys"
@@ -23,8 +23,8 @@ auth_file: "/home/git/.ssh/authorized_keys"
 # Redis settings used for pushing commit notices to gitlab
 redis:
   bin: /usr/bin/redis-cli
-  host: 127.0.0.1
-  port: 6379
+  host: {{REDIS_HOST}}
+  port: {{REDIS_PORT}}
   # socket: /tmp/redis.socket # Only define this if you want to use sockets
   namespace: resque:gitlab
 

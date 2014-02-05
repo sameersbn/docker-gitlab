@@ -21,7 +21,7 @@
 
 # Use at least one worker per core if you're on a dedicated server,
 # more will usually help for _short_ waits on databases/caches.
-worker_processes 2
+worker_processes {{UNICORN_WORKERS}}
 
 # Since Unicorn is never exposed to outside clients, it does not need to
 # run on the standard HTTP port (80), there is no reason to start Unicorn
@@ -40,7 +40,7 @@ listen "/home/git/gitlab/tmp/sockets/gitlab.socket", :backlog => 64
 listen "127.0.0.1:8080", :tcp_nopush => true
 
 # nuke workers after 30 seconds instead of 60 seconds (the default)
-timeout 30
+timeout {{UNICORN_TIMEOUT}}
 
 # feel free to point this anywhere accessible on the filesystem
 pid "/home/git/gitlab/tmp/pids/unicorn.pid"
