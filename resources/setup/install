@@ -21,7 +21,6 @@ chown -R git:git /home/git/gitlab-shell/
 
 cd /home/git/gitlab-shell
 sudo -u git -H cp -a /gitlab/setup/config/gitlab-shell/config.yml config.yml
-sudo -u git -H sed 's/repos_path: "\/home\/git\/repositories"/repos_path: "\/home\/git\/data\/repositories"/' -i config.yml
 sudo -u git -H ./bin/install
 
 # install gitlab
@@ -38,10 +37,6 @@ sudo -u git -H cp /gitlab/setup/config/gitlabhq/database.yml config/database.yml
 sudo -u git -H cp /gitlab/setup/config/gitlabhq/sidekiq.yml config/sidekiq.yml
 sudo -u git -H cp /gitlab/setup/config/gitlabhq/unicorn.rb config/unicorn.rb
 sudo -u git -H cp /gitlab/setup/config/gitlabhq/rack_attack.rb config/initializers/rack_attack.rb
-
-# configure repositories path
-sudo -u git -H sed 's/repos_path: \/home\/git\/repositories\//repos_path: \/home\/git\/data\/repositories\//' -i config/gitlab.yml
-sudo -u git -H sed 's/path: \/home\/git\/gitlab-satellites\//path: \/home\/git\/data\/gitlab-satellites\//' -i config/gitlab.yml
 
 # create required tmp and log directories
 sudo -u git -H mkdir -p tmp/pids/ tmp/sockets/

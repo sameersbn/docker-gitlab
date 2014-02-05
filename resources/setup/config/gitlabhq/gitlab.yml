@@ -15,9 +15,9 @@ production: &base
   ## GitLab settings
   gitlab:
     ## Web server settings
-    host: localhost
-    port: 80
-    https: false
+    host: {{GITLAB_HOST}}
+    port: {{GITLAB_PORT}}
+    https: {{GITLAB_HTTPS}}
 
     # Uncomment and customize the last line to run in a non-root path
     # WARNING: We recommend creating a FQDN to host GitLab in a root path instead of this. 
@@ -35,10 +35,10 @@ production: &base
 
     ## Email settings
     # Email address used in the "From" field in mails sent by GitLab
-    email_from: gitlab@localhost
+    email_from: {{GITLAB_EMAIL}}
 
     # Email address of your support contact (default: same as email_from)
-    support_email: support@localhost
+    support_email: {{GITLAB_SUPPORT}}
 
     ## User settings
     default_projects_limit: 10
@@ -55,7 +55,7 @@ production: &base
 
     ## Users management
     # default: false - Account passwords are not sent via the email if signup is enabled. 
-    # signup_enabled: true
+    signup_enabled: {{GITLAB_SIGNUP}}
 
     # Restrict setting visibility levels for non-admin users.
     # The default is to allow all levels.
@@ -175,7 +175,7 @@ production: &base
   # GitLab Satellites
   satellites:
     # Relative paths are relative to Rails.root (default: tmp/repo_satellites/)
-    path: /home/git/gitlab-satellites/
+    path: /home/git/data/gitlab-satellites/
 
   ## Backup settings
   backup:
@@ -187,7 +187,7 @@ production: &base
     path: /home/git/gitlab-shell/
 
     # REPOS_PATH MUST NOT BE A SYMLINK!!!
-    repos_path: /home/git/repositories/
+    repos_path: /home/git/data/repositories/
     hooks_path: /home/git/gitlab-shell/hooks/
 
     # Git over HTTP
