@@ -2,7 +2,7 @@ FROM ubuntu:12.04
 MAINTAINER sameer@damagehead.com
 
 RUN sed 's/main$/main universe/' -i /etc/apt/sources.list
-RUN apt-get update && apt-get upgrade -y && apt-get clean # 20130925
+RUN apt-get update && apt-mark hold initscripts && apt-get upgrade -y && apt-get clean # 20140206
 
 # essentials
 RUN apt-get install -y vim curl wget sudo net-tools && \
