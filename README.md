@@ -1,6 +1,6 @@
 # Docker GitLab
 
-Current Version: 6.5.1
+Current Version: 6.6.0
 
 Dockerfile to build a GitLab container image.
 
