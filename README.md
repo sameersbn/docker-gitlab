@@ -352,7 +352,7 @@ Below is the complete list of parameters that can be set using environment varia
 
 * DB_POOL
 
-        The database database connection pool count. Defaults to 5.
+        The database database connection pool count. Defaults to 10.
 
 * SMTP_HOST
 

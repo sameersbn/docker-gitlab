@@ -22,7 +22,7 @@ DB_NAME=${DB_NAME:-gitlabhq_production}
 DB_USER=${DB_USER:-root}
 DB_PASS=${DB_PASS:-}
 DB_INIT=${DB_INIT:-}
-DB_POOL=${DB_POOL:-5}
+DB_POOL=${DB_POOL:-10}
 
 SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
 SMTP_PORT=${SMTP_PORT:-587}
