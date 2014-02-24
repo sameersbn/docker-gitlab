@@ -18,11 +18,11 @@
             - [External PostgreSQL Server](#external-postgresql-server)
     - [Mail](#mail)
     - [Putting it all together](#putting-it-all-together)
+    - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
     - [Taking Backups](#taking-backups)
     - [Restoring Backups](#restoring-backups)
 - [Upgrading](#upgrading)
-- [Configuration Parameters](#configuration-parameters)
 - [References](#references)
 
 # Introduction
@@ -256,80 +256,9 @@ docker run -d -h git.local.host \
   sameersbn/gitlab
 ```
 
-## Maintenance
+### Available configuration parameters
 
-### Taking backups
-
-Gitlab defines a rake task to easily take a backup of your gitlab installation. The backup consists of all git repositories, uploaded files and as you might expect, the sql database.
-
-Before taking a backup, please make sure that the gitlab image is not running for obvious reasons
-
-```bash
-docker stop <container-id>
-```
-
-To take a backup all you need to do is pass the "app:backup" command to the container image.
-
-```bash
-  docker run -i -t -h git.local.host \
-  -v /opt/gitlab/data:/home/git/data \
-  sameersbn/gitlab app:backup
-```
-
-### Restoring Backups
-
-Gitlab defines a rake task to easily restore a backup of your gitlab installation. Before performing the restore operation please make sure that the gitlab image is not running.
-
-```bash
-docker stop <container-id>
-```
-
-To restore a backup, run the image in interactive (-i -t) mode and pass the "app:restore" command to the container image.
-
-```bash
-  docker run -i -t -h git.local.host \
-  -v /opt/gitlab/data:/home/git/data \
-  sameersbn/gitlab app:restore
-```
-
-The restore operation will list all available backups in reverse chronological order. Select the backup you want to restore and gitlab will do its job.
-
-## Upgrading
-
-If you upgrading from previous version, please make sure you run the container with **app:db:migrate** command.
-
-**Step 1: Stop the currently running image**
-
-```bash
-docker stop <container-id>
-```
-
-**Step 2: Backup the application data.**
-
-```bash
-docker run -i -t [OPTIONS] sameersbn/gitlab app:backup
-```
-
-**Step 3: Update the docker image.**
-
-```bash
-docker pull sameersbn/gitlab
-```
-
-**Step 4: Migrate the database.**
-
-```bash
-docker run -i -t [OPTIONS] sameersbn/gitlab app:db:migrate
-```
-
-**Step 5: Start the image**
-
-```bash
-docker run -i -d [OPTIONS] sameersbn/gitlab
-```
-
-### Configuration Parameters
-Below is the complete list of parameters that can be set using environment variables.
+Below is the complete list of available options that can be used to customize your gitlab installation.
 
 * GITLAB_HOST
 
@@ -406,6 +335,78 @@ Below is the complete list of parameters that can be set using environment varia
 * SMTP_PASS
 
         SMTP password.
+
+## Maintenance
+
+### Taking backups
+
+Gitlab defines a rake task to easily take a backup of your gitlab installation. The backup consists of all git repositories, uploaded files and as you might expect, the sql database.
+
+Before taking a backup, please make sure that the gitlab image is not running for obvious reasons
+
+```bash
+docker stop <container-id>
+```
+
+To take a backup all you need to do is pass the "app:backup" command to the container image.
+
+```bash
+  docker run -i -t -h git.local.host \
+  -v /opt/gitlab/data:/home/git/data \
+  sameersbn/gitlab app:backup
+```
+
+### Restoring Backups
+
+Gitlab defines a rake task to easily restore a backup of your gitlab installation. Before performing the restore operation please make sure that the gitlab image is not running.
+
+```bash
+docker stop <container-id>
+```
+
+To restore a backup, run the image in interactive (-i -t) mode and pass the "app:restore" command to the container image.
+
+```bash
+  docker run -i -t -h git.local.host \
+  -v /opt/gitlab/data:/home/git/data \
+  sameersbn/gitlab app:restore
+```
+
+The restore operation will list all available backups in reverse chronological order. Select the backup you want to restore and gitlab will do its job.
+
+## Upgrading
+
+If you upgrading from previous version, please make sure you run the container with **app:db:migrate** command.
+
+**Step 1: Stop the currently running image**
+
+```bash
+docker stop <container-id>
+```
+
+**Step 2: Backup the application data.**
+
+```bash
+docker run -i -t [OPTIONS] sameersbn/gitlab app:backup
+```
+
+**Step 3: Update the docker image.**
+
+```bash
+docker pull sameersbn/gitlab
+```
+
+**Step 4: Migrate the database.**
+
+```bash
+docker run -i -t [OPTIONS] sameersbn/gitlab app:db:migrate
+```
+
+**Step 5: Start the image**
+
+```bash
+docker run -i -d [OPTIONS] sameersbn/gitlab
+```
 
 ## References
   * https://github.com/gitlabhq/gitlabhq
