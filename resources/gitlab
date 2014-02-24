@@ -261,28 +261,6 @@ gitlab_start () {
 	tail -F /var/log/nginx/gitlab_access.log
 }
 
-gitlab_restore () {
-	nBackups=$(ls tmp/backups/*_gitlab_backup.tar | wc -l)
-	if [ $nBackups -eq 0 ]; then
-		echo "No backup present. Cannot continue restore process.".
-		return 1
-	fi
-
-	for b in `ls tmp/backups/ | sort -r`
-	do
-		echo " ├ $b"
-	done
-	read -p "Select a backup to restore: " file
-
-	if [ ! -f "tmp/backups/${file}" ]; then
-		echo "Specified backup does not exist. Aboring..."
-		return 1
-	fi
-
-	timestamp=$(echo $file | cut -d'_' -f1)
-	sudo -u git -H bundle exec rake gitlab:backup:restore RAILS_ENV=production BACKUP=$timestamp
-}
-
 gitlab_rake () {
 	if [ -z ${1} ]; then
 		echo "Please specify the rake task to execute. See https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks"
@@ -319,7 +297,6 @@ gitlab_rake () {
 gitlab_help () {
 	echo "Available options:"
 	echo " app:start          - Starts the gitlab server (default)"
-	echo " app:restore        - Restore a backup"
 	echo " app:rake <task>    - Execute rake task."
 	echo " app:db:initialize  - Initialize the database."
 	echo " app:db:migrate     - Migrate the database."
@@ -330,9 +307,6 @@ gitlab_help () {
 case "$1" in
 	app:start)
 		gitlab_start
-		;;
-	app:restore)
-		gitlab_restore
 		;;
 	app:db:initialize)
 		db_initialize
