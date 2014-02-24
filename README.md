@@ -292,12 +292,10 @@ Before taking a backup, please make sure that the gitlab image is not running fo
 docker stop <container-id>
 ```
 
-To take a backup all you need to do is pass the "app:backup" command to the container image.
+To take a backup all you need to do is run the gitlab rake task to create a backup.
 
 ```bash
-  docker run -i -t -h git.local.host \
-  -v /opt/gitlab/data:/home/git/data \
-  sameersbn/gitlab app:backup
+  docker run -i -t [OPTIONS] sameersbn/gitlab app:rake gitlab:backup:create
 ```
 
 ### Restoring Backups
