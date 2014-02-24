@@ -320,36 +320,38 @@ The restore operation will list all available backups in reverse chronological o
 
 ## Upgrading
 
-If you upgrading from previous version, please make sure you run the container with **app:db:migrate** command.
+GitLabHQ releases new versions on the 22nd of every month, bugfix releases immediately follow. I update this project almost immediately when a release is made (at least it has been the case so far). If you are using the image in production environments I recommend that you delay updates by a couple of days after the gitlab release, allowing some time of the dust to settle down.
 
-**Step 1: Stop the currently running image**
+To upgrade to newer gitlab releases, simply follow this 5 step upgrade procedure.
+
+- **Step 1**: Stop the currently running image
 
 ```bash
 docker stop <container-id>
 ```
 
-**Step 2: Backup the application data.**
+- **Step 2**: Backup the application data.
 
 ```bash
 docker run -i -t [OPTIONS] sameersbn/gitlab app:backup
 ```
 
-**Step 3: Update the docker image.**
+- **Step 3**: Update the docker image.
 
 ```bash
 docker pull sameersbn/gitlab
 ```
 
-**Step 4: Migrate the database.**
+- **Step 4**: Migrate the database.
 
 ```bash
 docker run -i -t [OPTIONS] sameersbn/gitlab app:db:migrate
 ```
 
-**Step 5: Start the image**
+- **Step 5**: Start the image
 
 ```bash
-docker run -i -d [OPTIONS] sameersbn/gitlab
+docker run -d [OPTIONS] sameersbn/gitlab
 ```
 
 ## References
