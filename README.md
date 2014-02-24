@@ -9,17 +9,18 @@
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Configuration](#configuration)
-    - [Mounting Volumes](#mounting-volumes)
-    - [Configuring Database](#configuring-database)
+    - [Data Store](#data-store)
+    - [Database](#database)
         - [MySQL](#mysql)
             - [Internal MySQL Server](#internal-mysql-server)
             - [External MySQL Server](#external-mysql-server)
         - [PostgreSQL]($postgresql)
             - [External PostgreSQL Server](#external-postgresql-server)
-    - [Configuring Mail](#configuring-mail)
+    - [Mail](#mail)
     - [Putting it all together](#putting-it-all-together)
-- [Taking Backups](#taking-backups)
-- [Restoring Backups](#restoring-backups)
+- [Maintenance](#maintenance)
+    - [Taking Backups](#taking-backups)
+    - [Restoring Backups](#restoring-backups)
 - [Upgrading](#upgrading)
 - [Configuration Parameters](#configuration-parameters)
 - [References](#references)
@@ -113,8 +114,8 @@ You should now have GitLab ready for testing. If you want to use GitLab for more
 
 # Configuration
 
-## Mounting volumes
-GitLab is a code hosting software and as such you don't want to lose your code when the docker container is stopped/deleted. To avoid losing any data, you should mount volumes at.
+## Data Store
+GitLab is a code hosting software and as such you don't want to lose your code when the docker container is stopped/deleted. To avoid losing any data, you should mount a volume at,
 
 * /home/git/data
 
@@ -127,7 +128,7 @@ docker run -d \
   sameersbn/gitlab
 ```
 
-## Configuring Database
+## Database
 GitLab uses a database backend to store its data.
 
 ### MySQL
@@ -210,7 +211,7 @@ docker run -d \
   sameersbn/gitlab
 ```
 
-### Configuring Mail
+### Mail
 The mail configuration should be specified using environment variables while starting the GitLab image. The configuration defaults to using gmail to send emails and requires the specification of a valid username and password to login to the gmail servers.
 
 The following environment variables need to be specified to get mail support to work.
@@ -255,7 +256,9 @@ docker run -d -h git.local.host \
   sameersbn/gitlab
 ```
 
-## Taking backups
+## Maintenance
+
+### Taking backups
 
 Gitlab defines a rake task to easily take a backup of your gitlab installation. The backup consists of all git repositories, uploaded files and as you might expect, the sql database.
 
@@ -273,7 +276,7 @@ To take a backup all you need to do is pass the "app:backup" command to the cont
   sameersbn/gitlab app:backup
 ```
 
-## Restoring Backups
+### Restoring Backups
 
 Gitlab defines a rake task to easily restore a backup of your gitlab installation. Before performing the restore operation please make sure that the gitlab image is not running.
 
