@@ -8,7 +8,7 @@
 - [Supported Web Browsers](#supported-web-browsers)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
-- [Advanced Configuration](#advanced-configuration)
+- [Configuration](#configuration)
     - [Mounting Volumes](#mounting-volumes)
     - [Configuring Database](#configuring-database)
         - [MySQL](#mysql)
@@ -111,7 +111,7 @@ Login using the default username and password:
 
 You should now have GitLab ready for testing. If you want to use GitLab for more than just testing then please read the **Advanced Options** section.
 
-# Advanced Configuration
+# Configuration
 
 ## Mounting volumes
 GitLab is a code hosting software and as such you don't want to lose your code when the docker container is stopped/deleted. To avoid losing any data, you should mount volumes at.
