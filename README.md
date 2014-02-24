@@ -256,85 +256,29 @@ docker run -d -h git.local.host \
   sameersbn/gitlab
 ```
 
-### Available configuration parameters
+### Available Configuration Parameters
 
 Below is the complete list of available options that can be used to customize your gitlab installation.
 
-* GITLAB_HOST
-
-        The hostname of the GitLab server. Defaults to localhost
-
-* GITLAB_EMAIL
-
-        The email address for the GitLab server. Defaults to gitlab@localhost.
-
-* GITLAB_SUPPORT
-
-        The support email address for the GitLab server. Defaults to support@localhost.
-
-* GITLAB_SIGNUP
-
-        Enable or disable gitlab user signup. Default is false. To enable user signup add '-e GITLAB_SIGNUP="true"' to the docker run command parameters.
-
-* REDIS_HOST
-
-        The hostname of the redis server. Defaults to localhost
-
-* REDIS_PORT
-
-        The connection port of the redis server. Defaults to 6379.
-
-* UNICORN_WORKERS
-
-        The number of unicorn workers to start. Defaults to 2.
-
-* UNICORN_TIMEOUT
-
-        Sets the timeout of unicorn worker processes. Defaults to 60 seconds.
-
-* SIDEKIQ_CONCURRENCY
-
-        The number of concurrent sidekiq jobs to run. Defaults to 5
-
-* DB_TYPE
-
-        The database type. Possible values: mysql, postgres. Defaults to mysql.
-
-* DB_HOST
-
-        The database server hostname. Defaults to localhost.
-
-* DB_NAME
-
-        The database database name. Defaults to gitlabhq_production
-
-* DB_USER
-
-        The database database user. Defaults to root
-
-* DB_PASS
-
-        The database database password. Defaults to no password
-
-* DB_POOL
-
-        The database database connection pool count. Defaults to 10.
-
-* SMTP_HOST
-
-        SMTP server host. Defaults to smtp.gmail.com.
-
-* SMTP_PORT
-
-        SMTP server port. Defaults to 587.
-
-* SMTP_USER
-
-        SMTP username.
-
-* SMTP_PASS
-
-        SMTP password.
+- **GITLAB_HOST**: The hostname of the GitLab server. Defaults to localhost
+- **GITLAB_EMAIL**: The email address for the GitLab server. Defaults to gitlab@localhost.
+- **GITLAB_SUPPORT**: The support email address for the GitLab server. Defaults to support@localhost.
+- **GITLAB_SIGNUP**: Enable or disable user signups. Default is false.
+- **REDIS_HOST**: The hostname of the redis server. Defaults to localhost
+- **REDIS_PORT**: The connection port of the redis server. Defaults to 6379.
+- **UNICORN_WORKERS**: The number of unicorn workers to start. Defaults to 2.
+- **UNICORN_TIMEOUT**: Sets the timeout of unicorn worker processes. Defaults to 60 seconds.
+- **SIDEKIQ_CONCURRENCY**: The number of concurrent sidekiq jobs to run. Defaults to 5
+- **DB_TYPE**: The database type. Possible values: mysql, postgres. Defaults to mysql.
+- **DB_HOST**: The database server hostname. Defaults to localhost.
+- **DB_NAME**: The database database name. Defaults to gitlabhq_production
+- **DB_USER**: The database database user. Defaults to root
+- **DB_PASS**: The database database password. Defaults to no password
+- **DB_POOL**: The database database connection pool count. Defaults to 10.
+- **SMTP_HOST**: SMTP server host. Defaults to smtp.gmail.com.
+- **SMTP_PORT**: SMTP server port. Defaults to 587.
+- **SMTP_USER**: SMTP username.
+- **SMTP_PASS**: SMTP password.
 
 ## Maintenance
 
