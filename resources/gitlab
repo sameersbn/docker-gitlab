@@ -230,11 +230,6 @@ db_initialize () {
 	sudo -u git -H force=yes bundle exec rake gitlab:setup RAILS_ENV=production
 }
 
-db_migrate () {
-	echo "Migrating database..."
-	sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
-}
-
 gitlab_start () {
 	echo "Starting gitlab server..."
 	# reset the database if the --db-init switch was given.
@@ -299,7 +294,6 @@ gitlab_help () {
 	echo " app:start          - Starts the gitlab server (default)"
 	echo " app:rake <task>    - Execute rake task."
 	echo " app:db:initialize  - Initialize the database."
-	echo " app:db:migrate     - Migrate the database."
 	echo " app:help           - Displays the help"
 	echo " [command]          - Execute the specified linux command eg. bash."
 }
@@ -310,9 +304,6 @@ case "$1" in
 		;;
 	app:db:initialize)
 		db_initialize
-		;;
-	app:db:migrate)
-		db_migrate
 		;;
 	app:rake)
 		gitlab_rake $2
