@@ -295,7 +295,7 @@ docker stop <container-id>
 To take a backup all you need to do is run the gitlab rake task to create a backup.
 
 ```bash
-  docker run -i -t -rm [OPTIONS] sameersbn/gitlab app:rake gitlab:backup:create
+docker run -i -t -rm [OPTIONS] sameersbn/gitlab app:rake gitlab:backup:create
 ```
 
 ### Restoring Backups
@@ -309,7 +309,7 @@ docker stop <container-id>
 To restore a backup, run the image in interactive (-i -t) mode and pass the "app:restore" command to the container image.
 
 ```bash
-  docker run -i -t -rm [OPTIONS] sameersbn/gitlab app:rake gitlab:backup:restore
+docker run -i -t -rm [OPTIONS] sameersbn/gitlab app:rake gitlab:backup:restore
 ```
 
 The restore operation will list all available backups in reverse chronological order. Select the backup you want to restore and gitlab will do its job.
