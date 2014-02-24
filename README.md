@@ -1,12 +1,31 @@
-# Docker GitLab
+# Table of Contents
+- [Introduction](#introduction)
+    - [Version](#version)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Advanced Configuration](#advanced-configuration)
+    - [Mounting Volumes](#mounting-volumes)
+    - [Configuring Database](#configuring-database)
+        - [MySQL](#mysql)
+            - [Internal MySQL Server](#internal-mysql-server)
+            - [External MySQL Server](#external-mysql-server)
+        - [PostgreSQL]($postgresql)
+            - [External PostgreSQL Server](#external-postgresql-server)
+    - [Configuring Mail](#configuring-mail)
+    - [Putting it all together](#putting-it-all-together)
+- [Taking Backups](#taking-backups)
+- [Restoring Backups](#restoring-backups)
+- [Upgrading](#upgrading)
+- [Configuration Parameters](#configuration-parameters)
+- [References](#references)
 
-Current Version: 6.6.0
-
+# Introduction
 Dockerfile to build a GitLab container image.
 
-***Please refer to upgrading section if coming from previous version***
+## Version
+Current Version: 6.6.0
 
-## Installation
+# Installation
 
 Pull the latest version of the image from the docker index. This is the recommended method of installation as it is easier to update image in the future. These builds are performed by the **Docker Trusted Build** service.
 
@@ -28,7 +47,7 @@ cd docker-gitlab
 sudo docker build -t="$USER/gitlab" .
 ```
 
-## Quick Start
+# Quick Start
 Run the gitlab image
 
 ```bash
@@ -51,9 +70,9 @@ Login using the default username and password:
 
 You should now have GitLab ready for testing. If you want to use GitLab for more than just testing then please read the **Advanced Options** section.
 
-## Advanced Options
+# Advanced Configuration
 
-### Mounting volumes
+## Mounting volumes
 GitLab is a code hosting software and as such you don't want to lose your code when the docker container is stopped/deleted. To avoid losing any data, you should mount volumes at.
 
 * /home/git/data
@@ -67,10 +86,12 @@ docker run -d \
   sameersbn/gitlab
 ```
 
-### Configuring MySQL database connection
+## Configuring Database
 GitLab uses a database backend to store its data.
 
-#### Using the internal mysql server
+### MySQL
+
+#### Internal MySQL Server
 This docker image is configured to use a MySQL database backend. The database connection can be configured using environment variables. If not specified, the image will start a mysql server internally and use it. However in this case, the data stored in the mysql database will be lost if the container is stopped/deleted. To avoid this you should mount a volume at /var/lib/mysql.
 
 ```bash
@@ -82,7 +103,7 @@ docker run -d \
 
 This will make sure that the data stored in the database is not lost when the image is stopped and started again.
 
-#### Using an external mysql server
+#### External MySQL Server
 The image can be configured to use an external MySQL database instead of starting a MySQL server internally. The database configuration should be specified using environment variables while starting the GitLab image.
 
 Before you start the GitLab image create user and database for gitlab.
@@ -116,7 +137,9 @@ docker run -d \
   sameersbn/gitlab
 ```
 
-#### Using an external PostgreSQL server
+### PostgreSQL
+
+#### External PostgreSQL Server
 The image also supports using an external PostgreSQL Server. This is also controlled via environment variables.
 
 ```bash
@@ -261,7 +284,7 @@ docker run -i -t [OPTIONS] sameersbn/gitlab app:db:migrate
 docker run -i -d [OPTIONS] sameersbn/gitlab
 ```
 
-### Other options
+### Configuration Parameters
 Below is the complete list of parameters that can be set using environment variables.
 
 * GITLAB_HOST
