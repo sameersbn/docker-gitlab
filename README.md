@@ -23,6 +23,7 @@
     - [Taking Backups](#taking-backups)
     - [Restoring Backups](#restoring-backups)
 - [Upgrading](#upgrading)
+- [Rake Tasks](#rake-tasks)
 - [References](#references)
 
 # Introduction
@@ -349,6 +350,22 @@ docker run -i -t -rm [OPTIONS] sameersbn/gitlab app:rake db:migrate
 ```bash
 docker run -d [OPTIONS] sameersbn/gitlab
 ```
+
+## Rake Tasks
+
+The app:rake command allows you to run gitlab rake tasks. To run a rake task simple specify the task to be executed to the app:rake command. For example, if you want to gather information about gitLab and the system it runs on.
+
+```bash
+docker run -d [OPTIONS] sameersbn/gitlab app:rake gitlab:env:info
+```
+
+Similarly, to import bare repositories into GitLab project instance
+
+```bash
+docker run -d [OPTIONS] sameersbn/gitlab app:rake gitlab:import:repos
+```
+
+For a complete list of available rake tasks please refer https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks or the help section of your gitlab installation.
 
 ## References
   * https://github.com/gitlabhq/gitlabhq
