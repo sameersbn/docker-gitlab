@@ -36,7 +36,7 @@ docker pull sameersbn/gitlab
 Since version 6.5.0, the image builds are being tagged. You can now pull a particular version of gitlab by specifying the version number. For example,
 
 ```bash
-docker pull sameersbn/gitlab:6.5.1
+docker pull sameersbn/gitlab:6.6.0
 ```
 
 Alternately you can build the image yourself.
