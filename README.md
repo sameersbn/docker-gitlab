@@ -52,7 +52,7 @@ Current Version: 6.6.1
 
 The necessary hard drive space largely depends on the size of the repos you want
 to store in GitLab. But as a *rule of thumb* you should have at least twice as much
-free space as your all repos combined take up. You need twice the storage because [GitLab satellites](structure.md) contain an extra copy of each repo.
+free space as your all repos combined take up. You need twice the storage because [GitLab satellites](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/structure.md) contain an extra copy of each repo.
 
 If you want to be flexible about growing your hard drive space in the future consider mounting it using LVM so you can add more hard drives when you need them.
 
