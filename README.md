@@ -157,20 +157,20 @@ CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8`
 GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'%.%.%.%';
 ```
 
-To make sure the database is initialized start the container with **app:db:initialize** option.
+To make sure the database is initialized start the container with **app:rake gitlab:setup** option.
 
 **NOTE: This should be done only for the first run**.
 
 *Assuming that the mysql server host is 192.168.1.100*
 
 ```bash
-docker run -d \
+docker run -i -t \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/data:/home/git/data \
-  sameersbn/gitlab app:db:initialize
+  sameersbn/gitlab app:rake gitlab:setup
 ```
 
-This will initialize the gitlab database. Now that the database is initialized, start the container without the initialize command.
+This will initialize the gitlab database. Now that the database is initialized, start the container normally.
 
 ```bash
 docker run -d \
@@ -189,7 +189,7 @@ createuser gitlab
 createdb -O gitlab gitlabhq_production
 ```
 
-To make sure the database is initialized start the container with **app:db:initialize** option.
+To make sure the database is initialized start the container with **app:rake gitlab:setup** option.
 
 **NOTE: This should be done only for the first run**.
 
@@ -199,10 +199,10 @@ To make sure the database is initialized start the container with **app:db:initi
 docker run -d \
   -e "DB_TYPE=postgres" -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/data:/home/git/data \
-  sameersbn/gitlab app:db:initialize
+  sameersbn/gitlab app:rake gitlab:setup
 ```
 
-This will initialize the gitlab database. Now that the database is initialized, start the container without the initialize command.
+This will initialize the gitlab database. Now that the database is initialized, start the container normally.
 
 ```bash
 docker run -d \
