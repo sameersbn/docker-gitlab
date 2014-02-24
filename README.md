@@ -309,9 +309,7 @@ docker stop <container-id>
 To restore a backup, run the image in interactive (-i -t) mode and pass the "app:restore" command to the container image.
 
 ```bash
-  docker run -i -t -h git.local.host \
-  -v /opt/gitlab/data:/home/git/data \
-  sameersbn/gitlab app:restore
+  docker run -i -t [OPTIONS] sameersbn/gitlab app:rake gitlab:backup:restore
 ```
 
 The restore operation will list all available backups in reverse chronological order. Select the backup you want to restore and gitlab will do its job.
