@@ -299,6 +299,8 @@ To take a backup all you need to do is run the gitlab rake task to create a back
 docker run -i -t -rm [OPTIONS] sameersbn/gitlab app:rake gitlab:backup:create
 ```
 
+A backup will be created in the backups folder of the [Data Store](#data-store)
+
 ### Restoring Backups
 
 Gitlab defines a rake task to easily restore a backup of your gitlab installation. Before performing the restore operation please make sure that the gitlab image is not running.
