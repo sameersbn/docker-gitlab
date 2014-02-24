@@ -341,7 +341,7 @@ docker pull sameersbn/gitlab
 - **Step 4**: Migrate the database.
 
 ```bash
-docker run -i -t [OPTIONS] sameersbn/gitlab app:db:migrate
+docker run -i -t [OPTIONS] sameersbn/gitlab app:rake db:migrate
 ```
 
 - **Step 5**: Start the image
