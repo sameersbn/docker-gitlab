@@ -164,7 +164,7 @@ To make sure the database is initialized start the container with **app:rake git
 *Assuming that the mysql server host is 192.168.1.100*
 
 ```bash
-docker run -i -t \
+docker run -i -t -rm \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab app:rake gitlab:setup
@@ -196,7 +196,7 @@ To make sure the database is initialized start the container with **app:rake git
 *Assuming that the PostgreSQL server host is 192.168.1.100*
 
 ```bash
-docker run -d \
+docker run -i -t -rm \
   -e "DB_TYPE=postgres" -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab app:rake gitlab:setup
@@ -295,7 +295,7 @@ docker stop <container-id>
 To take a backup all you need to do is run the gitlab rake task to create a backup.
 
 ```bash
-  docker run -i -t [OPTIONS] sameersbn/gitlab app:rake gitlab:backup:create
+  docker run -i -t -rm [OPTIONS] sameersbn/gitlab app:rake gitlab:backup:create
 ```
 
 ### Restoring Backups
@@ -309,7 +309,7 @@ docker stop <container-id>
 To restore a backup, run the image in interactive (-i -t) mode and pass the "app:restore" command to the container image.
 
 ```bash
-  docker run -i -t [OPTIONS] sameersbn/gitlab app:rake gitlab:backup:restore
+  docker run -i -t -rm [OPTIONS] sameersbn/gitlab app:rake gitlab:backup:restore
 ```
 
 The restore operation will list all available backups in reverse chronological order. Select the backup you want to restore and gitlab will do its job.
@@ -329,7 +329,7 @@ docker stop <container-id>
 - **Step 2**: Backup the application data.
 
 ```bash
-docker run -i -t [OPTIONS] sameersbn/gitlab app:rake gitlab:backup:create
+docker run -i -t -rm [OPTIONS] sameersbn/gitlab app:rake gitlab:backup:create
 ```
 
 - **Step 3**: Update the docker image.
@@ -341,7 +341,7 @@ docker pull sameersbn/gitlab
 - **Step 4**: Migrate the database.
 
 ```bash
-docker run -i -t [OPTIONS] sameersbn/gitlab app:rake db:migrate
+docker run -i -t -rm [OPTIONS] sameersbn/gitlab app:rake db:migrate
 ```
 
 - **Step 5**: Start the image
