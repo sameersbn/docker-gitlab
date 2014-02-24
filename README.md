@@ -329,7 +329,7 @@ docker stop <container-id>
 - **Step 2**: Backup the application data.
 
 ```bash
-docker run -i -t [OPTIONS] sameersbn/gitlab app:backup
+docker run -i -t [OPTIONS] sameersbn/gitlab app:rake gitlab:backup:create
 ```
 
 - **Step 3**: Update the docker image.
