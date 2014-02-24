@@ -297,7 +297,8 @@ case "$1" in
 		gitlab_start
 		;;
 	app:rake)
-		gitlab_rake $2
+		shift 1
+		gitlab_rake $@
 		;;
 	app:help)
 		gitlab_help
