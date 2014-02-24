@@ -320,7 +320,7 @@ The restore operation will list all available backups in reverse chronological o
 
 ## Upgrading
 
-GitLabHQ releases new versions on the 22nd of every month, bugfix releases immediately follow. I update this project almost immediately when a release is made (at least it has been the case so far). If you are using the image in production environments I recommend that you delay updates by a couple of days after the gitlab release, allowing some time of the dust to settle down.
+GitLabHQ releases new versions on the 22nd of every month, bugfix releases immediately follow. I update this project almost immediately when a release is made (at least it has been the case so far). If you are using the image in production environments I recommend that you delay updates by a couple of days after the gitlab release, allowing some time for the dust to settle down.
 
 To upgrade to newer gitlab releases, simply follow this 5 step upgrade procedure.
 
