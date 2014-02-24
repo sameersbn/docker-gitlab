@@ -355,7 +355,7 @@ docker run -d [OPTIONS] sameersbn/gitlab
 
 ## Rake Tasks
 
-The app:rake command allows you to run gitlab rake tasks. To run a rake task simple specify the task to be executed to the app:rake command. For example, if you want to gather information about gitLab and the system it runs on.
+The app:rake command allows you to run gitlab rake tasks. To run a rake task simply specify the task to be executed to the app:rake command. For example, if you want to gather information about gitLab and the system it runs on.
 
 ```bash
 docker run -d [OPTIONS] sameersbn/gitlab app:rake gitlab:env:info
