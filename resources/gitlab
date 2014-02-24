@@ -288,11 +288,45 @@ gitlab_restore () {
 	sudo -u git -H bundle exec rake gitlab:backup:restore RAILS_ENV=production BACKUP=$timestamp
 }
 
+gitlab_rake () {
+	if [ -z ${1} ]; then
+		echo "Please specify the rake task to execute. See https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks"
+		return 1
+	fi
+
+	echo "Running gitlab rake task..."
+
+	if [ "$1" == "gitlab:backup:restore" ]; then
+		# user needs to select the backup to restore
+		nBackups=$(ls tmp/backups/*_gitlab_backup.tar | wc -l)
+		if [ $nBackups -eq 0 ]; then
+			echo "No backup present. Cannot continue restore process.".
+			return 1
+		fi
+
+		for b in `ls tmp/backups/ | sort -r`
+		do
+			echo " ├ $b"
+		done
+		read -p "Select a backup to restore: " file
+
+		if [ ! -f "tmp/backups/${file}" ]; then
+			echo "Specified backup does not exist. Aborting..."
+			return 1
+		fi
+		timestamp=$(echo $file | cut -d'_' -f1)
+		sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=$timestamp RAILS_ENV=production
+	else
+		sudo -u git -H bundle exec rake $@ RAILS_ENV=production
+	fi
+}
+
 gitlab_help () {
 	echo "Available options:"
 	echo " app:start          - Starts the gitlab server (default)"
 	echo " app:backup         - Backup the gitlab data"
 	echo " app:restore        - Restore a backup"
+	echo " app:rake <task>    - Execute rake task."
 	echo " app:db:initialize  - Initialize the database."
 	echo " app:db:migrate     - Migrate the database."
 	echo " app:help           - Displays the help"
@@ -314,6 +348,9 @@ case "$1" in
 		;;
 	app:db:migrate)
 		db_migrate
+		;;
+	app:rake)
+		gitlab_rake $2
 		;;
 	app:help)
 		gitlab_help
