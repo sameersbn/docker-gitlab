@@ -32,6 +32,7 @@ RUN wget ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p353.tar.gz -O - | tar 
 		gem install --no-ri --no-rdoc bundler
 
 RUN apt-get install -y pwgen
+RUN apt-get update && apt-get upgrade -y && apt-get clean # 20140225
 
 ADD resources/ /gitlab/
 RUN mv /gitlab/.vimrc /gitlab/.bash_aliases /root/
