@@ -265,6 +265,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_EMAIL**: The email address for the GitLab server. Defaults to gitlab@localhost.
 - **GITLAB_SUPPORT**: The support email address for the GitLab server. Defaults to support@localhost.
 - **GITLAB_SIGNUP**: Enable or disable user signups. Default is false.
+- **GITLAB_SHELL_SSH_PORT**: The ssh port number. Defaults to 22.
 - **REDIS_HOST**: The hostname of the redis server. Defaults to localhost
 - **REDIS_PORT**: The connection port of the redis server. Defaults to 6379.
 - **UNICORN_WORKERS**: The number of unicorn workers to start. Defaults to 2.

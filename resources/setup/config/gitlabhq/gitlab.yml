@@ -195,7 +195,7 @@ production: &base
     receive_pack: true
 
     # If you use non-standard ssh port you need to specify it
-    # ssh_port: 22
+    ssh_port: {{GITLAB_SHELL_SSH_PORT}}
 
   ## Git settings
   # CAUTION!
