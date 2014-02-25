@@ -21,7 +21,7 @@
     - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
     - [SSH Login](#ssh-login)
-    - [Taking Backups](#taking-backups)
+    - [Creating Backups](#creating-backups)
     - [Restoring Backups](#restoring-backups)
     - [Automated Backups](#automated-backups)
 - [Upgrading](#upgrading)
@@ -297,7 +297,7 @@ docker logs gitlab 2>&1 | head -n1
 ```
 This password is not persistent and changes every time the image is executed.
 
-### Taking backups
+### Creating backups
 
 Gitlab defines a rake task to easily take a backup of your gitlab installation. The backup consists of all git repositories, uploaded files and as you might expect, the sql database.
 
