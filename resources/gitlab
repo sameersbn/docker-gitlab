@@ -9,6 +9,9 @@ GITLAB_EMAIL=${GITLAB_EMAIL:-gitlab@localhost}
 GITLAB_SUPPORT=${GITLAB_SUPPORT:-support@localhost}
 GITLAB_SIGNUP=${GITLAB_SIGNUP:-false}
 
+GITLAB_BACKUPS=${GITLAB_BACKUPS:-disable}
+GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-}
+
 GITLAB_SHELL_SSH_PORT=${GITLAB_SHELL_SSH_PORT:-22}
 
 REDIS_HOST=${REDIS_HOST:-localhost}
@@ -147,12 +150,19 @@ sudo -u git -H git config --global user.name "GitLab"
 sudo -u git -H git config --global user.email "${GITLAB_EMAIL}"
 sudo -u git -H git config --global core.autocrlf input
 
+# setup backup keep_time if not specified
+case "${GITLAB_BACKUPS}" in
+	daily|monthly) GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-604800} ;;
+	disable|*) GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-0} ;;
+esac
+
 # configure server url
 sudo -u git -H sed 's/{{GITLAB_HOST}}/'${GITLAB_HOST}'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_PORT}}/'${GITLAB_PORT}'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_HTTPS}}/'${GITLAB_HTTPS}'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_EMAIL}}/'${GITLAB_EMAIL}'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_SUPPORT}}/'${GITLAB_SUPPORT}'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_BACKUP_EXPIRY}}/'${GITLAB_BACKUP_EXPIRY}'/' -i /home/git/gitlab/config/gitlab.yml
 
 sudo -u git -H sed 's/{{GITLAB_SHELL_SSH_PORT}}/'${GITLAB_SHELL_SSH_PORT}'/' -i /home/git/gitlab/config/gitlab.yml
 
@@ -248,8 +258,29 @@ gitlab_start () {
 	sudo -u git -H bundle exec rake gitlab:satellites:create RAILS_ENV=production
 	sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
+	# setup cron job for automatic backups
+	set +e
+	crontab -l -u git > /tmp/cron.git
+	set -e
+	case "${GITLAB_BACKUPS}" in
+		daily)
+			cat >> /tmp/cron.git <<EOF
+00 02 * * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
+EOF
+			;;
+		monthly)
+			cat >> /tmp/cron.git <<EOF
+00 02 01 * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
+EOF
+			;;
+		disable|*)
+			;;
+	esac
+	crontab -u git /tmp/cron.git && rm -rf /tmp/cron.git
+
 	# kickstart the rails application
 	wget "http://localhost" -O /dev/null
+
 
 	# watch the access logs
 	tail -F /var/log/nginx/gitlab_access.log
