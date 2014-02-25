@@ -20,6 +20,7 @@
     - [Putting it all together](#putting-it-all-together)
     - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
+    - [SSH Login](#ssh-login)
     - [Taking Backups](#taking-backups)
     - [Restoring Backups](#restoring-backups)
 - [Upgrading](#upgrading)
@@ -284,6 +285,16 @@ Below is the complete list of available options that can be used to customize yo
 
 ## Maintenance
 
+### SSH Login
+There are two methods to gain root login to the container, the first method is to add your public rsa key to the authorized_keys file and build the image.
+
+The second method is use the dynamically generated password. Every time the container is started a random password is generated using the pwgen tool and assigned to the root user. This password can be fetched from the docker logs.
+
+```bash
+docker logs gitlab 2>&1 | head -n1
+```
+This password is not persistent and changes every time the image is executed.
+
 ### Taking backups
 
 Gitlab defines a rake task to easily take a backup of your gitlab installation. The backup consists of all git repositories, uploaded files and as you might expect, the sql database.
@@ -356,7 +367,7 @@ docker run -d [OPTIONS] sameersbn/gitlab
 
 ## Rake Tasks
 
-The app:rake command allows you to run gitlab rake tasks. To run a rake task simply specify the task to be executed to the app:rake command. For example, if you want to gather information about gitLab and the system it runs on.
+The app:rake command allows you to run gitlab rake tasks. To run a rake task simply specify the task to be executed to the app:rake command. For example, if you want to gather information about GitLab and the system it runs on.
 
 ```bash
 docker run -d [OPTIONS] sameersbn/gitlab app:rake gitlab:env:info
