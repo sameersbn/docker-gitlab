@@ -23,6 +23,7 @@
     - [SSH Login](#ssh-login)
     - [Taking Backups](#taking-backups)
     - [Restoring Backups](#restoring-backups)
+    - [Automated Backups](#automated-backups)
 - [Upgrading](#upgrading)
 - [Rake Tasks](#rake-tasks)
 - [References](#references)
@@ -266,6 +267,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_EMAIL**: The email address for the GitLab server. Defaults to gitlab@localhost.
 - **GITLAB_SUPPORT**: The support email address for the GitLab server. Defaults to support@localhost.
 - **GITLAB_SIGNUP**: Enable or disable user signups. Default is false.
+- **GITLAB_BACKUPS**: Setup cron job to automatic backups. Possible values disable, daily or monthly. Disabled by default
 - **GITLAB_SHELL_SSH_PORT**: The ssh port number. Defaults to 22.
 - **REDIS_HOST**: The hostname of the redis server. Defaults to localhost
 - **REDIS_PORT**: The connection port of the redis server. Defaults to 6379.
@@ -328,6 +330,12 @@ docker run -i -t -rm [OPTIONS] sameersbn/gitlab app:rake gitlab:backup:restore
 ```
 
 The restore operation will list all available backups in reverse chronological order. Select the backup you want to restore and gitlab will do its job.
+
+### Automated Backups
+
+The image can be configured to automatically take backups on a daily or monthly basis. Adding -e "GITLAB_BACKUPS=daily" to the docker run command will enable daily backups, while -e "GITLAB_BACKUPS=monthly" will enable monthly backups.
+
+Daily backups are created at 02 am (UTC) everyday, while monthly backups are created on the 1st of every month at the same time as the daily backups.
 
 ## Upgrading
 
