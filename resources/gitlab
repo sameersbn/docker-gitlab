@@ -9,6 +9,8 @@ GITLAB_EMAIL=${GITLAB_EMAIL:-gitlab@localhost}
 GITLAB_SUPPORT=${GITLAB_SUPPORT:-support@localhost}
 GITLAB_SIGNUP=${GITLAB_SIGNUP:-false}
 
+GITLAB_SHELL_SSH_PORT=${GITLAB_SHELL_SSH_PORT:-22}
+
 REDIS_HOST=${REDIS_HOST:-localhost}
 REDIS_PORT=${REDIS_PORT:-6379}
 
@@ -151,6 +153,8 @@ sudo -u git -H sed 's/{{GITLAB_PORT}}/'${GITLAB_PORT}'/' -i /home/git/gitlab/con
 sudo -u git -H sed 's/{{GITLAB_HTTPS}}/'${GITLAB_HTTPS}'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_EMAIL}}/'${GITLAB_EMAIL}'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_SUPPORT}}/'${GITLAB_SUPPORT}'/' -i /home/git/gitlab/config/gitlab.yml
+
+sudo -u git -H sed 's/{{GITLAB_SHELL_SSH_PORT}}/'${GITLAB_SHELL_SSH_PORT}'/' -i /home/git/gitlab/config/gitlab.yml
 
 # configure gitlab signup configuration
 sudo -u git -H sed 's/{{GITLAB_SIGNUP}}/'${GITLAB_SIGNUP}'/' -i /home/git/gitlab/config/gitlab.yml
