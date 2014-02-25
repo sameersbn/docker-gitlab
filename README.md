@@ -268,6 +268,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_SUPPORT**: The support email address for the GitLab server. Defaults to support@localhost.
 - **GITLAB_SIGNUP**: Enable or disable user signups. Default is false.
 - **GITLAB_BACKUPS**: Setup cron job to automatic backups. Possible values disable, daily or monthly. Disabled by default
+- **GITLAB_BACKUP_EXPIRY**: Configure how long to keep backups before they are deleted. By default when automated backups are disabled backups are kept forever (0 seconds), else the backups expire in 7 days (604800 seconds).
 - **GITLAB_SHELL_SSH_PORT**: The ssh port number. Defaults to 22.
 - **REDIS_HOST**: The hostname of the redis server. Defaults to localhost
 - **REDIS_PORT**: The connection port of the redis server. Defaults to 6379.
@@ -336,6 +337,8 @@ The restore operation will list all available backups in reverse chronological o
 The image can be configured to automatically take backups on a daily or monthly basis. Adding -e "GITLAB_BACKUPS=daily" to the docker run command will enable daily backups, while -e "GITLAB_BACKUPS=monthly" will enable monthly backups.
 
 Daily backups are created at 02 am (UTC) everyday, while monthly backups are created on the 1st of every month at the same time as the daily backups.
+
+By default, when automated backups are enabled, backups are held for a period of 7 days. While when automated backups are disabled, the backups are held for an infinite period of time. This can behaviour can be configured via the GITLAB_BACKUP_EXPIRY option.
 
 ## Upgrading
 

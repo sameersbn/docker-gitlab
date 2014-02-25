@@ -10,6 +10,7 @@ GITLAB_SUPPORT=${GITLAB_SUPPORT:-support@localhost}
 GITLAB_SIGNUP=${GITLAB_SIGNUP:-false}
 
 GITLAB_BACKUPS=${GITLAB_BACKUPS:-disable}
+GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-}
 
 GITLAB_SHELL_SSH_PORT=${GITLAB_SHELL_SSH_PORT:-22}
 
@@ -149,12 +150,19 @@ sudo -u git -H git config --global user.name "GitLab"
 sudo -u git -H git config --global user.email "${GITLAB_EMAIL}"
 sudo -u git -H git config --global core.autocrlf input
 
+# setup backup keep_time if not specified
+case "${GITLAB_BACKUPS}" in
+	daily|monthly) GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-604800} ;;
+	disable|*) GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-0} ;;
+esac
+
 # configure server url
 sudo -u git -H sed 's/{{GITLAB_HOST}}/'${GITLAB_HOST}'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_PORT}}/'${GITLAB_PORT}'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_HTTPS}}/'${GITLAB_HTTPS}'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_EMAIL}}/'${GITLAB_EMAIL}'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_SUPPORT}}/'${GITLAB_SUPPORT}'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_BACKUP_EXPIRY}}/'${GITLAB_BACKUP_EXPIRY}'/' -i /home/git/gitlab/config/gitlab.yml
 
 sudo -u git -H sed 's/{{GITLAB_SHELL_SSH_PORT}}/'${GITLAB_SHELL_SSH_PORT}'/' -i /home/git/gitlab/config/gitlab.yml
 
