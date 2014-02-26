@@ -41,6 +41,11 @@ case "${DB_TYPE}" in
 	*) echo "Unsupported database adapter. Available adapters are mysql and postgres." && exit 1 ;;
 esac
 
+case "${GITLAB_BACKUPS}" in
+	daily|monthly) GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-604800} ;;
+	disable|*) GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-0} ;;
+esac
+
 # generate a password for root.
 ROOT_PASSWORD=$(pwgen -c -n -1 12)
 echo "root:$ROOT_PASSWORD" | chpasswd
@@ -156,12 +161,6 @@ fi
 sudo -u git -H git config --global user.name "GitLab"
 sudo -u git -H git config --global user.email "${GITLAB_EMAIL}"
 sudo -u git -H git config --global core.autocrlf input
-
-# setup backup keep_time if not specified
-case "${GITLAB_BACKUPS}" in
-	daily|monthly) GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-604800} ;;
-	disable|*) GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-0} ;;
-esac
 
 # configure server url
 sudo -u git -H sed 's/{{GITLAB_HOST}}/'${GITLAB_HOST}'/' -i /home/git/gitlab/config/gitlab.yml
