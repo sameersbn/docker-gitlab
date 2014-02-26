@@ -34,6 +34,7 @@ sudo -u git -H cp /gitlab/setup/config/gitlabhq/database.yml config/database.yml
 sudo -u git -H cp /gitlab/setup/config/gitlabhq/sidekiq.yml config/sidekiq.yml
 sudo -u git -H cp /gitlab/setup/config/gitlabhq/unicorn.rb config/unicorn.rb
 sudo -u git -H cp /gitlab/setup/config/gitlabhq/rack_attack.rb config/initializers/rack_attack.rb
+sudo -u git -H cp /gitlab/setup/config/gitlabhq/smtp_settings.rb config/initializers/smtp_settings.rb
 
 # create required tmp and log directories
 sudo -u git -H mkdir -p tmp/pids/ tmp/sockets/
