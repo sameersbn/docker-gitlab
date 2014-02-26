@@ -1,6 +1,7 @@
 # Table of Contents
 - [Introduction](#introduction)
     - [Version](#version)
+    - [Changelog](Changelog.md)
 - [Hardware Requirements](#hardware-requirements)
     - [CPU](#cpu)
     - [Memory](#memory)
