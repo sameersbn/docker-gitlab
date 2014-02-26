@@ -336,7 +336,7 @@ The restore operation will list all available backups in reverse chronological o
 
 The image can be configured to automatically take backups on a daily or monthly basis. Adding -e "GITLAB_BACKUPS=daily" to the docker run command will enable daily backups, while -e "GITLAB_BACKUPS=monthly" will enable monthly backups.
 
-Daily backups are created at 02 am (UTC) everyday, while monthly backups are created on the 1st of every month at the same time as the daily backups.
+Daily backups are created at 4 am (UTC) everyday, while monthly backups are created on the 1st of every month at the same time as the daily backups.
 
 By default, when automated backups are enabled, backups are held for a period of 7 days. While when automated backups are disabled, the backups are held for an infinite period of time. This can behaviour can be configured via the GITLAB_BACKUP_EXPIRY option.
 

@@ -262,12 +262,12 @@ gitlab_start () {
 	case "${GITLAB_BACKUPS}" in
 		daily)
 			sudo -u git -H cat > /tmp/cron.git <<EOF
-00 02 * * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
+00 04 * * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
 EOF
 			;;
 		monthly)
 			sudo -u git -H cat > /tmp/cron.git <<EOF
-00 02 01 * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
+00 04 01 * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
 EOF
 			;;
 	esac
