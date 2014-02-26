@@ -60,6 +60,7 @@ echo User: root Password: $ROOT_PASSWORD
 if [ -d /home/git/data/config ]; then
 	chown -R git:git /home/git/data/config
 	cd /home/git/data/config
+	[ -f nginx/gitlab ] 	           && cp nginx/gitlab /etc/nginx/sites-available/gitlab
 	[ -f gitlab-shell/config.yml ] 	 && sudo -u git -H cp gitlab-shell/config.yml 	/home/git/gitlab-shell/config.yml
 	[ -f gitlabhq/gitlab.yml ] 			 && sudo -u git -H cp gitlabhq/gitlab.yml 			/home/git/gitlab/config/gitlab.yml
 	[ -f gitlabhq/resque.yml ] 			 && sudo -u git -H cp gitlabhq/resque.yml 			/home/git/gitlab/config/resque.yml
@@ -69,6 +70,9 @@ if [ -d /home/git/data/config ]; then
 	[ -f gitlabhq/rack_attack.rb ] 	 && sudo -u git -H cp gitlabhq/rack_attack.rb 	/home/git/gitlab/config/initializers/rack_attack.rb
 	[ -f gitlabhq/smtp_settings.rb ] && sudo -u git -H cp gitlabhq/smtp_settings.rb /home/git/gitlab/config/initializers/smtp_settings.rb
 fi
+
+sed 's/{{YOUR_SERVER_FQDN}}/localhost/' -i /etc/nginx/sites-available/gitlab
+supervisorctl restart nginx
 
 # start mysql server if ${DB_HOST} is localhost
 if [ "${DB_HOST}" == "localhost" ]; then
