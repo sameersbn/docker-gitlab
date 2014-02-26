@@ -60,13 +60,13 @@ echo User: root Password: $ROOT_PASSWORD
 if [ -d /home/git/data/config ]; then
 	chown -R git:git /home/git/data/config
 	cd /home/git/data/config
-	[ -f gitlab-shell/config.yml ] 	&& sudo -u git -H cp gitlab-shell/config.yml 	/home/git/gitlab-shell/config.yml
-	[ -f gitlabhq/gitlab.yml ] 			&& sudo -u git -H cp gitlabhq/gitlab.yml 			/home/git/gitlab/config/gitlab.yml
-	[ -f gitlabhq/resque.yml ] 			&& sudo -u git -H cp gitlabhq/resque.yml 			/home/git/gitlab/config/resque.yml
-	[ -f gitlabhq/database.yml ] 		&& sudo -u git -H cp gitlabhq/database.yml 		/home/git/gitlab/config/database.yml
-	[ -f gitlabhq/sidekiq.yml ] 		&& sudo -u git -H cp gitlabhq/sidekiq.yml 		/home/git/gitlab/config/sidekiq.yml
-	[ -f gitlabhq/unicorn.rb ] 			&& sudo -u git -H cp gitlabhq/unicorn.rb 			/home/git/gitlab/config/unicorn.rb
-	[ -f gitlabhq/rack_attack.rb ] 	&& sudo -u git -H cp gitlabhq/rack_attack.rb 	/home/git/gitlab/config/initializers/rack_attack.rb
+	[ -f gitlab-shell/config.yml ] 	 && sudo -u git -H cp gitlab-shell/config.yml 	/home/git/gitlab-shell/config.yml
+	[ -f gitlabhq/gitlab.yml ] 			 && sudo -u git -H cp gitlabhq/gitlab.yml 			/home/git/gitlab/config/gitlab.yml
+	[ -f gitlabhq/resque.yml ] 			 && sudo -u git -H cp gitlabhq/resque.yml 			/home/git/gitlab/config/resque.yml
+	[ -f gitlabhq/database.yml ] 		 && sudo -u git -H cp gitlabhq/database.yml 		/home/git/gitlab/config/database.yml
+	[ -f gitlabhq/sidekiq.yml ] 		 && sudo -u git -H cp gitlabhq/sidekiq.yml 		  /home/git/gitlab/config/sidekiq.yml
+	[ -f gitlabhq/unicorn.rb ] 			 && sudo -u git -H cp gitlabhq/unicorn.rb 			/home/git/gitlab/config/unicorn.rb
+	[ -f gitlabhq/rack_attack.rb ] 	 && sudo -u git -H cp gitlabhq/rack_attack.rb 	/home/git/gitlab/config/initializers/rack_attack.rb
 	[ -f gitlabhq/smtp_settings.rb ] && sudo -u git -H cp gitlabhq/smtp_settings.rb /home/git/gitlab/config/initializers/smtp_settings.rb
 fi
 
