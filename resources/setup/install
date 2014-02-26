@@ -2,9 +2,6 @@
 
 set -e
 
-# export http_proxy=http://192.168.1.1:3128
-# export ftp_proxy=http://192.168.1.1:3128
-
 # add git user
 adduser --disabled-login --gecos 'GitLab' git
 
