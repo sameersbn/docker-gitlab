@@ -23,6 +23,7 @@ SIDEKIQ_CONCURRENCY=${SIDEKIQ_CONCURRENCY:-5}
 
 DB_TYPE=${DB_TYPE:-mysql}
 DB_HOST=${DB_HOST:-localhost}
+DB_PORT=${DB_PORT:-}
 DB_NAME=${DB_NAME:-gitlabhq_production}
 DB_USER=${DB_USER:-root}
 DB_PASS=${DB_PASS:-}
@@ -33,6 +34,12 @@ SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
 SMTP_PORT=${SMTP_PORT:-587}
 SMTP_USER=${SMTP_USER:-}
 SMTP_PASS=${SMTP_PASS:-}
+
+case "${DB_TYPE}" in
+	mysql) DB_PORT=${DB_PORT:-3306} ;;
+	postgres) DB_PORT=${DB_PORT:-5432} ;;
+	*) echo "Unsupported database adapter. Available adapters are mysql and postgres." && exit 1 ;;
+esac
 
 # generate a password for root.
 ROOT_PASSWORD=$(pwgen -c -n -1 12)
@@ -181,7 +188,9 @@ elif [ "${DB_TYPE}" == "mysql" ]; then
 else
 	echo "Invalid database type: '$DB_TYPE'. Supported choices: [mysql, postgres]."
 fi
+
 sudo -u git -H sed 's/{{DB_HOST}}/'${DB_HOST}'/' -i /home/git/gitlab/config/database.yml
+sudo -u git -H sed 's/{{DB_PORT}}/'${DB_PORT}'/' -i /home/git/gitlab/config/database.yml
 sudo -u git -H sed 's/{{DB_NAME}}/'${DB_NAME}'/' -i /home/git/gitlab/config/database.yml
 sudo -u git -H sed 's/{{DB_USER}}/'${DB_USER}'/' -i /home/git/gitlab/config/database.yml
 sudo -u git -H sed 's/{{DB_PASS}}/'${DB_PASS}'/' -i /home/git/gitlab/config/database.yml

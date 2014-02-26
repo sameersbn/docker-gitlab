@@ -277,6 +277,7 @@ Below is the complete list of available options that can be used to customize yo
 - **SIDEKIQ_CONCURRENCY**: The number of concurrent sidekiq jobs to run. Defaults to 5
 - **DB_TYPE**: The database type. Possible values: mysql, postgres. Defaults to mysql.
 - **DB_HOST**: The database server hostname. Defaults to localhost.
+- **DB_PORT**: The database server port. Defaults to 3306 for mysql and 5432 for postgresql.
 - **DB_NAME**: The database database name. Defaults to gitlabhq_production
 - **DB_USER**: The database database user. Defaults to root
 - **DB_PASS**: The database database password. Defaults to no password
