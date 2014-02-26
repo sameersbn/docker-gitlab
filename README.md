@@ -219,10 +219,12 @@ The mail configuration should be specified using environment variables while sta
 
 The following environment variables need to be specified to get mail support to work.
 
+* SMTP_DOMAIN (defaults to www.gmail.com)
 * SMTP_HOST (defaults to smtp.gmail.com)
 * SMTP_PORT (defaults to 587)
 * SMTP_USER
 * SMTP_PASS
+* SMTP_STARTTLS (defaults to true)
 
 ```bash
 docker run -d \
@@ -282,10 +284,12 @@ Below is the complete list of available options that can be used to customize yo
 - **DB_USER**: The database database user. Defaults to root
 - **DB_PASS**: The database database password. Defaults to no password
 - **DB_POOL**: The database database connection pool count. Defaults to 10.
+- **SMTP_DOMAIN**: SMTP domain. Defaults to www.gmail.com
 - **SMTP_HOST**: SMTP server host. Defaults to smtp.gmail.com.
 - **SMTP_PORT**: SMTP server port. Defaults to 587.
 - **SMTP_USER**: SMTP username.
 - **SMTP_PASS**: SMTP password.
+- **SMTP_STARTTLS**: Enable STARTTLS. Defaults to true.
 
 ## Maintenance
 
@@ -396,5 +400,4 @@ For a complete list of available rake tasks please refer https://github.com/gitl
 ## References
   * https://github.com/gitlabhq/gitlabhq
   * https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md
-  * https://rtcamp.com/tutorials/linux/ubuntu-postfix-gmail-smtp
   * https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md

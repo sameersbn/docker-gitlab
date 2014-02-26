@@ -30,10 +30,12 @@ DB_PASS=${DB_PASS:-}
 DB_INIT=${DB_INIT:-}
 DB_POOL=${DB_POOL:-10}
 
+SMTP_DOMAIN=${SMTP_DOMAIN:-www.gmail.com}
 SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
 SMTP_PORT=${SMTP_PORT:-587}
 SMTP_USER=${SMTP_USER:-}
 SMTP_PASS=${SMTP_PASS:-}
+SMTP_STARTTLS=${SMTP_STARTTLS:-true}
 
 case "${DB_TYPE}" in
 	mysql) DB_PORT=${DB_PORT:-3306} ;;
@@ -65,6 +67,7 @@ if [ -d /home/git/data/config ]; then
 	[ -f gitlabhq/sidekiq.yml ] 		&& sudo -u git -H cp gitlabhq/sidekiq.yml 		/home/git/gitlab/config/sidekiq.yml
 	[ -f gitlabhq/unicorn.rb ] 			&& sudo -u git -H cp gitlabhq/unicorn.rb 			/home/git/gitlab/config/unicorn.rb
 	[ -f gitlabhq/rack_attack.rb ] 	&& sudo -u git -H cp gitlabhq/rack_attack.rb 	/home/git/gitlab/config/initializers/rack_attack.rb
+	[ -f gitlabhq/smtp_settings.rb ] && sudo -u git -H cp gitlabhq/smtp_settings.rb /home/git/gitlab/config/initializers/smtp_settings.rb
 fi
 
 # start mysql server if ${DB_HOST} is localhost
@@ -131,32 +134,6 @@ EOF
 	supervisorctl update
 fi
 
-# configure postfix for mail delivery
-if [ -n "${SMTP_HOST}" -a -n "${SMTP_USER}" -a -n "${SMTP_PASS}" ]; then
-	cat >> /etc/postfix/main.cf <<EOF
-
-relayhost = [${SMTP_HOST}]:${SMTP_PORT}
-smtp_sasl_auth_enable = yes
-smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
-smtp_sasl_security_options = noanonymous
-smtp_tls_CAfile = /etc/postfix/cacert.pem
-smtp_use_tls = yes
-EOF
-
-	cat > /etc/postfix/sasl_passwd <<EOF
-[${SMTP_HOST}]:${SMTP_PORT}    ${SMTP_USER}:${SMTP_PASS}
-EOF
-
-	touch /etc/mailname
-	chmod 400 /etc/postfix/sasl_passwd
-	postmap /etc/postfix/sasl_passwd
-
-	cat /etc/ssl/certs/Thawte_Premium_Server_CA.pem | sudo tee -a /etc/postfix/cacert.pem
-
-	# start ppostmap /etc/postfix/sasl_passwdotouch /etc/mailnamestfix mail server
-	/etc/init.d/postfix start
-fi
-
 # configure git for the 'git' user
 sudo -u git -H git config --global user.name "GitLab"
 sudo -u git -H git config --global user.email "${GITLAB_EMAIL}"
@@ -211,6 +188,14 @@ sed 's/{{UNICORN_WORKERS}}/'${UNICORN_WORKERS}'/' -i /home/git/gitlab/config/uni
 
 # configure unicorn timeout
 sed 's/{{UNICORN_TIMEOUT}}/'${UNICORN_TIMEOUT}'/' -i /home/git/gitlab/config/unicorn.rb
+
+# configure mail delivery
+sed 's/{{SMTP_HOST}}/'${SMTP_HOST}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sed 's/{{SMTP_PORT}}/'${SMTP_PORT}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sed 's/{{SMTP_USER}}/'${SMTP_USER}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sed 's/{{SMTP_PASS}}/'${SMTP_PASS}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sed 's/{{SMTP_DOMAIN}}/'${SMTP_DOMAIN}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sed 's/{{SMTP_STARTTLS}}/'${SMTP_STARTTLS}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
 
 # take ownership of /home/git/data
 chown git:git /home/git/data
