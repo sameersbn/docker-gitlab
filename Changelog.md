@@ -1,6 +1,6 @@
 # Changelog
 
-**latest a.k.a HEAD**
+**v6.6.4**
 - added changelog
 - removed postfix mail delivery
 - added SMTP_DOMAIN configuration option
@@ -9,7 +9,7 @@
 - added DB_PORT configuration option
 - changed backup time to 4am (UTC)
 
-**v.6.6.2**
+**v6.6.2**
 - upgraded to gitlab-6.6.2
 - added automated daily/monthly backups feature
 - documented ssh login details for maintenance tasks.

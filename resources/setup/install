@@ -22,7 +22,7 @@ sudo -u git -H ./bin/install
 
 # install gitlab
 sudo -u git -H mkdir -p /home/git/gitlab
-wget "https://github.com/gitlabhq/gitlabhq/archive/v6.6.2.tar.gz" -O - | tar -zvxf - --strip=1 -C /home/git/gitlab/
+wget "https://github.com/gitlabhq/gitlabhq/archive/v6.6.4.tar.gz" -O - | tar -zvxf - --strip=1 -C /home/git/gitlab/
 chown -R git:git /home/git/gitlab/
 
 cd /home/git/gitlab
