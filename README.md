@@ -90,15 +90,15 @@ Alternately you can build the image yourself.
 ```bash
 git clone https://github.com/sameersbn/docker-gitlab.git
 cd docker-gitlab
-sudo docker build -t="$USER/gitlab" .
+docker build -t="$USER/gitlab" .
 ```
 
 # Quick Start
 Run the gitlab image
 
 ```bash
-GITLAB=$(sudo docker run -d sameersbn/gitlab)
-GITLAB_IP=$(sudo docker inspect $GITLAB | grep IPAddres | awk -F'"' '{print $4}')
+GITLAB=$(docker run -d sameersbn/gitlab)
+GITLAB_IP=$(docker inspect $GITLAB | grep IPAddres | awk -F'"' '{print $4}')
 ```
 
 Access the GitLab application
