@@ -112,19 +112,7 @@ if [ "${DB_HOST}" == "localhost" ]; then
 fi
 
 if [ "${REDIS_HOST}" == "localhost" ]; then
-	sed 's/daemonize yes/daemonize no/' -i /etc/redis/redis.conf
-	cat > /etc/supervisor/conf.d/redis-server.conf <<EOF
-[program:redis-server]
-priority=20
-directory=/tmp
-command=/usr/bin/redis-server /etc/redis/redis.conf
-user=redis
-autostart=true
-autorestart=true
-stdout_logfile=/var/log/supervisor/%(program_name)s.log
-stderr_logfile=/var/log/supervisor/%(program_name)s.log
-EOF
-	supervisorctl update
+	supervisorctl start redis-server
 fi
 
 # configure git for the 'git' user
