@@ -72,7 +72,7 @@ if [ -d /home/git/data/config ]; then
 fi
 
 sed 's/{{YOUR_SERVER_FQDN}}/localhost/' -i /etc/nginx/sites-available/gitlab
-supervisorctl restart nginx
+supervisorctl start nginx
 
 # start mysql server if ${DB_HOST} is localhost
 if [ "${DB_HOST}" == "localhost" ]; then
