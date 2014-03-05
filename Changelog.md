@@ -1,6 +1,7 @@
 # Changelog
 
-**latest**
+**6.6.5**
+- upgraded to gitlan-6.6.5
 
 **v6.6.4**
 - upgraded to gitlab-6.6.4
