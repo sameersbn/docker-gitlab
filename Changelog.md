@@ -1,6 +1,9 @@
 # Changelog
 
+**latest**
+
 **v6.6.4**
+- upgraded to gitlab-6.6.4
 - added changelog
 - removed postfix mail delivery
 - added SMTP_DOMAIN configuration option
