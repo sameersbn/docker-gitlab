@@ -80,17 +80,6 @@ if [ "${DB_HOST}" == "localhost" ]; then
 		echo "DB_TYPE 'postgres' is not supported internally. Please provide DB_HOST."
 		exit 1
 	fi
-	cat > /etc/supervisor/conf.d/mysqld.conf <<EOF
-[program:mysqld]
-priority=20
-directory=/tmp
-command=/usr/bin/mysqld_safe
-user=root
-autostart=true
-autorestart=true
-stdout_logfile=/var/log/supervisor/%(program_name)s.log
-stderr_logfile=/var/log/supervisor/%(program_name)s.log
-EOF
 
 	# fix permissions and ownership of /var/lib/mysql
 	chown -R mysql:mysql /var/lib/mysql
@@ -101,7 +90,7 @@ EOF
 		mysql_install_db --user=mysql
 	fi
 
-	supervisorctl update
+	supervisorctl start mysqld
 
 	# wait for mysql server to start (max 120 seconds)
 	timeout=120
