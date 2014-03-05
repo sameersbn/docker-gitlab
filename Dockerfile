@@ -5,7 +5,7 @@ RUN sed 's/main$/main universe/' -i /etc/apt/sources.list
 RUN apt-get update && apt-mark hold initscripts && apt-get upgrade -y && apt-get clean # 20140305
 
 # essentials
-RUN apt-get install -y vim curl wget sudo net-tools && \
+RUN apt-get install -y vim curl wget sudo net-tools pwgen && \
 	apt-get install -y logrotate supervisor openssh-server && \
 	apt-get clean
 
@@ -31,7 +31,6 @@ RUN wget ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p353.tar.gz -O - | tar 
 		cd /tmp && rm -rf /tmp/ruby-2.0.0-p353 && \
 		gem install --no-ri --no-rdoc bundler
 
-RUN apt-get install -y pwgen
 RUN apt-get update && apt-get upgrade -y && apt-get clean # 20140225
 
 ADD resources/ /gitlab/
