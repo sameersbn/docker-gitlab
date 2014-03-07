@@ -300,7 +300,7 @@ There are two methods to gain root login to the container, the first method is t
 The second method is use the dynamically generated password. Every time the container is started a random password is generated using the pwgen tool and assigned to the root user. This password can be fetched from the docker logs.
 
 ```bash
-docker logs gitlab 2>&1 | head -n1
+docker logs gitlab 2>&1 | grep '^User: ' | tail -n1
 ```
 This password is not persistent and changes every time the image is executed.
 
