@@ -1,5 +1,8 @@
 # Changelog
 
+**latest a.k.a HEAD**
+- do not perform system upgrades (http://crosbymichael.com/dockerfile-best-practices-take-2.html)
+
 **6.6.5**
 - upgraded to gitlan-6.6.5
 
