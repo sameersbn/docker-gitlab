@@ -213,7 +213,7 @@ chown -R git:git /home/git/data/.ssh
 
 cd /home/git/gitlab/
 
-gitlab_start () {
+appStart () {
 	echo "Starting gitlab server..."
 	# reset the database if the --db-init switch was given.
 	if [ "$DB_INIT" == "yes" ]; then
@@ -255,7 +255,7 @@ EOF
 	tail -F /var/log/nginx/gitlab_access.log
 }
 
-gitlab_rake () {
+appRake () {
 	if [ -z ${1} ]; then
 		echo "Please specify the rake task to execute. See https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks"
 		return 1
@@ -288,7 +288,7 @@ gitlab_rake () {
 	fi
 }
 
-gitlab_help () {
+appHelp () {
 	echo "Available options:"
 	echo " app:start          - Starts the gitlab server (default)"
 	echo " app:rake <task>    - Execute a rake task."
@@ -298,14 +298,14 @@ gitlab_help () {
 
 case "$1" in
 	app:start)
-		gitlab_start
+		appStart
 		;;
 	app:rake)
 		shift 1
-		gitlab_rake $@
+		appRake $@
 		;;
 	app:help)
-		gitlab_help
+		appHelp
 		;;
 	*)
 		if [ -x $1 ]; then
@@ -316,7 +316,7 @@ case "$1" in
 				shift 1
 				$prog $@
 			else
-				gitlab_help
+				appHelp
 			fi
 		fi
 		;;
