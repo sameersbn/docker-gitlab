@@ -17,7 +17,7 @@ wget "https://github.com/gitlabhq/gitlab-shell/archive/v1.8.0.tar.gz" -O - | tar
 chown -R git:git /home/git/gitlab-shell/
 
 cd /home/git/gitlab-shell
-sudo -u git -H cp -a /gitlab/setup/config/gitlab-shell/config.yml config.yml
+sudo -u git -H cp -a /app/setup/config/gitlab-shell/config.yml config.yml
 sudo -u git -H ./bin/install
 
 # install gitlab
@@ -28,14 +28,14 @@ chown -R git:git /home/git/gitlab/
 cd /home/git/gitlab
 
 # copy default configurations
-cp /gitlab/setup/config/nginx/gitlab /etc/nginx/sites-available/gitlab
-sudo -u git -H cp /gitlab/setup/config/gitlabhq/gitlab.yml config/gitlab.yml
-sudo -u git -H cp /gitlab/setup/config/gitlabhq/resque.yml config/resque.yml
-sudo -u git -H cp /gitlab/setup/config/gitlabhq/database.yml config/database.yml
-sudo -u git -H cp /gitlab/setup/config/gitlabhq/sidekiq.yml config/sidekiq.yml
-sudo -u git -H cp /gitlab/setup/config/gitlabhq/unicorn.rb config/unicorn.rb
-sudo -u git -H cp /gitlab/setup/config/gitlabhq/rack_attack.rb config/initializers/rack_attack.rb
-sudo -u git -H cp /gitlab/setup/config/gitlabhq/smtp_settings.rb config/initializers/smtp_settings.rb
+cp /app/setup/config/nginx/gitlab /etc/nginx/sites-available/gitlab
+sudo -u git -H cp /app/setup/config/gitlabhq/gitlab.yml config/gitlab.yml
+sudo -u git -H cp /app/setup/config/gitlabhq/resque.yml config/resque.yml
+sudo -u git -H cp /app/setup/config/gitlabhq/database.yml config/database.yml
+sudo -u git -H cp /app/setup/config/gitlabhq/sidekiq.yml config/sidekiq.yml
+sudo -u git -H cp /app/setup/config/gitlabhq/unicorn.rb config/unicorn.rb
+sudo -u git -H cp /app/setup/config/gitlabhq/rack_attack.rb config/initializers/rack_attack.rb
+sudo -u git -H cp /app/setup/config/gitlabhq/smtp_settings.rb config/initializers/smtp_settings.rb
 
 # create required tmp and log directories
 sudo -u git -H mkdir -p tmp/pids/ tmp/sockets/
@@ -51,9 +51,9 @@ sudo -u git -H ln -s /home/git/data/backups tmp/backups
 sudo -u git -H touch log/production.log
 
 # install gems required by gitlab
-if [ -d "/gitlab/setup/cache" ]; then
+if [ -d "/app/setup/cache" ]; then
   # offline gem installation
-  mv /gitlab/setup/cache vendor/
+  mv /app/setup/cache vendor/
   chown -R git:git vendor/cache
   sudo -u git -H bundle install --local --deployment --without development test aws
 else
