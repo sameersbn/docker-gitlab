@@ -31,9 +31,9 @@ RUN wget ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p353.tar.gz -O - | tar 
 		cd /tmp && rm -rf /tmp/ruby-2.0.0-p353 && \
 		gem install --no-ri --no-rdoc bundler
 
-ADD assets/ /gitlab/
-RUN mv /gitlab/.vimrc /gitlab/.bash_aliases /root/
-RUN chmod 755 /gitlab/init /gitlab/setup/install && /gitlab/setup/install
+ADD assets/ /app/
+RUN mv /app/.vimrc /app/.bash_aliases /root/
+RUN chmod 755 /app/init /app/setup/install && /app/setup/install
 
 ADD authorized_keys /root/.ssh/
 RUN chmod 700 /root/.ssh && chmod 600 /root/.ssh/authorized_keys && chown root:root -R /root/.ssh
@@ -41,5 +41,5 @@ RUN chmod 700 /root/.ssh && chmod 600 /root/.ssh/authorized_keys && chown root:r
 EXPOSE 22
 EXPOSE 80
 
-ENTRYPOINT ["/gitlab/init"]
+ENTRYPOINT ["/app/init"]
 CMD ["app:start"]
