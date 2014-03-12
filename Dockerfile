@@ -31,7 +31,7 @@ RUN wget ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p353.tar.gz -O - | tar 
 		cd /tmp && rm -rf /tmp/ruby-2.0.0-p353 && \
 		gem install --no-ri --no-rdoc bundler
 
-ADD resources/ /gitlab/
+ADD assets/ /gitlab/
 RUN mv /gitlab/.vimrc /gitlab/.bash_aliases /root/
 RUN chmod 755 /gitlab/gitlab /gitlab/setup/install && /gitlab/setup/install
 
