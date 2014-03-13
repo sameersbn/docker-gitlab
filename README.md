@@ -293,9 +293,9 @@ Below is the complete list of available options that can be used to customize yo
 - **SMTP_PASS**: SMTP password.
 - **SMTP_STARTTLS**: Enable STARTTLS. Defaults to true.
 
-## Maintenance
+# Maintenance
 
-### SSH Login
+## SSH Login
 There are two methods to gain root login to the container, the first method is to add your public rsa key to the authorized_keys file and build the image.
 
 The second method is use the dynamically generated password. Every time the container is started a random password is generated using the pwgen tool and assigned to the root user. This password can be fetched from the docker logs.
@@ -305,7 +305,7 @@ docker logs gitlab 2>&1 | grep '^User: ' | tail -n1
 ```
 This password is not persistent and changes every time the image is executed.
 
-### Creating backups
+## Creating backups
 
 Gitlab defines a rake task to easily take a backup of your gitlab installation. The backup consists of all git repositories, uploaded files and as you might expect, the sql database.
 
@@ -324,7 +324,7 @@ docker run -name gitlab -i -t -rm [OPTIONS] \
 
 A backup will be created in the backups folder of the [Data Store](#data-store)
 
-### Restoring Backups
+## Restoring Backups
 
 Gitlab defines a rake task to easily restore a backup of your gitlab installation. Before performing the restore operation please make sure that the gitlab image is not running.
 
@@ -341,7 +341,7 @@ docker run -name gitlab -i -t -rm [OPTIONS] \
 
 The restore operation will list all available backups in reverse chronological order. Select the backup you want to restore and gitlab will do its job.
 
-### Automated Backups
+## Automated Backups
 
 The image can be configured to automatically take backups on a daily or monthly basis. Adding -e "GITLAB_BACKUPS=daily" to the docker run command will enable daily backups, while -e "GITLAB_BACKUPS=monthly" will enable monthly backups.
 
@@ -349,7 +349,7 @@ Daily backups are created at 4 am (UTC) everyday, while monthly backups are crea
 
 By default, when automated backups are enabled, backups are held for a period of 7 days. While when automated backups are disabled, the backups are held for an infinite period of time. This can behaviour can be configured via the GITLAB_BACKUP_EXPIRY option.
 
-## Upgrading
+# Upgrading
 
 GitLabHQ releases new versions on the 22nd of every month, bugfix releases immediately follow. I update this project almost immediately when a release is made (at least it has been the case so far). If you are using the image in production environments I recommend that you delay updates by a couple of days after the gitlab release, allowing some time for the dust to settle down.
 
