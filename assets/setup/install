@@ -66,6 +66,7 @@ chown -R git:git /home/git/
 
 # install gitlab bootscript
 cp lib/support/init.d/gitlab /etc/init.d/gitlab
+chmod +x /etc/init.d/gitlab
 
 # install logrotate configuration
 cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
