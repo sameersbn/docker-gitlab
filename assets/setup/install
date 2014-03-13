@@ -65,13 +65,13 @@ fi
 chown -R git:git /home/git/
 
 # install gitlab bootscript
-sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
+cp lib/support/init.d/gitlab /etc/init.d/gitlab
 
 # install logrotate configuration
-sudo cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
+cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
 
 # copy nginx configuration
-sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
+ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
 # create the /var/run/sshd directory (required for sshd to start)
 mkdir -p /var/run/sshd
