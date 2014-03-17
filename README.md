@@ -79,7 +79,7 @@ Pull the latest version of the image from the docker index. This is the recommen
 docker pull sameersbn/gitlab
 ```
 
-Since version 6.5.0, the image builds are being tagged. You can now pull a particular version of gitlab by specifying the version number. For example,
+Since version 6.3.0, the image builds are being tagged. You can now pull a particular version of gitlab by specifying the version number. For example,
 
 ```bash
 docker pull sameersbn/gitlab:6.6.5
