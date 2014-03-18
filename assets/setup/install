@@ -13,7 +13,7 @@ sudo -u git -H mkdir -p /home/git/data
 
 # install gitlab-shell
 sudo -u git -H mkdir -p /home/git/gitlab-shell
-sudo -u git -H tar -zvxf /app/setup/gitlab-shell-1.8.0.tar.gz --strip=1 -C /home/git/gitlab-shell/
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-shell.git -b v1.8.0 /home/git/gitlab-shell
 
 cd /home/git/gitlab-shell
 sudo -u git -H cp -a /app/setup/config/gitlab-shell/config.yml config.yml
@@ -21,7 +21,7 @@ sudo -u git -H ./bin/install
 
 # install gitlab
 sudo -u git -H mkdir -p /home/git/gitlab
-sudo -u git -H tar -zvxf /app/setup/gitlabhq-6.6.5.tar.gz --strip=1 -C /home/git/gitlab/
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-6-stable /home/git/gitlab
 cd /home/git/gitlab
 
 # copy default configurations
