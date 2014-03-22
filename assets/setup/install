@@ -13,7 +13,7 @@ sudo -u git -H mkdir -p /home/git/data
 
 # install gitlab-shell
 sudo -u git -H mkdir -p /home/git/gitlab-shell
-wget "https://github.com/gitlabhq/gitlab-shell/archive/v1.8.0.tar.gz" -O - | tar -zvxf - --strip=1 -C /home/git/gitlab-shell/
+wget "https://github.com/gitlabhq/gitlab-shell/archive/v1.9.1.tar.gz" -O - | tar -zvxf - --strip=1 -C /home/git/gitlab-shell/
 chown -R git:git /home/git/gitlab-shell/
 
 cd /home/git/gitlab-shell
