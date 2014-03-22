@@ -1,6 +1,7 @@
 # Changelog
 
 **latest a.k.a HEAD**
+- upgrade gitlab-shell to 1.9.1
 - reorganize repo
 - do not perform system upgrades (http://crosbymichael.com/dockerfile-best-practices-take-2.html)
 
