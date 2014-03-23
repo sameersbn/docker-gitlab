@@ -267,7 +267,7 @@ docker run -name gitlab -d -h git.local.host \
 Below is the complete list of available options that can be used to customize your gitlab installation.
 
 - **GITLAB_HOST**: The hostname of the GitLab server. Defaults to localhost
-- **GITLAB_POST**: The port of the GitLab server. Defaults to 80
+- **GITLAB_PORT**: The port of the GitLab server. Defaults to 80
 - **GITLAB_EMAIL**: The email address for the GitLab server. Defaults to gitlab@localhost.
 - **GITLAB_SUPPORT**: The support email address for the GitLab server. Defaults to support@localhost.
 - **GITLAB_SIGNUP**: Enable or disable user signups. Default is false.
