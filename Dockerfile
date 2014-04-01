@@ -28,12 +28,9 @@ RUN apt-get install -y build-essential checkinstall \
 			libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev && \
 		apt-get clean
 
-RUN wget ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p353.tar.gz -O - | tar -zxf - -C /tmp/ && \
-		cd /tmp/ruby-2.0.0-p353/ && \
-		./configure --disable-install-rdoc --enable-pthread --prefix=/usr && \
-		make && make install && \
-		cd /tmp && rm -rf /tmp/ruby-2.0.0-p353 && \
-		gem install --no-ri --no-rdoc bundler
+RUN add-apt-repository -y ppa:brightbox/ruby-ng && apt-get update && \
+		apt-get install -y ruby2.0 ruby-switch ruby2.0-dev && apt-get clean && \
+		ruby-switch --set ruby2.0 && gem install --no-ri --no-rdoc bundler
 
 ADD assets/ /app/
 RUN mv /app/.vimrc /app/.bash_aliases /root/

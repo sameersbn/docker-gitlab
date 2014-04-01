@@ -1,5 +1,8 @@
 # Changelog
 
+**latest a.k.a HEAD**
+- install ruby2.0 from ppa
+
 **6.7.2**
 - upgrade gitlab to 6.7.2
 - upgrade gitlab-shell to 1.9.1
