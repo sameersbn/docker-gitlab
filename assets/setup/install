@@ -14,20 +14,27 @@ sudo -u git -H ln -s /home/git/data/.ssh /home/git/.ssh
 # create the data store
 sudo -u git -H mkdir -p /home/git/data
 
-# install gitlab-shell
+# install gitlab-shell, use local copy if available
 sudo -u git -H mkdir -p /home/git/gitlab-shell
-wget "https://github.com/gitlabhq/gitlab-shell/archive/v${SHELL_VERSION}.tar.gz" -O - | tar -zvxf - --strip=1 -C /home/git/gitlab-shell/
-chown -R git:git /home/git/gitlab-shell/
+if [ -f /app/setup/gitlab-shell-${SHELL_VERSION}.tar.gz ]; then
+  sudo -u git -H tar -zvxf /app/setup/gitlab-shell-${SHELL_VERSION}.tar.gz --strip=1 -C /home/git/gitlab-shell/
+else
+  wget "https://github.com/gitlabhq/gitlab-shell/archive/v${SHELL_VERSION}.tar.gz" -O - | tar -zvxf - --strip=1 -C /home/git/gitlab-shell/
+  chown -R git:git /home/git/gitlab-shell/
+fi
 
 cd /home/git/gitlab-shell
 sudo -u git -H cp -a /app/setup/config/gitlab-shell/config.yml config.yml
 sudo -u git -H ./bin/install
 
-# install gitlab
+# install gitlab, use local copy if available
 sudo -u git -H mkdir -p /home/git/gitlab
-wget "https://github.com/gitlabhq/gitlabhq/archive/v${GITLAB_VERSION}.tar.gz" -O - | tar -zvxf - --strip=1 -C /home/git/gitlab/
-chown -R git:git /home/git/gitlab/
-
+if [ -f /app/setup/gitlabhq-${GITLAB_VERSION}.tar.gz ]; then
+  sudo -u git -H tar -zvxf /app/setup/gitlabhq-${GITLAB_VERSION}.tar.gz --strip=1 -C /home/git/gitlab/
+else
+  wget "https://github.com/gitlabhq/gitlabhq/archive/v${GITLAB_VERSION}.tar.gz" -O - | tar -zvxf - --strip=1 -C /home/git/gitlab/
+  chown -R git:git /home/git/gitlab/
+fi
 cd /home/git/gitlab
 
 # copy default configurations
@@ -53,7 +60,7 @@ sudo -u git -H ln -s /home/git/data/backups tmp/backups
 # create production log
 sudo -u git -H touch log/production.log
 
-# install gems required by gitlab
+# install gems required by gitlab, use local cache if available
 if [ -d "/app/setup/cache" ]; then
   # offline gem installation
   mv /app/setup/cache vendor/
