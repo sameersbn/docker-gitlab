@@ -11,9 +11,8 @@ RUN dpkg-divert --local --rename --add /sbin/initctl && \
 		ln -sf /bin/true /sbin/initctl
 
 # essentials
-RUN apt-get install -y vim curl wget sudo net-tools pwgen unzip && \
-	apt-get install -y logrotate supervisor openssh-server && \
-	apt-get clean
+RUN apt-get install -y vim curl wget sudo net-tools pwgen unzip \
+			logrotate supervisor openssh-server && apt-get clean
 
 # build tools
 RUN apt-get install -y gcc make && apt-get clean
