@@ -18,13 +18,14 @@ RUN apt-get install -y vim curl wget sudo net-tools pwgen unzip \
 RUN apt-get install -y gcc make && apt-get clean
 
 # image specific
+RUN apt-get install -y python-software-properties && \
+		add-apt-repository -y ppa:git-core/ppa && apt-get update
+
 RUN apt-get install -y build-essential checkinstall zlib1g-dev libyaml-dev libssl-dev \
 		libgdbm-dev libreadline-dev libncurses5-dev libffi-dev && \
 		apt-get clean
 
-RUN apt-get install -y python-software-properties && \
-		add-apt-repository -y ppa:git-core/ppa && apt-get update && \
-		apt-get install -y libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev libmysqlclient-dev libpq-dev \
+RUN apt-get install -y libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev libmysqlclient-dev libpq-dev \
 		nginx git-core mysql-server redis-server python2.7 python-docutils postfix && \
 		apt-get clean
 
