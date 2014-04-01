@@ -6,7 +6,7 @@ RUN sed 's/main$/main universe/' -i /etc/apt/sources.list
 RUN apt-get update # 20140310
 
 # essentials
-RUN apt-get install -y vim curl wget sudo net-tools pwgen && \
+RUN apt-get install -y vim curl wget sudo net-tools pwgen unzip && \
 	apt-get install -y logrotate supervisor openssh-server && \
 	apt-get clean
 
@@ -14,7 +14,7 @@ RUN apt-get install -y vim curl wget sudo net-tools pwgen && \
 RUN apt-get install -y gcc make && apt-get clean
 
 # image specific
-RUN apt-get install -y unzip build-essential checkinstall zlib1g-dev libyaml-dev libssl-dev \
+RUN apt-get install -y build-essential checkinstall zlib1g-dev libyaml-dev libssl-dev \
 		libgdbm-dev libreadline-dev libncurses5-dev libffi-dev && \
 		apt-get clean
 
