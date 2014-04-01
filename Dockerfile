@@ -1,5 +1,6 @@
 FROM ubuntu:12.04
 MAINTAINER sameer@damagehead.com
+ENV DEBIAN_FRONTEND noninteractive
 
 RUN sed 's/main$/main universe/' -i /etc/apt/sources.list
 RUN apt-get update # 20140310
