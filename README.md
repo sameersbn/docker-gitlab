@@ -75,19 +75,19 @@ If you have enough RAM memory and a recent CPU the speed of GitLab is mainly lim
 
 Pull the latest version of the image from the docker index. This is the recommended method of installation as it is easier to update image in the future. These builds are performed by the **Docker Trusted Build** service.
 
-```bash
+```
 docker pull sameersbn/gitlab
 ```
 
 Since version 6.3.0, the image builds are being tagged. You can now pull a particular version of gitlab by specifying the version number. For example,
 
-```bash
+```
 docker pull sameersbn/gitlab:6.7.2
 ```
 
 Alternately you can build the image yourself.
 
-```bash
+```
 git clone https://github.com/sameersbn/docker-gitlab.git
 cd docker-gitlab
 docker build -t="$USER/gitlab" .
@@ -96,14 +96,14 @@ docker build -t="$USER/gitlab" .
 # Quick Start
 Run the gitlab image
 
-```bash
+```
 docker run -name gitlab -d sameersbn/gitlab
 GITLAB_IP=$(docker inspect gitlab | grep IPAddres | awk -F'"' '{print $4}')
 ```
 
 Access the GitLab application
 
-```bash
+```
 xdg-open "http://${GITLAB_IP}"
 ```
 
@@ -125,7 +125,7 @@ GitLab is a code hosting software and as such you don't want to lose your code w
 
 Volumes can be mounted in docker by specifying the **'-v'** option in the docker run command.
 
-```bash
+```
 mkdir /opt/gitlab/data
 docker run -name gitlab -d \
   -v /opt/gitlab/data:/home/git/data \
@@ -140,7 +140,7 @@ GitLab uses a database backend to store its data.
 #### Internal MySQL Server
 This docker image is configured to use a MySQL database backend. The database connection can be configured using environment variables. If not specified, the image will start a mysql server internally and use it. However in this case, the data stored in the mysql database will be lost if the container is stopped/deleted. To avoid this you should mount a volume at /var/lib/mysql.
 
-```bash
+```
 mkdir /opt/gitlab/mysql
 docker run -name gitlab -d \
   -v /opt/gitlab/data:/home/git/data \
@@ -154,7 +154,7 @@ The image can be configured to use an external MySQL database instead of startin
 
 Before you start the GitLab image create user and database for gitlab.
 
-```bash
+```
 mysql -uroot -p
 CREATE USER 'gitlab'@'%.%.%.%' IDENTIFIED BY 'password';
 CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
@@ -167,7 +167,7 @@ To make sure the database is initialized start the container with **app:rake git
 
 *Assuming that the mysql server host is 192.168.1.100*
 
-```bash
+```
 docker run -name gitlab -i -t -rm \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/data:/home/git/data \
@@ -176,7 +176,7 @@ docker run -name gitlab -i -t -rm \
 
 This will initialize the gitlab database. Now that the database is initialized, start the container normally.
 
-```bash
+```
 docker run -name gitlab -d \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/data:/home/git/data \
@@ -188,7 +188,7 @@ docker run -name gitlab -d \
 #### External PostgreSQL Server
 The image also supports using an external PostgreSQL Server. This is also controlled via environment variables.
 
-```bash
+```
 createuser gitlab
 createdb -O gitlab gitlabhq_production
 ```
@@ -199,7 +199,7 @@ To make sure the database is initialized start the container with **app:rake git
 
 *Assuming that the PostgreSQL server host is 192.168.1.100*
 
-```bash
+```
 docker run -name gitlab -i -t -rm \
   -e "DB_TYPE=postgres" -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/data:/home/git/data \
@@ -208,7 +208,7 @@ docker run -name gitlab -i -t -rm \
 
 This will initialize the gitlab database. Now that the database is initialized, start the container normally.
 
-```bash
+```
 docker run -name gitlab -d \
   -e "DB_TYPE=postgres" -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/data:/home/git/data \
@@ -227,7 +227,7 @@ The following environment variables need to be specified to get mail support to 
 * SMTP_PASS
 * SMTP_STARTTLS (defaults to true)
 
-```bash
+```
 docker run -name gitlab -d \
   -e "SMTP_USER=USER@gmail.com" -e "SMTP_PASS=PASSWORD" \
   -v /opt/gitlab/data:/home/git/data \
@@ -242,7 +242,7 @@ I have only tested standard gmail and google apps login. I expect that the curre
 
 ### Putting it all together
 
-```bash
+```
 docker run -name gitlab -d -h git.local.host \
   -v /opt/gitlab/data:/home/git/data \
   -v /opt/gitlab/mysql:/var/lib/mysql \
@@ -253,7 +253,7 @@ docker run -name gitlab -d -h git.local.host \
 
 If you are using an external mysql database
 
-```bash
+```
 docker run -name gitlab -d -h git.local.host \
   -v /opt/gitlab/data:/home/git/data \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
@@ -300,7 +300,7 @@ There are two methods to gain root login to the container, the first method is t
 
 The second method is use the dynamically generated password. Every time the container is started a random password is generated using the pwgen tool and assigned to the root user. This password can be fetched from the docker logs.
 
-```bash
+```
 docker logs gitlab 2>&1 | grep '^User: ' | tail -n1
 ```
 This password is not persistent and changes every time the image is executed.
@@ -311,13 +311,13 @@ Gitlab defines a rake task to easily take a backup of your gitlab installation. 
 
 Before taking a backup, please make sure that the gitlab image is not running for obvious reasons
 
-```bash
+```
 docker stop gitlab
 ```
 
 To take a backup all you need to do is run the gitlab rake task to create a backup.
 
-```bash
+```
 docker run -name gitlab -i -t -rm [OPTIONS] \
   sameersbn/gitlab app:rake gitlab:backup:create
 ```
@@ -328,13 +328,13 @@ A backup will be created in the backups folder of the [Data Store](#data-store)
 
 Gitlab defines a rake task to easily restore a backup of your gitlab installation. Before performing the restore operation please make sure that the gitlab image is not running.
 
-```bash
+```
 docker stop gitlab
 ```
 
 To restore a backup, run the image in interactive (-i -t) mode and pass the "app:restore" command to the container image.
 
-```bash
+```
 docker run -name gitlab -i -t -rm [OPTIONS] \
   sameersbn/gitlab app:rake gitlab:backup:restore
 ```
@@ -357,33 +357,33 @@ To upgrade to newer gitlab releases, simply follow this 5 step upgrade procedure
 
 - **Step 1**: Stop the currently running image
 
-```bash
+```
 docker stop gitlab
 ```
 
 - **Step 2**: Backup the application data.
 
-```bash
+```
 docker run -name gitlab -i -t -rm [OPTIONS] \
   sameersbn/gitlab app:rake gitlab:backup:create
 ```
 
 - **Step 3**: Update the docker image.
 
-```bash
+```
 docker pull sameersbn/gitlab
 ```
 
 - **Step 4**: Migrate the database.
 
-```bash
+```
 docker run -name gitlab -i -t -rm [OPTIONS] \
   sameersbn/gitlab app:rake db:migrate
 ```
 
 - **Step 5**: Start the image
 
-```bash
+```
 docker run -name gitlab -d [OPTIONS] sameersbn/gitlab
 ```
 
@@ -391,14 +391,14 @@ docker run -name gitlab -d [OPTIONS] sameersbn/gitlab
 
 The app:rake command allows you to run gitlab rake tasks. To run a rake task simply specify the task to be executed to the app:rake command. For example, if you want to gather information about GitLab and the system it runs on.
 
-```bash
+```
 docker run -name gitlab -d [OPTIONS] \
   sameersbn/gitlab app:rake gitlab:env:info
 ```
 
 Similarly, to import bare repositories into GitLab project instance
 
-```bash
+```
 docker run -name gitlab -d [OPTIONS] \
   sameersbn/gitlab app:rake gitlab:import:repos
 ```
