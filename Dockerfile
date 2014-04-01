@@ -5,6 +5,11 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN sed 's/main$/main universe/' -i /etc/apt/sources.list
 RUN apt-get update # 20140310
 
+# Fix some issues with APT packages.
+# See https://github.com/dotcloud/docker/issues/1024
+RUN dpkg-divert --local --rename --add /sbin/initctl && \
+		ln -sf /bin/true /sbin/initctl
+
 # essentials
 RUN apt-get install -y vim curl wget sudo net-tools pwgen unzip && \
 	apt-get install -y logrotate supervisor openssh-server && \
