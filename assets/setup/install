@@ -2,7 +2,7 @@
 
 set -e
 
-GITLAB_VERSION=6.7.2
+GITLAB_VERSION=6.7.3
 SHELL_VERSION=1.9.1
 
 # add git user

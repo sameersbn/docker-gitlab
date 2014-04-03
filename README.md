@@ -33,7 +33,7 @@
 Dockerfile to build a GitLab container image.
 
 ## Version
-Current Version: 6.7.2
+Current Version: 6.7.3
 
 # Hardware Requirements
 
@@ -82,7 +82,7 @@ docker pull sameersbn/gitlab:latest
 Since version 6.3.0, the image builds are being tagged. You can now pull a particular version of gitlab by specifying the version number. For example,
 
 ```
-docker pull sameersbn/gitlab:6.7.2
+docker pull sameersbn/gitlab:6.7.3
 ```
 
 Alternately you can build the image yourself.
