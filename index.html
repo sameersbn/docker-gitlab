@@ -1,43 +1,36 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Docker GitLab by sameersbn</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Docker GitLab : GitLab dockerized on top of nginx/mysql stack" />
 
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Docker GitLab</title>
   </head>
+
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/sameersbn/docker-gitlab">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/sameersbn/docker-gitlab/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/sameersbn/docker-gitlab/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
 
-    <div class="wrapper">
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/sameersbn/docker-gitlab">View on GitHub</a>
 
-      <section>
-        <div id="title">
-          <h1>Docker GitLab</h1>
-          <p>GitLab dockerized on top of nginx/mysql stack</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/sameersbn">sameersbn</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
+          <h1 id="project_title">Docker GitLab</h1>
+          <h2 id="project_tagline">GitLab dockerized on top of nginx/mysql stack</h2>
 
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/sameersbn/docker-gitlab/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/sameersbn/docker-gitlab/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>
 <a name="table-of-contents" class="anchor" href="#table-of-contents"><span class="octicon octicon-link"></span></a>Table of Contents</h1>
 
@@ -80,7 +73,7 @@
 </ul>
 </li>
 <li>
-<a href="%24postgresql">PostgreSQL</a>
+<a href="#postgresql">PostgreSQL</a>
 
 <ul>
 <li><a href="#external-postgresql-server">External PostgreSQL Server</a></li>
@@ -114,7 +107,7 @@
 <h2>
 <a name="version" class="anchor" href="#version"><span class="octicon octicon-link"></span></a>Version</h2>
 
-<p>Current Version: 6.7.2</p>
+<p>Current Version: 6.7.3</p>
 
 <h1>
 <a name="hardware-requirements" class="anchor" href="#hardware-requirements"><span class="octicon octicon-link"></span></a>Hardware Requirements</h1>
@@ -164,34 +157,34 @@ free space as your all repos combined take up. You need twice the storage becaus
 
 <p>Pull the latest version of the image from the docker index. This is the recommended method of installation as it is easier to update image in the future. These builds are performed by the <strong>Docker Trusted Build</strong> service.</p>
 
-<div class="highlight highlight-bash"><pre>docker pull sameersbn/gitlab
-</pre></div>
+<pre><code>docker pull sameersbn/gitlab:latest
+</code></pre>
 
 <p>Since version 6.3.0, the image builds are being tagged. You can now pull a particular version of gitlab by specifying the version number. For example,</p>
 
-<div class="highlight highlight-bash"><pre>docker pull sameersbn/gitlab:6.7.2
-</pre></div>
+<pre><code>docker pull sameersbn/gitlab:6.7.3
+</code></pre>
 
 <p>Alternately you can build the image yourself.</p>
 
-<div class="highlight highlight-bash"><pre>git clone https://github.com/sameersbn/docker-gitlab.git
-<span class="nb">cd </span>docker-gitlab
-docker build -t<span class="o">=</span><span class="s2">"$USER/gitlab"</span> .
-</pre></div>
+<pre><code>git clone https://github.com/sameersbn/docker-gitlab.git
+cd docker-gitlab
+docker build -t="$USER/gitlab" .
+</code></pre>
 
 <h1>
 <a name="quick-start" class="anchor" href="#quick-start"><span class="octicon octicon-link"></span></a>Quick Start</h1>
 
 <p>Run the gitlab image</p>
 
-<div class="highlight highlight-bash"><pre>docker run -name gitlab -d sameersbn/gitlab
-<span class="nv">GITLAB_IP</span><span class="o">=</span><span class="k">$(</span>docker inspect gitlab <span class="p">|</span> grep IPAddres <span class="p">|</span> awk -F<span class="s1">'"'</span> <span class="s1">'{print $4}'</span><span class="k">)</span>
-</pre></div>
+<pre><code>docker run -name gitlab -d sameersbn/gitlab:latest
+GITLAB_IP=$(docker inspect gitlab | grep IPAddres | awk -F'"' '{print $4}')
+</code></pre>
 
 <p>Access the GitLab application</p>
 
-<div class="highlight highlight-bash"><pre>xdg-open <span class="s2">"http://${GITLAB_IP}"</span>
-</pre></div>
+<pre><code>xdg-open "http://${GITLAB_IP}"
+</code></pre>
 
 <p><strong>NOTE</strong>: Please allow a minute or two for the GitLab application to start.</p>
 
@@ -215,11 +208,11 @@ docker build -t<span class="o">=</span><span class="s2">"$USER/gitlab"</span> .
 <li>/home/git/data</li>
 </ul><p>Volumes can be mounted in docker by specifying the <strong>'-v'</strong> option in the docker run command.</p>
 
-<div class="highlight highlight-bash"><pre>mkdir /opt/gitlab/data
-docker run -name gitlab -d <span class="se">\</span>
-  -v /opt/gitlab/data:/home/git/data <span class="se">\</span>
-  sameersbn/gitlab
-</pre></div>
+<pre><code>mkdir /opt/gitlab/data
+docker run -name gitlab -d \
+  -v /opt/gitlab/data:/home/git/data \
+  sameersbn/gitlab:latest
+</code></pre>
 
 <h2>
 <a name="database" class="anchor" href="#database"><span class="octicon octicon-link"></span></a>Database</h2>
@@ -234,11 +227,11 @@ docker run -name gitlab -d <span class="se">\</span>
 
 <p>This docker image is configured to use a MySQL database backend. The database connection can be configured using environment variables. If not specified, the image will start a mysql server internally and use it. However in this case, the data stored in the mysql database will be lost if the container is stopped/deleted. To avoid this you should mount a volume at /var/lib/mysql.</p>
 
-<div class="highlight highlight-bash"><pre>mkdir /opt/gitlab/mysql
-docker run -name gitlab -d <span class="se">\</span>
-  -v /opt/gitlab/data:/home/git/data <span class="se">\</span>
-  -v /opt/gitlab/mysql:/var/lib/mysql sameersbn/gitlab
-</pre></div>
+<pre><code>mkdir /opt/gitlab/mysql
+docker run -name gitlab -d \
+  -v /opt/gitlab/data:/home/git/data \
+  -v /opt/gitlab/mysql:/var/lib/mysql sameersbn/gitlab:latest
+</code></pre>
 
 <p>This will make sure that the data stored in the database is not lost when the image is stopped and started again.</p>
 
@@ -249,11 +242,11 @@ docker run -name gitlab -d <span class="se">\</span>
 
 <p>Before you start the GitLab image create user and database for gitlab.</p>
 
-<div class="highlight highlight-bash"><pre>mysql -uroot -p
-CREATE USER <span class="s1">'gitlab'</span>@<span class="s1">'%.%.%.%'</span> IDENTIFIED BY <span class="s1">'password'</span><span class="p">;</span>
-CREATE DATABASE IF NOT EXISTS <span class="sb">`</span>gitlabhq_production<span class="sb">`</span> DEFAULT CHARACTER SET <span class="sb">`</span>utf8<span class="sb">`</span> COLLATE <span class="sb">`</span>utf8_unicode_ci<span class="sb">`</span><span class="p">;</span>
-GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON <span class="sb">`</span>gitlabhq_production<span class="sb">`</span>.* TO <span class="s1">'gitlab'</span>@<span class="s1">'%.%.%.%'</span><span class="p">;</span>
-</pre></div>
+<pre><code>mysql -uroot -p
+CREATE USER 'gitlab'@'%.%.%.%' IDENTIFIED BY 'password';
+CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
+GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'%.%.%.%';
+</code></pre>
 
 <p>To make sure the database is initialized start the container with <strong>app:rake gitlab:setup</strong> option.</p>
 
@@ -261,19 +254,19 @@ GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON
 
 <p><em>Assuming that the mysql server host is 192.168.1.100</em></p>
 
-<div class="highlight highlight-bash"><pre>docker run -name gitlab -i -t -rm <span class="se">\</span>
-  -e <span class="s2">"DB_HOST=192.168.1.100"</span> -e <span class="s2">"DB_NAME=gitlabhq_production"</span> -e <span class="s2">"DB_USER=gitlab"</span> -e <span class="s2">"DB_PASS=password"</span> <span class="se">\</span>
-  -v /opt/gitlab/data:/home/git/data <span class="se">\</span>
-  sameersbn/gitlab app:rake gitlab:setup
-</pre></div>
+<pre><code>docker run -name gitlab -i -t -rm \
+  -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
+  -v /opt/gitlab/data:/home/git/data \
+  sameersbn/gitlab:latest app:rake gitlab:setup
+</code></pre>
 
 <p>This will initialize the gitlab database. Now that the database is initialized, start the container normally.</p>
 
-<div class="highlight highlight-bash"><pre>docker run -name gitlab -d <span class="se">\</span>
-  -e <span class="s2">"DB_HOST=192.168.1.100"</span> -e <span class="s2">"DB_NAME=gitlabhq_production"</span> -e <span class="s2">"DB_USER=gitlab"</span> -e <span class="s2">"DB_PASS=password"</span> <span class="se">\</span>
-  -v /opt/gitlab/data:/home/git/data <span class="se">\</span>
-  sameersbn/gitlab
-</pre></div>
+<pre><code>docker run -name gitlab -d \
+  -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
+  -v /opt/gitlab/data:/home/git/data \
+  sameersbn/gitlab:latest
+</code></pre>
 
 <h3>
 <a name="postgresql" class="anchor" href="#postgresql"><span class="octicon octicon-link"></span></a>PostgreSQL</h3>
@@ -283,9 +276,9 @@ GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON
 
 <p>The image also supports using an external PostgreSQL Server. This is also controlled via environment variables.</p>
 
-<div class="highlight highlight-bash"><pre>createuser gitlab
+<pre><code>createuser gitlab
 createdb -O gitlab gitlabhq_production
-</pre></div>
+</code></pre>
 
 <p>To make sure the database is initialized start the container with <strong>app:rake gitlab:setup</strong> option.</p>
 
@@ -293,19 +286,19 @@ createdb -O gitlab gitlabhq_production
 
 <p><em>Assuming that the PostgreSQL server host is 192.168.1.100</em></p>
 
-<div class="highlight highlight-bash"><pre>docker run -name gitlab -i -t -rm <span class="se">\</span>
-  -e <span class="s2">"DB_TYPE=postgres"</span> -e <span class="s2">"DB_HOST=192.168.1.100"</span> -e <span class="s2">"DB_NAME=gitlabhq_production"</span> -e <span class="s2">"DB_USER=gitlab"</span> -e <span class="s2">"DB_PASS=password"</span> <span class="se">\</span>
-  -v /opt/gitlab/data:/home/git/data <span class="se">\</span>
-  sameersbn/gitlab app:rake gitlab:setup
-</pre></div>
+<pre><code>docker run -name gitlab -i -t -rm \
+  -e "DB_TYPE=postgres" -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
+  -v /opt/gitlab/data:/home/git/data \
+  sameersbn/gitlab:latest app:rake gitlab:setup
+</code></pre>
 
 <p>This will initialize the gitlab database. Now that the database is initialized, start the container normally.</p>
 
-<div class="highlight highlight-bash"><pre>docker run -name gitlab -d <span class="se">\</span>
-  -e <span class="s2">"DB_TYPE=postgres"</span> -e <span class="s2">"DB_HOST=192.168.1.100"</span> -e <span class="s2">"DB_NAME=gitlabhq_production"</span> -e <span class="s2">"DB_USER=gitlab"</span> -e <span class="s2">"DB_PASS=password"</span> <span class="se">\</span>
-  -v /opt/gitlab/data:/home/git/data <span class="se">\</span>
-  sameersbn/gitlab
-</pre></div>
+<pre><code>docker run -name gitlab -d \
+  -e "DB_TYPE=postgres" -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
+  -v /opt/gitlab/data:/home/git/data \
+  sameersbn/gitlab:latest
+</code></pre>
 
 <h3>
 <a name="mail" class="anchor" href="#mail"><span class="octicon octicon-link"></span></a>Mail</h3>
@@ -321,11 +314,11 @@ createdb -O gitlab gitlabhq_production
 <li>SMTP_USER</li>
 <li>SMTP_PASS</li>
 <li>SMTP_STARTTLS (defaults to true)</li>
-</ul><div class="highlight highlight-bash"><pre>docker run -name gitlab -d <span class="se">\</span>
-  -e <span class="s2">"SMTP_USER=USER@gmail.com"</span> -e <span class="s2">"SMTP_PASS=PASSWORD"</span> <span class="se">\</span>
-  -v /opt/gitlab/data:/home/git/data <span class="se">\</span>
-  sameersbn/gitlab
-</pre></div>
+</ul><pre><code>docker run -name gitlab -d \
+  -e "SMTP_USER=USER@gmail.com" -e "SMTP_PASS=PASSWORD" \
+  -v /opt/gitlab/data:/home/git/data \
+  sameersbn/gitlab:latest
+</code></pre>
 
 <p>If you are not using google mail, then please configure the  SMTP host and port using the SMTP_HOST and SMTP_PORT configuration parameters.</p>
 
@@ -336,23 +329,23 @@ createdb -O gitlab gitlabhq_production
 <h3>
 <a name="putting-it-all-together" class="anchor" href="#putting-it-all-together"><span class="octicon octicon-link"></span></a>Putting it all together</h3>
 
-<div class="highlight highlight-bash"><pre>docker run -name gitlab -d -h git.local.host <span class="se">\</span>
-  -v /opt/gitlab/data:/home/git/data <span class="se">\</span>
-  -v /opt/gitlab/mysql:/var/lib/mysql <span class="se">\</span>
-  -e <span class="s2">"GITLAB_HOST=git.local.host"</span> -e <span class="s2">"GITLAB_EMAIL=gitlab@local.host"</span> -e <span class="s2">"GITLAB_SUPPORT=support@local.host"</span> <span class="se">\</span>
-  -e <span class="s2">"SMTP_USER=USER@gmail.com"</span> -e <span class="s2">"SMTP_PASS=PASSWORD"</span> <span class="se">\</span>
-  sameersbn/gitlab
-</pre></div>
+<pre><code>docker run -name gitlab -d -h git.local.host \
+  -v /opt/gitlab/data:/home/git/data \
+  -v /opt/gitlab/mysql:/var/lib/mysql \
+  -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
+  -e "SMTP_USER=USER@gmail.com" -e "SMTP_PASS=PASSWORD" \
+  sameersbn/gitlab:latest
+</code></pre>
 
 <p>If you are using an external mysql database</p>
 
-<div class="highlight highlight-bash"><pre>docker run -name gitlab -d -h git.local.host <span class="se">\</span>
-  -v /opt/gitlab/data:/home/git/data <span class="se">\</span>
-  -e <span class="s2">"DB_HOST=192.168.1.100"</span> -e <span class="s2">"DB_NAME=gitlabhq_production"</span> -e <span class="s2">"DB_USER=gitlab"</span> -e <span class="s2">"DB_PASS=password"</span> <span class="se">\</span>
-  -e <span class="s2">"GITLAB_HOST=git.local.host"</span> -e <span class="s2">"GITLAB_EMAIL=gitlab@local.host"</span> -e <span class="s2">"GITLAB_SUPPORT=support@local.host"</span> <span class="se">\</span>
-  -e <span class="s2">"SMTP_USER=USER@gmail.com"</span> -e <span class="s2">"SMTP_PASS=PASSWORD"</span> <span class="se">\</span>
-  sameersbn/gitlab
-</pre></div>
+<pre><code>docker run -name gitlab -d -h git.local.host \
+  -v /opt/gitlab/data:/home/git/data \
+  -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
+  -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
+  -e "SMTP_USER=USER@gmail.com" -e "SMTP_PASS=PASSWORD" \
+  sameersbn/gitlab:latest
+</code></pre>
 
 <h3>
 <a name="available-configuration-parameters" class="anchor" href="#available-configuration-parameters"><span class="octicon octicon-link"></span></a>Available Configuration Parameters</h3>
@@ -363,7 +356,7 @@ createdb -O gitlab gitlabhq_production
 <li>
 <strong>GITLAB_HOST</strong>: The hostname of the GitLab server. Defaults to localhost</li>
 <li>
-<strong>GITLAB_POST</strong>: The port of the GitLab server. Defaults to 80</li>
+<strong>GITLAB_PORT</strong>: The port of the GitLab server. Defaults to 80</li>
 <li>
 <strong>GITLAB_EMAIL</strong>: The email address for the GitLab server. Defaults to <a href="mailto:gitlab@localhost">gitlab@localhost</a>.</li>
 <li>
@@ -413,6 +406,26 @@ createdb -O gitlab gitlabhq_production
 <strong>SMTP_PASS</strong>: SMTP password.</li>
 <li>
 <strong>SMTP_STARTTLS</strong>: Enable STARTTLS. Defaults to true.</li>
+<li>
+<strong>LDAP_ENABLED</strong>: Enable LDAP. Defaults to false</li>
+<li>
+<strong>LDAP_HOST</strong>: LDAP Host</li>
+<li>
+<strong>LDAP_PORT</strong>: LDAP Port. Defaults to 636</li>
+<li>
+<strong>LDAP_UID</strong>: LDAP UID. Defaults to sAMAccountName</li>
+<li>
+<strong>LDAP_METHOD</strong>: LDAP method, Possible values are ssl, tls and plain. Defaults to ssl</li>
+<li>
+<strong>LDAP_BIND_DN</strong>: No default.</li>
+<li>
+<strong>LDAP_PASS</strong>: LDAP password</li>
+<li>
+<strong>LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN</strong>: If enabled, GitLab will ignore everything after the first '@' in the LDAP username submitted by the user on login. Defaults to false if LDAP_UID is userPrincipalName, else true.</li>
+<li>
+<strong>LDAP_BASE</strong>: Base where we can search for users. No default.</li>
+<li>
+<strong>LDAP_USER_FILTER</strong>: Filter LDAP users. No default.</li>
 </ul><h1>
 <a name="maintenance" class="anchor" href="#maintenance"><span class="octicon octicon-link"></span></a>Maintenance</h1>
 
@@ -423,8 +436,8 @@ createdb -O gitlab gitlabhq_production
 
 <p>The second method is use the dynamically generated password. Every time the container is started a random password is generated using the pwgen tool and assigned to the root user. This password can be fetched from the docker logs.</p>
 
-<div class="highlight highlight-bash"><pre>docker logs gitlab 2&gt;<span class="p">&amp;</span>1 <span class="p">|</span> grep <span class="s1">'^User: '</span> <span class="p">|</span> tail -n1
-</pre></div>
+<pre><code>docker logs gitlab 2&gt;&amp;1 | grep '^User: ' | tail -n1
+</code></pre>
 
 <p>This password is not persistent and changes every time the image is executed.</p>
 
@@ -435,14 +448,14 @@ createdb -O gitlab gitlabhq_production
 
 <p>Before taking a backup, please make sure that the gitlab image is not running for obvious reasons</p>
 
-<div class="highlight highlight-bash"><pre>docker stop gitlab
-</pre></div>
+<pre><code>docker stop gitlab
+</code></pre>
 
 <p>To take a backup all you need to do is run the gitlab rake task to create a backup.</p>
 
-<div class="highlight highlight-bash"><pre>docker run -name gitlab -i -t -rm <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="se">\</span>
-  sameersbn/gitlab app:rake gitlab:backup:create
-</pre></div>
+<pre><code>docker run -name gitlab -i -t -rm [OPTIONS] \
+  sameersbn/gitlab:latest app:rake gitlab:backup:create
+</code></pre>
 
 <p>A backup will be created in the backups folder of the <a href="#data-store">Data Store</a></p>
 
@@ -451,14 +464,14 @@ createdb -O gitlab gitlabhq_production
 
 <p>Gitlab defines a rake task to easily restore a backup of your gitlab installation. Before performing the restore operation please make sure that the gitlab image is not running.</p>
 
-<div class="highlight highlight-bash"><pre>docker stop gitlab
-</pre></div>
+<pre><code>docker stop gitlab
+</code></pre>
 
 <p>To restore a backup, run the image in interactive (-i -t) mode and pass the "app:restore" command to the container image.</p>
 
-<div class="highlight highlight-bash"><pre>docker run -name gitlab -i -t -rm <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="se">\</span>
-  sameersbn/gitlab app:rake gitlab:backup:restore
-</pre></div>
+<pre><code>docker run -name gitlab -i -t -rm [OPTIONS] \
+  sameersbn/gitlab:latest app:rake gitlab:backup:restore
+</code></pre>
 
 <p>The restore operation will list all available backups in reverse chronological order. Select the backup you want to restore and gitlab will do its job.</p>
 
@@ -481,49 +494,49 @@ createdb -O gitlab gitlabhq_production
 <ul>
 <li>
 <strong>Step 1</strong>: Stop the currently running image</li>
-</ul><div class="highlight highlight-bash"><pre>docker stop gitlab
-</pre></div>
+</ul><pre><code>docker stop gitlab
+</code></pre>
 
 <ul>
 <li>
 <strong>Step 2</strong>: Backup the application data.</li>
-</ul><div class="highlight highlight-bash"><pre>docker run -name gitlab -i -t -rm <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="se">\</span>
-  sameersbn/gitlab app:rake gitlab:backup:create
-</pre></div>
+</ul><pre><code>docker run -name gitlab -i -t -rm [OPTIONS] \
+  sameersbn/gitlab:latest app:rake gitlab:backup:create
+</code></pre>
 
 <ul>
 <li>
 <strong>Step 3</strong>: Update the docker image.</li>
-</ul><div class="highlight highlight-bash"><pre>docker pull sameersbn/gitlab
-</pre></div>
+</ul><pre><code>docker pull sameersbn/gitlab:latest
+</code></pre>
 
 <ul>
 <li>
 <strong>Step 4</strong>: Migrate the database.</li>
-</ul><div class="highlight highlight-bash"><pre>docker run -name gitlab -i -t -rm <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="se">\</span>
-  sameersbn/gitlab app:rake db:migrate
-</pre></div>
+</ul><pre><code>docker run -name gitlab -i -t -rm [OPTIONS] \
+  sameersbn/gitlab:latest app:rake db:migrate
+</code></pre>
 
 <ul>
 <li>
 <strong>Step 5</strong>: Start the image</li>
-</ul><div class="highlight highlight-bash"><pre>docker run -name gitlab -d <span class="o">[</span>OPTIONS<span class="o">]</span> sameersbn/gitlab
-</pre></div>
+</ul><pre><code>docker run -name gitlab -d [OPTIONS] sameersbn/gitlab:latest
+</code></pre>
 
 <h2>
 <a name="rake-tasks" class="anchor" href="#rake-tasks"><span class="octicon octicon-link"></span></a>Rake Tasks</h2>
 
 <p>The app:rake command allows you to run gitlab rake tasks. To run a rake task simply specify the task to be executed to the app:rake command. For example, if you want to gather information about GitLab and the system it runs on.</p>
 
-<div class="highlight highlight-bash"><pre>docker run -name gitlab -d <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="se">\</span>
-  sameersbn/gitlab app:rake gitlab:env:info
-</pre></div>
+<pre><code>docker run -name gitlab -d [OPTIONS] \
+  sameersbn/gitlab:latest app:rake gitlab:env:info
+</code></pre>
 
 <p>Similarly, to import bare repositories into GitLab project instance</p>
 
-<div class="highlight highlight-bash"><pre>docker run -name gitlab -d <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="se">\</span>
-  sameersbn/gitlab app:rake gitlab:import:repos
-</pre></div>
+<pre><code>docker run -name gitlab -d [OPTIONS] \
+  sameersbn/gitlab:latest app:rake gitlab:import:repos
+</code></pre>
 
 <p>For a complete list of available rake tasks please refer <a href="https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks">https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks</a> or the help section of your gitlab installation.</p>
 
@@ -536,9 +549,16 @@ createdb -O gitlab gitlabhq_production
 <li><a href="https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md">https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md</a></li>
 </ul>
       </section>
-
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Docker GitLab maintained by <a href="https://github.com/sameersbn">sameersbn</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
               <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -549,6 +569,7 @@ createdb -O gitlab gitlabhq_production
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
+
 
   </body>
 </html>
