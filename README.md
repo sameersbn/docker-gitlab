@@ -15,7 +15,7 @@
         - [MySQL](#mysql)
             - [Internal MySQL Server](#internal-mysql-server)
             - [External MySQL Server](#external-mysql-server)
-        - [PostgreSQL]($postgresql)
+        - [PostgreSQL](#postgresql)
             - [External PostgreSQL Server](#external-postgresql-server)
     - [Mail](#mail)
     - [Putting it all together](#putting-it-all-together)
