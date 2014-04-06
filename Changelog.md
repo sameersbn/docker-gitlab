@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- added LDAP configuration options.
+
 **6.7.3**
 - upgrade gitlab to 6.7.3
 - install ruby2.0 from ppa

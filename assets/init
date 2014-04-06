@@ -37,6 +37,17 @@ SMTP_USER=${SMTP_USER:-}
 SMTP_PASS=${SMTP_PASS:-}
 SMTP_STARTTLS=${SMTP_STARTTLS:-true}
 
+LDAP_ENABLED=${LDAP_ENABLED:-false}
+LDAP_HOST=${LDAP_HOST:-}
+LDAP_PORT=${LDAP_PORT:-636}
+LDAP_UID=${LDAP_UID:-sAMAccountName}
+LDAP_METHOD=${LDAP_METHOD:-ssl}
+LDAP_BIND_DN=${LDAP_BIND_DN:-}
+LDAP_PASS=${LDAP_PASS:-}
+LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN=${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN:-}
+LDAP_BASE=${LDAP_BASE:-}
+LDAP_USER_FILTER=${LDAP_USER_FILTER:-}
+
 case "${DB_TYPE}" in
 	mysql) DB_PORT=${DB_PORT:-3306} ;;
 	postgres) DB_PORT=${DB_PORT:-5432} ;;
@@ -46,6 +57,11 @@ esac
 case "${GITLAB_BACKUPS}" in
 	daily|monthly) GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-604800} ;;
 	disable|*) GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-0} ;;
+esac
+
+case "${LDAP_UID}" in
+	userPrincipalName) LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN=${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN:-false} ;;
+	*) LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN=${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN:-true}
 esac
 
 # generate a password for root.
@@ -178,6 +194,18 @@ sed 's/{{SMTP_USER}}/'${SMTP_USER}'/' -i /home/git/gitlab/config/initializers/sm
 sed 's/{{SMTP_PASS}}/'${SMTP_PASS}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
 sed 's/{{SMTP_DOMAIN}}/'${SMTP_DOMAIN}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
 sed 's/{{SMTP_STARTTLS}}/'${SMTP_STARTTLS}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+
+# apply LDAP configuration
+sudo -u git -H sed 's/{{LDAP_ENABLED}}/'${LDAP_ENABLED}'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_HOST}}/'${LDAP_HOST}'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_PORT}}/'${LDAP_PORT}'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_UID}}/'${LDAP_UID}'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_METHOD}}/'${LDAP_METHOD}'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_BIND_DN}}/'${LDAP_BIND_DN}'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_PASS}}/'${LDAP_PASS}'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}}/'${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_BASE}}/'${LDAP_BASE}'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_USER_FILTER}}/'${LDAP_USER_FILTER}'/' -i /home/git/gitlab/config/gitlab.yml
 
 # take ownership of /home/git/data
 chown git:git /home/git/data
