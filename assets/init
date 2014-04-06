@@ -188,12 +188,12 @@ sed 's/{{UNICORN_WORKERS}}/'${UNICORN_WORKERS}'/' -i /home/git/gitlab/config/uni
 sed 's/{{UNICORN_TIMEOUT}}/'${UNICORN_TIMEOUT}'/' -i /home/git/gitlab/config/unicorn.rb
 
 # configure mail delivery
-sed 's/{{SMTP_HOST}}/'${SMTP_HOST}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
-sed 's/{{SMTP_PORT}}/'${SMTP_PORT}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
-sed 's/{{SMTP_USER}}/'${SMTP_USER}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
-sed 's/{{SMTP_PASS}}/'${SMTP_PASS}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
-sed 's/{{SMTP_DOMAIN}}/'${SMTP_DOMAIN}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
-sed 's/{{SMTP_STARTTLS}}/'${SMTP_STARTTLS}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sudo -u git -H sed 's/{{SMTP_HOST}}/'${SMTP_HOST}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sudo -u git -H sed 's/{{SMTP_PORT}}/'${SMTP_PORT}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sudo -u git -H sed 's/{{SMTP_USER}}/'${SMTP_USER}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sudo -u git -H sed 's/{{SMTP_PASS}}/'${SMTP_PASS}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sudo -u git -H sed 's/{{SMTP_DOMAIN}}/'${SMTP_DOMAIN}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sudo -u git -H sed 's/{{SMTP_STARTTLS}}/'${SMTP_STARTTLS}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
 
 # apply LDAP configuration
 sudo -u git -H sed 's/{{LDAP_ENABLED}}/'${LDAP_ENABLED}'/' -i /home/git/gitlab/config/gitlab.yml
