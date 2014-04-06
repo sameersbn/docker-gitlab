@@ -297,7 +297,7 @@ Below is the complete list of available options that can be used to customize yo
 - **LDAP_PORT**: LDAP Port. Defaults to 636
 - **LDAP_UID**: LDAP UID. Defaults to sAMAccountName
 - **LDAP_METHOD**: LDAP method, Possible values are ssl, tls and plain. Defaults to ssl
-- **LDAP_BIND_DN**:
+- **LDAP_BIND_DN**: No default.
 - **LDAP_PASS**: LDAP password
 - **LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN**: If enabled, GitLab will ignore everything after the first '@' in the LDAP username submitted by the user on login. Defaults to false if LDAP_UID is userPrincipalName, else true.
 - **LDAP_BASE**: Base where we can search for users. No default.
