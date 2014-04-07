@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added SMTP_AUTHENTICATION configuration option, defaults to :login.
 - added LDAP configuration options.
 
 **6.7.3**
