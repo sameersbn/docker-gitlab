@@ -235,12 +235,6 @@ docker run -name gitlab -d \
   sameersbn/gitlab:latest
 ```
 
-If you are not using google mail, then please configure the  SMTP host and port using the SMTP_HOST and SMTP_PORT configuration parameters.
-
-__NOTE:__
-
-I have only tested standard gmail and google apps login. I expect that the currently provided configuration parameters should be sufficient for most users. If this is not the case, then please let me know.
-
 ### Putting it all together
 
 ```
