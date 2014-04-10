@@ -1,6 +1,7 @@
 # Changelog
 
-**latest**
+**6.7.4**
+- upgrade gitlab to 6.7.4
 - added SMTP_AUTHENTICATION configuration option, defaults to :login.
 - added LDAP configuration options.
 
