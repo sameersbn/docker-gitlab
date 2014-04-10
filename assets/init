@@ -138,17 +138,17 @@ sudo -u git -H git config --global user.email "${GITLAB_EMAIL}"
 sudo -u git -H git config --global core.autocrlf input
 
 # configure server url
-sudo -u git -H sed 's/{{GITLAB_HOST}}/'${GITLAB_HOST}'/' -i /home/git/gitlab/config/gitlab.yml
-sudo -u git -H sed 's/{{GITLAB_PORT}}/'${GITLAB_PORT}'/' -i /home/git/gitlab/config/gitlab.yml
-sudo -u git -H sed 's/{{GITLAB_HTTPS}}/'${GITLAB_HTTPS}'/' -i /home/git/gitlab/config/gitlab.yml
-sudo -u git -H sed 's/{{GITLAB_EMAIL}}/'${GITLAB_EMAIL}'/' -i /home/git/gitlab/config/gitlab.yml
-sudo -u git -H sed 's/{{GITLAB_SUPPORT}}/'${GITLAB_SUPPORT}'/' -i /home/git/gitlab/config/gitlab.yml
-sudo -u git -H sed 's/{{GITLAB_BACKUP_EXPIRY}}/'${GITLAB_BACKUP_EXPIRY}'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_HOST}}/'"${GITLAB_HOST}"'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_PORT}}/'"${GITLAB_PORT}"'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_HTTPS}}/'"${GITLAB_HTTPS}"'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_EMAIL}}/'"${GITLAB_EMAIL}"'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_SUPPORT}}/'"${GITLAB_SUPPORT}"'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_BACKUP_EXPIRY}}/'"${GITLAB_BACKUP_EXPIRY}"'/' -i /home/git/gitlab/config/gitlab.yml
 
-sudo -u git -H sed 's/{{GITLAB_SHELL_SSH_PORT}}/'${GITLAB_SHELL_SSH_PORT}'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_SHELL_SSH_PORT}}/'"${GITLAB_SHELL_SSH_PORT}"'/' -i /home/git/gitlab/config/gitlab.yml
 
 # configure gitlab signup configuration
-sudo -u git -H sed 's/{{GITLAB_SIGNUP}}/'${GITLAB_SIGNUP}'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_SIGNUP}}/'"${GITLAB_SIGNUP}"'/' -i /home/git/gitlab/config/gitlab.yml
 
 # configure database
 if [ "${DB_TYPE}" == "postgres" ]; then
@@ -163,51 +163,51 @@ else
 	echo "Invalid database type: '$DB_TYPE'. Supported choices: [mysql, postgres]."
 fi
 
-sudo -u git -H sed 's/{{DB_HOST}}/'${DB_HOST}'/' -i /home/git/gitlab/config/database.yml
-sudo -u git -H sed 's/{{DB_PORT}}/'${DB_PORT}'/' -i /home/git/gitlab/config/database.yml
-sudo -u git -H sed 's/{{DB_NAME}}/'${DB_NAME}'/' -i /home/git/gitlab/config/database.yml
-sudo -u git -H sed 's/{{DB_USER}}/'${DB_USER}'/' -i /home/git/gitlab/config/database.yml
-sudo -u git -H sed 's/{{DB_PASS}}/'${DB_PASS}'/' -i /home/git/gitlab/config/database.yml
-sudo -u git -H sed 's/{{DB_POOL}}/'${DB_POOL}'/' -i /home/git/gitlab/config/database.yml
+sudo -u git -H sed 's/{{DB_HOST}}/'"${DB_HOST}"'/' -i /home/git/gitlab/config/database.yml
+sudo -u git -H sed 's/{{DB_PORT}}/'"${DB_PORT}"'/' -i /home/git/gitlab/config/database.yml
+sudo -u git -H sed 's/{{DB_NAME}}/'"${DB_NAME}"'/' -i /home/git/gitlab/config/database.yml
+sudo -u git -H sed 's/{{DB_USER}}/'"${DB_USER}"'/' -i /home/git/gitlab/config/database.yml
+sudo -u git -H sed 's/{{DB_PASS}}/'"${DB_PASS}"'/' -i /home/git/gitlab/config/database.yml
+sudo -u git -H sed 's/{{DB_POOL}}/'"${DB_POOL}"'/' -i /home/git/gitlab/config/database.yml
 
 # configure sidekiq
-sudo -u git -H sed 's/{{SIDEKIQ_CONCURRENCY}}/'${SIDEKIQ_CONCURRENCY}'/' -i /home/git/gitlab/config/sidekiq.yml
+sudo -u git -H sed 's/{{SIDEKIQ_CONCURRENCY}}/'"${SIDEKIQ_CONCURRENCY}"'/' -i /home/git/gitlab/config/sidekiq.yml
 
 # configure redis
-sudo -u git -H sed 's/{{REDIS_HOST}}/'${REDIS_HOST}'/' -i /home/git/gitlab/config/resque.yml
-sudo -u git -H sed 's/{{REDIS_PORT}}/'${REDIS_PORT}'/' -i /home/git/gitlab/config/resque.yml
+sudo -u git -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/' -i /home/git/gitlab/config/resque.yml
+sudo -u git -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/' -i /home/git/gitlab/config/resque.yml
 
 # configure gitlab-shell
-sudo -u git -H sed 's/{{GITLAB_HOST}}/'${GITLAB_HOST}'/' -i /home/git/gitlab-shell/config.yml
-sudo -u git -H sed 's/{{REDIS_HOST}}/'${REDIS_HOST}'/' -i /home/git/gitlab-shell/config.yml
-sudo -u git -H sed 's/{{REDIS_PORT}}/'${REDIS_PORT}'/' -i /home/git/gitlab-shell/config.yml
+sudo -u git -H sed 's/{{GITLAB_HOST}}/'"${GITLAB_HOST}"'/' -i /home/git/gitlab-shell/config.yml
+sudo -u git -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/' -i /home/git/gitlab-shell/config.yml
+sudo -u git -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/' -i /home/git/gitlab-shell/config.yml
 
 # configure unicorn workers
-sed 's/{{UNICORN_WORKERS}}/'${UNICORN_WORKERS}'/' -i /home/git/gitlab/config/unicorn.rb
+sed 's/{{UNICORN_WORKERS}}/'"${UNICORN_WORKERS}"'/' -i /home/git/gitlab/config/unicorn.rb
 
 # configure unicorn timeout
-sed 's/{{UNICORN_TIMEOUT}}/'${UNICORN_TIMEOUT}'/' -i /home/git/gitlab/config/unicorn.rb
+sed 's/{{UNICORN_TIMEOUT}}/'"${UNICORN_TIMEOUT}"'/' -i /home/git/gitlab/config/unicorn.rb
 
 # configure mail delivery
-sudo -u git -H sed 's/{{SMTP_HOST}}/'${SMTP_HOST}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
-sudo -u git -H sed 's/{{SMTP_PORT}}/'${SMTP_PORT}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
-sudo -u git -H sed 's/{{SMTP_USER}}/'${SMTP_USER}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
-sudo -u git -H sed 's/{{SMTP_PASS}}/'${SMTP_PASS}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
-sudo -u git -H sed 's/{{SMTP_DOMAIN}}/'${SMTP_DOMAIN}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
-sudo -u git -H sed 's/{{SMTP_STARTTLS}}/'${SMTP_STARTTLS}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
-sudo -u git -H sed 's/{{SMTP_AUTHENTICATION}}/'${SMTP_AUTHENTICATION}'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sudo -u git -H sed 's/{{SMTP_HOST}}/'"${SMTP_HOST}"'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sudo -u git -H sed 's/{{SMTP_PORT}}/'"${SMTP_PORT}"'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sudo -u git -H sed 's/{{SMTP_USER}}/'"${SMTP_USER}"'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sudo -u git -H sed 's/{{SMTP_PASS}}/'"${SMTP_PASS}"'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sudo -u git -H sed 's/{{SMTP_DOMAIN}}/'"${SMTP_DOMAIN}"'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sudo -u git -H sed 's/{{SMTP_STARTTLS}}/'"${SMTP_STARTTLS}"'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
+sudo -u git -H sed 's/{{SMTP_AUTHENTICATION}}/'"${SMTP_AUTHENTICATION}"'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
 
 # apply LDAP configuration
-sudo -u git -H sed 's/{{LDAP_ENABLED}}/'${LDAP_ENABLED}'/' -i /home/git/gitlab/config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_HOST}}/'${LDAP_HOST}'/' -i /home/git/gitlab/config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_PORT}}/'${LDAP_PORT}'/' -i /home/git/gitlab/config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_UID}}/'${LDAP_UID}'/' -i /home/git/gitlab/config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_METHOD}}/'${LDAP_METHOD}'/' -i /home/git/gitlab/config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_BIND_DN}}/'${LDAP_BIND_DN}'/' -i /home/git/gitlab/config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_PASS}}/'${LDAP_PASS}'/' -i /home/git/gitlab/config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}}/'${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}'/' -i /home/git/gitlab/config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_BASE}}/'${LDAP_BASE}'/' -i /home/git/gitlab/config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_USER_FILTER}}/'${LDAP_USER_FILTER}'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_ENABLED}}/'"${LDAP_ENABLED}"'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_HOST}}/'"${LDAP_HOST}"'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_PORT}}/'"${LDAP_PORT}"'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_UID}}/'"${LDAP_UID}"'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_METHOD}}/'"${LDAP_METHOD}"'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_BIND_DN}}/'"${LDAP_BIND_DN}"'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_PASS}}/'"${LDAP_PASS}"'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}}/'"${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}"'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_BASE}}/'"${LDAP_BASE}"'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_USER_FILTER}}/'"${LDAP_USER_FILTER}"'/' -i /home/git/gitlab/config/gitlab.yml
 
 # take ownership of /home/git/data
 chown git:git /home/git/data
