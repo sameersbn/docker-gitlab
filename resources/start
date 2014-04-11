@@ -1,0 +1,97 @@
+#!/bin/bash
+
+usage() {
+	echo "Usage: $0 [OPTIONS]"
+	echo "  -H,  --db-host      database hostname (default is localhost)."
+	echo "  -d,  --db-name      database name (default is redmine)."
+	echo "  -u,  --db-user      database username (default is root)."
+	echo "  -p,  --db-passwd    database user password (default is no password)."
+	echo "  -I   --db-init      initialize the database (resets any existing data in the database)"
+	echo "  -h,  --help         print this help."
+	exit 1
+}
+
+DB_NAME="localhost"
+DB_NAME="gitlabhq_production"
+DB_USER="root"
+DB_PASSWD=""
+DB_INIT="no"
+
+ARGS=$(getopt -o H:d:u:p:Ih -l "db-host:,db-name:,db-user:,db-passwd:,db-init,help" -n "$0" -- "$@")
+if [ $? -ne 0 ]; then
+	exit 1
+fi
+
+eval set -- "$ARGS"
+while true; do
+	case "$1" in
+		-H|--db-host)
+			shift
+			DB_HOST="${1}"
+			shift
+			;;
+		-d|--db-name)
+			shift
+			DB_NAME="${1}"
+			shift
+			;;
+		-u|--db-user)
+			shift
+			DB_USER="${1}"
+			shift
+			;;
+		-p|--db-passwd)
+			shift
+			DB_PASSWD="${1}"
+			shift
+			;;
+		-I|--db-init)
+			shift
+			DB_INIT="yes"
+			;;
+		-h|--help)
+			shift
+			usage
+			;;
+		--)
+			shift
+			break
+			;;
+	esac
+done
+
+if [ -z "${DB_HOST}" ] || [ "${DB_HOST}" == "localhost" ]; then
+	DB_HOST="localhost"
+	DB_USER="root"
+	DB_PASSWD=""
+	DB_INIT="yes"
+
+	mysql_install_db --user=mysql
+	/usr/bin/mysqld_safe &
+	sleep 3
+
+	echo 'CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;' | mysql -uroot
+	echo 'GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'root'@'localhost';' | mysql -uroot
+fi
+
+redis-server > /dev/null &
+
+cd /home/git/gitlab
+sudo -u git -H sed 's/{{DB_HOST}}/'${DB_HOST}'/' -i config/database.yml
+sudo -u git -H sed 's/{{DB_NAME}}/'${DB_NAME}'/' -i config/database.yml
+sudo -u git -H sed 's/{{DB_USER}}/'${DB_USER}'/' -i config/database.yml
+sudo -u git -H sed 's/{{DB_PASSWD}}/'${DB_PASSWD}'/' -i config/database.yml
+
+chown -R git:git /home/git/repositories
+
+if [ "$DB_INIT" == "yes" ]; then
+	sudo -u git -H force=yes bundle exec rake gitlab:setup RAILS_ENV=production
+fi
+
+sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
+/etc/init.d/gitlab start
+sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
+
+/etc/init.d/nginx start
+
+tail -F /var/log/nginx/gitlab_access.log

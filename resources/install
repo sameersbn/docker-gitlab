@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# export http_proxy=http://192.168.1.1:3128
+# export ftp_proxy=http://192.168.1.1:3128
+
+adduser --disabled-login --gecos 'GitLab' git
+
+sudo -u git -H mkdir -p /home/git/gitlab-shell
+wget "https://github.com/gitlabhq/gitlab-shell/archive/v1.7.1.tar.gz" -O - | tar -zxf - --strip=1 -C /home/git/gitlab-shell/
+chown -R git:git /home/git/gitlab-shell/
+
+cd /home/git/gitlab-shell
+sudo -u git -H cp -a config.yml.example config.yml
+sudo -u git -H ./bin/install
+
+sudo -u git -H mkdir -p /home/git/gitlab
+wget "https://github.com/gitlabhq/gitlabhq/archive/v6.1.0.tar.gz" -O - | tar -zxf - --strip=1 -C /home/git/gitlab/
+chown -R git:git /home/git/gitlab/
+
+cd /home/git/gitlab
+
+sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
+sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+
+sudo -u git -H mkdir -p tmp/pids/ tmp/sockets/
+chmod -R u+rwX log tmp
+
+sudo -u git -H mkdir -p public/uploads
+chmod -R u+rwX  public/uploads
+
+sudo -u git -H mkdir -p /home/git/gitlab-satellites
+
+sudo -u git -H git config --global user.name "GitLab"
+sudo -u git -H git config --global user.email "gitlab@localhost"
+sudo -u git -H git config --global core.autocrlf input
+
+gem install charlock_holmes --version '0.6.9.4'
+sudo -u git -H bundle install --deployment --without development test postgres aws
+
+# add database.yml template
+sudo -u git -H tee config/database.yml <<EOF
+production:
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: {{DB_NAME}}
+  host: {{DB_HOST}}
+  username: {{DB_USER}}
+  password: {{DB_PASSWD}}
+  pool: 10
+EOF
+chmod o-rwx config/database.yml
+
+chown -R git:git /home/git/
+
+cp lib/support/init.d/gitlab /etc/init.d/gitlab
+sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
+sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
+sed 's/YOUR_SERVER_FQDN/gitlab/' -i /etc/nginx/sites-available/gitlab
