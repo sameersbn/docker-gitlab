@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- added DEFAULT_PROJECTS_LIMIT configuration option
+
 **6.7.4**
 - upgrade gitlab to 6.7.4
 - added SMTP_AUTHENTICATION configuration option, defaults to :login.
