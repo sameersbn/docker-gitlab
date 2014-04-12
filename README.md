@@ -15,6 +15,7 @@
         - [MySQL](#mysql)
             - [Internal MySQL Server](#internal-mysql-server)
             - [External MySQL Server](#external-mysql-server)
+            - [Linking to MySQL Container](#linking-to-mysql-container)
         - [PostgreSQL](#postgresql)
             - [External PostgreSQL Server](#external-postgresql-server)
     - [Mail](#mail)
@@ -179,6 +180,63 @@ This will initialize the gitlab database. Now that the database is initialized, 
 ```
 docker run -name gitlab -d \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
+  -v /opt/gitlab/data:/home/git/data \
+  sameersbn/gitlab:latest
+```
+
+#### Linking to MySQL Container
+You can link this image with a mysql container for the database requirements. The alias of the mysql server container should be set to **mysql** while linking with the gitlab image.
+
+If a mysql container is linked, only the DB_HOST and DB_PORT settings are automatically retrieved using the linkage. You may still need to set other database connection parameters such as the DB_NAME, DB_USER, DB_PASS and so on.
+
+To illustrate linking with a mysql container, we will use the [sameersbn/mysql](https://github.com/sameersbn/docker-mysql) image. When using mysql-docker in production you should mount a volume for the mysql data store. Please refer the [README](https://github.com/sameersbn/docker-mysql/blob/master/README.md) of docker-mysql for details.
+
+First, lets pull the mysql-docker image from the docker index.
+```bash
+docker pull sameersbn/mysql:latest
+```
+
+For data persistence lets create a store for the mysql and start the container.
+```bash
+mkdir -p /opt/mysql
+docker run --name mysql -d \
+	-v /opt/mysql:/var/lib/mysql \
+	sameersbn/mysql:latest
+```
+
+You should now have the mysql server running. By default the sameersbn/mysql image does not assign a password for the root user and allows remote connections for the root user from the 172.17.%.% address space. This means you can login to the mysql server from the host as the root user.
+
+Now, lets login to the mysql server and create a user and database for the GitLab application.
+
+```bash
+mysql -uroot -h $(docker inspect mysql | grep IPAddres | awk -F'"' '{print $4}')
+```
+
+```sql
+CREATE USER 'gitlab'@'172.17.%.%' IDENTIFIED BY 'password';
+CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
+GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'172.17.%.%';
+FLUSH PRIVILEGES;
+```
+
+Now that we have the database created for gitlab, lets install the database schema. This is done by starting the gitlab container with the **app:rake gitlab:setup** command.
+
+**NOTE: The above setup is performed only for the first run**.
+
+```bash
+docker run -name gitlab -i -t -rm --link mysql:mysql \
+  -e "DB_USER=gitlab" -e "DB_PASS=password" \
+  -e "DB_NAME=gitlabhq_production" \
+  -v /opt/gitlab/data:/home/git/data \
+  sameersbn/gitlab:latest app:rake gitlab:setup
+```
+
+We are now ready to start the GitLab application.
+
+```bash
+docker run -name gitlab -i -t -rm --link mysql:mysql \
+  -e "DB_USER=gitlab" -e "DB_PASS=password" \
+  -e "DB_NAME=gitlabhq_production" \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:latest
 ```

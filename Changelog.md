@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- support linking to mysql and postgresql containers
 - added DEFAULT_PROJECTS_LIMIT configuration option
 
 **6.7.4**
