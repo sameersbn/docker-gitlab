@@ -198,9 +198,9 @@ docker pull sameersbn/mysql:latest
 
 For data persistence lets create a store for the mysql and start the container.
 ```bash
-mkdir -p /opt/mysql
+mkdir -p /opt/mysql/data
 docker run --name mysql -d \
-	-v /opt/mysql:/var/lib/mysql \
+	-v /opt/mysql/data:/var/lib/mysql \
 	sameersbn/mysql:latest
 ```
 
