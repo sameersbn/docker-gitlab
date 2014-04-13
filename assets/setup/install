@@ -24,7 +24,7 @@ else
 fi
 
 cd /home/git/gitlab-shell
-sudo -u git -H cp -a /app/setup/config/gitlab-shell/config.yml config.yml
+sudo -u git -H cp -a config.yml.example config.yml
 sudo -u git -H ./bin/install
 
 # install gitlab, use local copy if available
@@ -39,13 +39,12 @@ cd /home/git/gitlab
 
 # copy default configurations
 cp /app/setup/config/nginx/gitlab /etc/nginx/sites-available/gitlab
-sudo -u git -H cp /app/setup/config/gitlabhq/gitlab.yml config/gitlab.yml
-sudo -u git -H cp /app/setup/config/gitlabhq/resque.yml config/resque.yml
-sudo -u git -H cp /app/setup/config/gitlabhq/database.yml config/database.yml
-sudo -u git -H cp /app/setup/config/gitlabhq/sidekiq.yml config/sidekiq.yml
-sudo -u git -H cp /app/setup/config/gitlabhq/unicorn.rb config/unicorn.rb
-sudo -u git -H cp /app/setup/config/gitlabhq/rack_attack.rb config/initializers/rack_attack.rb
-sudo -u git -H cp /app/setup/config/gitlabhq/smtp_settings.rb config/initializers/smtp_settings.rb
+sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
+sudo -u git -H cp config/resque.yml.example config/resque.yml
+sudo -u git -H cp config/database.yml.mysql config/database.yml
+sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
+sudo -u git -H cp config/initializers/smtp_settings.rb.sample config/initializers/smtp_settings.rb
 
 # create required tmp and log directories
 sudo -u git -H mkdir -p tmp/pids/ tmp/sockets/

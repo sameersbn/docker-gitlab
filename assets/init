@@ -92,7 +92,18 @@ echo User: root Password: $ROOT_PASSWORD
 # start supervisord
 /usr/bin/supervisord
 
-# over write default configuration templates
+# copy configuration templates
+cp /app/setup/config/nginx/gitlab /etc/nginx/sites-available/gitlab
+sudo -u git -H cp -a /app/setup/config/gitlab-shell/config.yml /home/git/gitlab-shell/config.yml
+sudo -u git -H cp /app/setup/config/gitlabhq/gitlab.yml /home/git/gitlab/config/gitlab.yml
+sudo -u git -H cp /app/setup/config/gitlabhq/resque.yml /home/git/gitlab/config/resque.yml
+sudo -u git -H cp /app/setup/config/gitlabhq/database.yml /home/git/gitlab/config/database.yml
+sudo -u git -H cp /app/setup/config/gitlabhq/sidekiq.yml /home/git/gitlab/config/sidekiq.yml
+sudo -u git -H cp /app/setup/config/gitlabhq/unicorn.rb /home/git/gitlab/config/unicorn.rb
+sudo -u git -H cp /app/setup/config/gitlabhq/rack_attack.rb /home/git/gitlab/config/initializers/rack_attack.rb
+sudo -u git -H cp /app/setup/config/gitlabhq/smtp_settings.rb /home/git/gitlab/config/initializers/smtp_settings.rb
+
+# override default configuration templates with user templates
 if [ -d /home/git/data/config ]; then
 	chown -R git:git /home/git/data/config
 	cd /home/git/data/config
