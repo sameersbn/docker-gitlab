@@ -246,9 +246,10 @@ docker run -name gitlab -i -t -rm --link mysql:mysql \
 #### External PostgreSQL Server
 The image also supports using an external PostgreSQL Server. This is also controlled via environment variables.
 
-```bash
-createuser gitlab
-createdb -O gitlab gitlabhq_production
+```sql
+CREATE USER gitlab WITH PASSWORD 'password';
+CREATE DATABASE gitlabhq_production;
+GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
 ```
 
 To make sure the database is initialized start the container with **app:rake gitlab:setup** option.
