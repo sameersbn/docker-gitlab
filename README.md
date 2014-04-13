@@ -117,7 +117,7 @@ Login using the default username and password:
 * username: admin@local.host
 * password: 5iveL!fe
 
-You should now have GitLab ready for testing. If you want to use GitLab for more than just testing then please read the **Advanced Options** section.
+You should now have the GitLab application up and ready for testing. If you want to use this image in production the please read on.
 
 # Configuration
 
