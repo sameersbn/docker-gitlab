@@ -141,6 +141,18 @@ GitLab uses a database backend to store its data.
 ### MySQL
 
 #### Internal MySQL Server
+
+> **Warning**
+>
+> The internal mysql server will soon be removed from the image.
+
+> Please use a linked [mysql](#linking-to-mysql-container) or
+> [postgresql](#linking-to-postgresql-container) container instead.
+> Or else connect with an external [mysql](#external-mysql-server) or
+> [postgresql](#external-postgresql-server) server.
+
+> You've been warned.
+
 This docker image is configured to use a MySQL database backend. The database connection can be configured using environment variables. If not specified, the image will start a mysql server internally and use it. However in this case, the data stored in the mysql database will be lost if the container is stopped/deleted. To avoid this you should mount a volume at /var/lib/mysql.
 
 ```bash
