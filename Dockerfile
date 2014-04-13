@@ -22,7 +22,7 @@ RUN apt-get install -y python-software-properties && \
 		add-apt-repository -y ppa:git-core/ppa && apt-get update
 
 RUN apt-get install -y build-essential checkinstall \
-			nginx git-core mysql-server redis-server python2.7 python-docutils postfix \
+			nginx git-core mysql-server redis-server python2.7 python-docutils \
 			libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
 			libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
 			libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev && \
