@@ -29,6 +29,7 @@
     - [Automated Backups](#automated-backups)
 - [Upgrading](#upgrading)
 - [Rake Tasks](#rake-tasks)
+- [Issues](#issue)
 - [References](#references)
 
 # Introduction
@@ -532,7 +533,10 @@ docker run -name gitlab -d [OPTIONS] \
 
 For a complete list of available rake tasks please refer https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks or the help section of your gitlab installation.
 
-## References
+# Issues
+Please report issue [here](https://github.com/sameersbn/docker-gitlab/issues)
+
+# References
   * https://github.com/gitlabhq/gitlabhq
   * https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md
   * https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md
