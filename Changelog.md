@@ -1,6 +1,7 @@
 # Changelog
 
-**latest**
+**6.7.5**
+- upgrade gitlab to 6.7.5
 - support linking to mysql and postgresql containers
 - added DEFAULT_PROJECTS_LIMIT configuration option
 
