@@ -177,8 +177,6 @@ GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON
 
 To make sure the database is initialized start the container with **app:rake gitlab:setup** option.
 
-**NOTE: This should be done only for the first run**.
-
 *Assuming that the mysql server host is 192.168.1.100*
 
 ```bash
@@ -187,6 +185,8 @@ docker run --name=gitlab -i -t --rm \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:latest app:rake gitlab:setup
 ```
+
+**NOTE: The above setup is performed only for the first run**.
 
 This will initialize the gitlab database. Now that the database is initialized, start the container normally.
 
@@ -234,8 +234,6 @@ FLUSH PRIVILEGES;
 
 Now that we have the database created for gitlab, lets install the database schema. This is done by starting the gitlab container with the **app:rake gitlab:setup** command.
 
-**NOTE: The above setup is performed only for the first run**.
-
 ```bash
 docker run --name=gitlab -i -t --rm --link mysql:mysql \
   -e "DB_USER=gitlab" -e "DB_PASS=password" \
@@ -243,6 +241,8 @@ docker run --name=gitlab -i -t --rm --link mysql:mysql \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:latest app:rake gitlab:setup
 ```
+
+**NOTE: The above setup is performed only for the first run**.
 
 We are now ready to start the GitLab application.
 
@@ -267,8 +267,6 @@ GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
 
 To make sure the database is initialized start the container with **app:rake gitlab:setup** option.
 
-**NOTE: This should be done only for the first run**.
-
 *Assuming that the PostgreSQL server host is 192.168.1.100*
 
 ```bash
@@ -277,6 +275,8 @@ docker run --name=gitlab -i -t --rm \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:latest app:rake gitlab:setup
 ```
+
+**NOTE: The above setup is performed only for the first run**.
 
 This will initialize the gitlab database. Now that the database is initialized, start the container normally.
 
@@ -328,8 +328,6 @@ GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
 
 Now that we have the database created for gitlab, lets install the database schema. This is done by starting the gitlab container with the **app:rake gitlab:setup** command.
 
-**NOTE: The above setup is performed only for the first run**.
-
 ```bash
 docker run --name=gitlab -i -t --rm --link postgresql:postgresql \
   -e "DB_USER=gitlab" -e "DB_PASS=password" \
@@ -337,6 +335,8 @@ docker run --name=gitlab -i -t --rm --link postgresql:postgresql \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:latest app:rake gitlab:setup
 ```
+
+**NOTE: The above setup is performed only for the first run**.
 
 We are now ready to start the GitLab application.
 
