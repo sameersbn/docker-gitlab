@@ -93,7 +93,7 @@ Alternately you can build the image yourself.
 ```bash
 git clone https://github.com/sameersbn/docker-gitlab.git
 cd docker-gitlab
-docker build -t="$USER/gitlab" .
+docker build --tag="$USER/gitlab" .
 ```
 
 # Quick Start
@@ -130,7 +130,7 @@ Volumes can be mounted in docker by specifying the **'-v'** option in the docker
 
 ```bash
 mkdir /opt/gitlab/data
-docker run -name gitlab -d \
+docker run --name=gitlab -d \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:latest
 ```
@@ -157,7 +157,7 @@ This docker image is configured to use a MySQL database backend. The database co
 
 ```bash
 mkdir /opt/gitlab/mysql
-docker run -name gitlab -d \
+docker run --name=gitlab -d \
   -v /opt/gitlab/data:/home/git/data \
   -v /opt/gitlab/mysql:/var/lib/mysql sameersbn/gitlab:latest
 ```
@@ -182,7 +182,7 @@ To make sure the database is initialized start the container with **app:rake git
 *Assuming that the mysql server host is 192.168.1.100*
 
 ```bash
-docker run -name gitlab -i -t -rm \
+docker run --name=gitlab -i -t --rm \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:latest app:rake gitlab:setup
@@ -191,7 +191,7 @@ docker run -name gitlab -i -t -rm \
 This will initialize the gitlab database. Now that the database is initialized, start the container normally.
 
 ```bash
-docker run -name gitlab -d \
+docker run --name=gitlab -d \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:latest
@@ -212,7 +212,7 @@ docker pull sameersbn/mysql:latest
 For data persistence lets create a store for the mysql and start the container.
 ```bash
 mkdir -p /opt/mysql/data
-docker run --name mysql -d \
+docker run --name=mysql -d \
 	-v /opt/mysql/data:/var/lib/mysql \
 	sameersbn/mysql:latest
 ```
@@ -237,7 +237,7 @@ Now that we have the database created for gitlab, lets install the database sche
 **NOTE: The above setup is performed only for the first run**.
 
 ```bash
-docker run -name gitlab -i -t -rm --link mysql:mysql \
+docker run --name=gitlab -i -t --rm --link mysql:mysql \
   -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -e "DB_NAME=gitlabhq_production" \
   -v /opt/gitlab/data:/home/git/data \
@@ -247,7 +247,7 @@ docker run -name gitlab -i -t -rm --link mysql:mysql \
 We are now ready to start the GitLab application.
 
 ```bash
-docker run -name gitlab -i -t -rm --link mysql:mysql \
+docker run --name=gitlab -d --link mysql:mysql \
   -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -e "DB_NAME=gitlabhq_production" \
   -v /opt/gitlab/data:/home/git/data \
@@ -272,7 +272,7 @@ To make sure the database is initialized start the container with **app:rake git
 *Assuming that the PostgreSQL server host is 192.168.1.100*
 
 ```bash
-docker run -name gitlab -i -t -rm \
+docker run --name=gitlab -i -t --rm \
   -e "DB_TYPE=postgres" -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:latest app:rake gitlab:setup
@@ -281,7 +281,7 @@ docker run -name gitlab -i -t -rm \
 This will initialize the gitlab database. Now that the database is initialized, start the container normally.
 
 ```bash
-docker run -name gitlab -d \
+docker run --name=gitlab -d \
   -e "DB_TYPE=postgres" -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:latest
@@ -302,7 +302,7 @@ docker pull sameersbn/postgresql:latest
 For data persistence lets create a store for the postgresql and start the container.
 ```bash
 mkdir -p /opt/postgresql/data
-docker run --name postgresql -d \
+docker run --name=postgresql -d \
   -v /opt/postgresql/data:/var/lib/postgresql \
   sameersbn/postgresql:latest
 ```
@@ -331,7 +331,7 @@ Now that we have the database created for gitlab, lets install the database sche
 **NOTE: The above setup is performed only for the first run**.
 
 ```bash
-docker run -name gitlab -i -t -rm --link postgresql:postgresql \
+docker run --name=gitlab -i -t --rm --link postgresql:postgresql \
   -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -e "DB_NAME=gitlabhq_production" \
   -v /opt/gitlab/data:/home/git/data \
@@ -341,7 +341,7 @@ docker run -name gitlab -i -t -rm --link postgresql:postgresql \
 We are now ready to start the GitLab application.
 
 ```bash
-docker run -name gitlab -i -t -rm --link postgresql:postgresql \
+docker run --name=gitlab -d --link postgresql:postgresql \
   -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -e "DB_NAME=gitlabhq_production" \
   -v /opt/gitlab/data:/home/git/data \
@@ -362,7 +362,7 @@ The following environment variables need to be specified to get mail support to 
 * SMTP_AUTHENTICATION (defaults to :login)
 
 ```bash
-docker run -name gitlab -d \
+docker run --name=gitlab -d \
   -e "SMTP_USER=USER@gmail.com" -e "SMTP_PASS=PASSWORD" \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:latest
@@ -371,7 +371,7 @@ docker run -name gitlab -d \
 ### Putting it all together
 
 ```bash
-docker run -name gitlab -d -h git.local.host \
+docker run --name=gitlab -d -h git.local.host \
   -v /opt/gitlab/data:/home/git/data \
   -v /opt/gitlab/mysql:/var/lib/mysql \
   -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
@@ -382,7 +382,7 @@ docker run -name gitlab -d -h git.local.host \
 If you are using an external mysql database
 
 ```bash
-docker run -name gitlab -d -h git.local.host \
+docker run --name=gitlab -d -h git.local.host \
   -v /opt/gitlab/data:/home/git/data \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
@@ -458,7 +458,7 @@ docker stop gitlab
 To take a backup all you need to do is run the gitlab rake task to create a backup.
 
 ```bash
-docker run -name gitlab -i -t -rm [OPTIONS] \
+docker run --name=gitlab -i -t --rm [OPTIONS] \
   sameersbn/gitlab:latest app:rake gitlab:backup:create
 ```
 
@@ -475,7 +475,7 @@ docker stop gitlab
 To restore a backup, run the image in interactive (-i -t) mode and pass the "app:restore" command to the container image.
 
 ```bash
-docker run -name gitlab -i -t -rm [OPTIONS] \
+docker run --name=gitlab -i -t --rm [OPTIONS] \
   sameersbn/gitlab:latest app:rake gitlab:backup:restore
 ```
 
@@ -504,7 +504,7 @@ docker stop gitlab
 - **Step 2**: Backup the application data.
 
 ```bash
-docker run -name gitlab -i -t -rm [OPTIONS] \
+docker run --name=gitlab -i -t --rm [OPTIONS] \
   sameersbn/gitlab:latest app:rake gitlab:backup:create
 ```
 
@@ -517,14 +517,14 @@ docker pull sameersbn/gitlab:latest
 - **Step 4**: Migrate the database.
 
 ```bash
-docker run -name gitlab -i -t -rm [OPTIONS] \
+docker run --name=gitlab -i -t --rm [OPTIONS] \
   sameersbn/gitlab:latest app:rake db:migrate
 ```
 
 - **Step 5**: Start the image
 
 ```bash
-docker run -name gitlab -d [OPTIONS] sameersbn/gitlab:latest
+docker run --name=gitlab -d [OPTIONS] sameersbn/gitlab:latest
 ```
 
 ## Rake Tasks
@@ -532,14 +532,14 @@ docker run -name gitlab -d [OPTIONS] sameersbn/gitlab:latest
 The app:rake command allows you to run gitlab rake tasks. To run a rake task simply specify the task to be executed to the app:rake command. For example, if you want to gather information about GitLab and the system it runs on.
 
 ```bash
-docker run -name gitlab -d [OPTIONS] \
+docker run --name=gitlab -d [OPTIONS] \
   sameersbn/gitlab:latest app:rake gitlab:env:info
 ```
 
 Similarly, to import bare repositories into GitLab project instance
 
 ```bash
-docker run -name gitlab -d [OPTIONS] \
+docker run --name=gitlab -d [OPTIONS] \
   sameersbn/gitlab:latest app:rake gitlab:import:repos
 ```
 
