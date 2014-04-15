@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- install postgresql-client to fix restoring backups when used with a postgresql database backend.
+
 **6.7.5**
 - upgrade gitlab to 6.7.5
 - support linking to mysql and postgresql containers
