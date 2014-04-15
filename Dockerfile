@@ -32,6 +32,8 @@ RUN add-apt-repository -y ppa:brightbox/ruby-ng && apt-get update && \
 		apt-get install -y ruby2.0 ruby-switch ruby2.0-dev && apt-get clean && \
 		ruby-switch --set ruby2.0 && gem install --no-ri --no-rdoc bundler
 
+RUN apt-get install -y postgresql-client-9.1 && apt-get clean
+
 ADD assets/ /app/
 RUN mv /app/.vimrc /app/.bash_aliases /root/
 RUN chmod 755 /app/init /app/setup/install && /app/setup/install
