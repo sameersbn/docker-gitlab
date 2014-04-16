@@ -260,7 +260,7 @@ docker run --name=gitlab -d --link mysql:mysql \
 The image also supports using an external PostgreSQL Server. This is also controlled via environment variables.
 
 ```sql
-CREATE USER gitlab WITH PASSWORD 'password';
+CREATE ROLE gitlab with LOGIN CREATEDB PASSWORD 'password';
 CREATE DATABASE gitlabhq_production;
 GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
 ```
@@ -321,7 +321,7 @@ psql -U postgres -h ${POSTGRESQL_IP}
 ```
 
 ```sql
-CREATE USER gitlab WITH PASSWORD 'password';
+CREATE ROLE gitlab with LOGIN CREATEDB PASSWORD 'password';
 CREATE DATABASE gitlabhq_production;
 GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
 ```
