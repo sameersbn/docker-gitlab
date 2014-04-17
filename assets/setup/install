@@ -37,14 +37,6 @@ else
 fi
 cd /home/git/gitlab
 
-# copy default configurations
-cp /app/setup/config/nginx/gitlab /etc/nginx/sites-available/gitlab
-sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
-sudo -u git -H cp config/resque.yml.example config/resque.yml
-sudo -u git -H cp config/database.yml.mysql config/database.yml
-sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
-sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
-sudo -u git -H cp config/initializers/smtp_settings.rb.sample config/initializers/smtp_settings.rb
 
 # create required tmp and log directories
 sudo -u git -H mkdir -p tmp/pids/ tmp/sockets/

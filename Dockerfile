@@ -34,9 +34,14 @@ RUN add-apt-repository -y ppa:brightbox/ruby-ng && apt-get update && \
 
 RUN apt-get install -y postgresql-client-9.1 && apt-get clean
 
+ADD assets/setup/install /app/setup/install
+ADD assets/.vimrc /root/.vimrc
+ADD assets/.bash_aliases /root/.bashaliases
+RUN chmod 755 /app/setup/install
+RUN /app/setup/install
+
 ADD assets/ /app/
-RUN mv /app/.vimrc /app/.bash_aliases /root/
-RUN chmod 755 /app/init /app/setup/install && /app/setup/install
+RUN chmod 755 /app/init
 
 ADD authorized_keys /root/.ssh/
 RUN chmod 700 /root/.ssh && chmod 600 /root/.ssh/authorized_keys && chown root:root -R /root/.ssh
