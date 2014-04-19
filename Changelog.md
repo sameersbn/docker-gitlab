@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- use sameersbn/ubuntu as the base docker image
 - install postgresql-client to fix restoring backups when used with a postgresql database backend.
 
 **6.7.5**

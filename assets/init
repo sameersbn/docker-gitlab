@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -e
 
 GITLAB_HOST=${GITLAB_HOST:-localhost}
@@ -91,6 +90,7 @@ echo User: root Password: $ROOT_PASSWORD
 
 # start supervisord
 /usr/bin/supervisord
+supervisorctl start sshd
 
 # copy configuration templates
 cp /app/setup/config/nginx/gitlab /etc/nginx/sites-available/gitlab
