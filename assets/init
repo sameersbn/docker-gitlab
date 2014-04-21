@@ -211,7 +211,7 @@ sudo -u git -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/' -i /home/git/gitlab/con
 sudo -u git -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/' -i /home/git/gitlab/config/resque.yml
 
 # configure gitlab-shell
-sudo -u git -H sed 's/{{GITLAB_HOST}}/'"${GITLAB_HOST}"'/' -i /home/git/gitlab-shell/config.yml
+sudo -u git -H sed 's/{{GITLAB_HOST}}/'"${GITLAB_HOST}:${GITLAB_PORT}"'/' -i /home/git/gitlab-shell/config.yml
 sudo -u git -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/' -i /home/git/gitlab-shell/config.yml
 sudo -u git -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/' -i /home/git/gitlab-shell/config.yml
 
