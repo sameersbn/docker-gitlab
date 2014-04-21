@@ -33,7 +33,7 @@
     - [Automated Backups](#automated-backups)
 - [Upgrading](#upgrading)
 - [Rake Tasks](#rake-tasks)
-- [Links](#)
+- Links
   - [Announcements](https://github.com/sameersbn/docker-gitlab/issues/39)
   - [Issues](https://github.com/sameersbn/docker-gitlab/issues)
 - [References](#references)
