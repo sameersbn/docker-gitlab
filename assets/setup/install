@@ -37,7 +37,7 @@ fi
 cd /home/git/gitlab
 
 # copy default configurations
-cp /app/setup/config/nginx/gitlab /etc/nginx/sites-available/gitlab
+cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
 sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
 sudo -u git -H cp config/resque.yml.example config/resque.yml
 sudo -u git -H cp config/database.yml.mysql config/database.yml

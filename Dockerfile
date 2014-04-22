@@ -18,6 +18,8 @@ ADD assets/ /app/
 RUN chmod 755 /app/init /app/setup/install
 RUN /app/setup/install
 
+ADD config/ /app/setup/config/
+
 ADD authorized_keys /root/.ssh/
 
 EXPOSE 22
