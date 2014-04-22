@@ -2,7 +2,7 @@
 set -e
 
 GITLAB_VERSION=6.8.0
-SHELL_VERSION=1.9.1
+SHELL_VERSION=1.9.3
 
 # add git user
 adduser --disabled-login --gecos 'GitLab' git

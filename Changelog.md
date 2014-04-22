@@ -1,6 +1,7 @@
 # Changelog
 
 **6.8.0**
+- upgrade to gitlab-shell 1.9.3
 - added GITLAB_SIGNIN setting to enable or disable standard login form
 - upgraded to gitlab-ce version 6.8.0
 - added support for linking with redis container.
