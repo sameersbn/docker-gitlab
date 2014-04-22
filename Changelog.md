@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added GITLAB_SIGNIN setting to enable or disable standard login form
 - upgraded to gitlab-ce version 6.8.0
 - added support for linking with redis container.
 - use sameersbn/ubuntu as the base docker image

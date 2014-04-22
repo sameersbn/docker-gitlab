@@ -452,6 +452,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_EMAIL**: The email address for the GitLab server. Defaults to gitlab@localhost.
 - **GITLAB_SUPPORT**: The support email address for the GitLab server. Defaults to support@localhost.
 - **GITLAB_SIGNUP**: Enable or disable user signups. Default is false.
+- **GITLAB_SIGNIN**: If set to false, standard login form won't be shown on the sign-in page. Default is true.
 - **GITLAB_PROJECTS_LIMIT**: Set default projects limit. Defaults to 10.
 - **GITLAB_BACKUPS**: Setup cron job to automatic backups. Possible values disable, daily or monthly. Disabled by default
 - **GITLAB_BACKUP_EXPIRY**: Configure how long to keep backups before they are deleted. By default when automated backups are disabled backups are kept forever (0 seconds), else the backups expire in 7 days (604800 seconds).

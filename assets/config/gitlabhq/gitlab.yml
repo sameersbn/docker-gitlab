@@ -58,7 +58,7 @@ production: &base
     signup_enabled: {{GITLAB_SIGNUP}}
     #
     # default: true - If set to false, standard login form won't be shown on the sign-in page
-    # signin_enabled: false
+    signin_enabled: {{GITLAB_SIGNIN}}
 
 
     # Restrict setting visibility levels for non-admin users.
