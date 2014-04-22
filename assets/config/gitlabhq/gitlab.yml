@@ -20,7 +20,7 @@ production: &base
     https: {{GITLAB_HTTPS}}
 
     # Uncomment and customize the last line to run in a non-root path
-    # WARNING: We recommend creating a FQDN to host GitLab in a root path instead of this. 
+    # WARNING: We recommend creating a FQDN to host GitLab in a root path instead of this.
     # Note that four settings need to be changed for this to work.
     # 1) In your application.rb file: config.relative_url_root = "/gitlab"
     # 2) In your gitlab.yml file: relative_url_root: /gitlab
@@ -54,8 +54,12 @@ production: &base
 
 
     ## Users management
-    # default: false - Account passwords are not sent via the email if signup is enabled. 
+    # default: false - Account passwords are not sent via the email if signup is enabled.
     signup_enabled: {{GITLAB_SIGNUP}}
+    #
+    # default: true - If set to false, standard login form won't be shown on the sign-in page
+    # signin_enabled: false
+
 
     # Restrict setting visibility levels for non-admin users.
     # The default is to allow all levels.
@@ -65,7 +69,7 @@ production: &base
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
     # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
-    # issue_closing_pattern: '([Cc]lose[sd]|[Ff]ixe[sd]) +#\d+'
+    # issue_closing_pattern: '([Cc]lose[sd]|[Ff]ixe[sd]) #(\d+)'
 
     ## Default project features settings
     default_projects_features:
@@ -75,6 +79,11 @@ production: &base
       wall: false
       snippets: false
       visibility_level: "private"  # can be "private" | "internal" | "public"
+
+    ## Repository downloads directory
+    # When a user clicks e.g. 'Download zip' on a project, a temporary zip file is created in the following directory.
+    # The default is 'tmp/repositories' relative to the root of the Rails app.
+    # repository_downloads_path: tmp/repositories
 
   ## External issues trackers
   issues_tracker:
@@ -98,7 +107,7 @@ production: &base
     #   ##  :project_id        - GitLab project identifier
     #   ##  :issues_tracker_id - Project Name or Id in external issue tracker
     #   new_issue_url: "http://redmine.sample/projects/:issues_tracker_id/issues/new"
-    # 
+    #
     # jira:
     #   title: "Atlassian Jira"
     #   project_url: "http://jira.sample/issues/?jql=project=:issues_tracker_id"
@@ -166,9 +175,10 @@ production: &base
     ## Auth providers
     # Uncomment the following lines and fill in the data of the auth provider you want to use
     # If your favorite auth provider is not listed you can use others:
-    # see https://github.com/gitlabhq/gitlab-public-wiki/wiki/Working-custom-omniauth-provider-configurations
+    # see https://github.com/gitlabhq/gitlab-public-wiki/wiki/Custom-omniauth-provider-configurations
     # The 'app_id' and 'app_secret' parameters are always passed as the first two
     # arguments, followed by optional 'args' which can be either a hash or an array.
+    # Documentation for this is available at http://doc.gitlab.com/ce/integration/omniauth.html
     providers:
       # - { name: 'google_oauth2', app_id: 'YOUR APP ID',
       #     app_secret: 'YOUR APP SECRET',
