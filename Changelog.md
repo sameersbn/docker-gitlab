@@ -1,5 +1,8 @@
 # Changelog
 
+**6.8.1**
+- upgrade to gitlab-ce 6.8.1
+
 **6.8.0**
 - upgrade to gitlab-shell 1.9.3
 - added GITLAB_SIGNIN setting to enable or disable standard login form
