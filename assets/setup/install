@@ -50,6 +50,7 @@ sudo -u git -H mkdir -p tmp/pids/ tmp/sockets/
 chmod -R u+rwX log tmp
 
 # create symlink to uploads directory
+rm -rf public/uploads
 sudo -u git -H ln -s /home/git/data/uploads public/uploads
 
 # create symlink to backups directory

@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- fix symlink to uploads directory
+
 **6.8.1**
 - upgrade to gitlab-ce 6.8.1
 
