@@ -7,6 +7,7 @@ SHELL_VERSION=1.9.3
 # add git user
 adduser --disabled-login --gecos 'GitLab' git
 
+rm -rf /home/git/.ssh
 sudo -u git -H mkdir -p /home/git/data/.ssh
 sudo -u git -H ln -s /home/git/data/.ssh /home/git/.ssh
 
