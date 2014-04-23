@@ -86,7 +86,8 @@ chmod +x /etc/init.d/gitlab
 # install logrotate configuration
 cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
 
-# copy nginx configuration
+# disable default nginx configuration and enable gitlab's nginx configuration
+rm -f /etc/nginx/sites-enabled/default
 ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
 # configure supervisord to start nginx
