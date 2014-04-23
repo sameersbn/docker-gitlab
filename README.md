@@ -106,7 +106,7 @@ docker build --tag="$USER/gitlab" .
 Run the gitlab image
 
 ```
-docker run -name gitlab -d sameersbn/gitlab:latest
+docker run --name=gitlab -d sameersbn/gitlab:latest
 GITLAB_IP=$(docker inspect gitlab | grep IPAddres | awk -F'"' '{print $4}')
 ```
 
