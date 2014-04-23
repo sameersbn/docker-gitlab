@@ -54,6 +54,7 @@ rm -rf public/uploads
 sudo -u git -H ln -s /home/git/data/uploads public/uploads
 
 # create symlink to backups directory
+rm -rf tmp/backups
 sudo -u git -H ln -s /home/git/data/backups tmp/backups
 
 # create production log
