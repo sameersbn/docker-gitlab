@@ -259,9 +259,8 @@ chown git:git /home/git/data
 
 # create the repositories directory and make sure it has the right permissions
 sudo -u git -H mkdir -p /home/git/data/repositories/
-sudo chmod ug+rwX,o-rwx /home/git/data/repositories/
 sudo chmod ug-s /home/git/data/repositories/
-find /home/git/data/repositories/ -type d -print0 | sudo xargs -0 chmod g+s
+find /home/git/data/repositories/ -type d -print0 | sudo xargs -0 chmod ug+rwX,g+s,o-rwx
 chown git:git /home/git/data/repositories
 
 # create the satellites directory and make sure it has the right permissions
