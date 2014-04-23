@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- cache compiled assets to boost application startup.
 - fix symlink to uploads directory
 
 **6.8.1**
