@@ -308,9 +308,18 @@ appStart () {
 		sudo -u git -H force=yes bundle exec rake gitlab:setup RAILS_ENV=production
 	fi
 
-	echo "Compiling assets..."
-	sudo -u git -H bundle exec rake assets:clean RAILS_ENV=production
-	sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production 2>/dev/null
+	# compile the assets only if it does not exist or if the gitlab version has changed.
+	CACHE_VERSION=
+	GITLAB_VERSION=$(cat VERSION)
+	if [ -f tmp/cache/VERSION ]; then
+		CACHE_VERSION=$(cat tmp/cache/VERSION)
+	fi
+	if [ "${GITLAB_VERSION}" != "${CACHE_VERSION}" ]; then
+		echo "Compiling assets..."
+		sudo -u git -H bundle exec rake assets:clean RAILS_ENV=production
+		sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production 2>/dev/null
+		sudo -u git -H echo "${GITLAB_VERSION}" > tmp/cache/VERSION
+	fi
 
 	# start the gitlab application
 	# sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
