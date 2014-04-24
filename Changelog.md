@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- upgrade gitlab-shell to version 1.9.4
 - cache compiled assets to boost application startup.
 - fix symlink to uploads directory
 
