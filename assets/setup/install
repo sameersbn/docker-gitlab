@@ -54,6 +54,10 @@ chmod -R u+rwX log tmp
 rm -rf tmp/cache
 sudo -u git -H ln -s /home/git/data/tmp/cache tmp/cache
 
+# create symlink to assets in public/assets
+rm -rf public/assets
+sudo -u git -H ln -s /home/git/data/tmp/public/assets public/assets
+
 # create symlink to uploads directory
 rm -rf public/uploads
 sudo -u git -H ln -s /home/git/data/uploads public/uploads

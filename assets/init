@@ -276,6 +276,10 @@ chmod -R u+rwX /home/git/data/tmp/
 sudo -u git -H mkdir -p /home/git/data/tmp/cache/
 chown git:git /home/git/data/tmp/cache/
 
+# create the public/assets directory
+sudo -u git -H mkdir -p /home/git/data/tmp/public/assets/
+chown git:git /home/git/data/tmp/public/assets/
+
 # remove old cache directory (remove this line after a few releases)
 rm -rf /home/git/data/cache
 
