@@ -268,9 +268,16 @@ sudo -u git -H mkdir -p /home/git/data/gitlab-satellites/
 find /home/git/data/gitlab-satellites/ -type d -print0 | sudo xargs -0 chmod u+rwx,g+rx-sw,o-rwx
 chown git:git /home/git/data/gitlab-satellites
 
-# create the assets cache directory
-sudo -u git -H mkdir -p /home/git/data/cache/
-chown git:git /home/git/data/cache/
+# create the tmp directory for the cache
+sudo -u git -H mkdir -p /home/git/data/tmp/
+chmod -R u+rwX /home/git/data/tmp/
+
+# create the tmp/cache directory
+sudo -u git -H mkdir -p /home/git/data/tmp/cache/
+chown git:git /home/git/data/tmp/cache/
+
+# remove old cache directory (remove this line after a few releases)
+rm -rf /home/git/data/cache
 
 # create the backups directory
 sudo -u git -H mkdir -p /home/git/data/backups/

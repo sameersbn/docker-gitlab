@@ -50,9 +50,9 @@ sudo -u git -H cp config/initializers/smtp_settings.rb.sample config/initializer
 sudo -u git -H mkdir -p tmp/pids/ tmp/sockets/
 chmod -R u+rwX log tmp
 
-# create symlink to assets cache
+# create symlink to assets in tmp/cache
 rm -rf tmp/cache
-sudo -u git -H ln -s /home/git/data/cache tmp/cache
+sudo -u git -H ln -s /home/git/data/tmp/cache tmp/cache
 
 # create symlink to uploads directory
 rm -rf public/uploads
