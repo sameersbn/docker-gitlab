@@ -318,9 +318,8 @@ appStart () {
 		echo "Compiling assets..."
 		sudo -u git -H bundle exec rake assets:clean RAILS_ENV=production
 		sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production 2>/dev/null
-		sudo -u git -H cat > tmp/cache/VERSION <<EOF
-${GITLAB_VERSION}
-EOF
+		sudo -u git -H touch tmp/cache/VERSION
+		sudo -u git -H echo "${GITLAB_VERSION}" > tmp/cache/VERSION
 	fi
 
 	# start the gitlab application
