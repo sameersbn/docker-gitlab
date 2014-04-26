@@ -9,7 +9,7 @@ http_settings:
 #  password: somepass
 #  ca_file: /etc/ssl/cert.pem
 #  ca_path: /etc/pki/tls/certs
-  self_signed_cert: false
+  self_signed_cert: {{GITLAB_SSL_SELF_SIGNED}}
 
 # Repositories path
 # Give the canonicalized absolute pathname,

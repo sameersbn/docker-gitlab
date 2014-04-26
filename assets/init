@@ -4,6 +4,7 @@ set -e
 GITLAB_HOST=${GITLAB_HOST:-localhost}
 GITLAB_PORT=${GITLAB_PORT:-}
 GITLAB_HTTPS=${GITLAB_HTTPS:-false}
+GITLAB_SSL_SELF_SIGNED=${GITLAB_SSL_SELF_SIGNED:-false}
 GITLAB_EMAIL=${GITLAB_EMAIL:-gitlab@localhost}
 GITLAB_SUPPORT=${GITLAB_SUPPORT:-support@localhost}
 GITLAB_SIGNUP=${GITLAB_SIGNUP:-false}
@@ -235,6 +236,7 @@ sudo -u git -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/' -i /home/git/gitlab/con
 
 # configure gitlab-shell
 sudo -u git -H sed 's,{{GITLAB_URL}},'"${GITLAB_URL}"',' -i /home/git/gitlab-shell/config.yml
+sudo -u git -H sed 's/{{GITLAB_SSL_SELF_SIGNED}}/'"${GITLAB_SSL_SELF_SIGNED}"'/' -i /home/git/gitlab-shell/config.yml
 sudo -u git -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/' -i /home/git/gitlab-shell/config.yml
 sudo -u git -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/' -i /home/git/gitlab-shell/config.yml
 

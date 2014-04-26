@@ -461,6 +461,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_BACKUP_EXPIRY**: Configure how long to keep backups before they are deleted. By default when automated backups are disabled backups are kept forever (0 seconds), else the backups expire in 7 days (604800 seconds).
 - **GITLAB_SHELL_SSH_PORT**: The ssh port number. Defaults to 22.
 - **GITLAB_HTTPS**: Set to true to enable https support, disabled by default.
+- **GITLAB_SSL_SELF_SIGNED**: Set to true when using self signed ssl certificates. false by default.
 - **REDIS_HOST**: The hostname of the redis server. Defaults to localhost
 - **REDIS_PORT**: The connection port of the redis server. Defaults to 6379.
 - **UNICORN_WORKERS**: The number of unicorn workers to start. Defaults to 2.
