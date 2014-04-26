@@ -147,7 +147,7 @@ if [ -d /home/git/data/config ]; then
 	[ -f gitlabhq/smtp_settings.rb ] && sudo -u git -H cp gitlabhq/smtp_settings.rb /home/git/gitlab/config/initializers/smtp_settings.rb
 fi
 
-sed 's/{{YOUR_SERVER_FQDN}}/'"${GITLAB_HOST}"'/g' -i /etc/nginx/sites-available/gitlab
+sed 's/{{YOUR_SERVER_FQDN}}/'"${GITLAB_HOST}"'/' -i /etc/nginx/sites-available/gitlab
 supervisorctl start nginx
 
 # start mysql server if ${DB_HOST} is localhost

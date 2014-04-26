@@ -21,9 +21,9 @@ upstream gitlab {
 
 server {
   listen *:80 default_server;
-  server_name {{YOUR_SERVER_FQDN}};
+  server_name _;
   server_tokens off;
-  rewrite ^ https://$server_name$request_uri? permanent;
+  rewrite ^ https://$host$request_uri? permanent;
 }
 
 server {
