@@ -26,6 +26,7 @@ ADD authorized_keys /root/.ssh/
 
 EXPOSE 22
 EXPOSE 80
+EXPOSE 443
 
 VOLUME ["/home/git/data"]
 
