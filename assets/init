@@ -357,8 +357,11 @@ EOF
 	crontab -u git /tmp/cron.git && rm -rf /tmp/cron.git
 
 	# kickstart the rails application
-	wget "http://localhost" -O /dev/null
-
+	if [ "${GITLAB_HTTPS}" == "true" ]; then
+		wget --no-check-certificate "https://${GITLAB_HOST}" -O /dev/null
+	else
+		wget "http://${GITLAB_HOST}" -O /dev/null
+	fi
 
 	# watch the access logs
 	tail -F /var/log/nginx/gitlab_access.log
