@@ -23,7 +23,7 @@ server {
   listen *:80 default_server;
   server_name _;
   server_tokens off;
-  rewrite ^ https://$host$request_uri? permanent;
+  rewrite ^ https://$host:{{GITLAB_PORT}}$request_uri? permanent;
 }
 
 server {
