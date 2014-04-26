@@ -238,6 +238,12 @@ sudo -u git -H sed 's,{{GITLAB_URL}},'"${GITLAB_URL}"',' -i /home/git/gitlab-she
 sudo -u git -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/' -i /home/git/gitlab-shell/config.yml
 sudo -u git -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/' -i /home/git/gitlab-shell/config.yml
 
+# hack: make git over ssh work when the default http/https ports are not used.
+case "${GITLAB_HTTPS}" in
+	true) sed -i 's,#{config.gitlab_url}/api/v3/internal,https://localhost/api/v3/internal,' -i /home/git/gitlab-shell/lib/gitlab_net.rb ;;
+	   *) sed -i 's,#{config.gitlab_url}/api/v3/internal,http://localhost/api/v3/internal,' -i /home/git/gitlab-shell/lib/gitlab_net.rb ;;
+esac
+
 # configure unicorn workers
 sed 's/{{UNICORN_WORKERS}}/'"${UNICORN_WORKERS}"'/' -i /home/git/gitlab/config/unicorn.rb
 
