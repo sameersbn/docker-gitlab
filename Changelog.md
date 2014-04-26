@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- fix git over ssh when the default http/https ports are not used.
 - compile the assets only if it does not exist or if the gitlab version has changed.
 - upgrade gitlab-shell to version 1.9.4
 - cache compiled assets to boost application startup.
