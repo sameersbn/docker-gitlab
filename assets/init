@@ -270,9 +270,18 @@ case "${GITLAB_HTTPS}" in
 	true)
 		case "${GITLAB_HTTPS_ONLY}" in
 			true)
-				# talk to gitlab over https on localhost
-				# this will make sure the api access works when the default https port is not used.
-				sed -i 's,#{config.gitlab_url}/api/v3/internal,https://localhost/api/v3/internal,' -i /home/git/gitlab-shell/lib/gitlab_net.rb
+				case "${GITLAB_SSL_SELF_SIGNED}" in
+					true)
+						# we are using self signed certificates, talk to gitlab over https on localhost
+						# this will make sure the api access works when the default https port is not used.
+						sed -i 's,#{config.gitlab_url}/api/v3/internal,https://localhost/api/v3/internal,' -i /home/git/gitlab-shell/lib/gitlab_net.rb
+						;;
+					*)
+						# signed https certificates are in use, talk to gitlab using the default gitlab_url.
+						# hence we are not editing anything here, just using the default.
+						# ps. when using signed ssl certificates, you **MUST** use the default https port.
+						;;
+				esac
 				;;
 			*)
 				# we are not using https only mode, talk to gitlab over plain http on localhost
