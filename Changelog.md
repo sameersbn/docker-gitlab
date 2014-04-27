@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added GITLAB_HTTPS_ONLY configuration option to configure strict https only access
 - added GITLAB_SSL_SELF_SIGNED configuration option to specify use of self signed ssl certificates.
 - fix git over ssh when the default http/https ports are not used.
 - compile the assets only if it does not exist or if the gitlab version has changed.
