@@ -117,7 +117,7 @@ supervisorctl start sshd
 
 # copy configuration templates
 case "${GITLAB_HTTPS}" in
-	true) cp /app/setup/config/nginx/gitlab.https /etc/nginx/sites-available/gitlab ;;
+	true) cp /app/setup/config/nginx/gitlab.https.strict /etc/nginx/sites-available/gitlab ;;
 	   *) cp /app/setup/config/nginx/gitlab /etc/nginx/sites-available/gitlab ;;
 esac
 sudo -u git -H cp -a /app/setup/config/gitlab-shell/config.yml /home/git/gitlab-shell/config.yml
@@ -134,7 +134,7 @@ if [ -d /home/git/data/config ]; then
 	chown -R git:git /home/git/data/config
 	cd /home/git/data/config
 	case "${GITLAB_HTTPS}" in
-		true) [ -f nginx/gitlab.https ] && cp nginx/gitlab.https /etc/nginx/sites-available/gitlab ;;
+		true) [ -f nginx/gitlab.https.strict ] && cp nginx/gitlab.https.strict /etc/nginx/sites-available/gitlab ;;
 		   *) [ -f nginx/gitlab ] && cp nginx/gitlab /etc/nginx/sites-available/gitlab ;;
 	esac
 	[ -f gitlab-shell/config.yml ] 	 && sudo -u git -H cp gitlab-shell/config.yml 	/home/git/gitlab-shell/config.yml
