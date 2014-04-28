@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/sameersbn/docker-gitlab.png?label=ready&title=Ready)](https://waffle.io/sameersbn/docker-gitlab)
 # Table of Contents
 - [Introduction](#introduction)
     - [Version](#version)
