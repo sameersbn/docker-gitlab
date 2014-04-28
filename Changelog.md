@@ -1,6 +1,8 @@
 # Changelog
 
 **latest**
+- added SSL_KEY_PATH configuration option to specify path of ssl key.
+- added SSL_CERTIFICATE_PATH configuration option to specify path of ssl certificate
 - added GITLAB_HTTPS_ONLY configuration option to configure strict https only access
 - added SSL_SELF_SIGNED configuration option to specify use of self signed ssl certificates.
 - fix git over ssh when the default http/https ports are not used.

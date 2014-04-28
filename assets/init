@@ -12,6 +12,8 @@ GITLAB_SIGNIN=${GITLAB_SIGNIN:-true}
 GITLAB_PROJECTS_LIMIT=${GITLAB_PROJECTS_LIMIT:-10}
 
 SSL_SELF_SIGNED=${SSL_SELF_SIGNED:-false}
+SSL_CERTIFICATE_PATH=${SSL_CERTIFICATE_PATH:-/home/git/data/certs/gitlab.crt}
+SSL_KEY_PATH=${SSL_KEY_PATH:-/home/git/data/certs/gitlab.key}
 
 GITLAB_BACKUPS=${GITLAB_BACKUPS:-disable}
 GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-}
@@ -163,6 +165,8 @@ fi
 
 sed 's/{{YOUR_SERVER_FQDN}}/'"${GITLAB_HOST}"'/g' -i /etc/nginx/sites-available/gitlab
 sed 's/{{GITLAB_PORT}}/'"${GITLAB_PORT}"'/' -i /etc/nginx/sites-available/gitlab
+sed 's,{{SSL_CERTIFICATE_PATH}},'"${SSL_CERTIFICATE_PATH}"',' -i /etc/nginx/sites-available/gitlab
+sed 's,{{SSL_KEY_PATH}},'"${SSL_KEY_PATH}"',' -i /etc/nginx/sites-available/gitlab
 supervisorctl start nginx
 
 # start mysql server if ${DB_HOST} is localhost
