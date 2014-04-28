@@ -85,7 +85,9 @@ server {
   ssl_prefer_server_ciphers on;
   ssl_session_cache  builtin:1000  shared:SSL:10m;
 
-  # ssl_dhparam /home/git/data/certs/dhparam.pem;
+  ## Strong SSL Security
+  ## https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
+  ssl_dhparam {{SSL_DHPARAM_PATH}};
 
   # Increase this if you want to upload large attachments
   # Or if you want to accept large git objects over http
