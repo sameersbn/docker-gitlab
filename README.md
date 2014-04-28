@@ -438,10 +438,10 @@ To secure your application via SSL you basically need two things:
 - Private key (.key)
 - SSL certificate (.crt)
 
-When using CA certified certificates, these are files are provided to you by the CA. When you are using self-signed certificates you need to generate these files yourself. Skip the following section if you are armed with CA certified SSL certificates.
+When using CA certified certificates, these files are provided to you by the CA. When using self-signed certificates you need to generate these files yourself. Skip the following section if you are armed with CA certified SSL certificates.
 
 #### Generation of Self Signed Certificates
-Generation of self-signed SSL certificates involve a simple 2 step procedure.
+Generation of self-signed SSL certificates involves a simple 3 step procedure.
 
 **STEP 1**: Create the server private key
 ```bash
@@ -461,7 +461,7 @@ openssl x509 -req -days 365 -in gitlab.csr -signkey gitlab.key -out gitlab.crt
 Congratulations! you have now generated an SSL certificate thats valid for 365 days.
 
 #### Strengthening the server security
-This section provide you with instructions to [strengthen your server security](https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html). To achieve this we need to generate stronger DHE parameters.
+This section provides you with instructions to [strengthen your server security](https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html). To achieve this we need to generate stronger DHE parameters.
 
 ```bash
 openssl dhparam -out dhparam.pem 2048
@@ -472,7 +472,7 @@ Out of the four files generated above, we need to install the gitlab.key, gitlab
 
 The default path that the gitlab application is configured to look for the SSL certificates is at /home/git/data/certs, this can however be changed using the SSL_KEY_PATH, SSL_CERTIFICATE_PATH and SSL_DHPARAM_PATH configuration options.
 
-If you remember from above, the /home/git/data path is basically the path of the [data store](#data-store), which basically means that we have to create a folder named certs inside /opt/gitlab/data/ and copy the files there and as a measure of safely we will update the permission on the gitlab.key file to only be readable by the owner of the file.
+If you remember from above, the /home/git/data path is the path of the [data store](#data-store), which means that we have to create a folder named certs inside /opt/gitlab/data/ and copy the files into it and as a measure of security we will update the permission on the gitlab.key file to only be readable by the owner.
 
 ```bash
 mkdir -p /opt/gitlab/data/certs
@@ -482,10 +482,10 @@ cp dhparam.pem /opt/gitlab/data/certs/
 chmod 400 /opt/gitlab/data/certs/gitlab.key
 ```
 
-Great! we are now just a step away from having out application secured.
+Great! we are now just a step away from having our application secured.
 
 #### Enabling HTTPS support
-HTTPS support can be enabled by setting the GITLAB_HTTPS option to true. Additionally, when using self-signed SSL certificates you also need to the set SSL_SELF_SIGNED option to true. Assuming we are using self-signed certificates
+HTTPS support can be enabled by setting the GITLAB_HTTPS option to true. Additionally, when using self-signed SSL certificates you need to the set SSL_SELF_SIGNED option to true as well. Assuming we are using self-signed certificates
 
 ```bash
 docker run --name=gitlab -d \
@@ -515,15 +515,13 @@ docker run --name=gitlab -d \
 Again, drop the ```-e "SSL_SELF_SIGNED=true"``` option if you are using CA certified SSL certificates.
 
 #### Establishing trust with your server
-This section deals will self-signed ssl certificated. If you are using CA certified certificates, your done.
+This section deals will self-signed ssl certificates. If you are using CA certified certificates, your done.
 
 This section is more of a client side configuration so as to add a level of confidence at the client to be 100 percent sure they are communicating with whom they think they.
 
-This is simply done by adding the servers certificate into their list of trusted ceritficates. On ubuntu, this is done by appending the contents of the gitlab.key file to the ```/etc/ssl/certs/ca-certificates.crt``` file.
+This is simply done by adding the servers certificate into their list of trusted ceritficates. On ubuntu, this is done by appending the contents of the gitlab.crt file to the ```/etc/ssl/certs/ca-certificates.crt``` file.
 
-Again, this is a client side configuration which means that everyone who is going to communicate with the server should perform this configuration on their machine.
-
-In short, distribute the gitlab.crt file among your developers and ask them to add it to their list of trusted ssl certificates. Failure to do so will result in errors that look like this:
+Again, this is a client side configuration which means that everyone who is going to communicate with the server should perform this configuration on their machine. In short, distribute the gitlab.crt file among your developers and ask them to add it to their list of trusted ssl certificates. Failure to do so will result in errors that look like this:
 
 ```bash
 git clone https://git.local.host/gitlab-ce.git
