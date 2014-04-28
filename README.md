@@ -27,6 +27,13 @@
       - [External Redis Server](#external-redis-server)
       - [Linking to Redis Container](#linking-to-redis-container)
     - [Mail](#mail)
+    - [SSL](#ssl)
+      - [Generation of Self Signed Certificates](#generation-of-self-signed certificates)
+      - [Strengthening the server security](#strengthening-the-server-security)
+      - [Installation of the Certificates](#installation-of-the-certificates)
+      - [Enabling HTTPS support](#enabling-https-support)
+      - [Using HTTPS with a load balancer](#using-https-with-a-load-balancer)
+      - [Establishing trust with your server](#establishing-trust-with-your-server)
     - [Putting it all together](#putting-it-all-together)
     - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
@@ -424,6 +431,107 @@ docker run --name=gitlab -d \
   sameersbn/gitlab:latest
 ```
 
+### SSL
+Access to the gitlab application can be secured using SSL so as to prevent unauthorized access to the data in your repositories. While a CA certified SSL certificate allows for verification of trust via the CA, a self signed certificates can also provide an equal level of trust verification as long as each client takes some additional steps to verify the identity of your website. I will provide instructions on achieving this towards the end of this section.
+
+To secure your application via SSL you basically need two things:
+- Private key (.key)
+- SSL certificate (.crt)
+
+When using CA certified certificates, these are files are provided to you by the CA. When you are using self-signed certificates you need to generate these files yourself. Skip the following section if you are armed with CA certified SSL certificates.
+
+#### Generation of Self Signed Certificates
+Generation of self-signed SSL certificates involve a simple 2 step procedure.
+
+**STEP 1**: Create the server private key
+```bash
+openssl genrsa -out gitlab.key 204
+```
+
+**STEP 2**: Create the certificate signing request (CSR)
+```bash
+openssl genrsa -des3 -out gitlab.key 2048
+```
+
+**STEP 3**: Sign the certificate using the private key and CSR
+```bash
+openssl x509 -req -days 365 -in gitlab.csr -signkey gitlab.key -out gitlab.crt
+```
+
+Congratulations! you have now generated an SSL certificate thats valid for 365 days.
+
+#### Strengthening the server security
+This section provide you with instructions to [strengthen your server security](https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html). To achieve this we need to generate stronger DHE parameters.
+
+```bash
+openssl dhparam -out dhparam.pem 2048
+```
+
+#### Installation of the SSL Certificates
+Out of the four files generated above, we need to install the gitlab.key, gitlab.crt and dhparam.pem files at the gitlab server. The CSR file is not needed, but do make sure you safely backup the file (in case you ever need it again).
+
+The default path that the gitlab application is configured to look for the SSL certificates is at /home/git/data/certs, this can however be changed using the SSL_KEY_PATH, SSL_CERTIFICATE_PATH and SSL_DHPARAM_PATH configuration options.
+
+If you remember from above, the /home/git/data path is basically the path of the [data store](#data-store), which basically means that we have to create a folder named certs inside /opt/gitlab/data/ and copy the files there and as a measure of safely we will update the permission on the gitlab.key file to only be readable by the owner of the file.
+
+```bash
+mkdir -p /opt/gitlab/data/certs
+cp gitlab.key /opt/gitlab/data/certs/
+cp gitlab.crt /opt/gitlab/data/certs/
+cp dhparam.pem /opt/gitlab/data/certs/
+chmod 400 /opt/gitlab/data/certs/gitlab.key
+```
+
+Great! we are now just a step away from having out application secured.
+
+#### Enabling HTTPS support
+HTTPS support can be enabled by setting the GITLAB_HTTPS option to true. Additionally, when using self-signed SSL certificates you also need to the set SSL_SELF_SIGNED option to true. Assuming we are using self-signed certificates
+
+```bash
+docker run --name=gitlab -d \
+  -e "GITLAB_HTTPS=true" -e "SSL_SELF_SIGNED=true" \
+  -v /opt/gitlab/data:/home/git/data \
+  sameersbn/gitlab:latest
+```
+
+In this configuration, any requests made over the plain http protocol will automatically be redirected to use the https protocol. However, this is not optimal when using a load balancer.
+
+#### Using HTTPS with a load balancer
+Load balancers like haproxy/hipache talk to backend applications over plain http. As such, the above configuration is not sufficient for the application to work with a load balancer.
+
+For this to work, you should set the GITLAB_HTTPS_ONLY option to false so that the gitlab application can process both http as well as https requests. Additionally you should also configure the load balancer to support https requests. But that is out of the scope of this document. Please refer to [Using SSL/HTTPS with HAProxy](http://seanmcgary.com/posts/using-sslhttps-with-haproxy) for information on the subject.
+
+Note that when the GITLAB_HTTPS_ONLY is disabled, the application does not perform the automatic http to https redirection and this functionality has to be configured at the load balancer which is also described in the link above. Unfortunately hipache does not come with an option to perform http to https redirection, so the only choice you really have is to switch to using haproxy.
+
+In summation, the docker command would look something like this:
+```bash
+docker run --name=gitlab -d \
+  -e "GITLAB_HTTPS=true" -e "SSL_SELF_SIGNED=true" \
+  -e "GITLAB_HTTPS_ONLY=false" \
+  -v /opt/gitlab/data:/home/git/data \
+  sameersbn/gitlab:latest
+```
+
+Again, drop the ```-e "SSL_SELF_SIGNED=true"``` option if you are using CA certified SSL certificates.
+
+#### Establishing trust with your server
+This section deals will self-signed ssl certificated. If you are using CA certified certificates, your done.
+
+This section is more of a client side configuration so as to add a level of confidence at the client to be 100 percent sure they are communicating with whom they think they.
+
+This is simply done by adding the servers certificate into their list of trusted ceritficates. On ubuntu, this is done by appending the contents of the gitlab.key file to the ```/etc/ssl/certs/ca-certificates.crt``` file.
+
+Again, this is a client side configuration which means that everyone who is going to communicate with the server should perform this configuration on their machine.
+
+In short, distribute the gitlab.crt file among your developers and ask them to add it to their list of trusted ssl certificates. Failure to do so will result in errors that look like this:
+
+```bash
+git clone https://git.local.host/gitlab-ce.git
+fatal: unable to access 'https://git.local.host/gitlab-ce.git': server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none
+```
+
+There you have it, thats all there is to it.
+
 ### Putting it all together
 
 ```bash
@@ -614,3 +722,4 @@ For a complete list of available rake tasks please refer https://github.com/gitl
   * https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md
   * http://wiki.nginx.org/HttpSslModule
   * https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
+  * https://github.com/gitlabhq/gitlab-recipes/blob/master/web-server/nginx/gitlab-ssl
