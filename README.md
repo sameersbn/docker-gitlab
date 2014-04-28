@@ -611,3 +611,5 @@ For a complete list of available rake tasks please refer https://github.com/gitl
   * https://github.com/gitlabhq/gitlabhq
   * https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md
   * https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md
+  * http://wiki.nginx.org/HttpSslModule
+  * https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
