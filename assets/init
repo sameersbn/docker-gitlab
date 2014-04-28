@@ -90,6 +90,18 @@ case "${DB_TYPE}" in
 	*) echo "Unsupported database adapter. Available adapters are mysql and postgres." && exit 1 ;;
 esac
 
+if [ "${GITLAB_HTTPS}" == "true" ]; then
+	# make sure the required files exist
+	if [ ! -f "${SSL_CERTIFICATE_PATH}" -o ! -f "${SSL_KEY_PATH}" -o ! -f "${SSL_DHPARAM_PATH}" ]; then
+		echo ""
+		echo "  WARNING: "
+		echo "    Files required for HTTPS support cannot be found"
+		echo "    Disabling https support."
+		echo ""
+		GITLAB_HTTPS="false"
+	fi
+fi
+
 case "${GITLAB_HTTPS}" in
 	true)
 		GITLAB_URL="https://${GITLAB_HOST}${GITLAB_PORT:+:$GITLAB_PORT}/"
