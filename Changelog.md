@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added SSL support
 - added SSL_DHPARAM_PATH configuration option to specify path of dhparam.pem file.
 - added SSL_KEY_PATH configuration option to specify path of ssl key.
 - added SSL_CERTIFICATE_PATH configuration option to specify path of ssl certificate
