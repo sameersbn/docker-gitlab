@@ -445,7 +445,7 @@ Generation of self-signed SSL certificates involves a simple 3 step procedure.
 
 **STEP 1**: Create the server private key
 ```bash
-openssl genrsa -out gitlab.key 204
+openssl genrsa -out gitlab.key 2048
 ```
 
 **STEP 2**: Create the certificate signing request (CSR)
