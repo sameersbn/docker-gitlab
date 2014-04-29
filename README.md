@@ -28,7 +28,7 @@
       - [Linking to Redis Container](#linking-to-redis-container)
     - [Mail](#mail)
     - [SSL](#ssl)
-      - [Generation of Self Signed Certificates](#generation-of-self-signed certificates)
+      - [Generation of Self Signed Certificates](#generation-of-self-signed-certificates)
       - [Strengthening the server security](#strengthening-the-server-security)
       - [Installation of the Certificates](#installation-of-the-certificates)
       - [Enabling HTTPS support](#enabling-https-support)
