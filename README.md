@@ -450,7 +450,7 @@ openssl genrsa -out gitlab.key 2048
 
 **STEP 2**: Create the certificate signing request (CSR)
 ```bash
-openssl genrsa -des3 -out gitlab.key 2048
+openssl req -new -key gitlab.key -out gitlab.csr
 ```
 
 **STEP 3**: Sign the certificate using the private key and CSR
