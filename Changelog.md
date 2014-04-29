@@ -1,6 +1,12 @@
 # Changelog
 
 **latest**
+- added SSL support
+- added SSL_DHPARAM_PATH configuration option to specify path of dhparam.pem file.
+- added SSL_KEY_PATH configuration option to specify path of ssl key.
+- added SSL_CERTIFICATE_PATH configuration option to specify path of ssl certificate
+- added GITLAB_HTTPS_ONLY configuration option to configure strict https only access
+- added SSL_SELF_SIGNED configuration option to specify use of self signed ssl certificates.
 - fix git over ssh when the default http/https ports are not used.
 - compile the assets only if it does not exist or if the gitlab version has changed.
 - upgrade gitlab-shell to version 1.9.4
