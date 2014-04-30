@@ -582,7 +582,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_HTTPS_ONLY**: Configure access over plain http when GITLAB_HTTPS is enabled. Should be set to false when using a load balancer. Defaults to true.
 - **SSL_SELF_SIGNED**: Set to true when using self signed ssl certificates. false by default.
 - **SSL_CERTIFICATE_PATH**: Location of the ssl certificate. Defaults to /home/git/data/certs/gitlab.crt
-- **SSL_KEY_PATH**: Location of the ssl key. Defaults to /home/git/data/certs/gitlab.key
+- **SSL_KEY_PATH**: Location of the ssl private key. Defaults to /home/git/data/certs/gitlab.key
 - **SSL_DHPARAM_PATH**: Location of the dhparam file. Defaults to /home/git/data/certs/dhparam.pem
 - **CA_CERTIFICATES_PATH**: List of SSL certificates to trust. Defaults to /home/git/data/certs/ca.crt.
 - **REDIS_HOST**: The hostname of the redis server. Defaults to localhost
