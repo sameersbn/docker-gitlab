@@ -186,6 +186,7 @@ sed 's,{{SSL_DHPARAM_PATH}},'"${SSL_DHPARAM_PATH}"',' -i /etc/nginx/sites-availa
 supervisorctl start nginx
 
 echo "Updating CA certificates..."
+[ -f "${SSL_CERTIFICATE_PATH}" ] && cp "${SSL_CERTIFICATE_PATH}" /usr/local/share/ca-certificates/gitlab.crt
 [ -f "${CA_CERTIFICATES_PATH}" ] && cp "${CA_CERTIFICATES_PATH}" /usr/local/share/ca-certificates/ca.crt
 update-ca-certificates --fresh >/dev/null 2>&1
 
