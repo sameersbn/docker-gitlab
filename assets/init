@@ -16,6 +16,8 @@ SSL_CERTIFICATE_PATH=${SSL_CERTIFICATE_PATH:-/home/git/data/certs/gitlab.crt}
 SSL_KEY_PATH=${SSL_KEY_PATH:-/home/git/data/certs/gitlab.key}
 SSL_DHPARAM_PATH=${SSL_DHPARAM_PATH:-/home/git/data/certs/dhparam.pem}
 
+CA_CERTIFICATES_PATH=${CA_CERTIFICATES_PATH:-/home/git/data/certs/ca.crt}
+
 GITLAB_BACKUPS=${GITLAB_BACKUPS:-disable}
 GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-}
 
@@ -182,6 +184,10 @@ sed 's,{{SSL_CERTIFICATE_PATH}},'"${SSL_CERTIFICATE_PATH}"',' -i /etc/nginx/site
 sed 's,{{SSL_KEY_PATH}},'"${SSL_KEY_PATH}"',' -i /etc/nginx/sites-available/gitlab
 sed 's,{{SSL_DHPARAM_PATH}},'"${SSL_DHPARAM_PATH}"',' -i /etc/nginx/sites-available/gitlab
 supervisorctl start nginx
+
+echo "Updating CA certificates..."
+[ -f "${CA_CERTIFICATES_PATH}" ] && cp "${CA_CERTIFICATES_PATH}" /usr/local/share/ca-certificates/ca.crt
+update-ca-certificates --fresh >/dev/null 2>&1
 
 # start mysql server if ${DB_HOST} is localhost
 if [ "${DB_HOST}" == "localhost" ]; then

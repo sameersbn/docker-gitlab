@@ -34,6 +34,7 @@
       - [Enabling HTTPS support](#enabling-https-support)
       - [Using HTTPS with a load balancer](#using-https-with-a-load-balancer)
       - [Establishing trust with your server](#establishing-trust-with-your-server)
+      - [Installing Trusted SSL Server Certificates](#installing-trusted-ssl-server-certificates)
     - [Putting it all together](#putting-it-all-together)
     - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
@@ -532,6 +533,15 @@ You can do the same at the web browser. Instructions for installing the root cer
 
 There you have it, thats all there is to it.
 
+#### Installing Trusted SSL Server Certificates
+If your GitLab CI server is using self-signed SSL certificates then you should make sure the GitLab CI server certificate is trusted on the GitLab server for them to be able to talk to each other.
+
+The default path image is configured to look for the trusted SSL certificates is at /home/git/data/certs/ca.crt, this can however be changed using the CA_CERTIFICATES_PATH configuration option.
+
+Copy the ca.crt file into the certs directory on the [datastore](#data-store). The ca.crt file should contain the root certificates of all the servers you want to trust. With respect to GitLab CI, this will be the contents of the gitlab_ci.crt file as described in the [README](https://github.com/sameersbn/docker-gitlab-ci/blob/master/README.md#ssl) of the [docker-gitlab-ci](https://github.com/sameersbn/docker-gitlab-ci) container.
+
+By default, our own server certificate [gitlab.crt](#generation-of-self-signed-certificates) is added to the trusted certificates list.
+
 ### Putting it all together
 
 ```bash
@@ -574,6 +584,7 @@ Below is the complete list of available options that can be used to customize yo
 - **SSL_CERTIFICATE_PATH**: Location of the ssl certificate. Defaults to /home/git/data/certs/gitlab.crt
 - **SSL_KEY_PATH**: Location of the ssl key. Defaults to /home/git/data/certs/gitlab.key
 - **SSL_DHPARAM_PATH**: Location of the dhparam file. Defaults to /home/git/data/certs/dhparam.pem
+- **CA_CERTIFICATES_PATH**: List of SSL certificates to trust. Defaults to /home/git/data/certs/ca.crt.
 - **REDIS_HOST**: The hostname of the redis server. Defaults to localhost
 - **REDIS_PORT**: The connection port of the redis server. Defaults to 6379.
 - **UNICORN_WORKERS**: The number of unicorn workers to start. Defaults to 2.

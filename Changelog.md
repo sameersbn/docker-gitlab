@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added CA_CERTIFICATES_PATH configuration option to specify trusted root certificates.
 - added SSL support
 - added SSL_DHPARAM_PATH configuration option to specify path of dhparam.pem file.
 - added SSL_KEY_PATH configuration option to specify path of ssl key.
