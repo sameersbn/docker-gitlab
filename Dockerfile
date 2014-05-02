@@ -11,7 +11,7 @@ RUN apt-get install -y software-properties-common && \
 			libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
 			libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
 			ruby2.1 ruby2.1-dev && \
-		ruby-switch --set ruby2.0 && gem install --no-ri --no-rdoc bundler && \
+		gem install --no-ri --no-rdoc bundler && \
 		apt-get clean # 20140418
 
 ADD assets/setup/ /app/setup/
