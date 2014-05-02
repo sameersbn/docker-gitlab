@@ -5,7 +5,7 @@ RUN apt-get install -y software-properties-common && \
 		add-apt-repository -y ppa:git-core/ppa && \
 		add-apt-repository -y ppa:brightbox/ruby-ng && \
 		apt-get update && \
-		apt-get install -y build-essential checkinstall postgresql-client-9.1 \
+		apt-get install -y build-essential checkinstall postgresql-client \
 			nginx git-core mysql-server redis-server python2.7 python-docutils \
 			libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
 			libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
