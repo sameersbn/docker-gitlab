@@ -1,4 +1,4 @@
-FROM sameersbn/ubuntu:12.04.20140418
+FROM sameersbn/ubuntu:latest
 MAINTAINER sameer@damagehead.com
 
 RUN apt-get install -y python-software-properties && \
