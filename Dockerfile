@@ -1,7 +1,7 @@
 FROM sameersbn/ubuntu:latest
 MAINTAINER sameer@damagehead.com
 
-RUN apt-get install -y python-software-properties && \
+RUN apt-get install -y software-properties-common && \
 		add-apt-repository -y ppa:git-core/ppa && \
 		add-apt-repository -y ppa:brightbox/ruby-ng && \
 		apt-get update && \
