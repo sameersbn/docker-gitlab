@@ -10,7 +10,7 @@ RUN apt-get install -y software-properties-common && \
 			libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
 			libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
 			libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
-			ruby2.0 ruby-switch ruby2.0-dev && \
+			ruby2.1 ruby2.1-dev && \
 		ruby-switch --set ruby2.0 && gem install --no-ri --no-rdoc bundler && \
 		apt-get clean # 20140418
 
