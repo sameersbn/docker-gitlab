@@ -282,8 +282,8 @@ sudo -u git -H sed 's/{{DB_POOL}}/'"${DB_POOL}"'/' -i /home/git/gitlab/config/da
 sudo -u git -H sed 's/{{SIDEKIQ_CONCURRENCY}}/'"${SIDEKIQ_CONCURRENCY}"'/' -i /home/git/gitlab/config/sidekiq.yml
 
 # configure redis
-sudo -u git -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/' -i /home/git/gitlab/config/resque.yml
-sudo -u git -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/' -i /home/git/gitlab/config/resque.yml
+sudo -u git -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/g' -i /home/git/gitlab/config/resque.yml
+sudo -u git -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/g' -i /home/git/gitlab/config/resque.yml
 
 # configure gitlab-shell
 sudo -u git -H sed 's,{{GITLAB_URL}},'"${GITLAB_URL}"',' -i /home/git/gitlab-shell/config.yml
