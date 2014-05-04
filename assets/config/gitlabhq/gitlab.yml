@@ -15,7 +15,7 @@ production: &base
   ## GitLab settings
   gitlab:
     ## Web server settings
-    host: {{GITLAB_HOST}}
+    host: "{{GITLAB_HOST}}"
     port: {{GITLAB_PORT}}
     https: {{GITLAB_HTTPS}}
 
@@ -35,10 +35,10 @@ production: &base
 
     ## Email settings
     # Email address used in the "From" field in mails sent by GitLab
-    email_from: {{GITLAB_EMAIL}}
+    email_from: "{{GITLAB_EMAIL}}"
 
     # Email address of your support contact (default: same as email_from)
-    support_email: {{GITLAB_SUPPORT}}
+    support_email: "{{GITLAB_SUPPORT}}"
 
     ## User settings
     default_projects_limit: {{GITLAB_PROJECTS_LIMIT}}
@@ -129,12 +129,12 @@ production: &base
   #   bundle exec rake gitlab:ldap:check RAILS_ENV=production
   ldap:
     enabled: {{LDAP_ENABLED}}
-    host: '{{LDAP_HOST}}'
+    host: "{{LDAP_HOST}}"
     port: {{LDAP_PORT}}
-    uid: '{{LDAP_UID}}'
-    method: '{{LDAP_METHOD}}' # "tls" or "ssl" or "plain"
-    bind_dn: '{{LDAP_BIND_DN}}'
-    password: '{{LDAP_PASS}}'
+    uid: "{{LDAP_UID}}"
+    method: "{{LDAP_METHOD}}" # "tls" or "ssl" or "plain"
+    bind_dn: "{{LDAP_BIND_DN}}"
+    password: "{{LDAP_PASS}}"
     # If allow_username_or_email_login is enabled, GitLab will ignore everything
     # after the first '@' in the LDAP username submitted by the user on login.
     #
@@ -150,14 +150,14 @@ production: &base
     #
     #   Ex. ou=People,dc=gitlab,dc=example
     #
-    base: '{{LDAP_BASE}}'
+    base: "{{LDAP_BASE}}"
 
     # Filter LDAP users
     #
     #   Format: RFC 4515
     #   Ex. (employeeType=developer)
     #
-    user_filter: '{{LDAP_USER_FILTER}}'
+    user_filter: "{{LDAP_USER_FILTER}}"
 
 
   ## OmniAuth settings
@@ -198,7 +198,7 @@ production: &base
   # GitLab Satellites
   satellites:
     # Relative paths are relative to Rails.root (default: tmp/repo_satellites/)
-    path: /home/git/data/gitlab-satellites/
+    path: "/home/git/data/gitlab-satellites/"
 
   ## Backup settings
   backup:
@@ -207,11 +207,11 @@ production: &base
 
   ## GitLab Shell settings
   gitlab_shell:
-    path: /home/git/gitlab-shell/
+    path: "/home/git/gitlab-shell/"
 
     # REPOS_PATH MUST NOT BE A SYMLINK!!!
-    repos_path: /home/git/data/repositories/
-    hooks_path: /home/git/gitlab-shell/hooks/
+    repos_path: "/home/git/data/repositories/"
+    hooks_path: "/home/git/gitlab-shell/hooks/"
 
     # Git over HTTP
     upload_pack: true
@@ -224,7 +224,7 @@ production: &base
   # CAUTION!
   # Use the default values unless you really know what you are doing
   git:
-    bin_path: /usr/bin/git
+    bin_path: "/usr/bin/git"
     # The next value is the maximum memory size grit can use
     # Given in number of bytes per git object (e.g. a commit)
     # This value can be increased if you have very large commits
@@ -257,7 +257,7 @@ test:
   gravatar:
     enabled: true
   gitlab:
-    host: {{GITLAB_HOST}}
+    host: "{{GITLAB_HOST}}"
     port: {{GITLAB_PORT}}
   issues_tracker:
     redmine:

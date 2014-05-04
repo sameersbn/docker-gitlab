@@ -12,7 +12,7 @@ if Rails.env.production?
     user_name: "{{SMTP_USER}}",
     password: "{{SMTP_PASS}}",
     domain: "{{SMTP_DOMAIN}}",
-    authentication: {{SMTP_AUTHENTICATION}},
+    authentication: "{{SMTP_AUTHENTICATION}}",
     enable_starttls_auto: {{SMTP_STARTTLS}}
   }
 end
