@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- use sameersbn/ubuntu:14.04.20140505 base image
 - added CA_CERTIFICATES_PATH configuration option to specify trusted root certificates.
 - added SSL support
 - added SSL_DHPARAM_PATH configuration option to specify path of dhparam.pem file.
