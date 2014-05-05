@@ -20,7 +20,7 @@ RUN /app/setup/install
 
 ADD assets/config/ /app/setup/config/
 ADD assets/init /app/init
-RUN chmod 755 /app/init
+RUN chmod 755 /app/init && passwd -d git
 
 ADD authorized_keys /root/.ssh/
 
