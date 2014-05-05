@@ -1,4 +1,4 @@
-FROM sameersbn/ubuntu:latest
+FROM sameersbn/ubuntu:14.04
 MAINTAINER sameer@damagehead.com
 
 RUN apt-get install -y software-properties-common && \
