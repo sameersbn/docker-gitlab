@@ -352,6 +352,10 @@ sudo -u git -H sed 's/{{LDAP_USER_FILTER}}/'"${LDAP_USER_FILTER}"'/' -i /home/gi
 # take ownership of /home/git/data
 chown git:git /home/git/data
 
+# set executable flags on /home/git/data (needed if mounted from a data-only
+# container using --volumes-from)
+chmod +x /home/git/data
+
 # create the repositories directory and make sure it has the right permissions
 sudo -u git -H mkdir -p /home/git/data/repositories/
 sudo chmod ug-s /home/git/data/repositories/
