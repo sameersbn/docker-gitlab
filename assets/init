@@ -45,7 +45,8 @@ SMTP_PORT=${SMTP_PORT:-587}
 SMTP_USER=${SMTP_USER:-}
 SMTP_PASS=${SMTP_PASS:-}
 SMTP_STARTTLS=${SMTP_STARTTLS:-true}
-SMTP_AUTHENTICATION=${SMTP_AUTHENTICATION:-:login}
+[ -n "${SMTP_USER}" ] && \
+	SMTP_AUTHENTICATION=${SMTP_AUTHENTICATION:-:login}
 
 LDAP_ENABLED=${LDAP_ENABLED:-false}
 LDAP_HOST=${LDAP_HOST:-}
@@ -344,11 +345,11 @@ esac
 
 sudo -u git -H sed 's/{{SMTP_DOMAIN}}/'"${SMTP_DOMAIN}"'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
 sudo -u git -H sed 's/{{SMTP_STARTTLS}}/'"${SMTP_STARTTLS}"'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
-if [ -n "${SMTP_AUTHENTICATION}" ]; then
-	sudo -u git -H sed '/{{SMTP_AUTHENTICATION}}/d' -i /home/git/gitlab/config/initializers/smtp_settings.rb
-else
-	sudo -u git -H sed 's/{{SMTP_AUTHENTICATION}}/'"${SMTP_AUTHENTICATION}"'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb
-fi
+
+case "${SMTP_AUTHENTICATION}" in
+	"") sudo -u git -H sed '/{{SMTP_AUTHENTICATION}}/d' -i /home/git/gitlab/config/initializers/smtp_settings.rb ;;
+	*) sudo -u git -H sed 's/{{SMTP_AUTHENTICATION}}/'"${SMTP_AUTHENTICATION}"'/' -i /home/git/gitlab/config/initializers/smtp_settings.rb ;;
+esac
 
 # apply LDAP configuration
 sudo -u git -H sed 's/{{LDAP_ENABLED}}/'"${LDAP_ENABLED}"'/' -i /home/git/gitlab/config/gitlab.yml
