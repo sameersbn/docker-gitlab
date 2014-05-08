@@ -1,4 +1,4 @@
-FROM sameersbn/ubuntu:14.04.20140505
+FROM sameersbn/ubuntu:14.04.20140508
 MAINTAINER sameer@damagehead.com
 
 RUN apt-get install -y software-properties-common && \
@@ -12,7 +12,7 @@ RUN apt-get install -y software-properties-common && \
 			libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
 			ruby2.1 ruby2.1-dev && \
 		gem install --no-ri --no-rdoc bundler && \
-		apt-get clean # 20140418
+		apt-get clean # 20140508
 
 ADD assets/setup/ /app/setup/
 RUN chmod 755 /app/setup/install
