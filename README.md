@@ -423,7 +423,7 @@ The following environment variables need to be specified to get mail support to 
 * SMTP_USER
 * SMTP_PASS
 * SMTP_STARTTLS (defaults to true)
-* SMTP_AUTHENTICATION (defaults to :login if SMTP_USER is set)
+* SMTP_AUTHENTICATION (defaults to 'login' if SMTP_USER is set)
 
 ```bash
 docker run --name=gitlab -d \
@@ -603,7 +603,7 @@ Below is the complete list of available options that can be used to customize yo
 - **SMTP_USER**: SMTP username.
 - **SMTP_PASS**: SMTP password.
 - **SMTP_STARTTLS**: Enable STARTTLS. Defaults to true.
-- **SMTP_AUTHENTICATION**: Specify the SMTP authentication method. Defaults to :login if SMTP_USER is set.
+- **SMTP_AUTHENTICATION**: Specify the SMTP authentication method. Defaults to 'login' if SMTP_USER is set.
 - **LDAP_ENABLED**: Enable LDAP. Defaults to false
 - **LDAP_HOST**: LDAP Host
 - **LDAP_PORT**: LDAP Port. Defaults to 636
