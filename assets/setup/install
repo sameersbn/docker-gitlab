@@ -4,6 +4,9 @@ set -e
 GITLAB_VERSION=6.8.1
 SHELL_VERSION=1.9.4
 
+# remove the host keys generated during openssh-server installation
+rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
+
 # add git user
 adduser --disabled-login --gecos 'GitLab' git
 passwd -d git

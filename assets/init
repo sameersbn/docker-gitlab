@@ -131,6 +131,15 @@ ROOT_PASSWORD=$(pwgen -c -n -1 12)
 echo "root:$ROOT_PASSWORD" | chpasswd
 echo User: root Password: $ROOT_PASSWORD
 
+if [ ! -e /home/git/data/ssh/ssh_host_rsa_key ]; then
+	# create ssh host keys and move them to the data store.
+	dpkg-reconfigure openssh-server
+	mkdir -p /home/git/data/ssh/
+	mv /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub /home/git/data/ssh/
+fi
+# configure sshd to pick up the host keys from /home/git/data/ssh/
+sed -i 's,HostKey /etc/ssh/,HostKey /home/git/data/ssh/,g' -i /etc/ssh/sshd_config
+
 # start supervisord
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 supervisorctl start sshd
