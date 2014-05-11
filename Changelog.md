@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added GITLAB_PROJECTS_VISIBILITY configuration option to specify the default project visibility level.
 - generate and store ssh host keys at the data store.
 - default GITLAB_PROJECTS_LIMIT is now set to 100
 - use sameersbn/ubuntu:14.04.20140508 base image, the trusted build of sameersbn/ubuntu:14.04.20140505 seems to be broken

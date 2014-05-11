@@ -10,6 +10,7 @@ GITLAB_SUPPORT=${GITLAB_SUPPORT:-support@localhost}
 GITLAB_SIGNUP=${GITLAB_SIGNUP:-false}
 GITLAB_SIGNIN=${GITLAB_SIGNIN:-true}
 GITLAB_PROJECTS_LIMIT=${GITLAB_PROJECTS_LIMIT:-100}
+GITLAB_PROJECTS_VISIBILITY=${GITLAB_PROJECTS_VISIBILITY:-private}
 
 SSL_SELF_SIGNED=${SSL_SELF_SIGNED:-false}
 SSL_CERTIFICATE_PATH=${SSL_CERTIFICATE_PATH:-/home/git/data/certs/gitlab.crt}
@@ -267,6 +268,9 @@ sudo -u git -H sed 's/{{GITLAB_SIGNIN}}/'"${GITLAB_SIGNIN}"'/' -i /home/git/gitl
 
 # configure gitlab default_projects_limit
 sudo -u git -H sed 's/{{GITLAB_PROJECTS_LIMIT}}/'"${GITLAB_PROJECTS_LIMIT}"'/' -i /home/git/gitlab/config/gitlab.yml
+
+# configure gitlab default visibility_level
+sudo -u git -H sed 's/{{GITLAB_PROJECTS_VISIBILITY}}/'"${GITLAB_PROJECTS_VISIBILITY}"'/' -i /home/git/gitlab/config/gitlab.yml
 
 # configure database
 if [ "${DB_TYPE}" == "postgres" ]; then

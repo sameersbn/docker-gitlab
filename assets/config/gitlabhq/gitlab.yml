@@ -78,7 +78,7 @@ production: &base
       wiki: true
       wall: false
       snippets: false
-      visibility_level: "private"  # can be "private" | "internal" | "public"
+      visibility_level: "{{GITLAB_PROJECTS_VISIBILITY}}"  # can be "private" | "internal" | "public"
 
     ## Repository downloads directory
     # When a user clicks e.g. 'Download zip' on a project, a temporary zip file is created in the following directory.
