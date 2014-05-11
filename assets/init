@@ -441,7 +441,7 @@ appStart () {
 		CACHE_VERSION=$(cat tmp/cache/VERSION)
 	fi
 	if [ "${GITLAB_VERSION}" != "${CACHE_VERSION}" ]; then
-		echo "Compiling assets..."
+		echo "Compiling assets. Please be patient, this could take a while..."
 		sudo -u git -H bundle exec rake assets:clean RAILS_ENV=production
 		sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production 2>/dev/null
 		sudo -u git -H touch tmp/cache/VERSION
