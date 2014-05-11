@@ -117,19 +117,15 @@ docker build --tag="$USER/gitlab" .
 Run the gitlab image
 
 ```
-docker run --name=gitlab -d sameersbn/gitlab:latest
-GITLAB_IP=$(docker inspect gitlab | grep IPAddres | awk -F'"' '{print $4}')
+docker run --name='gitlab' -i -t --rm \
+-p 127.0.0.1:10022:22 -p 127.0.0.1:10080:80 \
+-e "GITLAB_PORT=10080" -e "GITLAB_SHELL_SSH_PORT=10022" \
+sameersbn/gitlab:latest
 ```
 
-Access the GitLab application
+__NOTE__: Please allow a couple of minutes for the GitLab application to start.
 
-```bash
-xdg-open "http://${GITLAB_IP}"
-```
-
-__NOTE__: Please allow a minute or two for the GitLab application to start.
-
-Login using the default username and password:
+Point your browser to `http://localhost:10080` and login using the default username and password:
 
 * username: admin@local.host
 * password: 5iveL!fe
