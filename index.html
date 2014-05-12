@@ -33,7 +33,7 @@
 <div class="highlight highlight-bash"><pre>docker pull sameersbn/gitlab:latest
 docker run --name<span class="o">=</span><span class="s1">'gitlab'</span> -i -t --rm <span class="se">\</span>
 -p 127.0.0.1:10022:22 -p 127.0.0.1:10080:80 <span class="se">\</span>
--e <span class="s2">"GITLAB_PORT=10080"</span> -e <span class="s2">"GITLAB_SHELL_SSH_PORT=10022"</span> <span class="se">\</span>
+-e <span class="s2">"GITLAB_PORT=10080"</span> -e <span class="s2">"GITLAB_SSH_PORT=10022"</span> <span class="se">\</span>
 sameersbn/gitlab:latest
 </pre></div>
 
