@@ -1,6 +1,3 @@
-[![Stories in progress](https://badge.waffle.io/sameersbn/docker-gitlab.png?label=in%20progress&title=In%20Progress)](https://waffle.io/sameersbn/docker-gitlab)
-[![Stories in testing](https://badge.waffle.io/sameersbn/docker-gitlab.png?label=testing&title=Testing)](https://waffle.io/sameersbn/docker-gitlab)
-
 # Table of Contents
 - [Introduction](#introduction)
     - [Version](#version)
