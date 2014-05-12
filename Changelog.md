@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- renamed configuration option GITLAB_SHELL_SSH_PORT to GITLAB_SSH_PORT
 - added GITLAB_PROJECTS_VISIBILITY configuration option to specify the default project visibility level.
 - generate and store ssh host keys at the data store.
 - default GITLAB_PROJECTS_LIMIT is now set to 100

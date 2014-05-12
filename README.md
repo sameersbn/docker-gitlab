@@ -119,7 +119,7 @@ Run the gitlab image
 ```
 docker run --name='gitlab' -i -t --rm \
 -p 127.0.0.1:10022:22 -p 127.0.0.1:10080:80 \
--e "GITLAB_PORT=10080" -e "GITLAB_SHELL_SSH_PORT=10022" \
+-e "GITLAB_PORT=10080" -e "GITLAB_SSH_PORT=10022" \
 sameersbn/gitlab:latest
 ```
 
@@ -574,7 +574,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_PROJECTS_VISIBILITY**: Set default projects visibility level. Possible values 'public', 'private' and 'internal'. Defaults to 'private'.
 - **GITLAB_BACKUPS**: Setup cron job to automatic backups. Possible values disable, daily or monthly. Disabled by default
 - **GITLAB_BACKUP_EXPIRY**: Configure how long to keep backups before they are deleted. By default when automated backups are disabled backups are kept forever (0 seconds), else the backups expire in 7 days (604800 seconds).
-- **GITLAB_SHELL_SSH_PORT**: The ssh port number. Defaults to 22.
+- **GITLAB_SSH_PORT**: The ssh port number. Defaults to 22.
 - **GITLAB_HTTPS**: Set to true to enable https support, disabled by default.
 - **GITLAB_HTTPS_ONLY**: Configure access over plain http when GITLAB_HTTPS is enabled. Should be set to false when using a load balancer. Defaults to true.
 - **SSL_SELF_SIGNED**: Set to true when using self signed ssl certificates. false by default.
