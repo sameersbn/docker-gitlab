@@ -1,6 +1,6 @@
 # Changelog
 
-**latest**
+**6.8.2**
 - upgrade to gitlab-ce 6.8.2
 - renamed configuration option GITLAB_SHELL_SSH_PORT to GITLAB_SSH_PORT
 - added GITLAB_PROJECTS_VISIBILITY configuration option to specify the default project visibility level.
