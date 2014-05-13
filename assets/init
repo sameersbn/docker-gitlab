@@ -24,6 +24,8 @@ CA_CERTIFICATES_PATH=${CA_CERTIFICATES_PATH:-/home/git/data/certs/ca.crt}
 GITLAB_BACKUPS=${GITLAB_BACKUPS:-disable}
 GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-}
 
+NGINX_MAX_UPLOAD_SIZE=${NGINX_MAX_UPLOAD_SIZE:-20m}
+
 REDIS_HOST=${REDIS_HOST:-}
 REDIS_PORT=${REDIS_PORT:-}
 
@@ -194,6 +196,7 @@ sed 's/{{GITLAB_PORT}}/'"${GITLAB_PORT}"'/' -i /etc/nginx/sites-available/gitlab
 sed 's,{{SSL_CERTIFICATE_PATH}},'"${SSL_CERTIFICATE_PATH}"',' -i /etc/nginx/sites-available/gitlab
 sed 's,{{SSL_KEY_PATH}},'"${SSL_KEY_PATH}"',' -i /etc/nginx/sites-available/gitlab
 sed 's,{{SSL_DHPARAM_PATH}},'"${SSL_DHPARAM_PATH}"',' -i /etc/nginx/sites-available/gitlab
+sed 's/{{NGINX_MAX_UPLOAD_SIZE}}/'"${NGINX_MAX_UPLOAD_SIZE}"'/g' -i /etc/nginx/sites-available/gitlab
 supervisorctl start nginx
 
 echo "Updating CA certificates..."

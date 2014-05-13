@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- added NGINX_MAX_UPLOAD_SIZE configuration to specify the maximum acceptable size of attachments.
+
 **6.8.2**
 - upgrade to gitlab-ce 6.8.2
 - renamed configuration option GITLAB_SHELL_SSH_PORT to GITLAB_SSH_PORT
