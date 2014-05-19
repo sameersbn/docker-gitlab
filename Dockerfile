@@ -1,7 +1,8 @@
 FROM sameersbn/ubuntu:14.04.20140508
 MAINTAINER sameer@damagehead.com
 
-RUN apt-get install -y software-properties-common && \
+RUN apt-get update && \
+		apt-get install -y software-properties-common && \
 		add-apt-repository -y ppa:git-core/ppa && \
 		add-apt-repository -y ppa:brightbox/ruby-ng && \
 		apt-get update && \
