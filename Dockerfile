@@ -1,4 +1,4 @@
-FROM sameersbn/ubuntu:14.04.20140508
+FROM sameersbn/ubuntu:14.04.20140519
 MAINTAINER sameer@damagehead.com
 
 RUN apt-get update && \
