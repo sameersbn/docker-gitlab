@@ -28,7 +28,7 @@ production: &base
     # 4) In ../gitlab-shell/config.yml: gitlab_url: "http://127.0.0.1/gitlab"
     # To update the path, run: sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
     #
-    # relative_url_root: /gitlab
+    # relative_url_root: {{GITLAB_RELATIVE_URL_ROOT}}
 
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
     # user: git
