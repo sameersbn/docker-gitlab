@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added GITLAB_RELATIVE_URL_ROOT configuration option
 - added NGINX_MAX_UPLOAD_SIZE configuration to specify the maximum acceptable size of attachments.
 
 **6.8.2**
