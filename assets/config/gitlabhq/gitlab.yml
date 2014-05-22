@@ -14,20 +14,18 @@ production: &base
 
   ## GitLab settings
   gitlab:
-    ## Web server settings
+    ## Web server settings (note: host is the FQDN, do not include http://)
     host: "{{GITLAB_HOST}}"
     port: {{GITLAB_PORT}}
     https: {{GITLAB_HTTPS}}
 
-    # Uncomment and customize the last line to run in a non-root path
-    # WARNING: We recommend creating a FQDN to host GitLab in a root path instead of this.
-    # Note that four settings need to be changed for this to work.
-    # 1) In your application.rb file: config.relative_url_root = "/gitlab"
-    # 2) In your gitlab.yml file: relative_url_root: /gitlab
-    # 3) In your unicorn.rb: ENV['RAILS_RELATIVE_URL_ROOT'] = "/gitlab"
-    # 4) In ../gitlab-shell/config.yml: gitlab_url: "http://127.0.0.1/gitlab"
-    # To update the path, run: sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
-    #
+    # Uncommment this line below if your ssh host is different from HTTP/HTTPS one
+    # (you'd obviously need to replace ssh.host_example.com with your own host).
+    # Otherwise, ssh host will be set to the `host:` value above
+    # ssh_host: ssh.host_example.com
+
+    # WARNING: See config/application.rb under "Relative url support" for the list of
+    # other files that need to be changed for relative url support
     # relative_url_root: {{GITLAB_RELATIVE_URL_ROOT}}
 
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
@@ -102,7 +100,7 @@ production: &base
     #   ##  :id                - Issue id (from commit messages)
     #   issues_url: "http://redmine.sample/issues/:id"
     #
-    #   ## If not nil, linkis to creating new issues will be replaced with this
+    #   ## If not nil, links to creating new issues will be replaced with this
     #   ## Use placeholders:
     #   ##  :project_id        - GitLab project identifier
     #   ##  :issues_tracker_id - Project Name or Id in external issue tracker
@@ -117,6 +115,7 @@ production: &base
   ## Gravatar
   gravatar:
     enabled: true                 # Use user avatar image from Gravatar.com (default: true)
+    # gravatar urls: possible placeholders: %{hash} %{size} %{email}
     # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
 
