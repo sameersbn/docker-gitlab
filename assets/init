@@ -13,6 +13,7 @@ GITLAB_SIGNUP=${GITLAB_SIGNUP:-false}
 GITLAB_SIGNIN=${GITLAB_SIGNIN:-true}
 GITLAB_PROJECTS_LIMIT=${GITLAB_PROJECTS_LIMIT:-100}
 GITLAB_PROJECTS_VISIBILITY=${GITLAB_PROJECTS_VISIBILITY:-private}
+GITLAB_RELATIVE_URL_ROOT=${GITLAB_RELATIVE_URL_ROOT:-}
 
 SSL_SELF_SIGNED=${SSL_SELF_SIGNED:-false}
 SSL_CERTIFICATE_PATH=${SSL_CERTIFICATE_PATH:-/home/git/data/certs/gitlab.crt}
@@ -110,11 +111,11 @@ fi
 
 case "${GITLAB_HTTPS}" in
 	true)
-		GITLAB_URL="https://${GITLAB_HOST}${GITLAB_PORT:+:$GITLAB_PORT}/"
+		GITLAB_URL="https://${GITLAB_HOST}${GITLAB_PORT:+:$GITLAB_PORT}${GITLAB_RELATIVE_URL_ROOT}/"
 		GITLAB_PORT=${GITLAB_PORT:-443}
 		;;
 	*)
-		GITLAB_URL="http://${GITLAB_HOST}${GITLAB_PORT:+:$GITLAB_PORT}/"
+		GITLAB_URL="http://${GITLAB_HOST}${GITLAB_PORT:+:$GITLAB_PORT}${GITLAB_RELATIVE_URL_ROOT}/"
 		GITLAB_PORT=${GITLAB_PORT:-80}
 		;;
 esac
@@ -197,6 +198,10 @@ sed 's,{{SSL_CERTIFICATE_PATH}},'"${SSL_CERTIFICATE_PATH}"',' -i /etc/nginx/site
 sed 's,{{SSL_KEY_PATH}},'"${SSL_KEY_PATH}"',' -i /etc/nginx/sites-available/gitlab
 sed 's,{{SSL_DHPARAM_PATH}},'"${SSL_DHPARAM_PATH}"',' -i /etc/nginx/sites-available/gitlab
 sed 's/{{NGINX_MAX_UPLOAD_SIZE}}/'"${NGINX_MAX_UPLOAD_SIZE}"'/g' -i /etc/nginx/sites-available/gitlab
+
+# configure relative_url_root
+sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'${GITLAB_RELATIVE_URL_ROOT}',g' -i /etc/nginx/sites-available/gitlab
+
 supervisorctl start nginx
 
 echo "Updating CA certificates..."
@@ -317,7 +322,7 @@ case "${GITLAB_HTTPS}" in
 					true)
 						# we are using self signed certificates, talk to gitlab over https on localhost
 						# this will make sure the api access works when the default https port is not used.
-						sed -i 's,#{config.gitlab_url}/api/v3/internal,https://localhost/api/v3/internal,' -i /home/git/gitlab-shell/lib/gitlab_net.rb
+						sed -i 's,#{config.gitlab_url}/api/v3/internal,https://localhost'${GITLAB_RELATIVE_URL_ROOT}'/api/v3/internal,' -i /home/git/gitlab-shell/lib/gitlab_net.rb
 						;;
 					*)
 						# signed https certificates are in use, talk to gitlab using the default gitlab_url.
@@ -329,13 +334,13 @@ case "${GITLAB_HTTPS}" in
 			*)
 				# we are not using https only mode, talk to gitlab over plain http on localhost
 				# using http when available will keep things fast.
-				sed -i 's,#{config.gitlab_url}/api/v3/internal,http://localhost/api/v3/internal,' -i /home/git/gitlab-shell/lib/gitlab_net.rb
+				sed -i 's,#{config.gitlab_url}/api/v3/internal,http://localhost'${GITLAB_RELATIVE_URL_ROOT}'/api/v3/internal,' -i /home/git/gitlab-shell/lib/gitlab_net.rb
 				;;
 		esac
 		;;
 	*)
 		# ssl is not being used, talk to gitlab over plain http
-		sed -i 's,#{config.gitlab_url}/api/v3/internal,http://localhost/api/v3/internal,' -i /home/git/gitlab-shell/lib/gitlab_net.rb
+		sed -i 's,#{config.gitlab_url}/api/v3/internal,http://localhost'${GITLAB_RELATIVE_URL_ROOT}'/api/v3/internal,' -i /home/git/gitlab-shell/lib/gitlab_net.rb
 		;;
 esac
 
@@ -378,6 +383,13 @@ sudo -u git -H sed 's/{{LDAP_PASS}}/'"${LDAP_PASS}"'/' -i /home/git/gitlab/confi
 sudo -u git -H sed 's/{{LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}}/'"${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}"'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/{{LDAP_BASE}}/'"${LDAP_BASE}"'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/{{LDAP_USER_FILTER}}/'"${LDAP_USER_FILTER}"'/' -i /home/git/gitlab/config/gitlab.yml
+
+# configure relative_url_root
+if [ ${GITLAB_RELATIVE_URL_ROOT} ]; then
+	sudo -u git -H sed 's,# config.relative_url_root = "/gitlab",config.relative_url_root = "'${GITLAB_RELATIVE_URL_ROOT}'",' -i /home/git/gitlab/config/application.rb
+	sudo -u git -H sed 's,# relative_url_root: {{GITLAB_RELATIVE_URL_ROOT}},relative_url_root: '${GITLAB_RELATIVE_URL_ROOT}',' -i /home/git/gitlab/config/gitlab.yml
+	sudo -u git -H sed "s,# ENV\['RAILS_RELATIVE_URL_ROOT'\] = \"{{GITLAB_RELATIVE_URL_ROOT}}\",ENV\['RAILS_RELATIVE_URL_ROOT'\] = \"${GITLAB_RELATIVE_URL_ROOT}\"," -i /home/git/gitlab/config/unicorn.rb
+fi
 
 # take ownership of /home/git/data
 chown git:git /home/git/data
