@@ -30,7 +30,7 @@ server {
   listen *:443 default_server ssl;
   server_name {{YOUR_SERVER_FQDN}};
   server_tokens off;
-  root /home/git/gitlab/public;
+  root /dev/null;
 
   ssl on;
   ssl_certificate {{SSL_CERTIFICATE_PATH}};
@@ -54,7 +54,8 @@ server {
   access_log  /var/log/nginx/gitlab_access.log;
   error_log   /var/log/nginx/gitlab_error.log;
 
-  location / {
+  location {{GITLAB_RELATIVE_URL_ROOT}}/ {
+    root /home/git/gitlab/public;
     # serve static files from defined root folder;.
     # @gitlab is a named location for the upstream fallback, see below
     try_files $uri $uri/index.html $uri.html @gitlab;
@@ -80,8 +81,8 @@ server {
   }
 
   # Enable gzip compression as per rails guide: http://guides.rubyonrails.org/asset_pipeline.html#gzip-compression
-  location ~ ^/(assets)/  {
-    root /home/git/gitlab/public;
+  location ~ ^{{GITLAB_RELATIVE_URL_ROOT}}/assets/(.*) {
+    alias /home/git/gitlab/public/assets/$1;
     gzip_static on; # to serve pre-gzipped version
     expires max;
     add_header Cache-Control public;

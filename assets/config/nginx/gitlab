@@ -23,7 +23,7 @@ server {
   listen *:80 default_server;         # e.g., listen 192.168.1.1:80; In most cases *:80 is a good idea
   server_name {{YOUR_SERVER_FQDN}};     # e.g., server_name source.example.com;
   server_tokens off;     # don't show the version number, a security best practice
-  root /home/git/gitlab/public;
+  root /dev/null;
   
   # Increase this if you want to upload large attachments
   # Or if you want to accept large git objects over http
@@ -33,7 +33,8 @@ server {
   access_log  /var/log/nginx/gitlab_access.log;
   error_log   /var/log/nginx/gitlab_error.log;
 
-  location / {
+  location {{GITLAB_RELATIVE_URL_ROOT}}/ {
+    root /home/git/gitlab/public;
     # serve static files from defined root folder;.
     # @gitlab is a named location for the upstream fallback, see below
     try_files $uri $uri/index.html $uri.html @gitlab;
@@ -59,8 +60,8 @@ server {
   }
 
   # Enable gzip compression as per rails guide: http://guides.rubyonrails.org/asset_pipeline.html#gzip-compression
-  location ~ ^/(assets)/  {
-    root /home/git/gitlab/public;
+  location ~ ^{{GITLAB_RELATIVE_URL_ROOT}}/assets/(.*) {
+    alias /home/git/gitlab/public/assets/$1;
     gzip_static on; # to serve pre-gzipped version
     expires max;
     add_header Cache-Control public;

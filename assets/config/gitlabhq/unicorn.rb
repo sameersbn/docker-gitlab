@@ -17,7 +17,7 @@
 # 4) In ../gitlab-shell/config.yml: gitlab_url: "http://127.0.0.1/gitlab"
 # To update the path, run: sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
 #
-# ENV['RAILS_RELATIVE_URL_ROOT'] = "/gitlab"
+# ENV['RAILS_RELATIVE_URL_ROOT'] = "{{GITLAB_RELATIVE_URL_ROOT}}"
 
 # Use at least one worker per core if you're on a dedicated server,
 # more will usually help for _short_ waits on databases/caches.

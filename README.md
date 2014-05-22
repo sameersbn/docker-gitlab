@@ -33,6 +33,7 @@
       - [Establishing trust with your server](#establishing-trust-with-your-server)
       - [Installing Trusted SSL Server Certificates](#installing-trusted-ssl-server-certificates)
     - [Putting it all together](#putting-it-all-together)
+    - [Run under sub URI](#run-under-sub-uri)
     - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
     - [SSH Login](#ssh-login)
@@ -557,6 +558,19 @@ docker run --name=gitlab -d -h git.local.host \
   sameersbn/gitlab:6.8.2
 ```
 
+### Run under sub URI
+If you like to serve the GitLab under sub URI like http://localhost/gitlab, set GITLAB_RELATIVE_URL_ROOT=/gitlab or anything you like.
+The path should start with slash, and should not have any trailing slashes.
+
+```bash
+docker run --name=gitlab -d \
+  -v /opt/gitlab/data:/home/git/data \
+  -e "GITLAB_RELATIVE_URL_ROOT=/gitlab" \
+  sameersbn/gitlab:6.8.2
+```
+
+When you change the sub URI path, you need to recompile all precompiled assets. This can be done with either deleting tmp/cache/VERSION file under data store, or just `rm -Rf /PATH/TO/DATA_STORE/tmp`. After cleaning up cache files, restart the container.
+
 ### Available Configuration Parameters
 
 Below is the complete list of available options that can be used to customize your gitlab installation.
@@ -572,6 +586,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_BACKUPS**: Setup cron job to automatic backups. Possible values disable, daily or monthly. Disabled by default
 - **GITLAB_BACKUP_EXPIRY**: Configure how long to keep backups before they are deleted. By default when automated backups are disabled backups are kept forever (0 seconds), else the backups expire in 7 days (604800 seconds).
 - **GITLAB_SSH_PORT**: The ssh port number. Defaults to 22.
+- **GITLAB_RELATIVE_URL_ROOT**: The sub URI of the GitLab server, e.g. /gitlab. No default.
 - **GITLAB_HTTPS**: Set to true to enable https support, disabled by default.
 - **GITLAB_HTTPS_ONLY**: Configure access over plain http when GITLAB_HTTPS is enabled. Should be set to false when using a load balancer. Defaults to true.
 - **SSL_SELF_SIGNED**: Set to true when using self signed ssl certificates. false by default.
