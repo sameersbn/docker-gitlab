@@ -97,18 +97,6 @@ case "${DB_TYPE}" in
 	*) echo "Unsupported database adapter. Available adapters are mysql and postgres." && exit 1 ;;
 esac
 
-if [ "${GITLAB_HTTPS}" == "true" ]; then
-	# make sure the required files exist
-	if [ ! -f "${SSL_CERTIFICATE_PATH}" -o ! -f "${SSL_KEY_PATH}" -o ! -f "${SSL_DHPARAM_PATH}" ]; then
-		echo ""
-		echo "  WARNING: "
-		echo "    Files required for HTTPS support cannot be found"
-		echo "    Disabling https support."
-		echo ""
-		GITLAB_HTTPS="false"
-	fi
-fi
-
 case "${GITLAB_HTTPS}" in
 	true)
 		GITLAB_URL="https://${GITLAB_HOST}${GITLAB_PORT:+:$GITLAB_PORT}${GITLAB_RELATIVE_URL_ROOT}/"
@@ -153,10 +141,16 @@ supervisorctl start sshd >/dev/null
 # copy configuration templates
 case "${GITLAB_HTTPS}" in
 	true)
-		case "${GITLAB_HTTPS_ONLY}" in
-			true) cp /app/setup/config/nginx/gitlab.https.strict /etc/nginx/sites-available/gitlab ;;
-			*) cp /app/setup/config/nginx/gitlab.https.permissive /etc/nginx/sites-available/gitlab ;;
-		esac
+		if [ -f "${SSL_CERTIFICATE_PATH}" -a -f "${SSL_KEY_PATH}" -a -f "${SSL_DHPARAM_PATH}" ]; then
+			case "${GITLAB_HTTPS_ONLY}" in
+				true) cp /app/setup/config/nginx/gitlab.https.strict /etc/nginx/sites-available/gitlab ;;
+				*) cp /app/setup/config/nginx/gitlab.https.permissive /etc/nginx/sites-available/gitlab ;;
+			esac
+		else
+			echo "SSL keys and certificates were not found."
+			echo "Assuming that the container is running behind a HTTPS enabled load balancer."
+			cp /app/setup/config/nginx/gitlab /etc/nginx/sites-available/gitlab
+		fi
 		;;
 	*) cp /app/setup/config/nginx/gitlab /etc/nginx/sites-available/gitlab ;;
 esac

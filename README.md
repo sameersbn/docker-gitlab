@@ -435,6 +435,8 @@ To secure your application via SSL you basically need two things:
 
 When using CA certified certificates, these files are provided to you by the CA. When using self-signed certificates you need to generate these files yourself. Skip the following section if you are armed with CA certified SSL certificates.
 
+Jump to the [Using HTTPS with a load balancer](using-https-with-a-load-balancer) section if you are using a load balancer such as hipache, haproxy or nginx.
+
 #### Generation of Self Signed Certificates
 Generation of self-signed SSL certificates involves a simple 3 step procedure.
 
@@ -492,11 +494,11 @@ docker run --name=gitlab -d \
 In this configuration, any requests made over the plain http protocol will automatically be redirected to use the https protocol. However, this is not optimal when using a load balancer.
 
 #### Using HTTPS with a load balancer
-Load balancers like haproxy/hipache talk to backend applications over plain http. As such, the above configuration is not sufficient for the application to work with a load balancer.
+Load balancers like haproxy/hipache talk to backend applications over plain http and as such, installation of ssl keys and certificates in the container are not required when using a load balancer.
 
-For this to work, you should set the GITLAB_HTTPS_ONLY option to false so that the gitlab application can process both http as well as https requests. Additionally you should also configure the load balancer to support https requests. But that is out of the scope of this document. Please refer to [Using SSL/HTTPS with HAProxy](http://seanmcgary.com/posts/using-sslhttps-with-haproxy) for information on the subject.
+When using a load balancer, you should set the GITLAB_HTTPS_ONLY option to false with the GITLAB_HTTPS options set to true and the SSL_SELF_SIGNED option to the appropriate value. With this in place, you should also configure the load balancer to support handling of https requests. But that is out of the scope of this document. Please refer to [Using SSL/HTTPS with HAProxy](http://seanmcgary.com/posts/using-sslhttps-with-haproxy) for information on the subject.
 
-Note that when the GITLAB_HTTPS_ONLY is disabled, the application does not perform the automatic http to https redirection and this functionality has to be configured at the load balancer which is also described in the link above. Unfortunately hipache does not come with an option to perform http to https redirection, so the only choice you really have is to switch to using haproxy.
+Note that when the GITLAB_HTTPS_ONLY is disabled, the application does not perform the automatic http to https redirection and this functionality has to be configured at the load balancer which is also described in the link above. Unfortunately hipache does not come with an option to perform http to https redirection, so the only choice you really have is to switch to using haproxy or nginx for load balancing.
 
 In summation, the docker command would look something like this:
 ```bash
