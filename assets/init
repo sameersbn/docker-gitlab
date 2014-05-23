@@ -146,7 +146,9 @@ sed -i 's,HostKey /etc/ssh/,HostKey /home/git/data/ssh/,g' -i /etc/ssh/sshd_conf
 
 # start supervisord
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
-supervisorctl start sshd
+
+echo "Starting openssh server..."
+supervisorctl start sshd >/dev/null
 
 # copy configuration templates
 case "${GITLAB_HTTPS}" in
@@ -202,7 +204,8 @@ sed 's/{{NGINX_MAX_UPLOAD_SIZE}}/'"${NGINX_MAX_UPLOAD_SIZE}"'/g' -i /etc/nginx/s
 # configure relative_url_root
 sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'${GITLAB_RELATIVE_URL_ROOT}',g' -i /etc/nginx/sites-available/gitlab
 
-supervisorctl start nginx
+echo "Starting nginx..."
+supervisorctl start nginx >/dev/null
 
 echo "Updating CA certificates..."
 [ -f "${SSL_CERTIFICATE_PATH}" ] && cp "${SSL_CERTIFICATE_PATH}" /usr/local/share/ca-certificates/gitlab.crt
@@ -225,7 +228,8 @@ if [ "${DB_HOST}" == "localhost" ]; then
 		mysql_install_db --user=mysql
 	fi
 
-	supervisorctl start mysqld
+	echo "Starting mysql server..."
+	supervisorctl start mysqld >/dev/null
 
 	# wait for mysql server to start (max 120 seconds)
 	timeout=120
@@ -247,7 +251,8 @@ if [ "${DB_HOST}" == "localhost" ]; then
 fi
 
 if [ "${REDIS_HOST}" == "localhost" ]; then
-	supervisorctl start redis-server
+	echo "Starting redis server..."
+	supervisorctl start redis-server >/dev/null
 fi
 
 # configure git for the 'git' user
@@ -446,6 +451,7 @@ appStart () {
 	echo "Starting gitlab server..."
 	# reset the database if the --db-init switch was given.
 	if [ "$DB_INIT" == "yes" ]; then
+		echo "Initializing database..."
 		sudo -u git -H force=yes bundle exec rake gitlab:setup RAILS_ENV=production
 	fi
 
