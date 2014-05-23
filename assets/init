@@ -327,7 +327,7 @@ case "${GITLAB_HTTPS}" in
 					true)
 						# we are using self signed certificates, talk to gitlab over https on localhost
 						# this will make sure the api access works when the default https port is not used.
-						sudo -u git -H sed -i 's,#{config.gitlab_url}/api/v3/internal,https://localhost'${GITLAB_RELATIVE_URL_ROOT}'/api/v3/internal,' -i /home/git/gitlab-shell/lib/gitlab_net.rb
+						sudo -u git -H sed 's,#{config.gitlab_url}/api/v3/internal,https://localhost'${GITLAB_RELATIVE_URL_ROOT}'/api/v3/internal,' -i /home/git/gitlab-shell/lib/gitlab_net.rb
 						;;
 					*)
 						# signed https certificates are in use, talk to gitlab using the default gitlab_url.
@@ -339,13 +339,13 @@ case "${GITLAB_HTTPS}" in
 			*)
 				# we are not using https only mode, talk to gitlab over plain http on localhost
 				# using http when available will keep things fast.
-				sudo -u git -H sed -i 's,#{config.gitlab_url}/api/v3/internal,http://localhost'${GITLAB_RELATIVE_URL_ROOT}'/api/v3/internal,' -i /home/git/gitlab-shell/lib/gitlab_net.rb
+				sudo -u git -H sed 's,#{config.gitlab_url}/api/v3/internal,http://localhost'${GITLAB_RELATIVE_URL_ROOT}'/api/v3/internal,' -i /home/git/gitlab-shell/lib/gitlab_net.rb
 				;;
 		esac
 		;;
 	*)
 		# ssl is not being used, talk to gitlab over plain http
-		sudo -u git -H sed -i 's,#{config.gitlab_url}/api/v3/internal,http://localhost'${GITLAB_RELATIVE_URL_ROOT}'/api/v3/internal,' -i /home/git/gitlab-shell/lib/gitlab_net.rb
+		sudo -u git -H sed 's,#{config.gitlab_url}/api/v3/internal,http://localhost'${GITLAB_RELATIVE_URL_ROOT}'/api/v3/internal,' -i /home/git/gitlab-shell/lib/gitlab_net.rb
 		;;
 esac
 
