@@ -1,6 +1,9 @@
 # Changelog
 
 **latest**
+- upgrade to gitlab-ce 6.9.1
+
+**6.9.0**
 - upgrade to gitlab-ce 6.9.0
 - added GITLAB_RELATIVE_URL_ROOT configuration option
 - added NGINX_MAX_UPLOAD_SIZE configuration to specify the maximum acceptable size of attachments.
