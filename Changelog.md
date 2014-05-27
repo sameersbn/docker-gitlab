@@ -1,6 +1,6 @@
 # Changelog
 
-**latest**
+**6.9.1**
 - upgrade to gitlab-ce 6.9.1
 
 **6.9.0**
