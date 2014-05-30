@@ -11,6 +11,13 @@ rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
 adduser --disabled-login --gecos 'GitLab' git
 passwd -d git
 
+# don't require password authentication for git user to launch sudo
+cat << EOF
+# Allow members of group sudo to execute any command
+git ALL=(ALL) NOPASSWD:ALL
+EOF >> /etc/sudoers
+
+
 rm -rf /home/git/.ssh
 sudo -u git -H mkdir -p /home/git/data/.ssh
 sudo -u git -H ln -s /home/git/data/.ssh /home/git/.ssh
