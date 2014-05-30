@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- upgrade to gitlab-ce 6.9.2
+
 **6.9.1**
 - upgrade to gitlab-ce 6.9.1
 
