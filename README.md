@@ -687,7 +687,7 @@ By default, when automated backups are enabled, backups are held for a period of
 
 GitLabHQ releases new versions on the 22nd of every month, bugfix releases immediately follow. I update this project almost immediately when a release is made (at least it has been the case so far). If you are using the image in production environments I recommend that you delay updates by a couple of days after the gitlab release, allowing some time for the dust to settle down.
 
-To upgrade to newer gitlab releases, simply follow this 5 step upgrade procedure.
+To upgrade to newer gitlab releases, simply follow this 4 step upgrade procedure.
 
 - **Step 1**: Stop the currently running image
 
@@ -708,14 +708,7 @@ docker run --name=gitlab -i -t --rm [OPTIONS] \
 docker pull sameersbn/gitlab:6.9.2
 ```
 
-- **Step 4**: Migrate the database.
-
-```bash
-docker run --name=gitlab -i -t --rm [OPTIONS] \
-  sameersbn/gitlab:6.9.2 app:rake db:migrate
-```
-
-- **Step 5**: Start the image
+- **Step 4**: Start the image
 
 ```bash
 docker run --name=gitlab -d [OPTIONS] sameersbn/gitlab:6.9.2

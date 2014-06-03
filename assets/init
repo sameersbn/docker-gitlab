@@ -453,13 +453,14 @@ appStart () {
 		sudo -u git -H force=yes bundle exec rake gitlab:setup RAILS_ENV=production
 	fi
 
-	# compile the assets only if it does not exist or if the gitlab version has changed.
+	# migrate database and compile the assets if the gitlab version has changed.
 	CACHE_VERSION=
 	GITLAB_VERSION=$(cat VERSION)
-	if [ -f tmp/cache/VERSION ]; then
-		CACHE_VERSION=$(cat tmp/cache/VERSION)
-	fi
+	[ -f tmp/cache/VERSION ] && CACHE_VERSION=$(cat tmp/cache/VERSION)
 	if [ "${GITLAB_VERSION}" != "${CACHE_VERSION}" ]; then
+		echo "Migrating database..."
+		sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production 2>/dev/null
+
 		echo "Compiling assets. Please be patient, this could take a while..."
 		sudo -u git -H bundle exec rake assets:clean RAILS_ENV=production
 		sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production 2>/dev/null

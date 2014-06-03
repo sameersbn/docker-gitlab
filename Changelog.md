@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- automatically migrate database when gitlab version is updated
 - upgrade to gitlab-shell 1.9.5
 
 **6.9.2**
