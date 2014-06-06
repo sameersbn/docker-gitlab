@@ -26,6 +26,12 @@ GITLAB_BACKUPS=${GITLAB_BACKUPS:-disable}
 GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-}
 
 NGINX_MAX_UPLOAD_SIZE=${NGINX_MAX_UPLOAD_SIZE:-20m}
+GITLAB_MAX_SIZE=$(echo $NGINX_MAX_SIZE |sed -e "s/^ *\([0-9]*\)[mMkKgG] *$/\1/g" )
+case "$NGINX_MAX_SIZE" in
+    *[kK] ) GITLAB_MAX_SIZE=$(($GITLAB_MAX_SIZE * 1024));;
+    *[mM] ) GITLAB_MAX_SIZE=$(($GITLAB_MAX_SIZE * 1048576));;
+    *[gG] ) GITLAB_MAX_SIZE=$(($GITLAB_MAX_SIZE * 1073741824));;
+esac
 
 REDIS_HOST=${REDIS_HOST:-}
 REDIS_PORT=${REDIS_PORT:-}
@@ -265,6 +271,7 @@ sudo -u git -H sed 's/{{GITLAB_HTTPS}}/'"${GITLAB_HTTPS}"'/' -i /home/git/gitlab
 sudo -u git -H sed 's/{{GITLAB_EMAIL}}/'"${GITLAB_EMAIL}"'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_SUPPORT}}/'"${GITLAB_SUPPORT}"'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_BACKUP_EXPIRY}}/'"${GITLAB_BACKUP_EXPIRY}"'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_MAX_SIZE}}/'"${GITLAB_MAX_SIZE}"'/' -i /home/git/gitlab/config/gitlab.yml
 
 sudo -u git -H sed 's/{{GITLAB_SSH_PORT}}/'"${GITLAB_SSH_PORT}"'/' -i /home/git/gitlab/config/gitlab.yml
 
