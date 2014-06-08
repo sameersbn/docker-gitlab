@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added app:sanitize command
 - automatically migrate database when gitlab version is updated
 - upgrade to gitlab-shell 1.9.5
 

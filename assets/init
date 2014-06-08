@@ -502,6 +502,18 @@ EOF
 	tail -F /var/log/nginx/gitlab_access.log
 }
 
+appSanitize () {
+	echo "Checking repository directories permissions..."
+	sudo chmod ug-s /home/git/data/repositories/
+	find /home/git/data/repositories/ -type d -print0 | sudo xargs -0 chmod ug+rwX,g+s,o-rwx
+	chown git:git /home/git/data/repositories
+
+	echo "Checking satellites directories permissions..."
+	sudo -u git -H mkdir -p /home/git/data/gitlab-satellites/
+	find /home/git/data/gitlab-satellites/ -type d -print0 | sudo xargs -0 chmod u+rwx,g+rx-sw,o-rwx
+	chown git:git /home/git/data/gitlab-satellites
+}
+
 appRake () {
 	if [ -z ${1} ]; then
 		echo "Please specify the rake task to execute. See https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks"
@@ -538,6 +550,7 @@ appRake () {
 appHelp () {
 	echo "Available options:"
 	echo " app:start          - Starts the gitlab server (default)"
+	echo " app:sanitize       - Fix repository/satellites directory permissions."
 	echo " app:rake <task>    - Execute a rake task."
 	echo " app:help           - Displays the help"
 	echo " [command]          - Execute the specified linux command eg. bash."
@@ -546,6 +559,9 @@ appHelp () {
 case "$1" in
 	app:start)
 		appStart
+		;;
+	app:sanitize)
+		appSanitize
 		;;
 	app:rake)
 		shift 1
