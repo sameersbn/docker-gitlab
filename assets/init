@@ -204,9 +204,6 @@ sed 's/{{NGINX_MAX_UPLOAD_SIZE}}/'"${NGINX_MAX_UPLOAD_SIZE}"'/g' -i /etc/nginx/s
 # configure relative_url_root
 sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'${GITLAB_RELATIVE_URL_ROOT}',g' -i /etc/nginx/sites-available/gitlab
 
-echo "Starting nginx..."
-supervisorctl start nginx >/dev/null
-
 if [ -f "${SSL_CERTIFICATE_PATH}" -o -f "${CA_CERTIFICATES_PATH}" ]; then
 	echo "Updating CA certificates..."
 	[ -f "${SSL_CERTIFICATE_PATH}" ] && \
@@ -451,7 +448,9 @@ chown -R git:git /home/git/data/.ssh
 cd /home/git/gitlab/
 
 appStart () {
-	echo "Starting gitlab server..."
+	echo "Starting nginx..."
+	supervisorctl start nginx >/dev/null
+
 	# reset the database if the --db-init switch was given.
 	if [ "$DB_INIT" == "yes" ]; then
 		echo "Initializing database..."
