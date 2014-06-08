@@ -541,6 +541,7 @@ appRake () {
 		timestamp=$(echo $file | cut -d'_' -f1)
 		sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=$timestamp RAILS_ENV=production
 	else
+		[ "$1" == "gitlab:import:repos" ] && appSanitize
 		sudo -u git -H bundle exec rake $@ RAILS_ENV=production
 	fi
 }
