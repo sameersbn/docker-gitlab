@@ -411,12 +411,10 @@ chmod +x /home/git/data
 # create the repositories directory and make sure it has the right permissions
 sudo -u git -H mkdir -p /home/git/data/repositories/
 sudo chmod ug-s /home/git/data/repositories/
-find /home/git/data/repositories/ -type d -print0 | sudo xargs -0 chmod ug+rwX,g+s,o-rwx
 chown git:git /home/git/data/repositories
 
 # create the satellites directory and make sure it has the right permissions
 sudo -u git -H mkdir -p /home/git/data/gitlab-satellites/
-find /home/git/data/gitlab-satellites/ -type d -print0 | sudo xargs -0 chmod u+rwx,g+rx-sw,o-rwx
 chown git:git /home/git/data/gitlab-satellites
 
 # create the tmp directory for the cache
