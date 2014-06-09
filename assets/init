@@ -472,8 +472,11 @@ appStart () {
 		sudo -u git -H echo "${GITLAB_VERSION}" > tmp/cache/VERSION
 	fi
 
+	# remove stale unicorn and sidekiq pid's if they exist.
+	rm -rf /home/git/gitlab/tmp/pids/unicorn.pid
+	rm -rf /home/git/gitlab/tmp/pids/sidekiq.pid
+
 	# start the gitlab application
-	# sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 	/etc/init.d/gitlab start
 
 	# create satellite directories
