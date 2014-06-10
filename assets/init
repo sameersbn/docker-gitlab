@@ -83,11 +83,11 @@ REDIS_PORT=${REDIS_PORT:-6379}
 # requires that the mysql or postgresql containers have exposed
 # port 3306 and 5432 respectively.
 if [ -n "${MYSQL_PORT_3306_TCP_ADDR}" ]; then
-	DB_TYPE=mysql
+	DB_TYPE=${DB_TYPE:-mysql}
 	DB_HOST=${DB_HOST:-${MYSQL_PORT_3306_TCP_ADDR}}
 	DB_PORT=${DB_PORT:-${MYSQL_PORT_3306_TCP_PORT}}
 elif [ -n "${POSTGRESQL_PORT_5432_TCP_ADDR}" ]; then
-	DB_TYPE=postgres
+	DB_TYPE=${DB_TYPE:-postgres}
 	DB_HOST=${DB_HOST:-${POSTGRESQL_PORT_5432_TCP_ADDR}}
 	DB_PORT=${DB_PORT:-${POSTGRESQL_PORT_5432_TCP_PORT}}
 fi
