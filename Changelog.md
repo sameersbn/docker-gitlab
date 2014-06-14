@@ -1,5 +1,8 @@
 # Changelog
 
+**6.9.2-1**
+- fix restore backup operation
+
 **6.9.2**
 - upgrade to gitlab-ce 6.9.2
 
