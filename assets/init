@@ -524,19 +524,19 @@ appRake () {
 
 	if [ "$1" == "gitlab:backup:restore" ]; then
 		# user needs to select the backup to restore
-		nBackups=$(ls tmp/backups/*_gitlab_backup.tar | wc -l)
+		nBackups=$(ls /home/git/data/backups/*_gitlab_backup.tar | wc -l)
 		if [ $nBackups -eq 0 ]; then
 			echo "No backup present. Cannot continue restore process.".
 			return 1
 		fi
 
-		for b in `ls tmp/backups/ | sort -r`
+		for b in `ls /home/git/data/backups/ | sort -r`
 		do
 			echo " ├ $b"
 		done
 		read -p "Select a backup to restore: " file
 
-		if [ ! -f "tmp/backups/${file}" ]; then
+		if [ ! -f "/home/git/data/backups/${file}" ]; then
 			echo "Specified backup does not exist. Aborting..."
 			return 1
 		fi
