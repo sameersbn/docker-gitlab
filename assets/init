@@ -510,12 +510,12 @@ appSanitize () {
 	echo "Checking repository directories permissions..."
 	sudo chmod ug-s /home/git/data/repositories/
 	find /home/git/data/repositories/ -type d -print0 | sudo xargs -0 chmod ug+rwX,g+s,o-rwx
-	chown git:git /home/git/data/repositories
+	chown -R git:git /home/git/data/repositories
 
 	echo "Checking satellites directories permissions..."
 	sudo -u git -H mkdir -p /home/git/data/gitlab-satellites/
 	find /home/git/data/gitlab-satellites/ -type d -print0 | sudo xargs -0 chmod u+rwx,g+rx-sw,o-rwx
-	chown git:git /home/git/data/gitlab-satellites
+	chown -R git:git /home/git/data/gitlab-satellites
 }
 
 appRake () {
