@@ -1,7 +1,7 @@
 # Changelog
 
 **latest**
-- fix restore backup operation
+- fix backup restore operation
 - upgrade to gitlab-shell 1.9.6
 - added app:sanitize command
 - automatically migrate database when gitlab version is updated
