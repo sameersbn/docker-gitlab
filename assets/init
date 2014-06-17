@@ -500,7 +500,7 @@ EOF
 EOF
 			;;
 	esac
-	crontab -u git /tmp/cron.git && rm -rf /tmp/cron.git
+	crontab -u git /tmp/cron.git 2>/dev/null && rm -rf /tmp/cron.git
 
 	# watch the access logs
 	tail -F /var/log/nginx/gitlab_access.log
