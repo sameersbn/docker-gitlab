@@ -20,14 +20,14 @@ upstream gitlab {
 }
 
 server {
-  listen *:80 default_server;
+  listen *:80;
   server_name _;
   server_tokens off;
   rewrite ^ https://$host:{{GITLAB_PORT}}$request_uri? permanent;
 }
 
 server {
-  listen *:443 default_server ssl;
+  listen 443 ssl;
   server_name {{YOUR_SERVER_FQDN}};
   server_tokens off;
   root /dev/null;
