@@ -162,7 +162,7 @@ case "${GITLAB_HTTPS}" in
 	*) cp /app/setup/config/nginx/gitlab /etc/nginx/sites-available/gitlab ;;
 esac
 
-sudo -u git -H cp -a /app/setup/config/gitlab-shell/config.yml /home/git/gitlab-shell/config.yml
+sudo -u git -H cp /app/setup/config/gitlab-shell/config.yml /home/git/gitlab-shell/config.yml
 sudo -u git -H cp /app/setup/config/gitlabhq/gitlab.yml /home/git/gitlab/config/gitlab.yml
 sudo -u git -H cp /app/setup/config/gitlabhq/resque.yml /home/git/gitlab/config/resque.yml
 sudo -u git -H cp /app/setup/config/gitlabhq/database.yml /home/git/gitlab/config/database.yml
