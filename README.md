@@ -690,23 +690,23 @@ GitLabHQ releases new versions on the 22nd of every month, bugfix releases immed
 
 To upgrade to newer gitlab releases, simply follow this 4 step upgrade procedure.
 
-- **Step 1**: Stop the currently running image
+- **Step 1**: Update the docker image.
+
+```bash
+docker pull sameersbn/gitlab:6.9.2
+```
+
+- **Step 2**: Stop the currently running image
 
 ```bash
 docker stop gitlab
 ```
 
-- **Step 2**: Backup the application data.
+- **Step 3**: Backup the application data.
 
 ```bash
 docker run --name=gitlab -i -t --rm [OPTIONS] \
   sameersbn/gitlab:6.9.2 app:rake gitlab:backup:create
-```
-
-- **Step 3**: Update the docker image.
-
-```bash
-docker pull sameersbn/gitlab:6.9.2
 ```
 
 - **Step 4**: Start the image
