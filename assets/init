@@ -509,8 +509,9 @@ EOF
 
 appSanitize () {
 	echo "Checking repository directories permissions..."
-	sudo chmod ug-s /home/git/data/repositories/
-	find /home/git/data/repositories/ -type d -print0 | sudo xargs -0 chmod ug+rwX,g+s,o-rwx
+	chmod -R ug+rwX,o-rwx /home/git/data/repositories/
+	chmod -R ug-s /home/git/data/repositories/
+	find /home/git/data/repositories/ -type d -print0 | xargs -0 chmod g+s
 	chown -R git:git /home/git/data/repositories
 
 	echo "Checking satellites directories permissions..."
