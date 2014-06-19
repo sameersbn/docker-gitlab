@@ -411,8 +411,9 @@ chmod +x /home/git/data
 
 # create the repositories directory and make sure it has the right permissions
 sudo -u git -H mkdir -p /home/git/data/repositories/
-chmod ug-s /home/git/data/repositories/
-chown git:git /home/git/data/repositories
+chown git:git /home/git/data/repositories/
+chmod ug+rwX,o-rwx /home/git/data/repositories/
+sudo -u git -H chmod g+s /home/git/data/repositories/
 
 # create the satellites directory and make sure it has the right permissions
 sudo -u git -H mkdir -p /home/git/data/gitlab-satellites/
@@ -510,8 +511,8 @@ EOF
 appSanitize () {
 	echo "Checking repository directories permissions..."
 	chmod -R ug+rwX,o-rwx /home/git/data/repositories/
-	chmod -R ug-s /home/git/data/repositories/
-	find /home/git/data/repositories/ -type d -print0 | xargs -0 chmod g+s
+	sudo -u git -H chmod -R ug-s /home/git/data/repositories/
+	find /home/git/data/repositories/ -type d -print0 | xargs -0 sudo -u git -H chmod g+s
 	chown -R git:git /home/git/data/repositories
 
 	echo "Checking satellites directories permissions..."
