@@ -416,6 +416,7 @@ chown git:git /home/git/data/repositories
 
 # create the satellites directory and make sure it has the right permissions
 sudo -u git -H mkdir -p /home/git/data/gitlab-satellites/
+chmod u+rwx,g=rx,o-rwx /home/git/data/gitlab-satellites
 chown git:git /home/git/data/gitlab-satellites
 
 # create the tmp directory for the cache
@@ -514,7 +515,7 @@ appSanitize () {
 
 	echo "Checking satellites directories permissions..."
 	sudo -u git -H mkdir -p /home/git/data/gitlab-satellites/
-	find /home/git/data/gitlab-satellites/ -type d -print0 | sudo xargs -0 chmod u+rwx,g+rx-sw,o-rwx
+	chmod u+rwx,g=rx,o-rwx /home/git/data/gitlab-satellites
 	chown -R git:git /home/git/data/gitlab-satellites
 }
 
