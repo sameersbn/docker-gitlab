@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- fix repository and gitlab-satellites directory permissions.
 - added GITLAB_RESTRICTED_VISIBILITY configuration option
 - fix backup restore operation
 - upgrade to gitlab-shell 1.9.6
