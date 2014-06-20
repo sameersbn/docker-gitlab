@@ -578,8 +578,8 @@ When you change the sub URI path, you need to recompile all precompiled assets. 
 Below is the complete list of available options that can be used to customize your gitlab installation.
 
 - **GITLAB_HOST**: The hostname of the GitLab server. Defaults to localhost
-- **GITLAB_PORT**: The port of the GitLab server. Defaults to 80
-- **GITLAB_EMAIL**: The email address for the GitLab server.  Defaults to 80 for plain http and 443 when https is enabled.
+- **GITLAB_PORT**: The port of the GitLab server. Defaults to 80 for plain http and 443 when https is enabled.
+- **GITLAB_EMAIL**: The email address for the GitLab server.  Defaults to gitlab@localhost.
 - **GITLAB_SUPPORT**: The support email address for the GitLab server. Defaults to support@localhost.
 - **GITLAB_SIGNUP**: Enable or disable user signups. Default is false.
 - **GITLAB_SIGNIN**: If set to false, standard login form won't be shown on the sign-in page. Default is true.
