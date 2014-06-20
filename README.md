@@ -116,7 +116,7 @@ Run the gitlab image
 
 ```
 docker run --name='gitlab' -i -t --rm \
--p 127.0.0.1:10022:22 -p 127.0.0.1:10080:80 \
+-p 10022:22 -p 10080:80 \
 -e "GITLAB_PORT=10080" -e "GITLAB_SSH_PORT=10022" \
 sameersbn/gitlab:6.9.2
 ```
