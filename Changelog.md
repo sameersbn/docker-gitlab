@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- upgrade to gitlab-7.0.0
 - fix repository and gitlab-satellites directory permissions.
 - added GITLAB_RESTRICTED_VISIBILITY configuration option
 - fix backup restore operation
