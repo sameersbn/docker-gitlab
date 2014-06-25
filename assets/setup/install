@@ -71,14 +71,10 @@ sudo -u git -H touch log/production.log
 
 # install gems required by gitlab, use local cache if available
 if [ -d "/app/setup/cache" ]; then
-  # offline gem installation
   mv /app/setup/cache vendor/
   chown -R git:git vendor/cache
-  sudo -u git -H bundle install --local --deployment --without development test aws
-else
-  # online gem installation
-  sudo -u git -H bundle install --deployment --without development test aws
 fi
+sudo -u git -H bundle install --deployment --without development test aws
 
 # make sure everything in /home/git is owned by the git user
 chown -R git:git /home/git/
