@@ -111,7 +111,7 @@ server {
 }
 
 server {
-  listen 443 ssl;
+  listen 443 ssl spdy;
   ## Replace git.example.com with your FQDN.
   server_name {{YOUR_SERVER_FQDN}};
   server_tokens off;
