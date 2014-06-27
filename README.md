@@ -16,7 +16,7 @@
             - [Internal MySQL Server](#internal-mysql-server)
             - [External MySQL Server](#external-mysql-server)
             - [Linking to MySQL Container](#linking-to-mysql-container)
-        - [PostgreSQL](#postgresql)
+        - [PostgreSQL (Recommended)](#postgresql)
             - [External PostgreSQL Server](#external-postgresql-server)
             - [Linking to PostgreSQL Container](#linking-to-postgresql-container)
     - [Redis](#redis)
