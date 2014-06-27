@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- upgrade to nginx-1.6.x series from the nginx/stable ppa
+
 **7.0.0**
 - upgrade to gitlab-7.0.0
 - fix repository and gitlab-satellites directory permissions.
