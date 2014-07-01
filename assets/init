@@ -125,11 +125,6 @@ case "${LDAP_UID}" in
 	*) LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN=${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN:-true}
 esac
 
-# generate a password for root.
-ROOT_PASSWORD=$(pwgen -c -n -1 12)
-echo "root:$ROOT_PASSWORD" | chpasswd
-echo User: root Password: $ROOT_PASSWORD
-
 if [ ! -e /home/git/data/ssh/ssh_host_rsa_key ]; then
 	# create ssh host keys and move them to the data store.
 	dpkg-reconfigure openssh-server
