@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- no more root access over ssh, use nsenter instead
 - upgrade to nginx-1.6.x series from the nginx/stable ppa
 
 **7.0.0**

@@ -22,8 +22,6 @@ ADD assets/config/ /app/setup/config/
 ADD assets/init /app/init
 RUN chmod 755 /app/init
 
-ADD authorized_keys /root/.ssh/
-
 EXPOSE 22
 EXPOSE 80
 EXPOSE 443
