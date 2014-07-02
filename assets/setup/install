@@ -90,6 +90,12 @@ cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
 rm -f /etc/nginx/sites-enabled/default
 ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
+# silence setlocale message (#93)
+cat > /etc/default/locale <<EOF
+LC_ALL=en_US.UTF-8
+LANG=en_US.UTF-8
+EOF
+
 # configure supervisor to start sshd
 mkdir -p /var/run/sshd
 cat > /etc/supervisor/conf.d/sshd.conf <<EOF
