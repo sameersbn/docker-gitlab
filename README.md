@@ -574,6 +574,8 @@ When you change the sub URI path, you need to recompile all precompiled assets. 
 
 ### Available Configuration Parameters
 
+***Please refer the docker run command options for the `--env-file` flag where you can specify all required environment variables in a single file. This will save you from writing a pontentially long docker run command.***
+
 Below is the complete list of available options that can be used to customize your gitlab installation.
 
 - **GITLAB_HOST**: The hostname of the GitLab server. Defaults to localhost
