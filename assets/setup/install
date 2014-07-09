@@ -96,6 +96,9 @@ LC_ALL=en_US.UTF-8
 LANG=en_US.UTF-8
 EOF
 
+# disable pam authentication for sshd
+sed 's/UsePAM yes/UsePAM no/' -i /etc/ssh/sshd_config
+
 # configure supervisor to start sshd
 mkdir -p /var/run/sshd
 cat > /etc/supervisor/conf.d/sshd.conf <<EOF

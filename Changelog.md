@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- disable pam authentication module in sshd
 - update to the sameersbn/ubuntu:14.04.20140628 baseimage
 - no more root access over ssh, use nsenter instead
 - upgrade to nginx-1.6.x series from the nginx/stable ppa
