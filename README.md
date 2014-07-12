@@ -196,6 +196,8 @@ docker run --name=gitlab -it --rm \
   sameersbn/gitlab:7.0.0 app:rake gitlab:setup
 ```
 
+Append `force=yes` to the above command to skip the confirmation prompt.
+
 **NOTE: The above setup is performed only for the first run**.
 
 This will initialize the gitlab database. Now that the database is initialized, start the container normally.
