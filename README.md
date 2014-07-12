@@ -114,7 +114,7 @@ docker build --tag="$USER/gitlab" .
 Run the gitlab image
 
 ```
-docker run --name='gitlab' -i -t --rm \
+docker run --name='gitlab' -it --rm \
 -p 10022:22 -p 10080:80 \
 -e "GITLAB_PORT=10080" -e "GITLAB_SSH_PORT=10022" \
 sameersbn/gitlab:7.0.0
@@ -190,7 +190,7 @@ To make sure the database is initialized start the container with **app:rake git
 *Assuming that the mysql server host is 192.168.1.100*
 
 ```bash
-docker run --name=gitlab -i -t --rm \
+docker run --name=gitlab -it --rm \
   -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:7.0.0 app:rake gitlab:setup
@@ -245,7 +245,7 @@ FLUSH PRIVILEGES;
 Now that we have the database created for gitlab, lets install the database schema. This is done by starting the gitlab container with the **app:rake gitlab:setup** command.
 
 ```bash
-docker run --name=gitlab -i -t --rm --link mysql:mysql \
+docker run --name=gitlab -it --rm --link mysql:mysql \
   -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -e "DB_NAME=gitlabhq_production" \
   -v /opt/gitlab/data:/home/git/data \
@@ -280,7 +280,7 @@ To make sure the database is initialized start the container with **app:rake git
 *Assuming that the PostgreSQL server host is 192.168.1.100*
 
 ```bash
-docker run --name=gitlab -i -t --rm \
+docker run --name=gitlab -it --rm \
   -e "DB_TYPE=postgres" -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:7.0.0 app:rake gitlab:setup
@@ -339,7 +339,7 @@ GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
 Now that we have the database created for gitlab, lets install the database schema. This is done by starting the gitlab container with the **app:rake gitlab:setup** command.
 
 ```bash
-docker run --name=gitlab -i -t --rm --link postgresql:postgresql \
+docker run --name=gitlab -it --rm --link postgresql:postgresql \
   -e "DB_USER=gitlab" -e "DB_PASS=password" \
   -e "DB_NAME=gitlabhq_production" \
   -v /opt/gitlab/data:/home/git/data \
@@ -379,7 +379,7 @@ The image can be configured to use an external redis server instead of starting 
 *Assuming that the redis server host is 192.168.1.100*
 
 ```bash
-docker run --name=gitlab -i -t --rm \
+docker run --name=gitlab -it --rm \
   -e "REDIS_HOST=192.168.1.100" -e "REDIS_PORT=6379" \
   sameersbn/gitlab:7.0.0
 ```
@@ -644,7 +644,7 @@ docker stop gitlab
 To take a backup all you need to do is run the gitlab rake task to create a backup.
 
 ```bash
-docker run --name=gitlab -i -t --rm [OPTIONS] \
+docker run --name=gitlab -it --rm [OPTIONS] \
   sameersbn/gitlab:7.0.0 app:rake gitlab:backup:create
 ```
 
@@ -658,10 +658,10 @@ Gitlab defines a rake task to easily restore a backup of your gitlab installatio
 docker stop gitlab
 ```
 
-To restore a backup, run the image in interactive (-i -t) mode and pass the "app:restore" command to the container image.
+To restore a backup, run the image in interactive (-it) mode and pass the "app:restore" command to the container image.
 
 ```bash
-docker run --name=gitlab -i -t --rm [OPTIONS] \
+docker run --name=gitlab -it --rm [OPTIONS] \
   sameersbn/gitlab:7.0.0 app:rake gitlab:backup:restore
 ```
 
@@ -697,7 +697,7 @@ docker rm gitlab
 - **Step 3**: Backup the application data.
 
 ```bash
-docker run --name=gitlab -i -t --rm [OPTIONS] \
+docker run --name=gitlab -it --rm [OPTIONS] \
   sameersbn/gitlab:7.0.0 app:rake gitlab:backup:create
 ```
 
