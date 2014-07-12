@@ -687,10 +687,11 @@ To upgrade to newer gitlab releases, simply follow this 4 step upgrade procedure
 docker pull sameersbn/gitlab:7.0.0
 ```
 
-- **Step 2**: Stop the currently running image
+- **Step 2**: Stop and remove the currently running image
 
 ```bash
 docker stop gitlab
+docker rm gitlab
 ```
 
 - **Step 3**: Backup the application data.
