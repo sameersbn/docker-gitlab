@@ -113,7 +113,7 @@ docker build --tag="$USER/gitlab" .
 # Quick Start
 Run the gitlab image
 
-```
+```bash
 docker run --name='gitlab' -it --rm \
 -p 10022:22 -p 10080:80 \
 -e 'GITLAB_PORT=10080' -e 'GITLAB_SSH_PORT=10022' \
@@ -217,11 +217,13 @@ If a mysql container is linked, only the DB_HOST and DB_PORT settings are automa
 To illustrate linking with a mysql container, we will use the [sameersbn/mysql](https://github.com/sameersbn/docker-mysql) image. When using docker-mysql in production you should mount a volume for the mysql data store. Please refer the [README](https://github.com/sameersbn/docker-mysql/blob/master/README.md) of docker-mysql for details.
 
 First, lets pull the mysql image from the docker index.
+
 ```bash
 docker pull sameersbn/mysql:latest
 ```
 
 For data persistence lets create a store for the mysql and start the container.
+
 ```bash
 mkdir -p /opt/mysql/data
 docker run --name=mysql -d \
@@ -307,11 +309,13 @@ If a postgresql container is linked, only the DB_HOST and DB_PORT settings are a
 To illustrate linking with a postgresql container, we will use the [sameersbn/postgresql](https://github.com/sameersbn/docker-postgresql) image. When using postgresql image in production you should mount a volume for the postgresql data store. Please refer the [README](https://github.com/sameersbn/docker-postgresql/blob/master/README.md) of docker-postgresql for details.
 
 First, lets pull the postgresql image from the docker index.
+
 ```bash
 docker pull sameersbn/postgresql:latest
 ```
 
 For data persistence lets create a store for the postgresql and start the container.
+
 ```bash
 mkdir -p /opt/postgresql/data
 docker run --name=postgresql -d \
@@ -391,11 +395,13 @@ You can link this image with a redis container to satisfy gitlab's redis require
 To illustrate linking with a redis container, we will use the [sameersbn/redis](https://github.com/sameersbn/docker-redis) image. Please refer the [README](https://github.com/sameersbn/docker-redis/blob/master/README.md) of docker-redis for details.
 
 First, lets pull the redis image from the docker index.
+
 ```bash
 docker pull sameersbn/redis:latest
 ```
 
 Lets start the redis container
+
 ```bash
 docker run --name=redis -d sameersbn/redis:latest
 ```
@@ -442,16 +448,19 @@ Jump to the [Strengthening the server security](#strengthening-the-server-securi
 Generation of self-signed SSL certificates involves a simple 3 step procedure.
 
 **STEP 1**: Create the server private key
+
 ```bash
 openssl genrsa -out gitlab.key 2048
 ```
 
 **STEP 2**: Create the certificate signing request (CSR)
+
 ```bash
 openssl req -new -key gitlab.key -out gitlab.csr
 ```
 
 **STEP 3**: Sign the certificate using the private key and CSR
+
 ```bash
 openssl x509 -req -days 365 -in gitlab.csr -signkey gitlab.key -out gitlab.crt
 ```
@@ -502,6 +511,7 @@ When using a load balancer, you should set the GITLAB_HTTPS_ONLY option to false
 Note that when the GITLAB_HTTPS_ONLY is disabled, the application does not perform the automatic http to https redirection and this functionality has to be configured at the load balancer which is also described in the link above. Unfortunately hipache does not come with an option to perform http to https redirection, so the only choice you really have is to switch to using haproxy or nginx for load balancing.
 
 In summation, the docker command would look something like this:
+
 ```bash
 docker run --name=gitlab -d \
   -e 'GITLAB_HTTPS=true' -e 'SSL_SELF_SIGNED=true' \
@@ -510,14 +520,14 @@ docker run --name=gitlab -d \
   sameersbn/gitlab:7.0.0
 ```
 
-Again, drop the ```-e 'SSL_SELF_SIGNED=true'``` option if you are using CA certified SSL certificates.
+Again, drop the `-e 'SSL_SELF_SIGNED=true'` option if you are using CA certified SSL certificates.
 
 #### Establishing trust with your server
 This section deals will self-signed ssl certificates. If you are using CA certified certificates, your done.
 
 This section is more of a client side configuration so as to add a level of confidence at the client to be 100 percent sure they are communicating with whom they think they.
 
-This is simply done by adding the servers certificate into their list of trusted ceritficates. On ubuntu, this is done by appending the contents of the gitlab.crt file to the ```/etc/ssl/certs/ca-certificates.crt``` file.
+This is simply done by adding the servers certificate into their list of trusted ceritficates. On ubuntu, this is done by appending the contents of the gitlab.crt file to the `/etc/ssl/certs/ca-certificates.crt file.
 
 Again, this is a client side configuration which means that everyone who is going to communicate with the server should perform this configuration on their machine. In short, distribute the gitlab.crt file among your developers and ask them to add it to their list of trusted ssl certificates. Failure to do so will result in errors that look like this:
 
@@ -671,7 +681,7 @@ The restore operation will list all available backups in reverse chronological o
 
 ## Automated Backups
 
-The image can be configured to automatically take backups on a daily or monthly basis. Adding -e 'GITLAB_BACKUPS=daily' to the docker run command will enable daily backups, while -e 'GITLAB_BACKUPS=monthly' will enable monthly backups.
+The image can be configured to automatically take backups on a daily or monthly basis. Adding `-e 'GITLAB_BACKUPS=daily'` to the docker run command will enable daily backups, while `-e 'GITLAB_BACKUPS=monthly'` will enable monthly backups.
 
 Daily backups are created at 4 am (UTC) everyday, while monthly backups are created on the 1st of every month at the same time as the daily backups.
 
