@@ -397,7 +397,8 @@ if [ ${GITLAB_RELATIVE_URL_ROOT} ]; then
 	sudo -u git -H sed "s,# ENV\['RAILS_RELATIVE_URL_ROOT'\] = \"{{GITLAB_RELATIVE_URL_ROOT}}\",ENV\['RAILS_RELATIVE_URL_ROOT'\] = \"${GITLAB_RELATIVE_URL_ROOT}\"," -i /home/git/gitlab/config/unicorn.rb
 fi
 
-# take ownership of /home/git/data
+# fix permission and ownership of /home/git/data
+chmod 755 /home/git/data
 chown git:git /home/git/data
 
 # set executable flags on /home/git/data (needed if mounted from a data-only
