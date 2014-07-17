@@ -527,7 +527,7 @@ This section deals will self-signed ssl certificates. If you are using CA certif
 
 This section is more of a client side configuration so as to add a level of confidence at the client to be 100 percent sure they are communicating with whom they think they.
 
-This is simply done by adding the servers certificate into their list of trusted ceritficates. On ubuntu, this is done by appending the contents of the gitlab.crt file to the `/etc/ssl/certs/ca-certificates.crt file.
+This is simply done by adding the servers certificate into their list of trusted ceritficates. On ubuntu, this is done by copying the `gitlab.crt` file to `/usr/local/share/ca-certificates/` and executing `update-ca-certificates`.
 
 Again, this is a client side configuration which means that everyone who is going to communicate with the server should perform this configuration on their machine. In short, distribute the gitlab.crt file among your developers and ask them to add it to their list of trusted ssl certificates. Failure to do so will result in errors that look like this:
 
