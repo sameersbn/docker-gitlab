@@ -116,7 +116,7 @@ Run the gitlab image
 ```
 docker run --name='gitlab' -it --rm \
 -p 10022:22 -p 10080:80 \
--e "GITLAB_PORT=10080" -e "GITLAB_SSH_PORT=10022" \
+-e 'GITLAB_PORT=10080' -e 'GITLAB_SSH_PORT=10022' \
 sameersbn/gitlab:7.0.0
 ```
 
@@ -191,7 +191,7 @@ To make sure the database is initialized start the container with **app:rake git
 
 ```bash
 docker run --name=gitlab -it --rm \
-  -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
+  -e 'DB_HOST=192.168.1.100' -e 'DB_NAME=gitlabhq_production' -e 'DB_USER=gitlab' -e 'DB_PASS=password' \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:7.0.0 app:rake gitlab:setup
 ```
@@ -204,7 +204,7 @@ This will initialize the gitlab database. Now that the database is initialized, 
 
 ```bash
 docker run --name=gitlab -d \
-  -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
+  -e 'DB_HOST=192.168.1.100' -e 'DB_NAME=gitlabhq_production' -e 'DB_USER=gitlab' -e 'DB_PASS=password' \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:7.0.0
 ```
@@ -248,8 +248,8 @@ Now that we have the database created for gitlab, lets install the database sche
 
 ```bash
 docker run --name=gitlab -it --rm --link mysql:mysql \
-  -e "DB_USER=gitlab" -e "DB_PASS=password" \
-  -e "DB_NAME=gitlabhq_production" \
+  -e 'DB_USER=gitlab' -e 'DB_PASS=password' \
+  -e 'DB_NAME=gitlabhq_production' \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:7.0.0 app:rake gitlab:setup
 ```
@@ -260,8 +260,8 @@ We are now ready to start the GitLab application.
 
 ```bash
 docker run --name=gitlab -d --link mysql:mysql \
-  -e "DB_USER=gitlab" -e "DB_PASS=password" \
-  -e "DB_NAME=gitlabhq_production" \
+  -e 'DB_USER=gitlab' -e 'DB_PASS=password' \
+  -e 'DB_NAME=gitlabhq_production' \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:7.0.0
 ```
@@ -283,7 +283,7 @@ To make sure the database is initialized start the container with **app:rake git
 
 ```bash
 docker run --name=gitlab -it --rm \
-  -e "DB_TYPE=postgres" -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
+  -e 'DB_TYPE=postgres' -e 'DB_HOST=192.168.1.100' -e 'DB_NAME=gitlabhq_production' -e 'DB_USER=gitlab' -e 'DB_PASS=password' \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:7.0.0 app:rake gitlab:setup
 ```
@@ -294,7 +294,7 @@ This will initialize the gitlab database. Now that the database is initialized, 
 
 ```bash
 docker run --name=gitlab -d \
-  -e "DB_TYPE=postgres" -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
+  -e 'DB_TYPE=postgres' -e 'DB_HOST=192.168.1.100' -e 'DB_NAME=gitlabhq_production' -e 'DB_USER=gitlab' -e 'DB_PASS=password' \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:7.0.0
 ```
@@ -342,8 +342,8 @@ Now that we have the database created for gitlab, lets install the database sche
 
 ```bash
 docker run --name=gitlab -it --rm --link postgresql:postgresql \
-  -e "DB_USER=gitlab" -e "DB_PASS=password" \
-  -e "DB_NAME=gitlabhq_production" \
+  -e 'DB_USER=gitlab' -e 'DB_PASS=password' \
+  -e 'DB_NAME=gitlabhq_production' \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:7.0.0 app:rake gitlab:setup
 ```
@@ -354,8 +354,8 @@ We are now ready to start the GitLab application.
 
 ```bash
 docker run --name=gitlab -d --link postgresql:postgresql \
-  -e "DB_USER=gitlab" -e "DB_PASS=password" \
-  -e "DB_NAME=gitlabhq_production" \
+  -e 'DB_USER=gitlab' -e 'DB_PASS=password' \
+  -e 'DB_NAME=gitlabhq_production' \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:7.0.0
 ```
@@ -382,7 +382,7 @@ The image can be configured to use an external redis server instead of starting 
 
 ```bash
 docker run --name=gitlab -it --rm \
-  -e "REDIS_HOST=192.168.1.100" -e "REDIS_PORT=6379" \
+  -e 'REDIS_HOST=192.168.1.100' -e 'REDIS_PORT=6379' \
   sameersbn/gitlab:7.0.0
 ```
 ### Linking to Redis Container
@@ -422,7 +422,7 @@ The following environment variables need to be specified to get mail support to 
 
 ```bash
 docker run --name=gitlab -d \
-  -e "SMTP_USER=USER@gmail.com" -e "SMTP_PASS=PASSWORD" \
+  -e 'SMTP_USER=USER@gmail.com' -e 'SMTP_PASS=PASSWORD' \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:7.0.0
 ```
@@ -487,7 +487,7 @@ HTTPS support can be enabled by setting the GITLAB_HTTPS option to true. Additio
 
 ```bash
 docker run --name=gitlab -d \
-  -e "GITLAB_HTTPS=true" -e "SSL_SELF_SIGNED=true" \
+  -e 'GITLAB_HTTPS=true' -e 'SSL_SELF_SIGNED=true' \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:7.0.0
 ```
@@ -504,13 +504,13 @@ Note that when the GITLAB_HTTPS_ONLY is disabled, the application does not perfo
 In summation, the docker command would look something like this:
 ```bash
 docker run --name=gitlab -d \
-  -e "GITLAB_HTTPS=true" -e "SSL_SELF_SIGNED=true" \
-  -e "GITLAB_HTTPS_ONLY=false" \
+  -e 'GITLAB_HTTPS=true' -e 'SSL_SELF_SIGNED=true' \
+  -e 'GITLAB_HTTPS_ONLY=false' \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:7.0.0
 ```
 
-Again, drop the ```-e "SSL_SELF_SIGNED=true"``` option if you are using CA certified SSL certificates.
+Again, drop the ```-e 'SSL_SELF_SIGNED=true'``` option if you are using CA certified SSL certificates.
 
 #### Establishing trust with your server
 This section deals will self-signed ssl certificates. If you are using CA certified certificates, your done.
@@ -545,8 +545,8 @@ By default, our own server certificate [gitlab.crt](#generation-of-self-signed-c
 docker run --name=gitlab -d -h git.local.host \
   -v /opt/gitlab/data:/home/git/data \
   -v /opt/gitlab/mysql:/var/lib/mysql \
-  -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
-  -e "SMTP_USER=USER@gmail.com" -e "SMTP_PASS=PASSWORD" \
+  -e 'GITLAB_HOST=git.local.host' -e 'GITLAB_EMAIL=gitlab@local.host' -e 'GITLAB_SUPPORT=support@local.host' \
+  -e 'SMTP_USER=USER@gmail.com' -e 'SMTP_PASS=PASSWORD' \
   sameersbn/gitlab:7.0.0
 ```
 
@@ -555,9 +555,9 @@ If you are using an external mysql database
 ```bash
 docker run --name=gitlab -d -h git.local.host \
   -v /opt/gitlab/data:/home/git/data \
-  -e "DB_HOST=192.168.1.100" -e "DB_NAME=gitlabhq_production" -e "DB_USER=gitlab" -e "DB_PASS=password" \
-  -e "GITLAB_HOST=git.local.host" -e "GITLAB_EMAIL=gitlab@local.host" -e "GITLAB_SUPPORT=support@local.host" \
-  -e "SMTP_USER=USER@gmail.com" -e "SMTP_PASS=PASSWORD" \
+  -e 'DB_HOST=192.168.1.100' -e 'DB_NAME=gitlabhq_production' -e 'DB_USER=gitlab' -e 'DB_PASS=password' \
+  -e 'GITLAB_HOST=git.local.host' -e 'GITLAB_EMAIL=gitlab@local.host' -e 'GITLAB_SUPPORT=support@local.host' \
+  -e 'SMTP_USER=USER@gmail.com' -e 'SMTP_PASS=PASSWORD' \
   sameersbn/gitlab:7.0.0
 ```
 
@@ -568,7 +568,7 @@ The path should start with slash, and should not have any trailing slashes.
 ```bash
 docker run --name=gitlab -d \
   -v /opt/gitlab/data:/home/git/data \
-  -e "GITLAB_RELATIVE_URL_ROOT=/gitlab" \
+  -e 'GITLAB_RELATIVE_URL_ROOT=/gitlab' \
   sameersbn/gitlab:7.0.0
 ```
 
@@ -671,7 +671,7 @@ The restore operation will list all available backups in reverse chronological o
 
 ## Automated Backups
 
-The image can be configured to automatically take backups on a daily or monthly basis. Adding -e "GITLAB_BACKUPS=daily" to the docker run command will enable daily backups, while -e "GITLAB_BACKUPS=monthly" will enable monthly backups.
+The image can be configured to automatically take backups on a daily or monthly basis. Adding -e 'GITLAB_BACKUPS=daily' to the docker run command will enable daily backups, while -e 'GITLAB_BACKUPS=monthly' will enable monthly backups.
 
 Daily backups are created at 4 am (UTC) everyday, while monthly backups are created on the 1st of every month at the same time as the daily backups.
 
