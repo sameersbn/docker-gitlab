@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- clone gitlab-ce and gitlab-shell sources from the git repo.
 - disable pam authentication module in sshd
 - update to the sameersbn/ubuntu:14.04.20140628 baseimage
 - no more root access over ssh, use nsenter instead
