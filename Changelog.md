@@ -1,6 +1,7 @@
 # Changelog
 
 **6.9.2-1**
+- clone gitlab-ce and gitlab-shell sources from the git repo.
 - fix restore backup operation
 
 **6.9.2**
