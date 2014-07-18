@@ -27,7 +27,7 @@ cd /home/git/gitlab-shell
 sudo -u git -H cp -a config.yml.example config.yml
 sudo -u git -H ./bin/install
 
-# install gitlab, use local copy if available
+# shallow clone gitlab-ce
 sudo -u git -H git clone -b v${GITLAB_VERSION} --depth 1 \
 	https://github.com/gitlabhq/gitlabhq.git /home/git/gitlab
 
