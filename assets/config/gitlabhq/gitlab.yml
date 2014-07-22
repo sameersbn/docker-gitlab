@@ -35,8 +35,7 @@ production: &base
     # Email address used in the "From" field in mails sent by GitLab
     email_from: "{{GITLAB_EMAIL}}"
 
-    # Email address of your support contact (default: same as email_from)
-    support_email: "{{GITLAB_SUPPORT}}"
+    # Email server smtp settings are in [a separate file](initializers/smtp_settings.rb.sample).
 
     ## User settings
     default_projects_limit: {{GITLAB_PROJECTS_LIMIT}}
@@ -50,14 +49,15 @@ production: &base
     ##   COLOR  = 5
     # default_theme: 2 # default: 2
 
-
-    ## Users management
-    # default: false - Account passwords are not sent via the email if signup is enabled.
+    ## Users can create accounts
+    # This also allows normal users to sign up for accounts themselves
+    # default: false - By default GitLab administrators must create all new accounts
     signup_enabled: {{GITLAB_SIGNUP}}
-    #
-    # default: true - If set to false, standard login form won't be shown on the sign-in page
-    signin_enabled: {{GITLAB_SIGNIN}}
 
+    ## Standard login settings
+    # The standard login can be disabled to force login via LDAP
+    # default: true - If set to false the standard login form won't be shown on the sign-in page
+    signin_enabled: {{GITLAB_SIGNIN}}
 
     # Restrict setting visibility levels for non-admin users.
     # The default is to allow all levels.
@@ -74,7 +74,6 @@ production: &base
       issues: true
       merge_requests: true
       wiki: true
-      wall: false
       snippets: false
       visibility_level: "{{GITLAB_PROJECTS_VISIBILITY}}"  # can be "private" | "internal" | "public"
 
@@ -116,8 +115,8 @@ production: &base
   gravatar:
     enabled: true                 # Use user avatar image from Gravatar.com (default: true)
     # gravatar urls: possible placeholders: %{hash} %{size} %{email}
-    # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
-    # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
+    # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
+    # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
   #
   # 2. Auth settings
@@ -227,7 +226,7 @@ production: &base
     # The next value is the maximum memory size grit can use
     # Given in number of bytes per git object (e.g. a commit)
     # This value can be increased if you have very large commits
-    max_size: {{GITLAB_MAX_SIZE}} # 5.megabytes
+    max_size: {{GITLAB_MAX_SIZE}} # 20.megabytes
     # Git timeout to read a commit, in seconds
     timeout: 10
 
