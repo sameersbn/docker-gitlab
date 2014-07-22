@@ -511,6 +511,10 @@ appSanitize () {
 	chmod u+rwx,g=rx,o-rwx /home/git/data/gitlab-satellites
 	chown -R git:git /home/git/data/gitlab-satellites
 
+	echo "Checking uploads directory permissions..."
+	chmod -R u+rwX /home/git/data/uploads/
+	chown git:git -R /home/git/data/uploads/
+
 	echo "Checking tmp directory permissions..."
 	chmod -R u+rwX /home/git/data/tmp/
 	chown git:git -R /home/git/data/tmp/
