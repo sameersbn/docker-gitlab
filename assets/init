@@ -414,18 +414,6 @@ sudo -u git -H mkdir -p /home/git/data/gitlab-satellites/
 chmod u+rwx,g=rx,o-rwx /home/git/data/gitlab-satellites
 chown git:git /home/git/data/gitlab-satellites
 
-# create the tmp directory for the cache
-sudo -u git -H mkdir -p /home/git/data/tmp/
-chmod -R u+rwX /home/git/data/tmp/
-
-# create the tmp/cache directory
-sudo -u git -H mkdir -p /home/git/data/tmp/cache/
-chown git:git /home/git/data/tmp/cache/
-
-# create the public/assets directory
-sudo -u git -H mkdir -p /home/git/data/tmp/public/assets/
-chown git:git /home/git/data/tmp/public/assets/
-
 # remove old cache directory (remove this line after a few releases)
 rm -rf /home/git/data/cache
 
@@ -464,6 +452,15 @@ appStart () {
 	if [ "${GITLAB_VERSION}" != "${CACHE_VERSION}" ]; then
 		echo "Migrating database..."
 		sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production 2>/dev/null
+
+		# recreate the tmp directory
+		rm -rf /home/git/data/tmp
+		sudo -u git -H mkdir -p /home/git/data/tmp/
+		chmod -R u+rwX /home/git/data/tmp/
+
+		# create the tmp/cache and tmp/public/assets directory
+		sudo -u git -H mkdir -p /home/git/data/tmp/cache/
+		sudo -u git -H mkdir -p /home/git/data/tmp/public/assets/
 
 		echo "Compiling assets. Please be patient, this could take a while..."
 		sudo -u git -H bundle exec rake assets:clean RAILS_ENV=production
