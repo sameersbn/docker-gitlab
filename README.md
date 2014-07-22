@@ -555,7 +555,7 @@ By default, our own server certificate [gitlab.crt](#generation-of-self-signed-c
 docker run --name=gitlab -d -h git.local.host \
   -v /opt/gitlab/data:/home/git/data \
   -v /opt/gitlab/mysql:/var/lib/mysql \
-  -e 'GITLAB_HOST=git.local.host' -e 'GITLAB_EMAIL=gitlab@local.host' -e 'GITLAB_SUPPORT=support@local.host' \
+  -e 'GITLAB_HOST=git.local.host' -e 'GITLAB_EMAIL=gitlab@local.host' \
   -e 'SMTP_USER=USER@gmail.com' -e 'SMTP_PASS=PASSWORD' \
   sameersbn/gitlab:7.1.0
 ```
@@ -566,7 +566,7 @@ If you are using an external mysql database
 docker run --name=gitlab -d -h git.local.host \
   -v /opt/gitlab/data:/home/git/data \
   -e 'DB_HOST=192.168.1.100' -e 'DB_NAME=gitlabhq_production' -e 'DB_USER=gitlab' -e 'DB_PASS=password' \
-  -e 'GITLAB_HOST=git.local.host' -e 'GITLAB_EMAIL=gitlab@local.host' -e 'GITLAB_SUPPORT=support@local.host' \
+  -e 'GITLAB_HOST=git.local.host' -e 'GITLAB_EMAIL=gitlab@local.host' \
   -e 'SMTP_USER=USER@gmail.com' -e 'SMTP_PASS=PASSWORD' \
   sameersbn/gitlab:7.1.0
 ```
@@ -593,7 +593,6 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_HOST**: The hostname of the GitLab server. Defaults to localhost
 - **GITLAB_PORT**: The port of the GitLab server. Defaults to 80 for plain http and 443 when https is enabled.
 - **GITLAB_EMAIL**: The email address for the GitLab server.  Defaults to example@example.com.
-- **GITLAB_SUPPORT**: The support email address for the GitLab server. Defaults to support@localhost.
 - **GITLAB_SIGNUP**: Enable or disable user signups. Default is false.
 - **GITLAB_SIGNIN**: If set to false, standard login form won't be shown on the sign-in page. Default is true.
 - **GITLAB_PROJECTS_LIMIT**: Set default projects limit. Defaults to 100.

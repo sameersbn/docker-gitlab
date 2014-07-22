@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- removed GITLAB_SUPPORT configuration option
 - upgrade to gitlab-ce 7.1.0
 - clone gitlab-ce and gitlab-shell sources from the git repo.
 - disable pam authentication module in sshd
