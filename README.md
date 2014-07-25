@@ -41,9 +41,8 @@
     - [Automated Backups](#automated-backups)
 - [Upgrading](#upgrading)
 - [Rake Tasks](#rake-tasks)
-- Links
-  - [Announcements](https://github.com/sameersbn/docker-gitlab/issues/39)
-  - [Issues](https://github.com/sameersbn/docker-gitlab/issues)
+- [Announcements](https://github.com/sameersbn/docker-gitlab/issues/39)
+- [Reporting Issues](#reporting-issues)
 - [References](#references)
 
 # Introduction
@@ -735,6 +734,33 @@ docker run --name=gitlab -d [OPTIONS] \
 ```
 
 For a complete list of available rake tasks please refer https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks or the help section of your gitlab installation.
+
+# Reporting Issues
+Docker is a relatively new project and is active being developed and tested by a thriving community of developers and testers and every release of docker features many enhancements and bugfixes.
+
+Given the nature of the development and release cycle it is very important that you have the latest version of docker installed because any issue that you encounter might have already been fixed with a newer docker release.
+
+For ubuntu users I suggest [installing docker](https://docs.docker.com/installation/ubuntulinux/) using docker's own package repository since the version of docker packaged in the ubuntu repositories are a little dated.
+
+Here is the shortform of the installation of an updated version of docker on ubuntu.
+
+```bash
+sudo apt-get purge docker.io
+curl -s https://get.docker.io/ubuntu/ | sudo sh
+sudo apt-get update
+sudo apt-get install lxc-docker
+```
+
+Fedora and RHEL/CentOS users should try disabling selinux with `setenforce 0` and check if resolves the issue. If it does than there is not much that I can help you with. You can either stick with selinux disabled (not recommended by redhat) or switch to using ubuntu.
+
+If using the latest docker version and/or disabling selinux does not fix the issue then please file a issue request on the [issues](https://github.com/sameersbn/docker-gitlab/issues) page.
+
+In your issue report please make sure you provide the following information:
+
+- The host ditribution and release version.
+- Output of the `docker version` command
+- Output of the `docker info` command
+- The `docker run` command you used to run the image (mask out the sensitive bits).
 
 # References
   * https://github.com/gitlabhq/gitlabhq
