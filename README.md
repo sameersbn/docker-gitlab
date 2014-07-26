@@ -135,14 +135,14 @@ GitLab is a code hosting software and as such you don't want to lose your code w
 
 * /home/git/data
 
-Volumes can be mounted in docker by specifying the **'-v'** option in the docker run command.
-
 SELinux users are also required to change the security context of the mount point so that it plays nicely with selinux.
 
 ```bash
 mkdir -p /opt/gitlab/data
 sudo chcon -Rt svirt_sandbox_file_t /opt/gitlab/data
 ```
+
+Volumes can be mounted in docker by specifying the **'-v'** option in the docker run command.
 
 ```bash
 docker run --name=gitlab -d \
@@ -176,6 +176,8 @@ SELinux users are also required to change the security context of the mount poin
 mkdir -p /opt/gitlab/mysql
 sudo chcon -Rt svirt_sandbox_file_t /opt/gitlab/mysql
 ```
+
+The updated run command looks like this.
 
 ```bash
 docker run --name=gitlab -d \
