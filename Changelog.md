@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- run /etc/init.d/gitlab as git user, plays nicely with selinux
+
 **7.1.0**
 - removed GITLAB_SUPPORT configuration option
 - upgrade to gitlab-ce 7.1.0

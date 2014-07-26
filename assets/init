@@ -474,7 +474,7 @@ appStart () {
 	rm -rf /home/git/gitlab/tmp/pids/sidekiq.pid
 
 	# start the gitlab application
-	/etc/init.d/gitlab start
+	sudo -u git -H /etc/init.d/gitlab start
 
 	# create satellite directories
 	sudo -u git -H bundle exec rake gitlab:satellites:create RAILS_ENV=production
