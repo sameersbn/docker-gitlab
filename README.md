@@ -123,7 +123,7 @@ __NOTE__: Please allow a couple of minutes for the GitLab application to start.
 
 Point your browser to `http://localhost:10080` and login using the default username and password:
 
-* username: admin@local.host
+* username: root
 * password: 5iveL!fe
 
 You should now have the GitLab application up and ready for testing. If you want to use this image in production the please read on.
