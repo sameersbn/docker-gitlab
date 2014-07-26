@@ -137,8 +137,14 @@ GitLab is a code hosting software and as such you don't want to lose your code w
 
 Volumes can be mounted in docker by specifying the **'-v'** option in the docker run command.
 
+SELinux users are also required to change the security context of the mount point so that it plays nicely with selinux.
+
 ```bash
-mkdir /opt/gitlab/data
+mkdir -p /opt/gitlab/data
+sudo chcon -Rt svirt_sandbox_file_t /opt/gitlab/data
+```
+
+```bash
 docker run --name=gitlab -d \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:7.1.0
@@ -164,8 +170,14 @@ GitLab uses a database backend to store its data.
 
 This docker image is configured to use a MySQL database backend. The database connection can be configured using environment variables. If not specified, the image will start a mysql server internally and use it. However in this case, the data stored in the mysql database will be lost if the container is stopped/deleted. To avoid this you should mount a volume at /var/lib/mysql.
 
+SELinux users are also required to change the security context of the mount point so that it plays nicely with selinux.
+
 ```bash
-mkdir /opt/gitlab/mysql
+mkdir -p /opt/gitlab/mysql
+sudo chcon -Rt svirt_sandbox_file_t /opt/gitlab/mysql
+```
+
+```bash
 docker run --name=gitlab -d \
   -v /opt/gitlab/data:/home/git/data \
   -v /opt/gitlab/mysql:/var/lib/mysql sameersbn/gitlab:7.1.0
