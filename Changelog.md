@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- removed "add_header X-Frame-Options DENY" setting from the nginx config. fixes #110
 - upgrade to gitlab-ce 7.1.1
 - run /etc/init.d/gitlab as git user, plays nicely with selinux
 
