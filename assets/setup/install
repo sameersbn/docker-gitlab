@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-GITLAB_VERSION=7.1.0
+GITLAB_VERSION=7.1.1
 SHELL_VERSION=1.9.6
 
 # remove the host keys generated during openssh-server installation

@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- upgrade to gitlab-ce 7.1.1
 - run /etc/init.d/gitlab as git user, plays nicely with selinux
 
 **7.1.0**
