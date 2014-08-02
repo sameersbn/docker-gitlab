@@ -374,7 +374,7 @@ Now, lets login to the postgresql server and create a user and database for the 
 
 ```bash
 POSTGRESQL_IP=$(docker inspect postgresql | grep IPAddres | awk -F'"' '{print $4}')
-psql -U postgres -h ${POSTGRESQL_IP}
+docker run -it --rm sameersbn/postgresql:latest psql -U postgres -h ${POSTGRESQL_IP}
 ```
 
 ```sql
