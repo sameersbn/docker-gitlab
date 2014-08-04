@@ -277,7 +277,7 @@ You should now have the mysql server running. By default the sameersbn/mysql ima
 Now, lets login to the mysql server and create a user and database for the GitLab application.
 
 ```bash
-mysql -uroot -h $(docker inspect mysql | grep IPAddres | awk -F'"' '{print $4}')
+mysql -uroot -h$(docker inspect --format {{.NetworkSettings.IPAddress}} mysql)
 ```
 
 ```sql
@@ -373,8 +373,7 @@ docker logs postgresql
 Now, lets login to the postgresql server and create a user and database for the GitLab application.
 
 ```bash
-POSTGRESQL_IP=$(docker inspect postgresql | grep IPAddres | awk -F'"' '{print $4}')
-docker run -it --rm sameersbn/postgresql:latest psql -U postgres -h ${POSTGRESQL_IP}
+psql -U postgres -h $(docker inspect --format {{.NetworkSettings.IPAddress}} postgresql)
 ```
 
 ```sql
