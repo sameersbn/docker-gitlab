@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- update to the sameersbn/ubuntu:14.04.20140812 baseimage
+
 **7.1.1**
 - removed "add_header X-Frame-Options DENY" setting from the nginx config. fixes #110
 - upgrade to gitlab-ce 7.1.1
