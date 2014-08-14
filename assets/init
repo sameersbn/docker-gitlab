@@ -69,6 +69,8 @@ LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN=${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN:-}
 LDAP_BASE=${LDAP_BASE:-}
 LDAP_USER_FILTER=${LDAP_USER_FILTER:-}
 
+REDMINE_URL=${REDMINE_URL:-}
+
 # is a redis container linked?
 if [ -n "${REDISIO_PORT_6379_TCP_ADDR}" ]; then
 	REDIS_HOST=${REDIS_HOST:-${REDISIO_PORT_6379_TCP_ADDR}}
@@ -388,6 +390,18 @@ sudo -u git -H sed 's/{{LDAP_PASS}}/'"${LDAP_PASS}"'/' -i /home/git/gitlab/confi
 sudo -u git -H sed 's/{{LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}}/'"${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}"'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/{{LDAP_BASE}}/'"${LDAP_BASE}"'/' -i /home/git/gitlab/config/gitlab.yml
 sudo -u git -H sed 's/{{LDAP_USER_FILTER}}/'"${LDAP_USER_FILTER}"'/' -i /home/git/gitlab/config/gitlab.yml
+
+# apply redmine configuration
+if [ -n "${REDMINE_URL}" ]; then
+	sudo -u git -H sed 's,{{REDMINE_URL}},'"${REDMINE_URL}"',g' -i /home/git/gitlab/config/gitlab.yml
+else
+	# remove the redmine configuration block
+	sudo -u git -H sed '/redmine:/d' -i /home/git/gitlab/config/gitlab.yml
+	sudo -u git -H sed '/title: "Redmine"/d' -i /home/git/gitlab/config/gitlab.yml
+	sudo -u git -H sed '/project_url: "{{REDMINE_URL}}/d' -i /home/git/gitlab/config/gitlab.yml
+	sudo -u git -H sed '/issues_url: "{{REDMINE_URL}}/d' -i /home/git/gitlab/config/gitlab.yml
+	sudo -u git -H sed '/new_issue_url: "{{REDMINE_URL}}/d' -i /home/git/gitlab/config/gitlab.yml
+fi
 
 # configure relative_url_root
 if [ ${GITLAB_RELATIVE_URL_ROOT} ]; then

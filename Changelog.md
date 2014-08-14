@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added support for redmine issue tracker
 - update to gitlab-shell 1.9.7
 - update to the sameersbn/ubuntu:14.04.20140812 baseimage
 
