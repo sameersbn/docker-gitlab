@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added google oauth configuration support
 - added support for jira issue tracker
 - added support for redmine issue tracker
 - update to gitlab-shell 1.9.7

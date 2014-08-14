@@ -161,7 +161,7 @@ production: &base
   ## OmniAuth settings
   omniauth:
     # Allow login via Twitter, Google, etc. using OmniAuth providers
-    enabled: false
+    enabled: {{OAUTH_ENABLED}}
 
     # CAUTION!
     # This allows users to login without having a user account first (default: false).
@@ -178,9 +178,9 @@ production: &base
     # arguments, followed by optional 'args' which can be either a hash or an array.
     # Documentation for this is available at http://doc.gitlab.com/ce/integration/omniauth.html
     providers:
-      # - { name: 'google_oauth2', app_id: 'YOUR APP ID',
-      #     app_secret: 'YOUR APP SECRET',
-      #     args: { access_type: 'offline', approval_prompt: '' } }
+      - { name: 'google_oauth2', app_id: '{{OAUTH_GOOGLE_API_KEY}}',
+          app_secret: '{{OAUTH_GOOGLE_APP_SECRET}}',
+          args: { access_type: 'offline', approval_prompt: '{{OAUTH_GOOGLE_APPROVAL_PROMPT}}' } }
       # - { name: 'twitter', app_id: 'YOUR APP ID',
       #     app_secret: 'YOUR APP SECRET'}
       # - { name: 'github', app_id: 'YOUR APP ID',
