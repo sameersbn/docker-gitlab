@@ -37,6 +37,7 @@
     - [Run under sub URI](#run-under-sub-uri)
     - [OmniAuth Integration](#omniauth-integration)
       - [Google](#google)
+      - [Twitter](#twitter)
     - [External Issue Trackers](#external-issue-trackers)
       - [Redmine](#redmine)
       - [Jira](#jira)
@@ -641,6 +642,14 @@ Once you have the client ID and secret keys generated, configure them using the 
 
 For example, if your client ID is `xxx.apps.googleusercontent.com` and client secret key is `yyy`, then adding `-e 'OAUTH_GOOGLE_API_KEY=xxx.apps.googleusercontent.com' -e 'OAUTH_GOOGLE_APP_SECRET=yyy'` to the docker run command enables support for Google OAuth.
 
+#### Twitter
+
+To enable the Twitter OAuth2 OmniAuth provider you must register your application with Twitter. Twitter will generate a API key and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/twitter.html) for the procedure to generate the API key and secret with twitter.
+
+Once you have the API key and secret generated, configure them using the `OAUTH_TWITTER_API_KEY` and `OAUTH_TWITTER_APP_SECRET` environment variables respectively.
+
+For example, if your API key is `xxx` and the API secret key is `yyy`, then adding `-e 'OAUTH_TWITTER_API_KEY=xxx' -e 'OAUTH_TWITTER_APP_SECRET=yyy'` to the docker run command enables support for Twitter OAuth.
+
 ### External Issue Trackers
 
 GitLab can be configured to use third party issue trackers such as Redmine and Atlassian Jira. Use of third party issue trackers have to be configured on a per project basis from the project settings page. This means that the GitLab's issue tracker is always the default tracker unless specified otherwise.
@@ -714,6 +723,8 @@ Below is the complete list of available options that can be used to customize yo
 - **LDAP_USER_FILTER**: Filter LDAP users. No default.
 - **OAUTH_GOOGLE_API_KEY**: Google App Client ID. No defaults.
 - **OAUTH_GOOGLE_APP_SECRET**: Google App Client Secret. No defaults.
+- **OAUTH_TWITTER_API_KEY**: Twitter App API key. No defaults.
+- **OAUTH_TWITTER_APP_SECRET**: Twitter App API secret. No defaults.
 - **REDMINE_URL**: Location of the redmine server, e.g. `-e 'REDMINE_URL=https://redmine.example.com'`. No defaults.
 
 # Maintenance

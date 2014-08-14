@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added twitter oauth configuration support
 - added google oauth configuration support
 - added support for jira issue tracker
 - added support for redmine issue tracker
