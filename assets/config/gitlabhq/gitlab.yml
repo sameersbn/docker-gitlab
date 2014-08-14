@@ -183,9 +183,9 @@ production: &base
           args: { access_type: 'offline', approval_prompt: '{{OAUTH_GOOGLE_APPROVAL_PROMPT}}' } }
       - { name: 'twitter', app_id: '{{OAUTH_TWITTER_API_KEY}}',
           app_secret: '{{OAUTH_TWITTER_APP_SECRET}}'}
-      # - { name: 'github', app_id: 'YOUR APP ID',
-      #     app_secret: 'YOUR APP SECRET',
-      #     args: { scope: 'user:email' } }
+      - { name: 'github', app_id: '{{OAUTH_GITHUB_API_KEY}}',
+          app_secret: '{{OAUTH_GITHUB_APP_SECRET}}',
+          args: { scope: '{{OAUTH_GITHUB_SCOPE}}' } }
 
 
 

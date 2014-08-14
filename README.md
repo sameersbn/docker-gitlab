@@ -38,6 +38,7 @@
     - [OmniAuth Integration](#omniauth-integration)
       - [Google](#google)
       - [Twitter](#twitter)
+      - [GitHub](#github)
     - [External Issue Trackers](#external-issue-trackers)
       - [Redmine](#redmine)
       - [Jira](#jira)
@@ -650,6 +651,14 @@ Once you have the API key and secret generated, configure them using the `OAUTH_
 
 For example, if your API key is `xxx` and the API secret key is `yyy`, then adding `-e 'OAUTH_TWITTER_API_KEY=xxx' -e 'OAUTH_TWITTER_APP_SECRET=yyy'` to the docker run command enables support for Twitter OAuth.
 
+#### GitHub
+
+To enable the GitHub OAuth2 OmniAuth provider you must register your application with GitHub. GitHub will generate a Client ID and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/github.html) for the procedure to generate the Client ID and secret with github.
+
+Once you have the Client ID and secret generated, configure them using the `OAUTH_GITHUB_API_KEY` and `OAUTH_GITHUB_APP_SECRET` environment variables respectively.
+
+For example, if your Client ID is `xxx` and the Client secret is `yyy`, then adding `-e 'OAUTH_GITHUB_API_KEY=xxx' -e 'OAUTH_GITHUB_APP_SECRET=yyy'` to the docker run command enables support for GitHub OAuth.
+
 ### External Issue Trackers
 
 GitLab can be configured to use third party issue trackers such as Redmine and Atlassian Jira. Use of third party issue trackers have to be configured on a per project basis from the project settings page. This means that the GitLab's issue tracker is always the default tracker unless specified otherwise.
@@ -725,6 +734,8 @@ Below is the complete list of available options that can be used to customize yo
 - **OAUTH_GOOGLE_APP_SECRET**: Google App Client Secret. No defaults.
 - **OAUTH_TWITTER_API_KEY**: Twitter App API key. No defaults.
 - **OAUTH_TWITTER_APP_SECRET**: Twitter App API secret. No defaults.
+- **OAUTH_GITHUB_API_KEY**: GitHub App Client ID. No defaults.
+- **OAUTH_GITHUB_APP_SECRET**: GitHub App Client secret. No defaults.
 - **REDMINE_URL**: Location of the redmine server, e.g. `-e 'REDMINE_URL=https://redmine.example.com'`. No defaults.
 
 # Maintenance

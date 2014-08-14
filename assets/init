@@ -78,6 +78,9 @@ OAUTH_GOOGLE_APP_SECRET=${OAUTH_GOOGLE_APP_SECRET:-}
 OAUTH_TWITTER_API_KEY=${OAUTH_TWITTER_API_KEY:-}
 OAUTH_TWITTER_APP_SECRET=${OAUTH_TWITTER_APP_SECRET:-}
 
+OAUTH_GITHUB_API_KEY=${OAUTH_GITHUB_API_KEY:-}
+OAUTH_GITHUB_APP_SECRET=${OAUTH_GITHUB_APP_SECRET:-}
+
 # is a redis container linked?
 if [ -n "${REDISIO_PORT_6379_TCP_ADDR}" ]; then
 	REDIS_HOST=${REDIS_HOST:-${REDISIO_PORT_6379_TCP_ADDR}}
@@ -444,6 +447,18 @@ if [ -n "${OAUTH_TWITTER_API_KEY}" -a -n "${OAUTH_TWITTER_APP_SECRET}" ]; then
 else
 	sudo -u git -H sed '/{{OAUTH_TWITTER_API_KEY}}/d' -i /home/git/gitlab/config/gitlab.yml
 	sudo -u git -H sed '/{{OAUTH_TWITTER_APP_SECRET}}/d' -i /home/git/gitlab/config/gitlab.yml
+fi
+
+# github
+if [ -n "${OAUTH_GITHUB_API_KEY}" -a -n "${OAUTH_GITHUB_APP_SECRET}" ]; then
+	OAUTH_ENABLED=true
+	sudo -u git -H sed 's/{{OAUTH_GITHUB_API_KEY}}/'"${OAUTH_GITHUB_API_KEY}"'/' -i /home/git/gitlab/config/gitlab.yml
+	sudo -u git -H sed 's/{{OAUTH_GITHUB_APP_SECRET}}/'"${OAUTH_GITHUB_APP_SECRET}"'/' -i /home/git/gitlab/config/gitlab.yml
+	sudo -u git -H sed 's/{{OAUTH_GITHUB_SCOPE}}/user:email/' -i /home/git/gitlab/config/gitlab.yml
+else
+	sudo -u git -H sed '/{{OAUTH_GITHUB_API_KEY}}/d' -i /home/git/gitlab/config/gitlab.yml
+	sudo -u git -H sed '/{{OAUTH_GITHUB_APP_SECRET}}/d' -i /home/git/gitlab/config/gitlab.yml
+	sudo -u git -H sed '/{{OAUTH_GITHUB_SCOPE}}/d' -i /home/git/gitlab/config/gitlab.yml
 fi
 
 OAUTH_ENABLED=${OAUTH_ENABLED:-false}

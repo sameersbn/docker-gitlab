@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added github oauth configuration support
 - added twitter oauth configuration support
 - added google oauth configuration support
 - added support for jira issue tracker
