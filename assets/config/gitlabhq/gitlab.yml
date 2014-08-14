@@ -105,11 +105,11 @@ production: &base
     #   ##  :issues_tracker_id - Project Name or Id in external issue tracker
       new_issue_url: "{{REDMINE_URL}}/projects/:issues_tracker_id/issues/new"
     #
-    # jira:
-    #   title: "Atlassian Jira"
-    #   project_url: "http://jira.sample/issues/?jql=project=:issues_tracker_id"
-    #   issues_url: "http://jira.sample/browse/:id"
-    #   new_issue_url: "http://jira.sample/secure/CreateIssue.jspa"
+    jira:
+      title: "Atlassian Jira"
+      project_url: "{{JIRA_URL}}/issues/?jql=project=:issues_tracker_id"
+      issues_url: "{{JIRA_URL}}/browse/:id"
+      new_issue_url: "{{JIRA_URL}}/secure/CreateIssue.jspa"
 
   ## Gravatar
   gravatar:

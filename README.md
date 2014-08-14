@@ -37,6 +37,7 @@
     - [Run under sub URI](#run-under-sub-uri)
     - [External Issue Trackers](#external-issue-trackers)
       - [Redmine](#redmine)
+      - [Jira](#jira)
     - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
     - [Creating Backups](#creating-backups)
@@ -628,13 +629,19 @@ When you change the sub URI path, you need to recompile all precompiled assets. 
 
 ### External Issue Trackers
 
-GitLab can be configured to use third party issue trackers such as Redmine. Use of third party issue trackers have to be configured on a per project basis from the project settings page. This means that the GitLab's issue tracker is always the default tracker unless specified otherwise.
+GitLab can be configured to use third party issue trackers such as Redmine and Atlassian Jira. Use of third party issue trackers have to be configured on a per project basis from the project settings page. This means that the GitLab's issue tracker is always the default tracker unless specified otherwise.
 
 #### Redmine
 
 Support for issue tracking using Redmine can be added by specifying the complete URL of the Redmine web server in the `REDMINE_URL` configuration option.
 
 For example, if your Redmine server is accessible at `https://redmine.example.com`, then adding `-e 'REDMINE_URL=https://redmine.example.com'` to the docker run command enables Redmine support in GitLab
+
+#### Jira
+
+Support for issue tracking using Jira can be added by specifying the complete URL of the Jira web server in the `JIRA_URL` configuration option.
+
+For example, if your Jira server is accessible at `https://jira.example.com`, then adding `-e 'JIRA_URL=https://jira.example.com'` to the docker run command enables Jira support in GitLab
 
 ### Available Configuration Parameters
 
