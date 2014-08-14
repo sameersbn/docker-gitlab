@@ -635,6 +635,8 @@ When you change the sub URI path, you need to recompile all precompiled assets. 
 
 GitLab leverages OmniAuth to allow users to sign in using Twitter, GitHub, and other popular services. Configuring OmniAuth does not prevent standard GitLab authentication or LDAP (if configured) from continuing to work. Users can choose to sign in using any of the configured mechanisms.
 
+Refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/omniauth.html) for additional information.
+
 #### Google
 
 To enable the Google OAuth2 OmniAuth provider you must register your application with Google. Google will generate a client ID and secret key for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/google.html) for the procedure to generate the client ID and secret key with google.
@@ -730,6 +732,7 @@ Below is the complete list of available options that can be used to customize yo
 - **LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN**: If enabled, GitLab will ignore everything after the first '@' in the LDAP username submitted by the user on login. Defaults to false if LDAP_UID is userPrincipalName, else true.
 - **LDAP_BASE**: Base where we can search for users. No default.
 - **LDAP_USER_FILTER**: Filter LDAP users. No default.
+- **OAUTH_ALLOW_SSO**: This allows users to login without having a user account first. User accounts will be created automatically when authentication was successful. Defaults to false.
 - **OAUTH_GOOGLE_API_KEY**: Google App Client ID. No defaults.
 - **OAUTH_GOOGLE_APP_SECRET**: Google App Client Secret. No defaults.
 - **OAUTH_TWITTER_API_KEY**: Twitter App API key. No defaults.

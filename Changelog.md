@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added OAUTH_ALLOW_SSO configuration option
 - added github oauth configuration support
 - added twitter oauth configuration support
 - added google oauth configuration support

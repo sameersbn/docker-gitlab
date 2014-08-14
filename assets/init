@@ -72,6 +72,8 @@ LDAP_USER_FILTER=${LDAP_USER_FILTER:-}
 REDMINE_URL=${REDMINE_URL:-}
 JIRA_URL=${JIRA_URL:-}
 
+OAUTH_ALLOW_SSO=${OAUTH_ALLOW_SSO:-false}
+
 OAUTH_GOOGLE_API_KEY=${OAUTH_GOOGLE_API_KEY:-}
 OAUTH_GOOGLE_APP_SECRET=${OAUTH_GOOGLE_APP_SECRET:-}
 
@@ -463,6 +465,7 @@ fi
 
 OAUTH_ENABLED=${OAUTH_ENABLED:-false}
 sudo -u git -H sed 's/{{OAUTH_ENABLED}}/'"${OAUTH_ENABLED}"'/' -i /home/git/gitlab/config/gitlab.yml
+sudo -u git -H sed 's/{{OAUTH_ALLOW_SSO}}/'"${OAUTH_ALLOW_SSO}"'/' -i /home/git/gitlab/config/gitlab.yml
 
 # configure relative_url_root
 if [ ${GITLAB_RELATIVE_URL_ROOT} ]; then
