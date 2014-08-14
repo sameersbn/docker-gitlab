@@ -733,6 +733,7 @@ Below is the complete list of available options that can be used to customize yo
 - **LDAP_BASE**: Base where we can search for users. No default.
 - **LDAP_USER_FILTER**: Filter LDAP users. No default.
 - **OAUTH_ALLOW_SSO**: This allows users to login without having a user account first. User accounts will be created automatically when authentication was successful. Defaults to false.
+- **OAUTH_BLOCK_AUTO_CREATED_USERS**: Locks down those users until they have been cleared by the admin. Defaults to true.
 - **OAUTH_GOOGLE_API_KEY**: Google App Client ID. No defaults.
 - **OAUTH_GOOGLE_APP_SECRET**: Google App Client Secret. No defaults.
 - **OAUTH_TWITTER_API_KEY**: Twitter App API key. No defaults.
