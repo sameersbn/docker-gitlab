@@ -161,14 +161,14 @@ production: &base
   ## OmniAuth settings
   omniauth:
     # Allow login via Twitter, Google, etc. using OmniAuth providers
-    enabled: false
+    enabled: {{OAUTH_ENABLED}}
 
     # CAUTION!
     # This allows users to login without having a user account first (default: false).
     # User accounts will be created automatically when authentication was successful.
-    allow_single_sign_on: false
+    allow_single_sign_on: {{OAUTH_ALLOW_SSO}}
     # Locks down those users until they have been cleared by the admin (default: true).
-    block_auto_created_users: true
+    block_auto_created_users: {{OAUTH_BLOCK_AUTO_CREATED_USERS}}
 
     ## Auth providers
     # Uncomment the following lines and fill in the data of the auth provider you want to use
@@ -178,14 +178,14 @@ production: &base
     # arguments, followed by optional 'args' which can be either a hash or an array.
     # Documentation for this is available at http://doc.gitlab.com/ce/integration/omniauth.html
     providers:
-      # - { name: 'google_oauth2', app_id: 'YOUR APP ID',
-      #     app_secret: 'YOUR APP SECRET',
-      #     args: { access_type: 'offline', approval_prompt: '' } }
-      # - { name: 'twitter', app_id: 'YOUR APP ID',
-      #     app_secret: 'YOUR APP SECRET'}
-      # - { name: 'github', app_id: 'YOUR APP ID',
-      #     app_secret: 'YOUR APP SECRET',
-      #     args: { scope: 'user:email' } }
+      - { name: 'google_oauth2', app_id: '{{OAUTH_GOOGLE_API_KEY}}',
+          app_secret: '{{OAUTH_GOOGLE_APP_SECRET}}',
+          args: { access_type: 'offline', approval_prompt: '{{OAUTH_GOOGLE_APPROVAL_PROMPT}}' } }
+      - { name: 'twitter', app_id: '{{OAUTH_TWITTER_API_KEY}}',
+          app_secret: '{{OAUTH_TWITTER_APP_SECRET}}'}
+      - { name: 'github', app_id: '{{OAUTH_GITHUB_API_KEY}}',
+          app_secret: '{{OAUTH_GITHUB_APP_SECRET}}',
+          args: { scope: '{{OAUTH_GITHUB_SCOPE}}' } }
 
 
 

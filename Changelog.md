@@ -1,6 +1,11 @@
 # Changelog
 
 **latest**
+- added OAUTH_BLOCK_AUTO_CREATED_USERS configuration option
+- added OAUTH_ALLOW_SSO configuration option
+- added github oauth configuration support
+- added twitter oauth configuration support
+- added google oauth configuration support
 - added support for jira issue tracker
 - added support for redmine issue tracker
 - update to gitlab-shell 1.9.7

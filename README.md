@@ -35,6 +35,10 @@
       - [Installing Trusted SSL Server Certificates](#installing-trusted-ssl-server-certificates)
     - [Putting it all together](#putting-it-all-together)
     - [Run under sub URI](#run-under-sub-uri)
+    - [OmniAuth Integration](#omniauth-integration)
+      - [Google](#google)
+      - [Twitter](#twitter)
+      - [GitHub](#github)
     - [External Issue Trackers](#external-issue-trackers)
       - [Redmine](#redmine)
       - [Jira](#jira)
@@ -627,6 +631,36 @@ docker run --name=gitlab -d \
 
 When you change the sub URI path, you need to recompile all precompiled assets. This can be done with either deleting tmp/cache/VERSION file under data store, or just `rm -Rf /PATH/TO/DATA_STORE/tmp`. After cleaning up cache files, restart the container.
 
+### OmniAuth Integration
+
+GitLab leverages OmniAuth to allow users to sign in using Twitter, GitHub, and other popular services. Configuring OmniAuth does not prevent standard GitLab authentication or LDAP (if configured) from continuing to work. Users can choose to sign in using any of the configured mechanisms.
+
+Refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/omniauth.html) for additional information.
+
+#### Google
+
+To enable the Google OAuth2 OmniAuth provider you must register your application with Google. Google will generate a client ID and secret key for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/google.html) for the procedure to generate the client ID and secret key with google.
+
+Once you have the client ID and secret keys generated, configure them using the `OAUTH_GOOGLE_API_KEY` and `OAUTH_GOOGLE_APP_SECRET` environment variables respectively.
+
+For example, if your client ID is `xxx.apps.googleusercontent.com` and client secret key is `yyy`, then adding `-e 'OAUTH_GOOGLE_API_KEY=xxx.apps.googleusercontent.com' -e 'OAUTH_GOOGLE_APP_SECRET=yyy'` to the docker run command enables support for Google OAuth.
+
+#### Twitter
+
+To enable the Twitter OAuth2 OmniAuth provider you must register your application with Twitter. Twitter will generate a API key and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/twitter.html) for the procedure to generate the API key and secret with twitter.
+
+Once you have the API key and secret generated, configure them using the `OAUTH_TWITTER_API_KEY` and `OAUTH_TWITTER_APP_SECRET` environment variables respectively.
+
+For example, if your API key is `xxx` and the API secret key is `yyy`, then adding `-e 'OAUTH_TWITTER_API_KEY=xxx' -e 'OAUTH_TWITTER_APP_SECRET=yyy'` to the docker run command enables support for Twitter OAuth.
+
+#### GitHub
+
+To enable the GitHub OAuth2 OmniAuth provider you must register your application with GitHub. GitHub will generate a Client ID and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/github.html) for the procedure to generate the Client ID and secret with github.
+
+Once you have the Client ID and secret generated, configure them using the `OAUTH_GITHUB_API_KEY` and `OAUTH_GITHUB_APP_SECRET` environment variables respectively.
+
+For example, if your Client ID is `xxx` and the Client secret is `yyy`, then adding `-e 'OAUTH_GITHUB_API_KEY=xxx' -e 'OAUTH_GITHUB_APP_SECRET=yyy'` to the docker run command enables support for GitHub OAuth.
+
 ### External Issue Trackers
 
 GitLab can be configured to use third party issue trackers such as Redmine and Atlassian Jira. Use of third party issue trackers have to be configured on a per project basis from the project settings page. This means that the GitLab's issue tracker is always the default tracker unless specified otherwise.
@@ -698,6 +732,14 @@ Below is the complete list of available options that can be used to customize yo
 - **LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN**: If enabled, GitLab will ignore everything after the first '@' in the LDAP username submitted by the user on login. Defaults to false if LDAP_UID is userPrincipalName, else true.
 - **LDAP_BASE**: Base where we can search for users. No default.
 - **LDAP_USER_FILTER**: Filter LDAP users. No default.
+- **OAUTH_ALLOW_SSO**: This allows users to login without having a user account first. User accounts will be created automatically when authentication was successful. Defaults to false.
+- **OAUTH_BLOCK_AUTO_CREATED_USERS**: Locks down those users until they have been cleared by the admin. Defaults to true.
+- **OAUTH_GOOGLE_API_KEY**: Google App Client ID. No defaults.
+- **OAUTH_GOOGLE_APP_SECRET**: Google App Client Secret. No defaults.
+- **OAUTH_TWITTER_API_KEY**: Twitter App API key. No defaults.
+- **OAUTH_TWITTER_APP_SECRET**: Twitter App API secret. No defaults.
+- **OAUTH_GITHUB_API_KEY**: GitHub App Client ID. No defaults.
+- **OAUTH_GITHUB_APP_SECRET**: GitHub App Client secret. No defaults.
 - **REDMINE_URL**: Location of the redmine server, e.g. `-e 'REDMINE_URL=https://redmine.example.com'`. No defaults.
 
 # Maintenance
