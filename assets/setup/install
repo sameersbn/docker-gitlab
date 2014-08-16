@@ -90,6 +90,7 @@ EOF
 
 # disable pam authentication for sshd
 sed 's/UsePAM yes/UsePAM no/' -i /etc/ssh/sshd_config
+sed 's/UsePrivilegeSeparation yes/UsePrivilegeSeparation no/' -i /etc/ssh/sshd_config
 
 # configure supervisor to start sshd
 mkdir -p /var/run/sshd
