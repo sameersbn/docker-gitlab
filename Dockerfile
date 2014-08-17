@@ -12,7 +12,7 @@ RUN add-apt-repository -y ppa:git-core/ppa && \
 			libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
 			ruby2.1 ruby2.1-dev && \
 		gem install --no-ri --no-rdoc bundler && \
-		apt-get clean # 20140725
+		apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ADD assets/setup/ /app/setup/
 RUN chmod 755 /app/setup/install
