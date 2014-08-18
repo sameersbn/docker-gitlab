@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- remove /var/lib/apt/lists to optimize image size.
 - disable UsePrivilegeSeparation in sshd configuration, fixes #122
 - added OAUTH_BLOCK_AUTO_CREATED_USERS configuration option
 - added OAUTH_ALLOW_SSO configuration option
