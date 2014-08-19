@@ -20,7 +20,7 @@ sudo -u git -H mkdir -p /home/git/data
 
 # install gitlab-shell, use local copy if available
 sudo -u git -H git clone -b v${SHELL_VERSION} --depth 1 \
-	https://github.com/gitlabhq/gitlab-shell.git /home/git/gitlab-shell
+  https://github.com/gitlabhq/gitlab-shell.git /home/git/gitlab-shell
 
 cd /home/git/gitlab-shell
 
@@ -29,7 +29,7 @@ sudo -u git -H ./bin/install
 
 # shallow clone gitlab-ce
 sudo -u git -H git clone -b v${GITLAB_VERSION} --depth 1 \
-	https://github.com/gitlabhq/gitlabhq.git /home/git/gitlab
+  https://github.com/gitlabhq/gitlabhq.git /home/git/gitlab
 
 cd /home/git/gitlab
 
