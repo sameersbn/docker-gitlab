@@ -1,6 +1,6 @@
 # Changelog
 
-**latest**
+**7.2.0**
 - upgrade to gitlab-ce 7.2.0
 - update to the sameersbn/ubuntu:14.04.20140818 baseimage
 - remove /var/lib/apt/lists to optimize image size.
