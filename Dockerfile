@@ -5,7 +5,7 @@ RUN add-apt-repository -y ppa:git-core/ppa && \
     add-apt-repository -y ppa:brightbox/ruby-ng && \
     add-apt-repository -y ppa:nginx/stable && \
     apt-get update && \
-    apt-get install -y build-essential checkinstall postgresql-client \
+    apt-get install -y build-essential checkinstall cmake postgresql-client \
       nginx git-core openssh-server mysql-server redis-server python2.7 python-docutils \
       libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
       libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
