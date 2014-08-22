@@ -47,6 +47,7 @@
     - [Creating Backups](#creating-backups)
     - [Restoring Backups](#restoring-backups)
     - [Automated Backups](#automated-backups)
+    - [Shell Access](#shell-access)
 - [Upgrading](#upgrading)
 - [Rake Tasks](#rake-tasks)
 - [Announcements](https://github.com/sameersbn/docker-gitlab/issues/39)
@@ -789,6 +790,28 @@ Daily backups are created at 4 am (UTC) everyday, while monthly backups are crea
 
 By default, when automated backups are enabled, backups are held for a period of 7 days. While when automated backups are disabled, the backups are held for an infinite period of time. This can behaviour can be configured via the GITLAB_BACKUP_EXPIRY option.
 
+## Shell Access
+
+For debugging and maintenance purposes you may want access the container shell. Since the container does not allow interactive login over the SSH protocol, you can use the [nsenter](http://man7.org/linux/man-pages/man1/nsenter.1.html) linux tool (part of the util-linux package) to access the container shell.
+
+Some linux distros (e.g. ubuntu) use older versions of the util-linux which do not include the `nsenter` tool. To get around this @jpetazzo has created a nice docker image that allows you to install the `nsenter` utility and a helper script named `docker-enter` on these distros.
+
+To install the nsenter tool on your host execute the following command.
+
+```bash
+docker run --rm -v /usr/local/bin:/target jpetazzo/nsenter
+```
+
+Now you can access the container shell using the command
+
+```bash
+sudo docker-enter gitlab
+```
+
+For more information refer https://github.com/jpetazzo/nsenter
+
+Another tool named `nsinit` can also be used for the same purpose. Please refer https://jpetazzo.github.io/2014/03/23/lxc-attach-nsinit-nsenter-docker-0-9/ for more information.
+
 # Upgrading
 
 GitLabHQ releases new versions on the 22nd of every month, bugfix releases immediately follow. I update this project almost immediately when a release is made (at least it has been the case so far). If you are using the image in production environments I recommend that you delay updates by a couple of days after the gitlab release, allowing some time for the dust to settle down.
@@ -846,3 +869,5 @@ For a complete list of available rake tasks please refer https://github.com/gitl
   * http://wiki.nginx.org/HttpSslModule
   * https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
   * https://github.com/gitlabhq/gitlab-recipes/blob/master/web-server/nginx/gitlab-ssl
+  * https://github.com/jpetazzo/nsenter
+  * https://jpetazzo.github.io/2014/03/23/lxc-attach-nsinit-nsenter-docker-0-9/
