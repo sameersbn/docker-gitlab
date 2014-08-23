@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- added OAUTH_GOOGLE_RESTRICT_DOMAIN config option.
+
 **7.2.0**
 - upgrade to gitlab-ce 7.2.0
 - update to the sameersbn/ubuntu:14.04.20140818 baseimage
