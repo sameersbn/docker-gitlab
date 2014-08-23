@@ -181,7 +181,7 @@ production: &base
     providers:
       - { name: 'google_oauth2', app_id: '{{OAUTH_GOOGLE_API_KEY}}',
           app_secret: '{{OAUTH_GOOGLE_APP_SECRET}}',
-          args: { access_type: 'offline', approval_prompt: '{{OAUTH_GOOGLE_APPROVAL_PROMPT}}', hd: '{{OAUTH_GOOGLE_HD}}' } }
+          args: { access_type: 'offline', approval_prompt: '{{OAUTH_GOOGLE_APPROVAL_PROMPT}}', hd: '{{OAUTH_GOOGLE_RESTRICT_DOMAIN}}' } }
       - { name: 'twitter', app_id: '{{OAUTH_TWITTER_API_KEY}}',
           app_secret: '{{OAUTH_TWITTER_APP_SECRET}}'}
       - { name: 'github', app_id: '{{OAUTH_GITHUB_API_KEY}}',
