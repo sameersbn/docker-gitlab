@@ -52,10 +52,10 @@
 upstream gitlab {
 
   ## Uncomment if you have set up unicorn to listen on a unix socket (recommended).
-  server unix:/home/git/gitlab/tmp/sockets/gitlab.socket;
+  server unix:{{GITLAB_INSTALL_DIR}}/tmp/sockets/gitlab.socket;
 
   ## Uncomment if unicorn is configured to listen on a tcp port.
-  ## Check the port number in /home/git/gitlab/config/unicorn.rb
+  ## Check the port number in {{GITLAB_INSTALL_DIR}}/config/unicorn.rb
   # server 127.0.0.1:8080;
 }
 
@@ -108,7 +108,7 @@ server {
   error_log   /var/log/nginx/gitlab_error.log;
 
   location {{GITLAB_RELATIVE_URL_ROOT}}/ {
-    root /home/git/gitlab/public;
+    root {{GITLAB_INSTALL_DIR}}/public;
     ## Serve static files from defined root folder.
     ## @gitlab is a named location for the upstream fallback, see below.
     try_files $uri $uri/index.html $uri.html @gitlab;
@@ -144,7 +144,7 @@ server {
   ## See config/application.rb under "Relative url support" for the list of
   ## other files that need to be changed for relative url support
   location ~ ^{{GITLAB_RELATIVE_URL_ROOT}}/assets/(.*) {
-    alias /home/git/gitlab/public/assets/$1;
+    alias {{GITLAB_INSTALL_DIR}}/public/assets/$1;
     gzip_static on; # to serve pre-gzipped version
     expires max;
     add_header Cache-Control public;

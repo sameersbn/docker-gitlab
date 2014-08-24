@@ -2,7 +2,14 @@
 set -e
 
 GITLAB_VERSION=7.2.0
-SHELL_VERSION=1.9.7
+GITLAB_SHELL_VERSION=1.9.7
+
+GITLAB_INSTALL_DIR="/home/git/gitlab"
+GITLAB_DATA_DIR="/home/git/data"
+GITLAB_SHELL_INSTALL_DIR="/home/git/gitlab-shell"
+
+SETUP_DIR="/app/setup"
+GEM_CACHE_DIR="${SETUP_DIR}/cache"
 
 # remove the host keys generated during openssh-server installation
 rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
@@ -12,26 +19,26 @@ adduser --disabled-login --gecos 'GitLab' git
 passwd -d git
 
 rm -rf /home/git/.ssh
-sudo -u git -H mkdir -p /home/git/data/.ssh
-sudo -u git -H ln -s /home/git/data/.ssh /home/git/.ssh
+sudo -u git -H mkdir -p ${GITLAB_DATA_DIR}/.ssh
+sudo -u git -H ln -s ${GITLAB_DATA_DIR}/.ssh /home/git/.ssh
 
 # create the data store
-sudo -u git -H mkdir -p /home/git/data
+sudo -u git -H mkdir -p ${GITLAB_DATA_DIR}
 
 # install gitlab-shell, use local copy if available
-sudo -u git -H git clone -b v${SHELL_VERSION} --depth 1 \
-  https://github.com/gitlabhq/gitlab-shell.git /home/git/gitlab-shell
+sudo -u git -H git clone -b v${GITLAB_SHELL_VERSION} --depth 1 \
+  https://github.com/gitlabhq/gitlab-shell.git ${GITLAB_SHELL_INSTALL_DIR}
 
-cd /home/git/gitlab-shell
+cd ${GITLAB_SHELL_INSTALL_DIR}
 
 sudo -u git -H cp -a config.yml.example config.yml
 sudo -u git -H ./bin/install
 
 # shallow clone gitlab-ce
 sudo -u git -H git clone -b v${GITLAB_VERSION} --depth 1 \
-  https://github.com/gitlabhq/gitlabhq.git /home/git/gitlab
+  https://github.com/gitlabhq/gitlabhq.git ${GITLAB_INSTALL_DIR}
 
-cd /home/git/gitlab
+cd ${GITLAB_INSTALL_DIR}
 
 # copy default configurations
 cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
@@ -48,22 +55,22 @@ chmod -R u+rwX log tmp
 
 # create symlink to assets in tmp/cache
 rm -rf tmp/cache
-sudo -u git -H ln -s /home/git/data/tmp/cache tmp/cache
+sudo -u git -H ln -s ${GITLAB_DATA_DIR}/tmp/cache tmp/cache
 
 # create symlink to assets in public/assets
 rm -rf public/assets
-sudo -u git -H ln -s /home/git/data/tmp/public/assets public/assets
+sudo -u git -H ln -s ${GITLAB_DATA_DIR}/tmp/public/assets public/assets
 
 # create symlink to uploads directory
 rm -rf public/uploads
-sudo -u git -H ln -s /home/git/data/uploads public/uploads
+sudo -u git -H ln -s ${GITLAB_DATA_DIR}/uploads public/uploads
 
 # create production log
 sudo -u git -H touch log/production.log
 
 # install gems required by gitlab, use local cache if available
-if [ -d "/app/setup/cache" ]; then
-  mv /app/setup/cache vendor/
+if [ -d "${GEM_CACHE_DIR}" ]; then
+  mv ${GEM_CACHE_DIR} vendor/
   chown -R git:git vendor/cache
 fi
 sudo -u git -H bundle install --deployment --without development test aws
