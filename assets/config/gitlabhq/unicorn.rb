@@ -11,7 +11,7 @@
 # WARNING: See config/application.rb under "Relative url support" for the list of
 # other files that need to be changed for relative url support
 #
-# ENV['RAILS_RELATIVE_URL_ROOT'] = "{{GITLAB_RELATIVE_URL_ROOT}}"
+ENV['RAILS_RELATIVE_URL_ROOT'] = "{{GITLAB_RELATIVE_URL_ROOT}}"
 
 # Use at least one worker per core if you're on a dedicated server,
 # more will usually help for _short_ waits on databases/caches.

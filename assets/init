@@ -485,10 +485,11 @@ if [ -n "${GITLAB_RELATIVE_URL_ROOT}" ]; then
 
   sudo -u git -H sed 's,# config.relative_url_root = "/gitlab",config.relative_url_root = "'${GITLAB_RELATIVE_URL_ROOT}'",' -i config/application.rb
   sudo -u git -H sed 's,# relative_url_root: {{GITLAB_RELATIVE_URL_ROOT}},relative_url_root: '${GITLAB_RELATIVE_URL_ROOT}',' -i config/gitlab.yml
-  sudo -u git -H sed "s,# ENV\['RAILS_RELATIVE_URL_ROOT'\] = \"{{GITLAB_RELATIVE_URL_ROOT}}\",ENV\['RAILS_RELATIVE_URL_ROOT'\] = \"${GITLAB_RELATIVE_URL_ROOT}\"," -i config/unicorn.rb
+  sudo -u git -H sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'"${GITLAB_RELATIVE_URL_ROOT}"',' -i config/unicorn.rb
 else
   sed 's,{{GITLAB_RELATIVE_URL_ROOT}},/,g' -i /etc/nginx/sites-available/gitlab
   sed 's,{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}},/,g' -i /etc/nginx/sites-available/gitlab
+  sudo -u git -H sed '/{{GITLAB_RELATIVE_URL_ROOT}}/d' -i config/unicorn.rb
 fi
 
 # fix permission and ownership of ${GITLAB_DATA_DIR}
