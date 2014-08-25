@@ -73,7 +73,7 @@ server {
   access_log  /var/log/nginx/gitlab_access.log;
   error_log   /var/log/nginx/gitlab_error.log;
 
-  location {{GITLAB_RELATIVE_URL_ROOT}}/ {
+  location {{GITLAB_RELATIVE_URL_ROOT}} {
     root {{GITLAB_INSTALL_DIR}}/public;
     # serve static files from defined root folder;.
     # @gitlab is a named location for the upstream fallback, see below
@@ -101,7 +101,7 @@ server {
   }
 
   # Enable gzip compression as per rails guide: http://guides.rubyonrails.org/asset_pipeline.html#gzip-compression
-  location ~ ^{{GITLAB_RELATIVE_URL_ROOT}}/assets/(.*) {
+  location ~ ^{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}assets/(.*) {
     alias {{GITLAB_INSTALL_DIR}}/public/assets/$1;
     gzip_static on; # to serve pre-gzipped version
     expires max;
@@ -158,7 +158,7 @@ server {
   access_log  /var/log/nginx/gitlab_access.log;
   error_log   /var/log/nginx/gitlab_error.log;
 
-  location {{GITLAB_RELATIVE_URL_ROOT}}/ {
+  location {{GITLAB_RELATIVE_URL_ROOT}} {
     root {{GITLAB_INSTALL_DIR}}/public;
     ## Serve static files from defined root folder.
     ## @gitlab is a named location for the upstream fallback, see below.
@@ -194,7 +194,7 @@ server {
   ## WARNING: If you are using relative urls do remove the block below
   ## See config/application.rb under "Relative url support" for the list of
   ## other files that need to be changed for relative url support
-  location ~ ^{{GITLAB_RELATIVE_URL_ROOT}}/assets/(.*) {
+  location ~ ^{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}assets/(.*) {
     alias {{GITLAB_INSTALL_DIR}}/public/assets/$1;
     gzip_static on; # to serve pre-gzipped version
     expires max;

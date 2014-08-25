@@ -219,9 +219,6 @@ sed 's,{{SSL_KEY_PATH}},'"${SSL_KEY_PATH}"',' -i /etc/nginx/sites-available/gitl
 sed 's,{{SSL_DHPARAM_PATH}},'"${SSL_DHPARAM_PATH}"',' -i /etc/nginx/sites-available/gitlab
 sed 's/{{NGINX_MAX_UPLOAD_SIZE}}/'"${NGINX_MAX_UPLOAD_SIZE}"'/g' -i /etc/nginx/sites-available/gitlab
 
-# configure relative_url_root
-sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'${GITLAB_RELATIVE_URL_ROOT}',g' -i /etc/nginx/sites-available/gitlab
-
 if [ -f "${SSL_CERTIFICATE_PATH}" -o -f "${CA_CERTIFICATES_PATH}" ]; then
   echo "Updating CA certificates..."
   [ -f "${SSL_CERTIFICATE_PATH}" ] && cp "${SSL_CERTIFICATE_PATH}" /usr/local/share/ca-certificates/gitlab.crt
@@ -481,10 +478,16 @@ sudo -u git -H sed 's/{{OAUTH_ALLOW_SSO}}/'"${OAUTH_ALLOW_SSO}"'/' -i config/git
 sudo -u git -H sed 's/{{OAUTH_BLOCK_AUTO_CREATED_USERS}}/'"${OAUTH_BLOCK_AUTO_CREATED_USERS}"'/' -i config/gitlab.yml
 
 # configure relative_url_root
-if [ ${GITLAB_RELATIVE_URL_ROOT} ]; then
+if [ -n "${GITLAB_RELATIVE_URL_ROOT}" ]; then
+  sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'"${GITLAB_RELATIVE_URL_ROOT}"',g' -i /etc/nginx/sites-available/gitlab
+  sed 's,{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}},'"${GITLAB_RELATIVE_URL_ROOT}/"',g' -i /etc/nginx/sites-available/gitlab
+
   sudo -u git -H sed 's,# config.relative_url_root = "/gitlab",config.relative_url_root = "'${GITLAB_RELATIVE_URL_ROOT}'",' -i config/application.rb
   sudo -u git -H sed 's,# relative_url_root: {{GITLAB_RELATIVE_URL_ROOT}},relative_url_root: '${GITLAB_RELATIVE_URL_ROOT}',' -i config/gitlab.yml
   sudo -u git -H sed "s,# ENV\['RAILS_RELATIVE_URL_ROOT'\] = \"{{GITLAB_RELATIVE_URL_ROOT}}\",ENV\['RAILS_RELATIVE_URL_ROOT'\] = \"${GITLAB_RELATIVE_URL_ROOT}\"," -i config/unicorn.rb
+else
+  sed 's,{{GITLAB_RELATIVE_URL_ROOT}},/,g' -i /etc/nginx/sites-available/gitlab
+  sed 's,{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}},/,g' -i /etc/nginx/sites-available/gitlab
 fi
 
 # fix permission and ownership of ${GITLAB_DATA_DIR}
