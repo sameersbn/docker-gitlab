@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added seperate server block for http config in gitlab.https.permissive. Fixes #127
 - added OAUTH_GOOGLE_RESTRICT_DOMAIN config option.
 
 **7.2.0**
