@@ -210,15 +210,6 @@ esac
 [ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/rack_attack.rb ]   && sudo -u git -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/rack_attack.rb   config/initializers/rack_attack.rb
 [ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb ] && sudo -u git -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb config/initializers/smtp_settings.rb
 
-# configure nginx vhost
-sed 's,{{GITLAB_INSTALL_DIR}},'"${GITLAB_INSTALL_DIR}"',g' -i /etc/nginx/sites-available/gitlab
-sed 's/{{YOUR_SERVER_FQDN}}/'"${GITLAB_HOST}"'/g' -i /etc/nginx/sites-available/gitlab
-sed 's/{{GITLAB_PORT}}/'"${GITLAB_PORT}"'/' -i /etc/nginx/sites-available/gitlab
-sed 's,{{SSL_CERTIFICATE_PATH}},'"${SSL_CERTIFICATE_PATH}"',' -i /etc/nginx/sites-available/gitlab
-sed 's,{{SSL_KEY_PATH}},'"${SSL_KEY_PATH}"',' -i /etc/nginx/sites-available/gitlab
-sed 's,{{SSL_DHPARAM_PATH}},'"${SSL_DHPARAM_PATH}"',' -i /etc/nginx/sites-available/gitlab
-sed 's/{{NGINX_MAX_UPLOAD_SIZE}}/'"${NGINX_MAX_UPLOAD_SIZE}"'/g' -i /etc/nginx/sites-available/gitlab
-
 if [ -f "${SSL_CERTIFICATE_PATH}" -o -f "${CA_CERTIFICATES_PATH}" ]; then
   echo "Updating CA certificates..."
   [ -f "${SSL_CERTIFICATE_PATH}" ] && cp "${SSL_CERTIFICATE_PATH}" /usr/local/share/ca-certificates/gitlab.crt
@@ -476,6 +467,15 @@ OAUTH_ENABLED=${OAUTH_ENABLED:-false}
 sudo -u git -H sed 's/{{OAUTH_ENABLED}}/'"${OAUTH_ENABLED}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{OAUTH_ALLOW_SSO}}/'"${OAUTH_ALLOW_SSO}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{OAUTH_BLOCK_AUTO_CREATED_USERS}}/'"${OAUTH_BLOCK_AUTO_CREATED_USERS}"'/' -i config/gitlab.yml
+
+# configure nginx vhost
+sed 's,{{GITLAB_INSTALL_DIR}},'"${GITLAB_INSTALL_DIR}"',g' -i /etc/nginx/sites-available/gitlab
+sed 's/{{YOUR_SERVER_FQDN}}/'"${GITLAB_HOST}"'/g' -i /etc/nginx/sites-available/gitlab
+sed 's/{{GITLAB_PORT}}/'"${GITLAB_PORT}"'/' -i /etc/nginx/sites-available/gitlab
+sed 's,{{SSL_CERTIFICATE_PATH}},'"${SSL_CERTIFICATE_PATH}"',' -i /etc/nginx/sites-available/gitlab
+sed 's,{{SSL_KEY_PATH}},'"${SSL_KEY_PATH}"',' -i /etc/nginx/sites-available/gitlab
+sed 's,{{SSL_DHPARAM_PATH}},'"${SSL_DHPARAM_PATH}"',' -i /etc/nginx/sites-available/gitlab
+sed 's/{{NGINX_MAX_UPLOAD_SIZE}}/'"${NGINX_MAX_UPLOAD_SIZE}"'/g' -i /etc/nginx/sites-available/gitlab
 
 # configure relative_url_root
 if [ -n "${GITLAB_RELATIVE_URL_ROOT}" ]; then
