@@ -481,6 +481,7 @@ sudo -u git -H sed 's/{{OAUTH_BLOCK_AUTO_CREATED_USERS}}/'"${OAUTH_BLOCK_AUTO_CR
 if [ -n "${GITLAB_RELATIVE_URL_ROOT}" ]; then
   sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'"${GITLAB_RELATIVE_URL_ROOT}"',g' -i /etc/nginx/sites-available/gitlab
   sed 's,{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}},'"${GITLAB_RELATIVE_URL_ROOT}/"',g' -i /etc/nginx/sites-available/gitlab
+  sed 's,# alias '"${GITLAB_INSTALL_DIR}"'/public,alias '"${GITLAB_INSTALL_DIR}"'/public,g' -i /etc/nginx/sites-available/gitlab
 
   sudo -u git -H sed 's,# config.relative_url_root = "/gitlab",config.relative_url_root = "'${GITLAB_RELATIVE_URL_ROOT}'",' -i config/application.rb
   sudo -u git -H sed 's,# relative_url_root: {{GITLAB_RELATIVE_URL_ROOT}},relative_url_root: '${GITLAB_RELATIVE_URL_ROOT}',' -i config/gitlab.yml

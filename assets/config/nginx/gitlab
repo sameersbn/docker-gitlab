@@ -23,7 +23,7 @@ server {
   listen *:80 default_server;         # e.g., listen 192.168.1.1:80; In most cases *:80 is a good idea
   server_name {{YOUR_SERVER_FQDN}};     # e.g., server_name source.example.com;
   server_tokens off;     # don't show the version number, a security best practice
-  root /dev/null;
+  root {{GITLAB_INSTALL_DIR}}/public;
   
   # Increase this if you want to upload large attachments
   # Or if you want to accept large git objects over http
@@ -34,7 +34,7 @@ server {
   error_log   /var/log/nginx/gitlab_error.log;
 
   location {{GITLAB_RELATIVE_URL_ROOT}} {
-    root {{GITLAB_INSTALL_DIR}}/public;
+    # alias {{GITLAB_INSTALL_DIR}}/public;
     # serve static files from defined root folder;.
     # @gitlab is a named location for the upstream fallback, see below
     try_files $uri $uri/index.html $uri.html @gitlab;

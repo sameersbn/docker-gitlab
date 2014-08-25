@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- fix nginx static route handling when GITLAB_RELATIVE_URL_ROOT is used.
 - fix relative root access without the trailing '/' character
 - added seperate server block for http config in gitlab.https.permissive. Fixes #127
 - added OAUTH_GOOGLE_RESTRICT_DOMAIN config option.

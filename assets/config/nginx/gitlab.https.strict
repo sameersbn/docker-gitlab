@@ -76,7 +76,7 @@ server {
   ## Replace git.example.com with your FQDN.
   server_name {{YOUR_SERVER_FQDN}};
   server_tokens off;
-  root /dev/null;
+  root {{GITLAB_INSTALL_DIR}}/public;
 
   ## Increase this if you want to upload large attachments
   ## Or if you want to accept large git objects over http
@@ -119,7 +119,7 @@ server {
   error_log   /var/log/nginx/gitlab_error.log;
 
   location {{GITLAB_RELATIVE_URL_ROOT}} {
-    root {{GITLAB_INSTALL_DIR}}/public;
+    # alias {{GITLAB_INSTALL_DIR}}/public;
     ## Serve static files from defined root folder.
     ## @gitlab is a named location for the upstream fallback, see below.
     try_files $uri $uri/index.html $uri.html @gitlab;
