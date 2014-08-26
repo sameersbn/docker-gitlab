@@ -491,6 +491,7 @@ The mail configuration should be specified using environment variables while sta
 
 The following environment variables need to be specified to get mail support to work.
 
+* SMTP_ENABLED (defaults to `true` if `SMTP_USER` is defined, else defaults to `false`)
 * SMTP_DOMAIN (defaults to `www.gmail.com`)
 * SMTP_HOST (defaults to `smtp.gmail.com`)
 * SMTP_PORT (defaults to `587`)
@@ -752,6 +753,7 @@ Below is the complete list of available options that can be used to customize yo
 - **DB_USER**: The database database user. Defaults to `root`
 - **DB_PASS**: The database database password. Defaults to no password
 - **DB_POOL**: The database database connection pool count. Defaults to `10`.
+- **SMTP_ENABLED**: Enable mail delivery via SMTP. Defaults to `true` if `SMTP_USER` is defined, else defaults to `false`.
 - **SMTP_DOMAIN**: SMTP domain. Defaults to` www.gmail.com`
 - **SMTP_HOST**: SMTP server host. Defaults to `smtp.gmail.com`.
 - **SMTP_PORT**: SMTP server port. Defaults to `587`.
