@@ -709,6 +709,10 @@ Support for issue tracking using Redmine can be added by specifying the complete
 
 For example, if your Redmine server is accessible at `https://redmine.example.com`, then adding `-e 'REDMINE_URL=https://redmine.example.com'` to the docker run command enables Redmine support in GitLab
 
+If you are using the [docker-redmine](https://github.com/sameersbn/docker-redmine) image, then you can *one up* the gitlab integration with redmine by adding `--volume-from=gitlab` flag to the docker run command while starting the redmine container.
+
+By using the above option the `/home/gitlab/data/repositories` directory will be accessible by the redmine container and now you can add your git repository path to your redmine project. If, for example, in your gitlab server you have a project named `opensource/gitlab`, the bare repository will be accessible at `/home/gitlab/data/repositories/opensource/gitlab.git`.
+
 #### Jira
 
 Support for issue tracking using Jira can be added by specifying the complete URL of the Jira web server in the `JIRA_URL` configuration option.
