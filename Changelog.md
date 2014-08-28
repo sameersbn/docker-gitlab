@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- upgrade to gitlab-ce 7.2.1
 - added new SMTP_ENABLED configuration option.
 
 **7.2.0-1**
