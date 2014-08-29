@@ -14,7 +14,6 @@ GITLAB_PORT=${GITLAB_PORT:-}
 GITLAB_SSH_PORT=${GITLAB_SSH_PORT:-$GITLAB_SHELL_SSH_PORT} # for backwards compatibility
 GITLAB_SSH_PORT=${GITLAB_SSH_PORT:-22}
 GITLAB_HTTPS=${GITLAB_HTTPS:-false}
-GITLAB_HTTPS_ONLY=${GITLAB_HTTPS_ONLY:-true}
 GITLAB_EMAIL=${GITLAB_EMAIL:-example@example.com}
 GITLAB_SIGNUP=${GITLAB_SIGNUP:-false}
 GITLAB_SIGNIN=${GITLAB_SIGNIN:-true}
@@ -172,10 +171,7 @@ cd ${GITLAB_INSTALL_DIR}
 case "${GITLAB_HTTPS}" in
   true)
     if [ -f "${SSL_CERTIFICATE_PATH}" -a -f "${SSL_KEY_PATH}" -a -f "${SSL_DHPARAM_PATH}" ]; then
-      case "${GITLAB_HTTPS_ONLY}" in
-        true) cp ${SYSCONF_TEMPLATES_DIR}/nginx/gitlab.https.strict /etc/nginx/sites-enabled/gitlab ;;
-        *) cp ${SYSCONF_TEMPLATES_DIR}/nginx/gitlab.https.permissive /etc/nginx/sites-enabled/gitlab ;;
-      esac
+      cp ${SYSCONF_TEMPLATES_DIR}/nginx/gitlab.https.strict /etc/nginx/sites-enabled/gitlab
     else
       echo "SSL keys and certificates were not found."
       echo "Assuming that the container is running behind a HTTPS enabled load balancer."
@@ -199,10 +195,7 @@ sudo -u git -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb  config/ini
 case "${GITLAB_HTTPS}" in
   true)
     if [ -f "${SSL_CERTIFICATE_PATH}" -a -f "${SSL_KEY_PATH}" -a -f "${SSL_DHPARAM_PATH}" ]; then
-      case "${GITLAB_HTTPS_ONLY}" in
-        true) [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.strict ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.strict /etc/nginx/sites-enabled/gitlab ;;
-        *) [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.permissive ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.permissive /etc/nginx/sites-enabled/gitlab ;;
-      esac
+      [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.strict ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.strict /etc/nginx/sites-enabled/gitlab
     else
       [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab /etc/nginx/sites-enabled/gitlab
     fi
