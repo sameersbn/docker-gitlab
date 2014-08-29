@@ -272,7 +272,7 @@ sudo -u git -H git config --global user.name "GitLab"
 sudo -u git -H git config --global user.email "${GITLAB_EMAIL}"
 sudo -u git -H git config --global core.autocrlf input
 
-# configure server url
+# configure gitlab
 sudo -u git -H sed 's/{{GITLAB_HOST}}/'"${GITLAB_HOST}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_PORT}}/'"${GITLAB_PORT}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_HTTPS}}/'"${GITLAB_HTTPS}"'/' -i config/gitlab.yml
@@ -335,37 +335,6 @@ sudo -u git -H sed 's,{{GITLAB_DATA_DIR}},'"${GITLAB_DATA_DIR}"',g' -i ${GITLAB_
 sudo -u git -H sed 's/{{SSL_SELF_SIGNED}}/'"${SSL_SELF_SIGNED}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -u git -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -u git -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
-
-# hack: make git over ssh work when the default http/https ports are not used.
-case "${GITLAB_HTTPS}" in
-  true)
-    case "${GITLAB_HTTPS_ONLY}" in
-      true)
-        case "${SSL_SELF_SIGNED}" in
-          true)
-            # we are using self signed certificates, talk to gitlab over https on localhost
-            # this will make sure the api access works when the default https port is not used.
-            sudo -u git -H sed 's,#{config.gitlab_url}/api/v3/internal,https://localhost'${GITLAB_RELATIVE_URL_ROOT}'/api/v3/internal,' -i ${GITLAB_SHELL_INSTALL_DIR}/lib/gitlab_net.rb
-            ;;
-          *)
-            # signed https certificates are in use, talk to gitlab using the default gitlab_url.
-            # hence we are not editing anything here, just using the default.
-            # ps. when using signed ssl certificates, you **MUST** use the default https port.
-            ;;
-        esac
-        ;;
-      *)
-        # we are not using https only mode, talk to gitlab over plain http on localhost
-        # using http when available will keep things fast.
-        sudo -u git -H sed 's,#{config.gitlab_url}/api/v3/internal,http://localhost'${GITLAB_RELATIVE_URL_ROOT}'/api/v3/internal,' -i ${GITLAB_SHELL_INSTALL_DIR}/lib/gitlab_net.rb
-        ;;
-    esac
-    ;;
-  *)
-    # ssl is not being used, talk to gitlab over plain http
-    sudo -u git -H sed 's,#{config.gitlab_url}/api/v3/internal,http://localhost'${GITLAB_RELATIVE_URL_ROOT}'/api/v3/internal,' -i ${GITLAB_SHELL_INSTALL_DIR}/lib/gitlab_net.rb
-    ;;
-esac
 
 # configure unicorn workers
 sudo -u git -H sed 's,{{GITLAB_INSTALL_DIR}},'"${GITLAB_INSTALL_DIR}"',g' -i config/unicorn.rb
