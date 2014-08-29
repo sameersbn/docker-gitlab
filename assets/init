@@ -196,10 +196,14 @@ sudo -u git -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb  config/ini
 # override default configuration templates with user templates
 case "${GITLAB_HTTPS}" in
   true)
-    case "${GITLAB_HTTPS_ONLY}" in
-      true) [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.strict ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.strict /etc/nginx/sites-enabled/gitlab ;;
-      *) [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.permissive ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.permissive /etc/nginx/sites-enabled/gitlab ;;
-    esac
+    if [ -f "${SSL_CERTIFICATE_PATH}" -a -f "${SSL_KEY_PATH}" -a -f "${SSL_DHPARAM_PATH}" ]; then
+      case "${GITLAB_HTTPS_ONLY}" in
+        true) [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.strict ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.strict /etc/nginx/sites-enabled/gitlab ;;
+        *) [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.permissive ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.permissive /etc/nginx/sites-enabled/gitlab ;;
+      esac
+    else
+      [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab /etc/nginx/sites-enabled/gitlab
+    fi
     ;;
   *) [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab /etc/nginx/sites-enabled/gitlab ;;
 esac
