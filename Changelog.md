@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added NGINX_X_FORWARDED_PROTO configuration option
 - optimization: talk directly to the unicorn worker from gitlab-shell
 
 **7.2.1**
