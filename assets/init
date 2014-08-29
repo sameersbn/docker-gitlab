@@ -171,7 +171,7 @@ cd ${GITLAB_INSTALL_DIR}
 case "${GITLAB_HTTPS}" in
   true)
     if [ -f "${SSL_CERTIFICATE_PATH}" -a -f "${SSL_KEY_PATH}" -a -f "${SSL_DHPARAM_PATH}" ]; then
-      cp ${SYSCONF_TEMPLATES_DIR}/nginx/gitlab.https.strict /etc/nginx/sites-enabled/gitlab
+      cp ${SYSCONF_TEMPLATES_DIR}/nginx/gitlab-ssl /etc/nginx/sites-enabled/gitlab
     else
       echo "SSL keys and certificates were not found."
       echo "Assuming that the container is running behind a HTTPS enabled load balancer."
@@ -195,7 +195,7 @@ sudo -u git -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb  config/ini
 case "${GITLAB_HTTPS}" in
   true)
     if [ -f "${SSL_CERTIFICATE_PATH}" -a -f "${SSL_KEY_PATH}" -a -f "${SSL_DHPARAM_PATH}" ]; then
-      [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.strict ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.strict /etc/nginx/sites-enabled/gitlab
+      [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab-ssl ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab-ssl /etc/nginx/sites-enabled/gitlab
     else
       [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab /etc/nginx/sites-enabled/gitlab
     fi
