@@ -284,11 +284,6 @@ sudo -u git -H sed 's/{{GITLAB_MAX_SIZE}}/'"${GITLAB_MAX_SIZE}"'/' -i config/git
 
 sudo -u git -H sed 's/{{GITLAB_SSH_PORT}}/'"${GITLAB_SSH_PORT}"'/' -i config/gitlab.yml
 
-if [ "${GITLAB_HTTPS}" == "true" -a "${GITLAB_HTTPS_ONLY}"  == "false" ]; then
-  # hack: allow login over plain http when ssl is enabled. required to work with load balancers.
-  sudo -u git -H sed 's/secure: Gitlab.config.gitlab.https/secure: false/' -i config/initializers/session_store.rb
-fi
-
 # configure gitlab signup configuration
 sudo -u git -H sed 's,{{GITLAB_DATA_DIR}},'"${GITLAB_DATA_DIR}"',g' -i config/gitlab.yml
 sudo -u git -H sed 's,{{GITLAB_SHELL_INSTALL_DIR}},'"${GITLAB_SHELL_INSTALL_DIR}"',g' -i config/gitlab.yml
