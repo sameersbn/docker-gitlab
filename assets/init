@@ -14,7 +14,6 @@ GITLAB_PORT=${GITLAB_PORT:-}
 GITLAB_SSH_PORT=${GITLAB_SSH_PORT:-$GITLAB_SHELL_SSH_PORT} # for backwards compatibility
 GITLAB_SSH_PORT=${GITLAB_SSH_PORT:-22}
 GITLAB_HTTPS=${GITLAB_HTTPS:-false}
-GITLAB_HTTPS_ONLY=${GITLAB_HTTPS_ONLY:-true}
 GITLAB_EMAIL=${GITLAB_EMAIL:-example@example.com}
 GITLAB_SIGNUP=${GITLAB_SIGNUP:-false}
 GITLAB_SIGNIN=${GITLAB_SIGNIN:-true}
@@ -131,12 +130,12 @@ esac
 
 case "${GITLAB_HTTPS}" in
   true)
-    GITLAB_URL="https://${GITLAB_HOST}${GITLAB_PORT:+:$GITLAB_PORT}${GITLAB_RELATIVE_URL_ROOT}/"
     GITLAB_PORT=${GITLAB_PORT:-443}
+    NGINX_X_FORWARDED_PROTO=${NGINX_X_FORWARDED_PROTO:-https}
     ;;
   *)
-    GITLAB_URL="http://${GITLAB_HOST}${GITLAB_PORT:+:$GITLAB_PORT}${GITLAB_RELATIVE_URL_ROOT}/"
     GITLAB_PORT=${GITLAB_PORT:-80}
+    NGINX_X_FORWARDED_PROTO=${NGINX_X_FORWARDED_PROTO:-\$scheme}
     ;;
 esac
 
@@ -172,17 +171,14 @@ cd ${GITLAB_INSTALL_DIR}
 case "${GITLAB_HTTPS}" in
   true)
     if [ -f "${SSL_CERTIFICATE_PATH}" -a -f "${SSL_KEY_PATH}" -a -f "${SSL_DHPARAM_PATH}" ]; then
-      case "${GITLAB_HTTPS_ONLY}" in
-        true) cp ${SYSCONF_TEMPLATES_DIR}/nginx/gitlab.https.strict /etc/nginx/sites-available/gitlab ;;
-        *) cp ${SYSCONF_TEMPLATES_DIR}/nginx/gitlab.https.permissive /etc/nginx/sites-available/gitlab ;;
-      esac
+      cp ${SYSCONF_TEMPLATES_DIR}/nginx/gitlab-ssl /etc/nginx/sites-enabled/gitlab
     else
       echo "SSL keys and certificates were not found."
       echo "Assuming that the container is running behind a HTTPS enabled load balancer."
-      cp ${SYSCONF_TEMPLATES_DIR}/nginx/gitlab /etc/nginx/sites-available/gitlab
+      cp ${SYSCONF_TEMPLATES_DIR}/nginx/gitlab /etc/nginx/sites-enabled/gitlab
     fi
     ;;
-  *) cp ${SYSCONF_TEMPLATES_DIR}/nginx/gitlab /etc/nginx/sites-available/gitlab ;;
+  *) cp ${SYSCONF_TEMPLATES_DIR}/nginx/gitlab /etc/nginx/sites-enabled/gitlab ;;
 esac
 
 sudo -u git -H cp ${SYSCONF_TEMPLATES_DIR}/gitlab-shell/config.yml    ${GITLAB_SHELL_INSTALL_DIR}/config.yml
@@ -198,13 +194,15 @@ sudo -u git -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb  config/ini
 # override default configuration templates with user templates
 case "${GITLAB_HTTPS}" in
   true)
-    case "${GITLAB_HTTPS_ONLY}" in
-      true) [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.strict ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.strict /etc/nginx/sites-available/gitlab ;;
-      *) [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.permissive ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab.https.permissive /etc/nginx/sites-available/gitlab ;;
-    esac
+    if [ -f "${SSL_CERTIFICATE_PATH}" -a -f "${SSL_KEY_PATH}" -a -f "${SSL_DHPARAM_PATH}" ]; then
+      [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab-ssl ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab-ssl /etc/nginx/sites-enabled/gitlab
+    else
+      [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab /etc/nginx/sites-enabled/gitlab
+    fi
     ;;
-  *) [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab /etc/nginx/sites-available/gitlab ;;
+  *) [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab /etc/nginx/sites-enabled/gitlab ;;
 esac
+
 [ -f ${USERCONF_TEMPLATES_DIR}/gitlab-shell/config.yml ]   && sudo -u git -H cp ${USERCONF_TEMPLATES_DIR}/gitlab-shell/config.yml   ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 [ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/gitlab.yml ]       && sudo -u git -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/gitlab.yml       config/gitlab.yml
 [ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/resque.yml ]       && sudo -u git -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/resque.yml       config/resque.yml
@@ -270,24 +268,20 @@ sudo -u git -H git config --global user.name "GitLab"
 sudo -u git -H git config --global user.email "${GITLAB_EMAIL}"
 sudo -u git -H git config --global core.autocrlf input
 
-# configure server url
+# configure application paths
+sudo -u git -H sed 's,{{GITLAB_DATA_DIR}},'"${GITLAB_DATA_DIR}"',g' -i config/gitlab.yml
+sudo -u git -H sed 's,{{GITLAB_SHELL_INSTALL_DIR}},'"${GITLAB_SHELL_INSTALL_DIR}"',g' -i config/gitlab.yml
+
+# configure gitlab
 sudo -u git -H sed 's/{{GITLAB_HOST}}/'"${GITLAB_HOST}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_PORT}}/'"${GITLAB_PORT}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_HTTPS}}/'"${GITLAB_HTTPS}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_EMAIL}}/'"${GITLAB_EMAIL}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_BACKUP_EXPIRY}}/'"${GITLAB_BACKUP_EXPIRY}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_MAX_SIZE}}/'"${GITLAB_MAX_SIZE}"'/' -i config/gitlab.yml
-
 sudo -u git -H sed 's/{{GITLAB_SSH_PORT}}/'"${GITLAB_SSH_PORT}"'/' -i config/gitlab.yml
 
-if [ "${GITLAB_HTTPS}" == "true" -a "${GITLAB_HTTPS_ONLY}"  == "false" ]; then
-  # hack: allow login over plain http when ssl is enabled. required to work with load balancers.
-  sudo -u git -H sed 's/secure: Gitlab.config.gitlab.https/secure: false/' -i config/initializers/session_store.rb
-fi
-
 # configure gitlab signup configuration
-sudo -u git -H sed 's,{{GITLAB_DATA_DIR}},'"${GITLAB_DATA_DIR}"',g' -i config/gitlab.yml
-sudo -u git -H sed 's,{{GITLAB_SHELL_INSTALL_DIR}},'"${GITLAB_SHELL_INSTALL_DIR}"',g' -i config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_SIGNUP}}/'"${GITLAB_SIGNUP}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_SIGNIN}}/'"${GITLAB_SIGNIN}"'/' -i config/gitlab.yml
 
@@ -313,6 +307,7 @@ else
   echo "Invalid database type: '$DB_TYPE'. Supported choices: [mysql, postgres]."
 fi
 
+# configure database connection
 sudo -u git -H sed 's/{{DB_HOST}}/'"${DB_HOST}"'/' -i config/database.yml
 sudo -u git -H sed 's/{{DB_PORT}}/'"${DB_PORT}"'/' -i config/database.yml
 sudo -u git -H sed 's/{{DB_NAME}}/'"${DB_NAME}"'/' -i config/database.yml
@@ -328,42 +323,11 @@ sudo -u git -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/g' -i config/resque.yml
 sudo -u git -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/g' -i config/resque.yml
 
 # configure gitlab-shell
-sudo -u git -H sed 's,{{GITLAB_URL}},'"${GITLAB_URL}"',' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'"${GITLAB_RELATIVE_URL_ROOT}"',' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -u git -H sed 's,{{GITLAB_DATA_DIR}},'"${GITLAB_DATA_DIR}"',g' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -u git -H sed 's/{{SSL_SELF_SIGNED}}/'"${SSL_SELF_SIGNED}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -u git -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -u git -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
-
-# hack: make git over ssh work when the default http/https ports are not used.
-case "${GITLAB_HTTPS}" in
-  true)
-    case "${GITLAB_HTTPS_ONLY}" in
-      true)
-        case "${SSL_SELF_SIGNED}" in
-          true)
-            # we are using self signed certificates, talk to gitlab over https on localhost
-            # this will make sure the api access works when the default https port is not used.
-            sudo -u git -H sed 's,#{config.gitlab_url}/api/v3/internal,https://localhost'${GITLAB_RELATIVE_URL_ROOT}'/api/v3/internal,' -i ${GITLAB_SHELL_INSTALL_DIR}/lib/gitlab_net.rb
-            ;;
-          *)
-            # signed https certificates are in use, talk to gitlab using the default gitlab_url.
-            # hence we are not editing anything here, just using the default.
-            # ps. when using signed ssl certificates, you **MUST** use the default https port.
-            ;;
-        esac
-        ;;
-      *)
-        # we are not using https only mode, talk to gitlab over plain http on localhost
-        # using http when available will keep things fast.
-        sudo -u git -H sed 's,#{config.gitlab_url}/api/v3/internal,http://localhost'${GITLAB_RELATIVE_URL_ROOT}'/api/v3/internal,' -i ${GITLAB_SHELL_INSTALL_DIR}/lib/gitlab_net.rb
-        ;;
-    esac
-    ;;
-  *)
-    # ssl is not being used, talk to gitlab over plain http
-    sudo -u git -H sed 's,#{config.gitlab_url}/api/v3/internal,http://localhost'${GITLAB_RELATIVE_URL_ROOT}'/api/v3/internal,' -i ${GITLAB_SHELL_INSTALL_DIR}/lib/gitlab_net.rb
-    ;;
-esac
 
 # configure unicorn workers
 sudo -u git -H sed 's,{{GITLAB_INSTALL_DIR}},'"${GITLAB_INSTALL_DIR}"',g' -i config/unicorn.rb
@@ -476,26 +440,27 @@ sudo -u git -H sed 's/{{OAUTH_ALLOW_SSO}}/'"${OAUTH_ALLOW_SSO}"'/' -i config/git
 sudo -u git -H sed 's/{{OAUTH_BLOCK_AUTO_CREATED_USERS}}/'"${OAUTH_BLOCK_AUTO_CREATED_USERS}"'/' -i config/gitlab.yml
 
 # configure nginx vhost
-sed 's,{{GITLAB_INSTALL_DIR}},'"${GITLAB_INSTALL_DIR}"',g' -i /etc/nginx/sites-available/gitlab
-sed 's/{{YOUR_SERVER_FQDN}}/'"${GITLAB_HOST}"'/g' -i /etc/nginx/sites-available/gitlab
-sed 's/{{GITLAB_PORT}}/'"${GITLAB_PORT}"'/' -i /etc/nginx/sites-available/gitlab
-sed 's,{{SSL_CERTIFICATE_PATH}},'"${SSL_CERTIFICATE_PATH}"',' -i /etc/nginx/sites-available/gitlab
-sed 's,{{SSL_KEY_PATH}},'"${SSL_KEY_PATH}"',' -i /etc/nginx/sites-available/gitlab
-sed 's,{{SSL_DHPARAM_PATH}},'"${SSL_DHPARAM_PATH}"',' -i /etc/nginx/sites-available/gitlab
-sed 's/{{NGINX_MAX_UPLOAD_SIZE}}/'"${NGINX_MAX_UPLOAD_SIZE}"'/g' -i /etc/nginx/sites-available/gitlab
+sed 's,{{GITLAB_INSTALL_DIR}},'"${GITLAB_INSTALL_DIR}"',g' -i /etc/nginx/sites-enabled/gitlab
+sed 's/{{YOUR_SERVER_FQDN}}/'"${GITLAB_HOST}"'/' -i /etc/nginx/sites-enabled/gitlab
+sed 's/{{GITLAB_PORT}}/'"${GITLAB_PORT}"'/' -i /etc/nginx/sites-enabled/gitlab
+sed 's,{{SSL_CERTIFICATE_PATH}},'"${SSL_CERTIFICATE_PATH}"',' -i /etc/nginx/sites-enabled/gitlab
+sed 's,{{SSL_KEY_PATH}},'"${SSL_KEY_PATH}"',' -i /etc/nginx/sites-enabled/gitlab
+sed 's,{{SSL_DHPARAM_PATH}},'"${SSL_DHPARAM_PATH}"',' -i /etc/nginx/sites-enabled/gitlab
+sed 's/{{NGINX_MAX_UPLOAD_SIZE}}/'"${NGINX_MAX_UPLOAD_SIZE}"'/' -i /etc/nginx/sites-enabled/gitlab
+sed 's/{{NGINX_X_FORWARDED_PROTO}}/'"${NGINX_X_FORWARDED_PROTO}"'/' -i /etc/nginx/sites-enabled/gitlab
 
 # configure relative_url_root
 if [ -n "${GITLAB_RELATIVE_URL_ROOT}" ]; then
-  sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'"${GITLAB_RELATIVE_URL_ROOT}"',g' -i /etc/nginx/sites-available/gitlab
-  sed 's,{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}},'"${GITLAB_RELATIVE_URL_ROOT}/"',g' -i /etc/nginx/sites-available/gitlab
-  sed 's,# alias '"${GITLAB_INSTALL_DIR}"'/public,alias '"${GITLAB_INSTALL_DIR}"'/public,g' -i /etc/nginx/sites-available/gitlab
+  sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'"${GITLAB_RELATIVE_URL_ROOT}"',' -i /etc/nginx/sites-enabled/gitlab
+  sed 's,{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}},'"${GITLAB_RELATIVE_URL_ROOT}/"',' -i /etc/nginx/sites-enabled/gitlab
+  sed 's,# alias '"${GITLAB_INSTALL_DIR}"'/public,alias '"${GITLAB_INSTALL_DIR}"'/public,' -i /etc/nginx/sites-enabled/gitlab
 
   sudo -u git -H sed 's,# config.relative_url_root = "/gitlab",config.relative_url_root = "'${GITLAB_RELATIVE_URL_ROOT}'",' -i config/application.rb
   sudo -u git -H sed 's,# relative_url_root: {{GITLAB_RELATIVE_URL_ROOT}},relative_url_root: '${GITLAB_RELATIVE_URL_ROOT}',' -i config/gitlab.yml
   sudo -u git -H sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'"${GITLAB_RELATIVE_URL_ROOT}"',' -i config/unicorn.rb
 else
-  sed 's,{{GITLAB_RELATIVE_URL_ROOT}},/,g' -i /etc/nginx/sites-available/gitlab
-  sed 's,{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}},/,g' -i /etc/nginx/sites-available/gitlab
+  sed 's,{{GITLAB_RELATIVE_URL_ROOT}},/,' -i /etc/nginx/sites-enabled/gitlab
+  sed 's,{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}},/,' -i /etc/nginx/sites-enabled/gitlab
   sudo -u git -H sed '/{{GITLAB_RELATIVE_URL_ROOT}}/d' -i config/unicorn.rb
 fi
 

@@ -49,6 +49,7 @@
 ## [1] https://github.com/agentzh/chunkin-nginx-module#status
 ## [2] https://github.com/agentzh/chunkin-nginx-module
 
+
 upstream gitlab {
 
   ## Uncomment if you have set up unicorn to listen on a unix socket (recommended).
@@ -59,56 +60,15 @@ upstream gitlab {
   # server 127.0.0.1:8080;
 }
 
+## This is a normal HTTP host which redirects all traffic to the HTTPS host.
 server {
-  listen *:80 default_server;         # e.g., listen 192.168.1.1:80; In most cases *:80 is a good idea
-  server_name {{YOUR_SERVER_FQDN}};     # e.g., server_name source.example.com;
-  server_tokens off;     # don't show the version number, a security best practice
-  root {{GITLAB_INSTALL_DIR}}/public;
-  
-  # Increase this if you want to upload large attachments
-  # Or if you want to accept large git objects over http
-  client_max_body_size {{NGINX_MAX_UPLOAD_SIZE}};
-
-  # individual nginx logs for this gitlab vhost
-  access_log  /var/log/nginx/gitlab_access.log;
-  error_log   /var/log/nginx/gitlab_error.log;
-
-  location {{GITLAB_RELATIVE_URL_ROOT}} {
-    # alias {{GITLAB_INSTALL_DIR}}/public;
-    # serve static files from defined root folder;.
-    # @gitlab is a named location for the upstream fallback, see below
-    try_files $uri $uri/index.html $uri.html @gitlab;
-  }
-
-  # if a file, which is not found in the root folder is requested,
-  # then the proxy pass the request to the upsteam (gitlab unicorn)
-  location @gitlab {
-    # If you use https make sure you disable gzip compression 
-    # to be safe against BREACH attack
-    # gzip off;
-
-    proxy_read_timeout 300; # Some requests take more than 30 seconds.
-    proxy_connect_timeout 300; # Some requests take more than 30 seconds.
-    proxy_redirect     off;
-
-    proxy_set_header   X-Forwarded-Proto $scheme;
-    proxy_set_header   Host              $http_host;
-    proxy_set_header   X-Real-IP         $remote_addr;
-    proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
-    proxy_set_header   X-Frame-Options   SAMEORIGIN;
-
-    proxy_pass http://gitlab;
-  }
-
-  # Enable gzip compression as per rails guide: http://guides.rubyonrails.org/asset_pipeline.html#gzip-compression
-  location ~ ^{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}assets/(.*) {
-    alias {{GITLAB_INSTALL_DIR}}/public/assets/$1;
-    gzip_static on; # to serve pre-gzipped version
-    expires max;
-    add_header Cache-Control public;
-  }
-
-  error_page 502 /502.html;
+  listen *:80;
+  ## Replace git.example.com with your FQDN.
+  server_name _;
+  server_tokens off;
+  ## root doesn't have to be a valid path since we are redirecting
+  root /nowhere;
+  rewrite ^ https://$host:{{GITLAB_PORT}}$request_uri? permanent;
 }
 
 server {
@@ -151,7 +111,7 @@ server {
   ssl_dhparam {{SSL_DHPARAM_PATH}};
 
   add_header Strict-Transport-Security max-age=63072000;
-  add_header X-Frame-Options DENY;
+  # add_header X-Frame-Options DENY;
   add_header X-Content-Type-Options nosniff;
 
   ## Individual nginx logs for this GitLab vhost
@@ -183,7 +143,7 @@ server {
     proxy_set_header    X-Real-IP           $remote_addr;
     proxy_set_header    X-Forwarded-Ssl     on;
     proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
-    proxy_set_header    X-Forwarded-Proto   $scheme;
+    proxy_set_header    X-Forwarded-Proto   {{NGINX_X_FORWARDED_PROTO}};
     proxy_set_header    X-Frame-Options     SAMEORIGIN;
 
     proxy_pass http://gitlab;

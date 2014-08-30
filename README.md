@@ -587,23 +587,20 @@ In this configuration, any requests made over the plain http protocol will autom
 
 #### Using HTTPS with a load balancer
 
-Load balancers like nginx/haproxy/hipache talk to backend applications over plain http and as such the installation of ssl keys and certificates in the container are not required. The SSL configuration has to instead be done at the load balancer.
+Load balancers like nginx/haproxy/hipache talk to backend applications over plain http and as such the installation of ssl keys and certificates are not required and should **NOT** be installed in the container. The SSL configuration has to instead be done at the load balancer.
 
-Hoewever, when using a load balancer you **MUST** set `GITLAB_HTTPS` to `true` and the `GITLAB_HTTPS_ONLY` option to `false`. Additionally you will need to set the `SSL_SELF_SIGNED` option to `true` if self signed SSL certificates are in use.
+Hoewever, when using a load balancer you **MUST** set `GITLAB_HTTPS` to `true`. Additionally you will need to set the `SSL_SELF_SIGNED` option to `true` if self signed SSL certificates are in use.
 
 With this in place, you should configure the load balancer to support handling of https requests. But that is out of the scope of this document. Please refer to [Using SSL/HTTPS with HAProxy](http://seanmcgary.com/posts/using-sslhttps-with-haproxy) for information on the subject.
 
 When using a load balancer, you probably want to make sure the load balancer performs the automatic http to https redirection. Information on this can also be found in the link above.
-
-Unfortunately hipache does not come with an option to perform http to https redirection, so the only choice you really have is to switch to using haproxy or nginx for load balancing.
 
 In summation, when using a load balancer, the docker command would look for the most part something like this:
 
 ```bash
 docker run --name=gitlab -d -p 10022:22 -p 10080:80 \
   -e 'GITLAB_SSH_PORT=10022' -e 'GITLAB_PORT=443' \
-  -e 'GITLAB_HTTPS=true' -e 'GITLAB_HTTPS_ONLY=false' \
-  -e 'SSL_SELF_SIGNED=true' \
+  -e 'GITLAB_HTTPS=true' -e 'SSL_SELF_SIGNED=true' \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:7.2.1
 ```
@@ -746,13 +743,13 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_SSH_PORT**: The ssh port number. Defaults to `22`.
 - **GITLAB_RELATIVE_URL_ROOT**: The sub URI of the GitLab server, e.g. `/gitlab`. No default.
 - **GITLAB_HTTPS**: Set to `true` to enable https support, disabled by default.
-- **GITLAB_HTTPS_ONLY**: Configure access over plain http when `GITLAB_HTTPS` is enabled. Should be set to `false` when using a load balancer. Defaults to `true`.
 - **SSL_SELF_SIGNED**: Set to `true` when using self signed ssl certificates. `false` by default.
 - **SSL_CERTIFICATE_PATH**: Location of the ssl certificate. Defaults to `/home/git/data/certs/gitlab.crt`
 - **SSL_KEY_PATH**: Location of the ssl private key. Defaults to `/home/git/data/certs/gitlab.key`
 - **SSL_DHPARAM_PATH**: Location of the dhparam file. Defaults to `/home/git/data/certs/dhparam.pem`
 - **CA_CERTIFICATES_PATH**: List of SSL certificates to trust. Defaults to `/home/git/data/certs/ca.crt`.
 - **NGINX_MAX_UPLOAD_SIZE**: Maximum acceptable upload size. Defaults to `20m`.
+- **NGINX_X_FORWARDED_PROTO**: Advanced configuration option for the `proxy_set_header X-Forwarded-Proto` setting in the gitlab nginx vHost configuration. Defaults to `https` when `GITLAB_HTTPS` is `true`, else defaults to `$scheme`.
 - **REDIS_HOST**: The hostname of the redis server. Defaults to `localhost`
 - **REDIS_PORT**: The connection port of the redis server. Defaults to `6379`.
 - **UNICORN_WORKERS**: The number of unicorn workers to start. Defaults to `2`.
