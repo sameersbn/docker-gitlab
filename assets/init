@@ -157,7 +157,6 @@ if [ ! -e ${GITLAB_DATA_DIR}/ssh/ssh_host_rsa_key ]; then
 fi
 # configure sshd to pick up the host keys from ${GITLAB_DATA_DIR}/ssh/
 sed -i 's,HostKey /etc/ssh/,HostKey '"${GITLAB_DATA_DIR}"'/ssh/,g' -i /etc/ssh/sshd_config
-echo "UseDNS no" >> /etc/ssh/sshd_config
 
 # start supervisord
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
