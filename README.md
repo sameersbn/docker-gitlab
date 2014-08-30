@@ -595,8 +595,6 @@ With this in place, you should configure the load balancer to support handling o
 
 When using a load balancer, you probably want to make sure the load balancer performs the automatic http to https redirection. Information on this can also be found in the link above.
 
-Unfortunately hipache does not come with an option to perform http to https redirection, so the only choice you really have is to switch to using haproxy or nginx for load balancing.
-
 In summation, when using a load balancer, the docker command would look for the most part something like this:
 
 ```bash
