@@ -33,7 +33,7 @@
       - [Using HTTPS with a load balancer](#using-https-with-a-load-balancer)
       - [Establishing trust with your server](#establishing-trust-with-your-server)
       - [Installing Trusted SSL Server Certificates](#installing-trusted-ssl-server-certificates)
-    - [Run under sub URI](#run-under-sub-uri)
+    - [Deploy to a subdirectory (relative url root)](#deploy-to-a-subdirectory-relative-url-root)
     - [Putting it all together](#putting-it-all-together)
     - [OmniAuth Integration](#omniauth-integration)
       - [Google](#google)
@@ -636,19 +636,22 @@ Copy the `ca.crt` file into the certs directory on the [datastore](#data-store).
 
 By default, our own server certificate [gitlab.crt](#generation-of-self-signed-certificates) is added to the trusted certificates list.
 
-### Run under sub URI
+### Deploy to a subdirectory (relative url root)
 
-If you like to serve the GitLab under sub URI like http://localhost/gitlab, set `-e 'GITLAB_RELATIVE_URL_ROOT=/gitlab'` or anything you like.
-The path should start with slash, and should not have any trailing slashes.
+By default GitLab expects that your application is running at the root (eg. /). This section explains how to run your application inside a directory.
+
+Let's assume we want to deploy our application to '/git'. GitLab needs to know this directory to generate the appropriate routes. This can be specified using the `GITLAB_RELATIVE_URL_ROOT` configuration option like so:
 
 ```bash
-docker run --name=gitlab -d \
+docker run --name=gitlab -it --rm \
+  -e 'GITLAB_RELATIVE_URL_ROOT=/git' \
   -v /opt/gitlab/data:/home/git/data \
-  -e 'GITLAB_RELATIVE_URL_ROOT=/gitlab' \
   sameersbn/gitlab:7.2.1
 ```
 
-When you change the sub URI path, you need to recompile all precompiled assets. This can be done by `rm -rf /PATH/TO/DATA_STORE/tmp`. After cleaning up cache files, restart the container.
+GitLab will now be accessible at the `/git` path, e.g. `http://www.example.com/git`.
+
+**Note**: *The `GITLAB_RELATIVE_URL_ROOT` parameter should always begin with a slash and **SHOULD NOT** have any trailing slashes.*
 
 ### Putting it all together
 
@@ -741,7 +744,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_BACKUPS**: Setup cron job to automatic backups. Possible values `disable`, `daily` or `monthly`. Disabled by default
 - **GITLAB_BACKUP_EXPIRY**: Configure how long (in seconds) to keep backups before they are deleted. By default when automated backups are disabled backups are kept forever (0 seconds), else the backups expire in 7 days (604800 seconds).
 - **GITLAB_SSH_PORT**: The ssh port number. Defaults to `22`.
-- **GITLAB_RELATIVE_URL_ROOT**: The sub URI of the GitLab server, e.g. `/gitlab`. No default.
+- **GITLAB_RELATIVE_URL_ROOT**: The relative url of the GitLab server, e.g. `/redmine`. No default.
 - **GITLAB_HTTPS**: Set to `true` to enable https support, disabled by default.
 - **SSL_SELF_SIGNED**: Set to `true` when using self signed ssl certificates. `false` by default.
 - **SSL_CERTIFICATE_PATH**: Location of the ssl certificate. Defaults to `/home/git/data/certs/gitlab.crt`
