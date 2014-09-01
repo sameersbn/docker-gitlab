@@ -33,8 +33,8 @@
       - [Using HTTPS with a load balancer](#using-https-with-a-load-balancer)
       - [Establishing trust with your server](#establishing-trust-with-your-server)
       - [Installing Trusted SSL Server Certificates](#installing-trusted-ssl-server-certificates)
-    - [Putting it all together](#putting-it-all-together)
     - [Run under sub URI](#run-under-sub-uri)
+    - [Putting it all together](#putting-it-all-together)
     - [OmniAuth Integration](#omniauth-integration)
       - [Google](#google)
       - [Twitter](#twitter)
@@ -636,6 +636,20 @@ Copy the `ca.crt` file into the certs directory on the [datastore](#data-store).
 
 By default, our own server certificate [gitlab.crt](#generation-of-self-signed-certificates) is added to the trusted certificates list.
 
+### Run under sub URI
+
+If you like to serve the GitLab under sub URI like http://localhost/gitlab, set `-e 'GITLAB_RELATIVE_URL_ROOT=/gitlab'` or anything you like.
+The path should start with slash, and should not have any trailing slashes.
+
+```bash
+docker run --name=gitlab -d \
+  -v /opt/gitlab/data:/home/git/data \
+  -e 'GITLAB_RELATIVE_URL_ROOT=/gitlab' \
+  sameersbn/gitlab:7.2.1
+```
+
+When you change the sub URI path, you need to recompile all precompiled assets. This can be done by `rm -rf /PATH/TO/DATA_STORE/tmp`. After cleaning up cache files, restart the container.
+
 ### Putting it all together
 
 ```bash
@@ -657,20 +671,6 @@ docker run --name=gitlab -d -h git.local.host \
   -e 'SMTP_USER=USER@gmail.com' -e 'SMTP_PASS=PASSWORD' \
   sameersbn/gitlab:7.2.1
 ```
-
-### Run under sub URI
-
-If you like to serve the GitLab under sub URI like http://localhost/gitlab, set `-e 'GITLAB_RELATIVE_URL_ROOT=/gitlab'` or anything you like.
-The path should start with slash, and should not have any trailing slashes.
-
-```bash
-docker run --name=gitlab -d \
-  -v /opt/gitlab/data:/home/git/data \
-  -e 'GITLAB_RELATIVE_URL_ROOT=/gitlab' \
-  sameersbn/gitlab:7.2.1
-```
-
-When you change the sub URI path, you need to recompile all precompiled assets. This can be done by `rm -rf /PATH/TO/DATA_STORE/tmp`. After cleaning up cache files, restart the container.
 
 ### OmniAuth Integration
 
