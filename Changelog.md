@@ -1,6 +1,6 @@
 # Changelog
 
-**latest**
+**7.2.1-1**
 - removed the GITLAB_HTTPS_ONLY configuration option
 - added NGINX_X_FORWARDED_PROTO configuration option
 - optimization: talk directly to the unicorn worker from gitlab-shell
