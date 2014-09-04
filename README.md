@@ -191,7 +191,9 @@ docker run --name=gitlab -d \
 
 ## Database
 
-GitLab uses a database backend to store its data.
+GitLab uses a database backend to store its data. You can configure this image to use either MySQL or PostgreSQL.
+
+*Note: GitLab HQ recommends using PostgreSQL over MySQL*
 
 ### MySQL
 
