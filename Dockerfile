@@ -26,7 +26,8 @@ EXPOSE 22
 EXPOSE 80
 EXPOSE 443
 
-VOLUME ["/home/git/data"]
+# Optional Volume!
+# VOLUME ["/home/git/data"]
 
 ENTRYPOINT ["/app/init"]
 CMD ["app:start"]
