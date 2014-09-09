@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- added GITLAB_USERNAME_CHANGE configuration option
+
 **7.2.1-1**
 - removed the GITLAB_HTTPS_ONLY configuration option
 - added NGINX_X_FORWARDED_PROTO configuration option
