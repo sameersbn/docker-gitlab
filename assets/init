@@ -18,6 +18,7 @@ GITLAB_EMAIL=${GITLAB_EMAIL:-example@example.com}
 GITLAB_SIGNUP=${GITLAB_SIGNUP:-false}
 GITLAB_SIGNIN=${GITLAB_SIGNIN:-true}
 GITLAB_PROJECTS_LIMIT=${GITLAB_PROJECTS_LIMIT:-100}
+GITLAB_USERNAME_CHANGE=${GITLAB_USERNAME_CHANGE:-true}
 GITLAB_PROJECTS_VISIBILITY=${GITLAB_PROJECTS_VISIBILITY:-private}
 GITLAB_RELATIVE_URL_ROOT=${GITLAB_RELATIVE_URL_ROOT:-}
 GITLAB_RESTRICTED_VISIBILITY=${GITLAB_RESTRICTED_VISIBILITY:-}
@@ -286,6 +287,9 @@ sudo -u git -H sed 's/{{GITLAB_SIGNIN}}/'"${GITLAB_SIGNIN}"'/' -i config/gitlab.
 
 # configure gitlab default_projects_limit
 sudo -u git -H sed 's/{{GITLAB_PROJECTS_LIMIT}}/'"${GITLAB_PROJECTS_LIMIT}"'/' -i config/gitlab.yml
+
+# configure gitlab username_changing_enabled
+sudo -u git -H sed 's/{{GITLAB_USERNAME_CHANGE}}/'"${GITLAB_USERNAME_CHANGE}"'/' -i config/gitlab.yml
 
 # configure gitlab default visibility_level
 sudo -u git -H sed 's/{{GITLAB_PROJECTS_VISIBILITY}}/'"${GITLAB_PROJECTS_VISIBILITY}"'/' -i config/gitlab.yml
