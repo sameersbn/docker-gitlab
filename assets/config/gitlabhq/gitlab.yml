@@ -22,7 +22,7 @@ production: &base
     # Uncommment this line below if your ssh host is different from HTTP/HTTPS one
     # (you'd obviously need to replace ssh.host_example.com with your own host).
     # Otherwise, ssh host will be set to the `host:` value above
-    # ssh_host: ssh.host_example.com
+    ssh_host: "{{GITLAB_SSH_HOST}}"
 
     # WARNING: See config/application.rb under "Relative url support" for the list of
     # other files that need to be changed for relative url support
@@ -261,9 +261,9 @@ test:
     port: {{GITLAB_PORT}}
 
     # When you run tests we clone and setup gitlab-shell
-    # In order to setup it correctly you need to specify 
+    # In order to setup it correctly you need to specify
     # your system username you use to run GitLab
-    # user: YOUR_USERNAME 
+    # user: YOUR_USERNAME
   satellites:
     path: tmp/tests/gitlab-satellites/
   gitlab_shell:
