@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added GITLAB_SSH_HOST configuration option
 - added GITLAB_USERNAME_CHANGE configuration option
 
 **7.2.1-1**
