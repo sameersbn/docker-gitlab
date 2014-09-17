@@ -3,6 +3,7 @@ set -e
 
 GITLAB_INSTALL_DIR="/home/git/gitlab"
 GITLAB_DATA_DIR="/home/git/data"
+GITLAB_BACKUP_DIR="${GITLAB_BACKUP_DIR:-$GITLAB_DATA_DIR/backups}"
 GITLAB_SHELL_INSTALL_DIR="/home/git/gitlab-shell"
 
 SETUP_DIR="/app/setup"
@@ -271,6 +272,7 @@ sudo -u git -H git config --global core.autocrlf input
 
 # configure application paths
 sudo -u git -H sed 's,{{GITLAB_DATA_DIR}},'"${GITLAB_DATA_DIR}"',g' -i config/gitlab.yml
+sudo -u git -H sed 's,{{GITLAB_BACKUP_DIR}},'"${GITLAB_BACKUP_DIR}"',g' -i config/gitlab.yml
 sudo -u git -H sed 's,{{GITLAB_SHELL_INSTALL_DIR}},'"${GITLAB_SHELL_INSTALL_DIR}"',g' -i config/gitlab.yml
 
 # configure gitlab
@@ -330,6 +332,7 @@ sudo -u git -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/g' -i config/resque.yml
 # configure gitlab-shell
 sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'"${GITLAB_RELATIVE_URL_ROOT}"',' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -u git -H sed 's,{{GITLAB_DATA_DIR}},'"${GITLAB_DATA_DIR}"',g' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+sudo -u git -H sed 's,{{GITLAB_BACKUP_DIR}},'"${GITLAB_BACKUP_DIR}"',g' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -u git -H sed 's/{{SSL_SELF_SIGNED}}/'"${SSL_SELF_SIGNED}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -u git -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -u git -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
@@ -492,8 +495,8 @@ chown git:git ${GITLAB_DATA_DIR}/gitlab-satellites
 rm -rf ${GITLAB_DATA_DIR}/cache
 
 # create the backups directory
-sudo -u git -H mkdir -p ${GITLAB_DATA_DIR}/backups/
-chown git:git ${GITLAB_DATA_DIR}/backups/
+sudo -u git -H mkdir -p ${GITLAB_BACKUP_DIR}
+chown git:git ${GITLAB_BACKUP_DIR}
 
 # create the uploads directory
 sudo -u git -H mkdir -p ${GITLAB_DATA_DIR}/uploads/
@@ -602,19 +605,19 @@ appRake () {
 
   if [ "$1" == "gitlab:backup:restore" ]; then
     # user needs to select the backup to restore
-    nBackups=$(ls ${GITLAB_DATA_DIR}/backups/*_gitlab_backup.tar | wc -l)
+    nBackups=$(ls ${GITLAB_BACKUP_DIR}/*_gitlab_backup.tar | wc -l)
     if [ $nBackups -eq 0 ]; then
       echo "No backup present. Cannot continue restore process.".
       return 1
     fi
 
-    for b in `ls ${GITLAB_DATA_DIR}/backups/ | sort -r`
+    for b in `ls ${GITLAB_BACKUP_DIR} | sort -r`
     do
       echo " ├ $b"
     done
     read -p "Select a backup to restore: " file
 
-    if [ ! -f "${GITLAB_DATA_DIR}/backups/${file}" ]; then
+    if [ ! -f "${GITLAB_BACKUP_DIR}/${file}" ]; then
       echo "Specified backup does not exist. Aborting..."
       return 1
     fi
