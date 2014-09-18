@@ -1,18 +1,15 @@
-FROM sameersbn/ubuntu:14.04.20140818
+FROM sameersbn/debian:jessie.20140918
 MAINTAINER sameer@damagehead.com
 
-RUN add-apt-repository -y ppa:git-core/ppa \
- && add-apt-repository -y ppa:brightbox/ruby-ng \
- && add-apt-repository -y ppa:nginx/stable \
- && apt-get update \
- && apt-get install -y build-essential cmake postgresql-client \
+RUN apt-get update \
+ && apt-get install -y build-essential pkg-config cmake supervisor logrotate postgresql-client \
       nginx git-core openssh-server mysql-server redis-server python2.7 python-docutils \
       libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
       libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
       libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
-      ruby2.1 ruby2.1-dev \
+      ruby2.1 ruby2.1-dev rubygems \
  && gem install --no-ri --no-rdoc bundler \
- && rm -rf /var/lib/apt/lists/* # 20140818
+ && rm -rf /var/lib/apt/lists/* # 20140918
 
 COPY assets/setup/ /app/setup/
 RUN chmod 755 /app/setup/install
