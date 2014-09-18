@@ -2,12 +2,13 @@ FROM sameersbn/debian:jessie.20140918
 MAINTAINER sameer@damagehead.com
 
 RUN apt-get update \
- && apt-get install -y gcc g++ make patch pkg-config cmake supervisor logrotate postgresql-client \
-      nginx git-core openssh-server mysql-server redis-server python2.7 python-docutils \
-      libc6-dev libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
-      libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
-      libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
-      ruby2.1 ruby2.1-dev rubygems \
+ && apt-get install -y supervisor logrotate \
+      nginx openssh-server mysql-server redis-server \
+      git-core postgresql-client ruby rubygems \
+      python2.7 python-docutils \
+      libmysqlclient18 libpq5 zlib1g libyaml-0-2 libssl1.0.0 \
+      libgdbm3 libreadline6 libncurses5 libffi6 \
+      libxml2 libxslt1.1 libcurl3 libicu52 \
  && gem install --no-ri --no-rdoc bundler \
  && rm -rf /var/lib/apt/lists/* # 20140918
 

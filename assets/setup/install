@@ -68,12 +68,32 @@ sudo -u git -H ln -s ${GITLAB_DATA_DIR}/uploads public/uploads
 # create production log
 sudo -u git -H touch log/production.log
 
+# rebuild apt cache
+apt-get update
+
+# install build dependencies for gem installation
+apt-get install -y gcc g++ make patch pkg-config cmake \
+  libc6-dev ruby2.1-dev \
+  libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
+  libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
+  libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
+
 # install gems required by gitlab, use local cache if available
 if [ -d "${GEM_CACHE_DIR}" ]; then
   mv ${GEM_CACHE_DIR} vendor/
   chown -R git:git vendor/cache
 fi
 sudo -u git -H bundle install --deployment --without development test aws
+
+# purge build dependencies
+apt-get purge -y --auto-remove gcc g++ make patch pkg-config cmake \
+  libc6-dev ruby2.1-dev \
+  libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
+  libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
+  libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
+
+# cleanup
+rm -rf /var/lib/apt/lists/*
 
 # make sure everything in /home/git is owned by the git user
 chown -R git:git /home/git/
