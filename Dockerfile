@@ -9,7 +9,7 @@ RUN apt-get update \
       libmysqlclient18 libpq5 zlib1g libyaml-0-2 libssl1.0.0 \
       libgdbm3 libreadline6 libncurses5 libffi6 \
       libxml2 libxslt1.1 libcurl3 libicu52 \
- && gem install --no-ri --no-rdoc bundler \
+ && gem install --no-document bundler \
  && rm -rf /var/lib/apt/lists/* # 20140918
 
 COPY assets/setup/ /app/setup/
