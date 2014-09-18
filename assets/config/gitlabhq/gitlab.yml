@@ -202,7 +202,7 @@ production: &base
 
   ## Backup settings
   backup:
-    path: "{{GITLAB_DATA_DIR}}/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
+    path: "{{GITLAB_BACKUP_DIR}}"   # Relative paths are relative to Rails.root (default: tmp/backups/)
     keep_time: {{GITLAB_BACKUP_EXPIRY}}   # default: 0 (forever) (in seconds)
 
   ## GitLab Shell settings

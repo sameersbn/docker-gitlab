@@ -744,6 +744,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_USERNAME_CHANGE**: Enable or disable ability for users to change their username. Defaults is `true`.
 - **GITLAB_PROJECTS_VISIBILITY**: Set default projects visibility level. Possible values `public`, `private` and `internal`. Defaults to `private`.
 - **GITLAB_RESTRICTED_VISIBILITY**: Comma seperated list of visibility levels to restrict non-admin users to set. Possible visibility options are `public`, `private` and `internal`.
+- **GITLAB_BACKUP_DIR**: The backup folder in the container. Defaults to `/home/git/data/backups`
 - **GITLAB_BACKUPS**: Setup cron job to automatic backups. Possible values `disable`, `daily` or `monthly`. Disabled by default
 - **GITLAB_BACKUP_EXPIRY**: Configure how long (in seconds) to keep backups before they are deleted. By default when automated backups are disabled backups are kept forever (0 seconds), else the backups expire in 7 days (604800 seconds).
 - **GITLAB_SSH_HOST**: The ssh host. Defaults to **GITLAB_HOST**.
@@ -818,7 +819,7 @@ docker run --name=gitlab -it --rm [OPTIONS] \
   sameersbn/gitlab:7.2.1-1 app:rake gitlab:backup:create
 ```
 
-A backup will be created in the backups folder of the [Data Store](#data-store)
+A backup will be created in the backups folder of the [Data Store](#data-store). You can change that behavior by setting your own path within the container. To do so you have to pass the argument `-e "GITLAB_BACKUP_DIR:/path/to/backups"` to the docker run command.
 
 ## Restoring Backups
 
