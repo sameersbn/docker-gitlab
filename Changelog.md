@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added HSTS_ENABLED configuration option (advanced config)
 - added HSTS_MAX_AGE configuration option (advanced config)
 - upgrade to gitlab-shell 1.9.8
 - purge development packages after install. shaves off ~300MB from the image.
