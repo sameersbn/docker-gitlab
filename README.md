@@ -595,11 +595,11 @@ HSTS if supported by the browsers makes sure that your users will only reach you
 With `GITLAB_HTTPS_HSTS_MAXAGE` you can configure that value. The default value is `31536000` seconds. If you want to disable a already sent HSTS MAXAGE value, set it to `0`.
 
 ```bash
-docker run --name=gitlab -it --rm \
- -e 'GITLAB_HTTPS=true' \
+docker run --name=gitlab -d \
+ -e 'GITLAB_HTTPS=true' -e 'SSL_SELF_SIGNED=true' \
  -e 'GITLAB_HTTPS_HSTS_MAXAGE=2592000'
  -v /opt/gitlab/data:/home/git/data \
- sameersbn/gitlab:latest
+ sameersbn/gitlab:7.2.1-1
 ```
 
 If you want to completely disable HSTS set `GITLAB_HTTPS_HSTS_ENABLED` to `false`.
