@@ -146,12 +146,11 @@ stderr_logfile=/var/log/supervisor/%(program_name)s_error.log
 EOF
 
 # configure supervisord to start nginx
-echo "daemon off;" >> /etc/nginx/nginx.conf
 cat > /etc/supervisor/conf.d/nginx.conf <<EOF
 [program:nginx]
 priority=20
 directory=/tmp
-command=/usr/sbin/nginx
+command=/usr/sbin/nginx -g "daemon off;"
 user=root
 autostart=false
 autorestart=true
