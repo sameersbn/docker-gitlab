@@ -30,6 +30,7 @@
       - [Strengthening the server security](#strengthening-the-server-security)
       - [Installation of the Certificates](#installation-of-the-certificates)
       - [Enabling HTTPS support](#enabling-https-support)
+      - [Configuring HSTS](#configuring-hsts)
       - [Using HTTPS with a load balancer](#using-https-with-a-load-balancer)
       - [Establishing trust with your server](#establishing-trust-with-your-server)
       - [Installing Trusted SSL Server Certificates](#installing-trusted-ssl-server-certificates)
@@ -586,6 +587,22 @@ docker run --name=gitlab -d \
 ```
 
 In this configuration, any requests made over the plain http protocol will automatically be redirected to use the https protocol. However, this is not optimal when using a load balancer.
+
+#### Configuring HSTS
+
+HSTS if supported by the browsers makes sure that your users will only reach your sever via HTTPS. When the user comes for the first time it sees a header from the server which states for how long from now this site should only be reachable via HTTPS - that's the HSTS max-age value.
+
+With `GITLAB_HTTPS_HSTS_MAXAGE` you can configure that value. The default value is `31536000` seconds. If you want to disable a already sent HSTS MAXAGE value, set it to `0`.
+
+```bash
+docker run --name=gitlab -it --rm \
+ -e 'GITLAB_HTTPS=true' \
+ -e 'GITLAB_HTTPS_HSTS_MAXAGE=2592000'
+ -v /opt/gitlab/data:/home/git/data \
+ sameersbn/gitlab:latest
+```
+
+If you want to completely disable HSTS set `GITLAB_HTTPS_HSTS_ENABLED` to `false`.
 
 #### Using HTTPS with a load balancer
 
