@@ -751,6 +751,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_SSH_PORT**: The ssh port number. Defaults to `22`.
 - **GITLAB_RELATIVE_URL_ROOT**: The relative url of the GitLab server, e.g. `/git`. No default.
 - **GITLAB_HTTPS**: Set to `true` to enable https support, disabled by default.
+- **GITLAB_HTTPS_HSTS_MAXAGE**: Advanced configuration option for turning off the HSTS configuration. Applicable only when SSL is in use. Defaults to `true`. See [#138](https://github.com/sameersbn/docker-gitlab/issues/138) for use case scenario.
 - **GITLAB_HTTPS_HSTS_MAXAGE**: Advanced configuration option for setting the HSTS max-age in the gitlab nginx vHost configuration. Applicable only when SSL is in use. Defaults to `31536000`.
 - **SSL_SELF_SIGNED**: Set to `true` when using self signed ssl certificates. `false` by default.
 - **SSL_CERTIFICATE_PATH**: Location of the ssl certificate. Defaults to `/home/git/data/certs/gitlab.crt`
@@ -759,7 +760,6 @@ Below is the complete list of available options that can be used to customize yo
 - **CA_CERTIFICATES_PATH**: List of SSL certificates to trust. Defaults to `/home/git/data/certs/ca.crt`.
 - **NGINX_MAX_UPLOAD_SIZE**: Maximum acceptable upload size. Defaults to `20m`.
 - **NGINX_X_FORWARDED_PROTO**: Advanced configuration option for the `proxy_set_header X-Forwarded-Proto` setting in the gitlab nginx vHost configuration. Defaults to `https` when `GITLAB_HTTPS` is `true`, else defaults to `$scheme`.
-- **HSTS_ENABLED**: Advanced configuration option for turning off the HSTS configuration. Applicable only when SSL is in use. Defaults to `true`. See [#138](https://github.com/sameersbn/docker-gitlab/issues/138) for use case scenario.
 - **REDIS_HOST**: The hostname of the redis server. Defaults to `localhost`
 - **REDIS_PORT**: The connection port of the redis server. Defaults to `6379`.
 - **UNICORN_WORKERS**: The number of unicorn workers to start. Defaults to `2`.
