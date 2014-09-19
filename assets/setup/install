@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-GITLAB_VERSION=7.2.1
+GITLAB_VERSION=7.2.2
 GITLAB_SHELL_VERSION=1.9.8
 
 GITLAB_INSTALL_DIR="/home/git/gitlab"

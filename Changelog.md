@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- upgrade to gitlab-ce 7.2.2
 - added GITLAB_HTTPS_HSTS_ENABLED configuration option (advanced config)
 - added GITLAB_HTTPS_HSTS_MAXAGE configuration option (advanced config)
 - upgrade to gitlab-shell 1.9.8
