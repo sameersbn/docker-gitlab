@@ -441,18 +441,11 @@ docker run --name=gitlab -d --link postgresql:postgresql \
 
 ## Redis
 
+GitLab uses the redis server for its key-value data store. The redis server connection details can be specified using environment variables.
+
 ### Internal Redis Server
 
-> **Warning**
->
-> The internal redis server will soon be removed from the image.
-
-> Please use a linked [redis](#linking-to-redis-container) container
-> or a external [redis](#external-redis-server) server
-
-> You've been warned.
-
-GitLab uses the redis server for its key-value data store. The redis server connection details can be specified using environment variables. If not specified, the  starts a redis server internally, no additional configuration is required.
+The internal redis server has been removed from the image. Please use a [linked redis](#linking-to-redis-container) container or specify a [external redis](#external-redis-server) connection.
 
 ### External Redis Server
 
