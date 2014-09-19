@@ -82,6 +82,8 @@ LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN=${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN:-}
 LDAP_BASE=${LDAP_BASE:-}
 LDAP_USER_FILTER=${LDAP_USER_FILTER:-}
 
+HSTS_MAX_AGE=${HSTS_MAXAGE:-31536000}
+
 REDMINE_URL=${REDMINE_URL:-}
 JIRA_URL=${JIRA_URL:-}
 
@@ -456,6 +458,8 @@ sed 's,{{SSL_KEY_PATH}},'"${SSL_KEY_PATH}"',' -i /etc/nginx/sites-enabled/gitlab
 sed 's,{{SSL_DHPARAM_PATH}},'"${SSL_DHPARAM_PATH}"',' -i /etc/nginx/sites-enabled/gitlab
 sed 's/{{NGINX_MAX_UPLOAD_SIZE}}/'"${NGINX_MAX_UPLOAD_SIZE}"'/' -i /etc/nginx/sites-enabled/gitlab
 sed 's/{{NGINX_X_FORWARDED_PROTO}}/'"${NGINX_X_FORWARDED_PROTO}"'/' -i /etc/nginx/sites-enabled/gitlab
+
+sed 's/{{HSTS_MAX_AGE}}/'"${HSTS_MAX_AGE}"'/' -i /etc/nginx/sites-enabled/gitlab
 
 # configure relative_url_root
 if [ -n "${GITLAB_RELATIVE_URL_ROOT}" ]; then
