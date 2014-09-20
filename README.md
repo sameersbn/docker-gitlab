@@ -447,6 +447,16 @@ GitLab uses the redis server for its key-value data store. The redis server conn
 
 The internal redis server has been removed from the image. Please use a [linked redis](#linking-to-redis-container) container or specify a [external redis](#external-redis-server) connection.
 
+> **Notice**
+>
+> The internal mysql server will also be removed in the next release.
+>
+> If you have been using the internal mysql server, then please switch to a
+> [linked mysql](#linking-to-mysql-container) container or
+> specify a [external mysql](#external-mysql-server) connection.
+> You've been warned.
+>
+
 ### External Redis Server
 
 The image can be configured to use an external redis server instead of starting a redis server internally. The configuration should be specified using environment variables while starting the GitLab image.
