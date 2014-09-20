@@ -153,8 +153,10 @@ Run the gitlab image
 
 ```bash
 docker run --name='gitlab' -it --rm \
--p 10022:22 -p 10080:80 \
 -e 'GITLAB_PORT=10080' -e 'GITLAB_SSH_PORT=10022' \
+-p 10022:22 -p 10080:80 \
+-v /var/run/docker.sock:/run/docker.sock \
+-v $(which docker):/bin/docker \
 sameersbn/gitlab:7.2.2
 ```
 

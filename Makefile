@@ -16,8 +16,10 @@ build:
 start:
 	@echo "Starting gitlab..."
 	@docker run --name='gitlab-demo' -d \
-		-p 10022:22 -p 10080:80 \
 		-e 'GITLAB_PORT=10080' -e 'GITLAB_SSH_PORT=10022' \
+		-p 10022:22 -p 10080:80 \
+		-v /var/run/docker.sock:/run/docker.sock \
+		-v $(shell which docker):/bin/docker \
 		${USER}/gitlab:latest >/dev/null
 	@echo "GitLab instance is booting up..."
 	@echo "Please be patient. This could take a while..."

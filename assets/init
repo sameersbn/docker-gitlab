@@ -135,6 +135,33 @@ case "${DB_TYPE}" in
   *) echo "Unsupported database adapter. Available adapters are mysql and postgres." && exit 1 ;;
 esac
 
+##
+## For the sake of getting the quick start guide to work,
+## we attempt to spin up a redis container if possible.
+##
+## NOTE: this is only meant for getting the quick start guide to work .
+##
+if [ -z "${REDIS_HOST}" -a -n "$(which docker)" -a -S /var/run/docker.sock ]; then
+  echo "Redis connection details not specified."
+  echo "Will try to spin up a new redis image with the name redis-gitlab."
+  echo "Please manually configure the redis connection in production."
+  case "$(docker inspect --format {{.State.Running}} redis-gitlab 2>/dev/null)" in
+    true)
+      echo "Using existing redis container..."
+      ;;
+    false)
+      echo "Starting up existing redis container..."
+      docker start redis-gitlab >/dev/null 2>/dev/null
+      ;;
+    *)
+      echo "Starting up a new redis container..."
+      docker run --name='redis-gitlab' -d sameersbn/redis:latest >/dev/null 2>/dev/null
+      ;;
+  esac
+  REDIS_HOST=$(docker inspect --format {{.NetworkSettings.IPAddress}} redis-gitlab 2>/dev/null)
+  REDIS_PORT=6379
+fi
+
 if [ -z "${REDIS_HOST}" ]; then
   echo "ERROR: "
   echo "  Please configure the redis connection."
