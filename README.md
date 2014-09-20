@@ -203,13 +203,25 @@ GitLab uses a database backend to store its data. You can configure this image t
 > **Warning**
 >
 > The internal mysql server will soon be removed from the image.
-
-> Please use a linked [mysql](#linking-to-mysql-container) or
-> [postgresql](#linking-to-postgresql-container) container instead.
-> Or else connect with an external [mysql](#external-mysql-server) or
-> [postgresql](#external-postgresql-server) server.
-
-> You've been warned.
+>
+> Please use a [linked mysql](#linking-to-mysql-container) container or specify a connection to a [external mysql](#external-mysql-server) server.
+>
+> **You've been warned.**
+>
+> If you are already using the internal mysql server then follow these instructions to migrate to a linked mysql container:
+>
+> Assuming that your mysql data is available at `/opt/gitlab/mysql`
+>
+> ```bash
+> docker run --name=mysql -d \
+>   -v /opt/gitlab/mysql:/var/lib/mysql \
+>   sameersbn/mysql:latest
+> ```
+> This will start a mysql container with your existing mysql data.
+> All you need to do now is link this mysql container to the gitlab container using the `--link mysql:mysql` option. 
+>
+> Refer to [Linking to MySQL Container](#linking-to-mysql-container) for more information.
+>
 
 This docker image is configured to use a MySQL database backend. The database connection can be configured using environment variables. If not specified, the image will start a mysql server internally and use it. However in this case, the data stored in the mysql database will be lost if the container is stopped/deleted. To avoid this you should mount a volume at `/var/lib/mysql`.
 
@@ -451,10 +463,9 @@ The internal redis server has been removed from the image. Please use a [linked 
 >
 > The internal mysql server will also be removed in the next release.
 >
-> If you have been using the internal mysql server, then please switch to a
-> [linked mysql](#linking-to-mysql-container) container or
-> specify a [external mysql](#external-mysql-server) connection.
-> You've been warned.
+> If you have been using the internal mysql server, then please migrate to a using a [linked mysql server](#linking-to-mysql-container) using the migration instructions listed [here](#internal-mysql-server).
+>
+> **You've been warned**
 >
 
 ### External Redis Server
