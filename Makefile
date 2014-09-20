@@ -13,7 +13,7 @@ help:
 build:
 	@docker build --tag=${USER}/gitlab .
 
-start:
+quickstart:
 	@echo "Starting gitlab..."
 	@docker run --name='gitlab-demo' -d \
 		-e 'GITLAB_PORT=10080' -e 'GITLAB_SSH_PORT=10022' \
