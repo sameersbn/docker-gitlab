@@ -108,8 +108,7 @@ if [ -n "${REDISIO_PORT_6379_TCP_ADDR}" ]; then
   REDIS_PORT=${REDIS_PORT:-${REDISIO_PORT_6379_TCP_PORT}}
 fi
 
-# fallback to using internal redis server
-REDIS_HOST=${REDIS_HOST:-localhost}
+# fallback to default redis port
 REDIS_PORT=${REDIS_PORT:-6379}
 
 # is a mysql or postgresql database linked?
@@ -135,6 +134,41 @@ case "${DB_TYPE}" in
   postgres) DB_PORT=${DB_PORT:-5432} ;;
   *) echo "Unsupported database adapter. Available adapters are mysql and postgres." && exit 1 ;;
 esac
+
+##
+## For the sake of getting the quick start guide to work,
+## we attempt to spin up a redis container if possible.
+##
+## NOTE: this is only meant for getting the quick start guide to work .
+##
+if [ -z "${REDIS_HOST}" -a -n "$(which docker)" -a -S /var/run/docker.sock ]; then
+  echo "Redis connection details not specified."
+  echo "Will try to spin up a new redis image with the name redis-gitlab."
+  echo "Please manually configure the redis connection in production."
+  case "$(docker inspect --format {{.State.Running}} redis-gitlab 2>/dev/null)" in
+    true)
+      echo "Using existing redis container..."
+      ;;
+    false)
+      echo "Starting up existing redis container..."
+      docker start redis-gitlab >/dev/null 2>/dev/null
+      ;;
+    *)
+      echo "Starting up a new redis container..."
+      docker run --name='redis-gitlab' -d sameersbn/redis:latest >/dev/null 2>/dev/null
+      ;;
+  esac
+  REDIS_HOST=$(docker inspect --format {{.NetworkSettings.IPAddress}} redis-gitlab 2>/dev/null)
+  REDIS_PORT=6379
+fi
+
+if [ -z "${REDIS_HOST}" ]; then
+  echo "ERROR: "
+  echo "  Please configure the redis connection."
+  echo "  Refer http://git.io/PMnRSw for more information."
+  echo "  Cannot continue without a redis connection. Aborting..."
+  exit 1
+fi
 
 case "${GITLAB_HTTPS}" in
   true)
@@ -260,11 +294,6 @@ if [ "${DB_HOST}" == "localhost" ]; then
     echo "CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` DEFAULT CHARACTER SET \`utf8\` COLLATE \`utf8_unicode_ci\`;" | mysql -uroot ${DB_PASS:+-p$DB_PASS}
     echo "GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON \`${DB_NAME}\`.* TO 'root'@'localhost';" | mysql -uroot ${DB_PASS:+-p$DB_PASS}
   fi
-fi
-
-if [ "${REDIS_HOST}" == "localhost" ]; then
-  echo "Starting redis server..."
-  supervisorctl start redis-server >/dev/null
 fi
 
 # configure git for the 'git' user

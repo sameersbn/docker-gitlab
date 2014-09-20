@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- removed internal redis server
 - shutdown the container gracefully
 
 **7.2.2**
