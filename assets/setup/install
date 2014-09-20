@@ -108,12 +108,6 @@ cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
 # disable default nginx configuration and enable gitlab's nginx configuration
 rm -f /etc/nginx/sites-enabled/default
 
-# silence setlocale message (#93)
-cat > /etc/default/locale <<EOF
-LC_ALL=en_US.UTF-8
-LANG=en_US.UTF-8
-EOF
-
 # disable pam authentication for sshd
 sed 's/UsePAM yes/UsePAM no/' -i /etc/ssh/sshd_config
 sed 's/UsePrivilegeSeparation yes/UsePrivilegeSeparation no/' -i /etc/ssh/sshd_config
