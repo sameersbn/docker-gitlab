@@ -628,8 +628,6 @@ appStop() {
   supervisorctl stop nginx >/dev/null
   echo "Stopping mysqld..."
   supervisorctl stop mysqld >/dev/null
-  echo "Stopping redis-server..."
-  supervisorctl stop redis-server >/dev/null
   echo "Stopping supervisord..."
   kill -15 $(cat /var/run/supervisord.pid)
   exit
