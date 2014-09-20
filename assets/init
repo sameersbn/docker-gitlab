@@ -167,9 +167,6 @@ sed -i 's,HostKey /etc/ssh/,HostKey '"${GITLAB_DATA_DIR}"'/ssh/,g' -i /etc/ssh/s
 # start supervisord
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
-echo "Starting openssh server..."
-supervisorctl start sshd >/dev/null
-
 cd ${GITLAB_INSTALL_DIR}
 
 # copy configuration templates
@@ -520,6 +517,9 @@ chmod 600 ${GITLAB_DATA_DIR}/.ssh/authorized_keys
 chown -R git:git ${GITLAB_DATA_DIR}/.ssh
 
 appStart () {
+  echo "Starting openssh server..."
+  supervisorctl start sshd >/dev/null
+
   echo "Starting nginx..."
   supervisorctl start nginx >/dev/null
 
