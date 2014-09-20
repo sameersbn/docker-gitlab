@@ -21,7 +21,6 @@ quickstart:
 		-v /var/run/docker.sock:/run/docker.sock \
 		-v $(shell which docker):/bin/docker \
 		${USER}/gitlab:latest >/dev/null
-	@echo "GitLab instance is booting up..."
 	@echo "Please be patient. This could take a while..."
 	@echo "GitLab will be available at http://localhost:10080"
 	@echo "Type 'make logs' for the logs"
