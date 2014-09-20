@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- shutdown the container gracefully
+
 **7.2.2**
 - upgrade to gitlab-ce 7.2.2
 - added GITLAB_HTTPS_HSTS_ENABLED configuration option (advanced config)
