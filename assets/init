@@ -517,6 +517,9 @@ chmod 600 ${GITLAB_DATA_DIR}/.ssh/authorized_keys
 chown -R git:git ${GITLAB_DATA_DIR}/.ssh
 
 appStart () {
+  echo "Starting cron..."
+  supervisorctl start cron >/dev/null
+
   echo "Starting openssh server..."
   supervisorctl start sshd >/dev/null
 
