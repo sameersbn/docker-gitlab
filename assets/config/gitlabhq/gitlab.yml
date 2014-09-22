@@ -82,7 +82,7 @@ production: &base
 
     ## Webhook settings
     # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
-    # webhook_timeout: 10
+    webhook_timeout: {{GITLAB_WEBHOOK_TIMEOUT}}
 
     ## Repository downloads directory
     # When a user clicks e.g. 'Download zip' on a project, a temporary zip file is created in the following directory.
