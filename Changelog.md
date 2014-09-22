@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- upgrade to gitlab-shell 2.0.0
 - removed internal redis server
 - shutdown the container gracefully
 
