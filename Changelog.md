@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- upgrade to gitlab-ce 7.3.0.rc1
 - upgrade to gitlab-shell 2.0.0
 - removed internal redis server
 - shutdown the container gracefully

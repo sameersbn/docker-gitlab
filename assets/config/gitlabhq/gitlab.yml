@@ -3,9 +3,11 @@
 # # # # # # # # # # # # # # # # # #
 #
 # How to use:
-# 1. copy file as gitlab.yml
-# 2. Replace gitlab -> host with your domain
-# 3. Replace gitlab -> email_from
+# 1. Copy file as gitlab.yml
+# 2. Update gitlab -> host with your fully qualified domain name
+# 3. Update gitlab -> email_from
+# 4. If you installed Git from source, change git -> bin_path to /usr/local/bin/git
+# 5. Review this configuration file for other settings you may want to adjust
 
 production: &base
   #
@@ -77,6 +79,10 @@ production: &base
       wiki: true
       snippets: false
       visibility_level: "{{GITLAB_PROJECTS_VISIBILITY}}"  # can be "private" | "internal" | "public"
+
+    ## Webhook settings
+    # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
+    # webhook_timeout: 10
 
     ## Repository downloads directory
     # When a user clicks e.g. 'Download zip' on a project, a temporary zip file is created in the following directory.
@@ -224,7 +230,7 @@ production: &base
   # CAUTION!
   # Use the default values unless you really know what you are doing
   git:
-    bin_path: "/usr/bin/git"
+    bin_path: /usr/bin/git
     # The next value is the maximum memory size grit can use
     # Given in number of bytes per git object (e.g. a commit)
     # This value can be increased if you have very large commits
