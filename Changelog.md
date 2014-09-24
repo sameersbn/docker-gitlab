@@ -1,6 +1,6 @@
 # Changelog
 
-**latest**
+**7.3.1**
 - upgrade to gitlab-ce 7.3.1
 
 **7.3.0**
