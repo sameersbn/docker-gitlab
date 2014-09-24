@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- upgrade to gitlab-ce 7.3.1
+
 **7.3.0**
 - upgrade to gitlab-ce 7.3.0
 - added GITLAB_WEBHOOK_TIMEOUT configuration option
