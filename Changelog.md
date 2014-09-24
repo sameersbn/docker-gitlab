@@ -1,6 +1,6 @@
 # Changelog
 
-**latest**
+**7.3.1-1**
 - plug bash vulnerability by switching to dash shell
 - automatically run the `gitlab:setup` rake task for new installs
 
