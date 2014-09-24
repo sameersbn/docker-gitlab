@@ -277,10 +277,13 @@ if [ "${DB_HOST}" == "localhost" ]; then
 
   echo "Starting mysql server..."
   supervisorctl start mysqld >/dev/null
+fi
 
+# Setup mysql database
+if [ "${DB_TYPE}" == "mysql" ]; then
   # wait for mysql server to start (max 120 seconds)
   timeout=120
-  while ! mysqladmin -uroot ${DB_PASS:+-p$DB_PASS} status >/dev/null 2>&1
+  while ! mysqladmin -h ${DB_HOST} -u${DB_USER} ${DB_PASS:+-p$DB_PASS} status >/dev/null 2>&1
   do
     timeout=$(expr $timeout - 1)
     if [ $timeout -eq 0 ]; then
@@ -290,10 +293,15 @@ if [ "${DB_HOST}" == "localhost" ]; then
     sleep 1
   done
 
-  if ! echo "USE ${DB_NAME}" | mysql -uroot ${DB_PASS:+-p$DB_PASS} >/dev/null 2>&1; then
+  # Create database if it does not exist
+  if ! echo "USE ${DB_NAME}" | mysql -h${DB_HOST} -u${DB_USER} ${DB_PASS:+-p$DB_PASS} >/dev/null 2>&1; then
+    echo "CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` DEFAULT CHARACTER SET \`utf8\` COLLATE \`utf8_unicode_ci\`;" | mysql -h${DB_HOST} -u${DB_USER} ${DB_PASS:+-p$DB_PASS}
+    echo "GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON \`${DB_NAME}\`.* TO 'root'@'localhost';" | mysql -h${DB_HOST} -u${DB_USER} ${DB_PASS:+-p$DB_PASS}
+  fi
+
+  # Activate DB_INIT if database is empty
+  if [ "0" == $(echo "SELECT count(*) FROM information_schema.tables WHERE table_schema = '${DB_NAME}'" | mysql -h ${DB_HOST} -u${DB_USER} ${DB_PASS:+-p$DB_PASS} |tail -1) ]; then
     DB_INIT="yes"
-    echo "CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` DEFAULT CHARACTER SET \`utf8\` COLLATE \`utf8_unicode_ci\`;" | mysql -uroot ${DB_PASS:+-p$DB_PASS}
-    echo "GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON \`${DB_NAME}\`.* TO 'root'@'localhost';" | mysql -uroot ${DB_PASS:+-p$DB_PASS}
   fi
 fi
 

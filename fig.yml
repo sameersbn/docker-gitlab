@@ -1,0 +1,20 @@
+mysql:
+  image: orchardup/mysql:latest
+  environment:
+    - MYSQL_USER=gitlab
+    - MYSQL_PASSWORD=airoaroonipouvua
+    - MYSQL_DATABASE=gitlabhq_production
+gitlab:
+  image: sameersbn/gitlab:latest
+  links:
+   - redis:redisio
+   - mysql:mysql
+  ports:
+   - "80"
+   - "22"
+  environment:
+    - DB_USER=gitlab
+    - DB_NAME=gitlabhq_production
+    - DB_PASS=airoaroonipouvua
+redis:
+  image: sameersbn/redis:latest
