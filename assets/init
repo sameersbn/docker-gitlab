@@ -581,7 +581,7 @@ appStart () {
   [ -f tmp/cache/VERSION ] && CACHE_VERSION=$(cat tmp/cache/VERSION)
   if [ "${GITLAB_VERSION}" != "${CACHE_VERSION}" ]; then
     echo "Migrating database..."
-    sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production 2>/dev/null
+    sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production >/dev/null
 
     # recreate the tmp directory
     rm -rf ${GITLAB_DATA_DIR}/tmp
