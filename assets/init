@@ -559,7 +559,30 @@ appStart () {
   echo "Starting nginx..."
   supervisorctl start nginx >/dev/null
 
-  # do we need to run the `gitlab:setup` rake task
+  # due to the nature of docker and its use cases, we allow some time
+  # for the database server to come online.
+  case "${DB_TYPE}" in
+    mysql)
+      prog="mysqladmin -u ${DB_USER} ${DB_PASS:+-p $DB_PASS} status"
+      ;;
+    postgres)
+      prog=$(find /usr/lib/postgresql/ -name pg_isready)
+      prog="${prog} -h ${DB_HOST} -U ${DB_USER} -d ${DB_NAME} -t 1"
+      ;;
+  esac
+  timeout=60
+  while ! ${prog} >/dev/null 2>&1
+  do
+    timeout=$(expr $timeout - 1)
+    if [ $timeout -eq 0 ]; then
+      echo "Could not connect to mysql server. Aborting..."
+      exit 1
+    fi
+    echo "Waiting for database server to accept connections..."
+    sleep 1
+  done
+
+  # run the `gitlab:setup` rake task if required
   case "${DB_TYPE}" in
     mysql)
       QUERY="SELECT count(*) FROM information_schema.tables WHERE table_schema = '${DB_NAME}';"
