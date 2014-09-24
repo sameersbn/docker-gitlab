@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- automatically run the `gitlab:setup` rake task for new installs
+
 **7.3.1**
 - upgrade to gitlab-ce 7.3.1
 

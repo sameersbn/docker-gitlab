@@ -59,7 +59,6 @@ DB_PORT=${DB_PORT:-}
 DB_NAME=${DB_NAME:-gitlabhq_production}
 DB_USER=${DB_USER:-root}
 DB_PASS=${DB_PASS:-}
-DB_INIT=${DB_INIT:-}
 DB_POOL=${DB_POOL:-10}
 
 SMTP_DOMAIN=${SMTP_DOMAIN:-www.gmail.com}
@@ -291,7 +290,6 @@ if [ "${DB_HOST}" == "localhost" ]; then
   done
 
   if ! mysql -u ${DB_USER} ${DB_PASS:+-p $DB_PASS} -e "USE ${DB_NAME};" >/dev/null 2>&1; then
-    DB_INIT="yes"
     mysql -u ${DB_USER} ${DB_PASS:+-p $DB_PASS} -e "CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` DEFAULT CHARACTER SET \`utf8\` COLLATE \`utf8_unicode_ci\`;"
     mysql -u ${DB_USER} ${DB_PASS:+-p $DB_PASS} -e "GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON \`${DB_NAME}\`.* TO 'root'@'localhost';"
   fi
@@ -561,10 +559,20 @@ appStart () {
   echo "Starting nginx..."
   supervisorctl start nginx >/dev/null
 
-  # reset the database if the --db-init switch was given.
-  if [ "$DB_INIT" == "yes" ]; then
-    echo "Initializing database..."
-    sudo -u git -H force=yes bundle exec rake gitlab:setup RAILS_ENV=production
+  # do we need to run the `gitlab:setup` rake task
+  case "${DB_TYPE}" in
+    mysql)
+      QUERY="SELECT count(*) FROM information_schema.tables WHERE table_schema = '${DB_NAME}';"
+      COUNT=$(mysql -h ${DB_HOST} -u ${DB_USER} ${DB_PASS:+-p $DB_PASS} -ss -e "${QUERY}")
+      ;;
+    postgres)
+      QUERY="SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public';"
+      COUNT=$(PGPASSWORD="${DB_PASS}" psql -h ${DB_HOST} -U ${DB_USER} -d ${DB_NAME} -Atw -c "${QUERY}" 2>/dev/null)
+      ;;
+  esac
+  if [ -z "${COUNT}" -o ${COUNT} -eq 0 ]; then
+    echo "Setting up GitLab for firstrun. Please be patient, this could take a while..."
+    sudo -u git -H force=yes bundle exec rake gitlab:setup RAILS_ENV=production >/dev/null
   fi
 
   # migrate database and compile the assets if the gitlab version has changed.
