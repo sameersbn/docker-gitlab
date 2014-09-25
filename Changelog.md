@@ -1,5 +1,8 @@
 # Changelog
 
+**7.3.1-3**
+- fix mysql command again!
+
 **7.3.1-2**
 - fix mysql server status check
 
