@@ -563,7 +563,7 @@ appStart () {
   # for the database server to come online.
   case "${DB_TYPE}" in
     mysql)
-      prog="mysqladmin -u ${DB_USER} ${DB_PASS:+-p $DB_PASS} status"
+      prog="mysqladmin -u ${DB_USER} ${DB_PASS:+-p $DB_PASS} -h $DB_HOST status"
       ;;
     postgres)
       prog=$(find /usr/lib/postgresql/ -name pg_isready)
