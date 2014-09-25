@@ -1,0 +1,20 @@
+postgresql:
+  image: orchardup/postgresql:latest
+  environment:
+    - POSTGRESQL_USER=gitlab
+    - POSTGRESQL_PASS=airoaroonipouvua
+    - POSTGRESQL_DB=gitlabhq_production
+gitlab:
+  image: sameersbn/gitlab:latest
+  links:
+   - redis:redisio
+   - postgresql:postgresql
+  ports:
+   - "80"
+   - "22"
+  environment:
+    - DB_USER=gitlab
+    - DB_PASS=airoaroonipouvua
+    - DB_NAME=gitlabhq_production
+redis:
+  image: redis:2.8.9
