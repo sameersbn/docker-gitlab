@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added GITLAB_GRAVATAR_ENABLED configuration option
 - added fig.yml
 
 **7.3.1-3**
