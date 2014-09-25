@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- added fig.yml
+
 **7.3.1-3**
 - fix mysql command again!
 
