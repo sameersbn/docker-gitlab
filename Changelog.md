@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- gitlab-shell: upgrade to v.2.0.1
 - added GITLAB_GRAVATAR_ENABLED configuration option
 - added fig.yml
 
