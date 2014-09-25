@@ -1,14 +1,14 @@
-mysql:
-  image: orchardup/mysql:latest
+postgresql:
+  image: orchardup/postgresql:latest
   environment:
-    - MYSQL_USER=gitlab
-    - MYSQL_PASSWORD=airoaroonipouvua
-    - MYSQL_DATABASE=gitlabhq_production
+    - POSTGRESQL_USER=gitlab
+    - POSTGRESQL_PASS=airoaroonipouvua
+    - POSTGRESQL_DB=gitlabhq_production
 gitlab:
   image: sameersbn/gitlab:latest
   links:
    - redis:redisio
-   - mysql:mysql
+   - postgresql:postgresql
   ports:
    - "80"
    - "22"
