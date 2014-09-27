@@ -311,6 +311,8 @@ docker run --name=gitlab -d --link mysql:mysql \
 
 The image will automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the mysql container using the magic of docker links and works with the following images:
  - [sameersbn/mysql](https://registry.hub.docker.com/u/sameersbn/mysql/)
+ - [centurylink/mysql](https://registry.hub.docker.com/u/centurylink/mysql/)
+ - [orchardup/mysql](https://registry.hub.docker.com/u/orchardup/mysql/)
 
 ### PostgreSQL
 
