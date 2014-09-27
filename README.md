@@ -360,41 +360,27 @@ mkdir -p /opt/postgresql/data
 sudo chcon -Rt svirt_sandbox_file_t /opt/postgresql/data
 ```
 
-The updated run command looks like this.
+The run command looks like this.
 
 ```bash
 docker run --name=postgresql -d \
+  -e 'DB_NAME=gitlabhq_production' -e 'DB_USER=gitlab' -e 'DB_PASS=password' \
   -v /opt/postgresql/data:/var/lib/postgresql \
   sameersbn/postgresql:latest
 ```
 
-You should now have the postgresql server running. The password for the postgres user can be found in the logs of the postgresql image.
-
-```bash
-docker logs postgresql
-```
-
-Now, lets login to the postgresql server and create a user and database for the GitLab application.
-
-```bash
-docker run -it --rm sameersbn/postgresql:latest psql -U postgres -h $(docker inspect --format {{.NetworkSettings.IPAddress}} postgresql)
-```
-
-```sql
-CREATE ROLE gitlab with LOGIN CREATEDB PASSWORD 'password';
-CREATE DATABASE gitlabhq_production;
-GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
-```
+The above command will create a database named `gitlabhq_production` and also create a user named `gitlab` with the password `password` with access to the `gitlabhq_production` database.
 
 We are now ready to start the GitLab application.
 
 ```bash
 docker run --name=gitlab -d --link postgresql:postgresql \
-  -e 'DB_USER=gitlab' -e 'DB_PASS=password' \
-  -e 'DB_NAME=gitlabhq_production' \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:7.3.1-3
 ```
+
+The image will automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the postgresql container using the magic of docker links and works with the following images:
+ - [sameersbn/postgresql](https://registry.hub.docker.com/u/sameersbn/postgresql/)
 
 ## Redis
 

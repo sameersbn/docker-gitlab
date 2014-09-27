@@ -132,6 +132,11 @@ elif [ -n "${POSTGRESQL_PORT_5432_TCP_ADDR}" ]; then
   DB_TYPE=${DB_TYPE:-postgres}
   DB_HOST=${DB_HOST:-${POSTGRESQL_PORT_5432_TCP_ADDR}}
   DB_PORT=${DB_PORT:-${POSTGRESQL_PORT_5432_TCP_PORT}}
+
+  # support for linked sameersbn/postgresql image
+  DB_USER=${DB_USER:-${POSTGRESQL_ENV_DB_USER}}
+  DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_DB_PASS}}
+  DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_DB_NAME}}
 fi
 
 # set default user and database
