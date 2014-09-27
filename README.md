@@ -382,6 +382,7 @@ docker run --name=gitlab -d --link postgresql:postgresql \
 The image will automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the postgresql container using the magic of docker links and works with the following images:
  - [sameersbn/postgresql](https://registry.hub.docker.com/u/sameersbn/postgresql/)
  - [orchardup/postgresql](https://registry.hub.docker.com/u/orchardup/postgresql/)
+ - [paintedfox/postgresql](https://registry.hub.docker.com/u/paintedfox/postgresql/)
 
 ## Redis
 
