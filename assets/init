@@ -57,8 +57,8 @@ SIDEKIQ_CONCURRENCY=${SIDEKIQ_CONCURRENCY:-5}
 DB_TYPE=${DB_TYPE:-}
 DB_HOST=${DB_HOST:-}
 DB_PORT=${DB_PORT:-}
-DB_NAME=${DB_NAME:-gitlabhq_production}
-DB_USER=${DB_USER:-root}
+DB_NAME=${DB_NAME:-}
+DB_USER=${DB_USER:-}
 DB_PASS=${DB_PASS:-}
 DB_POOL=${DB_POOL:-10}
 
@@ -118,12 +118,20 @@ REDIS_PORT=${REDIS_PORT:-6379}
 if [ -n "${MYSQL_PORT_3306_TCP_ADDR}" ]; then
   DB_TYPE=${DB_TYPE:-mysql}
   DB_HOST=${DB_HOST:-${MYSQL_PORT_3306_TCP_ADDR}}
-  DB_PORT=${DB_PORT:-${MYSQL_PORT_3306_TCP_PORT}}
+
+  # support for linked sameersbn/mysql image
+  DB_USER=${DB_USER:-${MYSQL_ENV_DB_USER}}
+  DB_PASS=${DB_PASS:-${MYSQL_ENV_DB_PASS}}
+  DB_NAME=${DB_NAME:-${MYSQL_ENV_DB_NAME}}
 elif [ -n "${POSTGRESQL_PORT_5432_TCP_ADDR}" ]; then
   DB_TYPE=${DB_TYPE:-postgres}
   DB_HOST=${DB_HOST:-${POSTGRESQL_PORT_5432_TCP_ADDR}}
   DB_PORT=${DB_PORT:-${POSTGRESQL_PORT_5432_TCP_PORT}}
 fi
+
+# set default user and database
+DB_USER=${DB_USER:-root}
+DB_NAME=${DB_NAME:-gitlabhq_production}
 
 # fallback to using the internal mysql server
 DB_TYPE=${DB_TYPE:-mysql}

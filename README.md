@@ -290,38 +290,27 @@ mkdir -p /opt/mysql/data
 sudo chcon -Rt svirt_sandbox_file_t /opt/mysql/data
 ```
 
-The updated run command looks like this.
+The run command looks like this.
 
 ```bash
 docker run --name=mysql -d \
+  -e 'DB_NAME=gitlabhq_production' -e 'DB_USER=gitlab' -e 'DB_PASS=password' \
 	-v /opt/mysql/data:/var/lib/mysql \
 	sameersbn/mysql:latest
 ```
 
-You should now have the mysql server running. By default the sameersbn/mysql image does not assign a password for the root user and allows remote connections for the root user from the `172.17.%.%` address space. This means you can login to the mysql server from the host as the root user.
-
-Now, lets login to the mysql server and create a user and database for the GitLab application.
-
-```bash
-docker run -it --rm sameersbn/mysql:latest mysql -uroot -h$(docker inspect --format {{.NetworkSettings.IPAddress}} mysql)
-```
-
-```sql
-CREATE USER 'gitlab'@'172.17.%.%' IDENTIFIED BY 'password';
-CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
-GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'172.17.%.%';
-FLUSH PRIVILEGES;
-```
+The above command will create a database named `gitlabhq_production` and also create a user named `gitlab` with the password `password` with full/remote access to the `gitlabhq_production` database.
 
 We are now ready to start the GitLab application.
 
 ```bash
 docker run --name=gitlab -d --link mysql:mysql \
-  -e 'DB_USER=gitlab' -e 'DB_PASS=password' \
-  -e 'DB_NAME=gitlabhq_production' \
   -v /opt/gitlab/data:/home/git/data \
   sameersbn/gitlab:7.3.1-3
 ```
+
+The image will automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the mysql container using the magic of docker links and works with the following images:
+ - [sameersbn/mysql](https://registry.hub.docker.com/u/sameersbn/mysql/)
 
 ### PostgreSQL
 
