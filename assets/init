@@ -149,9 +149,38 @@ elif [ -n "${POSTGRESQL_PORT_5432_TCP_ADDR}" ]; then
   DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_DB}}
 fi
 
-# set default user and database
-DB_USER=${DB_USER:-root}
-DB_NAME=${DB_NAME:-gitlabhq_production}
+##
+## For the sake of getting the quick start guide to work,
+## we attempt to spin up a postgresql container if possible.
+##
+## NOTE: this is only meant for getting the quick start guide to work .
+##
+if [ -z "${DB_HOST}" -a -n "$(which docker)" -a -S /var/run/docker.sock ]; then
+  echo "Database connection details not specified."
+  echo "Will try to spin up a new postgresql image with the name postgresql-gitlab."
+  echo "Please manually configure the database connection in production."
+  case "$(docker inspect --format {{.State.Running}} postgresql-gitlab 2>/dev/null)" in
+    true)
+      echo "Using existing postgresql container..."
+      ;;
+    false)
+      echo "Starting up existing postgresql container..."
+      docker start postgresql-gitlab >/dev/null 2>/dev/null
+      ;;
+    *)
+      echo "Starting up a new postgresql container..."
+      docker run --name='postgresql-gitlab' -d \
+        -e 'DB_USER=gitlab_user' -e 'DB_PASS=gitlab_pass' -e 'DB_NAME=gitlab_db' \
+        sameersbn/postgresql:latest >/dev/null 2>/dev/null
+      ;;
+  esac
+  DB_TYPE=postgres
+  DB_HOST=$(docker inspect --format {{.NetworkSettings.IPAddress}} postgresql-gitlab 2>/dev/null)
+  DB_PORT=5432
+  DB_USER=gitlab_user
+  DB_PASS=gitlab_pass
+  DB_NAME=gitlab_db
+fi
 
 if [ -z "${DB_HOST}" ]; then
   echo "ERROR: "
@@ -172,6 +201,10 @@ case "${DB_TYPE}" in
     exit 1
     ;;
 esac
+
+# set default user and database
+DB_USER=${DB_USER:-root}
+DB_NAME=${DB_NAME:-gitlabhq_production}
 
 ##
 ## For the sake of getting the quick start guide to work,
