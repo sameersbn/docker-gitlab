@@ -1,7 +1,9 @@
 # Changelog
 
-**7.3.2**
+**7.3.2-1**
 - fix mysql status check
+
+**7.3.2**
 - upgrade to gitlab-ce 7.3.2
 - removed internal mysql server
 - added support for fetching `DB_NAME`, `DB_USER` and `DB_PASS` from the postgresql linkage
