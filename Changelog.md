@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- upgrade to gitlab-ce 7.3.2
 - removed internal mysql server
 - added support for fetching `DB_NAME`, `DB_USER` and `DB_PASS` from the postgresql linkage
 - added support for fetching `DB_NAME`, `DB_USER` and `DB_PASS` from the mysql linkage
