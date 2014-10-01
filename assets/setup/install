@@ -144,19 +144,6 @@ stdout_logfile=/var/log/supervisor/%(program_name)s.log
 stderr_logfile=/var/log/supervisor/%(program_name)s.log
 EOF
 
-# configure supervisord to start mysql (manual)
-cat > /etc/supervisor/conf.d/mysqld.conf <<EOF
-[program:mysqld]
-priority=20
-directory=/tmp
-command=/usr/bin/mysqld_safe
-user=root
-autostart=false
-autorestart=true
-stdout_logfile=/var/log/supervisor/%(program_name)s.log
-stderr_logfile=/var/log/supervisor/%(program_name)s.log
-EOF
-
 # configure supervisord to start crond
 cat > /etc/supervisor/conf.d/cron.conf <<EOF
 [program:cron]

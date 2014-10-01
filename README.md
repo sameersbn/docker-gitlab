@@ -202,35 +202,9 @@ GitLab uses a database backend to store its data. You can configure this image t
 
 #### Internal MySQL Server
 
-> **Warning**
->
-> The internal mysql server will soon be removed from the image.
->
-> Please use a [linked mysql](#linking-to-mysql-container) container or specify a connection to a [external mysql](#external-mysql-server) server.
->
-> **You've been warned.**
->
-> If you have been using the internal mysql server then first take a backup of the application and then restore the backup after setting up a linked or external mysql server. *NOTE: the backup and restore has to be performed with the same version of the image*
->
+The internal mysql server has been removed from the image. Please use a [linked mysql](#linking-to-mysql-container) container or specify a connection to a [external mysql](#external-mysql-server) server.
 
-This docker image is configured to use a MySQL database backend. The database connection can be configured using environment variables. If not specified, the image will start a mysql server internally and use it. However in this case, the data stored in the mysql database will be lost if the container is stopped/deleted. To avoid this you should mount a volume at `/var/lib/mysql`.
-
-SELinux users are also required to change the security context of the mount point so that it plays nicely with selinux.
-
-```bash
-mkdir -p /opt/gitlab/mysql
-sudo chcon -Rt svirt_sandbox_file_t /opt/gitlab/mysql
-```
-
-The updated run command looks like this.
-
-```bash
-docker run --name=gitlab -d \
-  -v /opt/gitlab/data:/home/git/data \
-  -v /opt/gitlab/mysql:/var/lib/mysql sameersbn/gitlab:7.3.1-3
-```
-
-This will make sure that the data stored in the database is not lost when the image is stopped and started again.
+If you have been using the internal mysql server then first take a backup of the application and then restore the backup after setting up a linked or external mysql server. *NOTE: the backup and restore has to be performed with the same version of the image and should be version `7.3.1-3` or lower*
 
 #### External MySQL Server
 
@@ -379,15 +353,6 @@ GitLab uses the redis server for its key-value data store. The redis server conn
 ### Internal Redis Server
 
 The internal redis server has been removed from the image. Please use a [linked redis](#linking-to-redis-container) container or specify a [external redis](#external-redis-server) connection.
-
-> **Notice**
->
-> The internal mysql server will also be removed in the next release.
->
-> If you have been using the internal mysql server, then please migrate to a using a [linked mysql server](#linking-to-mysql-container) using the migration instructions listed [here](#internal-mysql-server).
->
-> **You've been warned**
->
 
 ### External Redis Server
 

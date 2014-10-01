@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- removed internal mysql server
 - added support for fetching `DB_NAME`, `DB_USER` and `DB_PASS` from the postgresql linkage
 - added support for fetching `DB_NAME`, `DB_USER` and `DB_PASS` from the mysql linkage
 - gitlab-shell: upgrade to v.2.0.1
