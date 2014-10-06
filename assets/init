@@ -118,6 +118,7 @@ REDIS_PORT=${REDIS_PORT:-6379}
 if [ -n "${MYSQL_PORT_3306_TCP_ADDR}" ]; then
   DB_TYPE=${DB_TYPE:-mysql}
   DB_HOST=${DB_HOST:-${MYSQL_PORT_3306_TCP_ADDR}}
+  DB_PORT=${DB_PORT:-${MYSQL_PORT_3306_TCP_PORT}}
 
   # support for linked sameersbn/mysql image
   DB_USER=${DB_USER:-${MYSQL_ENV_DB_USER}}
