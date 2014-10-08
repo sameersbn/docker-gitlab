@@ -1,7 +1,9 @@
 FROM sameersbn/ubuntu:14.04.20141001
 MAINTAINER sameer@damagehead.com
 
-RUN apt-get update \
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv E1DF1F24 \
+ && echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" >> /etc/apt/sources.list \
+ && apt-get update \
  && apt-get install -y supervisor logrotate locales \
       nginx openssh-server redis-tools mysql-client \
       git-core postgresql-client ruby \
