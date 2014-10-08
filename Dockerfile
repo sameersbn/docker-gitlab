@@ -1,10 +1,10 @@
-FROM sameersbn/debian:jessie.20141001
+FROM sameersbn/ubuntu:14.04.20141001
 MAINTAINER sameer@damagehead.com
 
 RUN apt-get update \
  && apt-get install -y supervisor logrotate locales \
       nginx openssh-server redis-tools mysql-client \
-      git-core postgresql-client ruby rubygems \
+      git-core postgresql-client ruby \
       python2.7 python-docutils \
       libmysqlclient18 libpq5 zlib1g libyaml-0-2 libssl1.0.0 \
       libgdbm3 libreadline6 libncurses5 libffi6 \
