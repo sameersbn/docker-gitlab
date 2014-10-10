@@ -118,6 +118,44 @@ cat > /etc/logrotate.d/supervisord <<EOF
 }
 EOF
 
+# configure supervisord to start unicorn
+cat > /etc/supervisor/conf.d/unicorn.conf <<EOF
+[program:unicorn]
+priority=10
+directory=/home/git/gitlab
+environment=HOME=/home/git
+command=bundle exec unicorn_rails -c ${GITLAB_INSTALL_DIR}/config/unicorn.rb -E production
+user=git
+autostart=false
+autorestart=true
+stopsignal=QUIT
+stdout_logfile=/var/log/supervisor/%(program_name)s.log
+stderr_logfile=/var/log/supervisor/%(program_name)s.log
+EOF
+
+# configure supervisord to start sidekiq
+cat > /etc/supervisor/conf.d/sidekiq.conf <<EOF
+[program:sidekiq]
+priority=10
+directory=/home/git/gitlab
+command=bundle exec sidekiq
+  -q post_receive
+  -q mailer
+  -q system_hook
+  -q project_web_hook
+  -q gitlab_shell
+  -q common
+  -q default
+  -e production
+  -P ${GITLAB_INSTALL_DIR}/tmp/pids/sidekiq.pid
+  -L ${GITLAB_INSTALL_DIR}/log/sidekiq.log
+user=git
+autostart=false
+autorestart=true
+stdout_logfile=/var/log/supervisor/%(program_name)s.log
+stderr_logfile=/var/log/supervisor/%(program_name)s.log
+EOF
+
 # configure supervisor to start sshd
 mkdir -p /var/run/sshd
 cat > /etc/supervisor/conf.d/sshd.conf <<EOF
