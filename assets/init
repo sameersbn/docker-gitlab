@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-trap appStop SIGINT SIGTERM
-
 GITLAB_INSTALL_DIR="/home/git/gitlab"
 GITLAB_DATA_DIR="/home/git/data"
 GITLAB_BACKUP_DIR="${GITLAB_BACKUP_DIR:-$GITLAB_DATA_DIR/backups}"
@@ -272,9 +270,6 @@ if [ ! -e ${GITLAB_DATA_DIR}/ssh/ssh_host_rsa_key ]; then
 fi
 # configure sshd to pick up the host keys from ${GITLAB_DATA_DIR}/ssh/
 sed -i 's,HostKey /etc/ssh/,HostKey '"${GITLAB_DATA_DIR}"'/ssh/,g' -i /etc/ssh/sshd_config
-
-# start supervisord
-/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
 cd ${GITLAB_INSTALL_DIR}
 
@@ -592,15 +587,6 @@ chmod 600 ${GITLAB_DATA_DIR}/.ssh/authorized_keys
 chown -R git:git ${GITLAB_DATA_DIR}/.ssh
 
 appStart () {
-  echo "Starting cron..."
-  supervisorctl start cron >/dev/null
-
-  echo "Starting openssh server..."
-  supervisorctl start sshd >/dev/null
-
-  echo "Starting nginx..."
-  supervisorctl start nginx >/dev/null
-
   # due to the nature of docker and its use cases, we allow some time
   # for the database server to come online.
   case "${DB_TYPE}" in
@@ -668,12 +654,12 @@ appStart () {
   rm -rf tmp/pids/unicorn.pid
   rm -rf tmp/pids/sidekiq.pid
 
-  # start the gitlab application
-  sudo -u git -H /etc/init.d/gitlab start
+  # remove state unicorn socket if it exists
+  rm -rf tmp/sockets/gitlab.socket
 
   # create satellite directories
-  sudo -u git -H bundle exec rake gitlab:satellites:create RAILS_ENV=production
-  sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
+  echo "Creating satellites..."
+  sudo -u git -H bundle exec rake gitlab:satellites:create RAILS_ENV=production >/dev/null
 
   # setup cron job for automatic backups
   case "${GITLAB_BACKUPS}" in
@@ -690,22 +676,9 @@ EOF
   esac
   crontab -u git /tmp/cron.git 2>/dev/null && rm -rf /tmp/cron.git
 
-  # watch the access logs
-  tail -F /var/log/nginx/gitlab_access.log
-}
-
-appStop() {
-  echo ""
-  /etc/init.d/gitlab stop
-  echo "Stopping crond..."
-  supervisorctl stop cron >/dev/null
-  echo "Stopping sshd..."
-  supervisorctl stop sshd >/dev/null
-  echo "Stopping nginx..."
-  supervisorctl stop nginx >/dev/null
-  echo "Stopping supervisord..."
-  kill -15 $(cat /var/run/supervisord.pid)
-  exit
+  # start supervisord
+  echo "Starting supervisord..."
+  exec /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
 }
 
 appSanitize () {
