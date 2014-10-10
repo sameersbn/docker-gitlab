@@ -681,9 +681,6 @@ appStart () {
   echo "Starting sidekiq..."
   supervisorctl start sidekiq >/dev/null
 
-  # perform status check
-  sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
-
   # setup cron job for automatic backups
   case "${GITLAB_BACKUPS}" in
     daily)
