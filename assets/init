@@ -668,11 +668,14 @@ appStart () {
   rm -rf tmp/pids/unicorn.pid
   rm -rf tmp/pids/sidekiq.pid
 
+  # create satellite directories
+  echo "Creating satellites..."
+  sudo -u git -H bundle exec rake gitlab:satellites:create RAILS_ENV=production >/dev/null
+
   # start the gitlab application
   sudo -u git -H /etc/init.d/gitlab start
 
-  # create satellite directories
-  sudo -u git -H bundle exec rake gitlab:satellites:create RAILS_ENV=production
+  # perform status check
   sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
   # setup cron job for automatic backups
