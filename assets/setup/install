@@ -138,6 +138,7 @@ cat > /etc/supervisor/conf.d/sidekiq.conf <<EOF
 [program:sidekiq]
 priority=10
 directory=/home/git/gitlab
+environment=HOME=/home/git
 command=bundle exec sidekiq
   -q post_receive
   -q mailer
