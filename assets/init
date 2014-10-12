@@ -102,15 +102,6 @@ OAUTH_TWITTER_APP_SECRET=${OAUTH_TWITTER_APP_SECRET:-}
 OAUTH_GITHUB_API_KEY=${OAUTH_GITHUB_API_KEY:-}
 OAUTH_GITHUB_APP_SECRET=${OAUTH_GITHUB_APP_SECRET:-}
 
-# is a redis container linked?
-if [ -n "${REDISIO_PORT_6379_TCP_ADDR}" ]; then
-  REDIS_HOST=${REDIS_HOST:-${REDISIO_PORT_6379_TCP_ADDR}}
-  REDIS_PORT=${REDIS_PORT:-${REDISIO_PORT_6379_TCP_PORT}}
-fi
-
-# fallback to default redis port
-REDIS_PORT=${REDIS_PORT:-6379}
-
 # is a mysql or postgresql database linked?
 # requires that the mysql or postgresql containers have exposed
 # port 3306 and 5432 respectively.
@@ -205,6 +196,15 @@ esac
 # set default user and database
 DB_USER=${DB_USER:-root}
 DB_NAME=${DB_NAME:-gitlabhq_production}
+
+# is a redis container linked?
+if [ -n "${REDISIO_PORT_6379_TCP_ADDR}" ]; then
+  REDIS_HOST=${REDIS_HOST:-${REDISIO_PORT_6379_TCP_ADDR}}
+  REDIS_PORT=${REDIS_PORT:-${REDISIO_PORT_6379_TCP_PORT}}
+fi
+
+# fallback to default redis port
+REDIS_PORT=${REDIS_PORT:-6379}
 
 ##
 ## For the sake of getting the quick start guide to work,
