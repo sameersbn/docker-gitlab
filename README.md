@@ -204,7 +204,21 @@ GitLab uses a database backend to store its data. You can configure this image t
 
 The internal mysql server has been removed from the image. Please use a [linked mysql](#linking-to-mysql-container) container or specify a connection to a [external mysql](#external-mysql-server) server.
 
-If you have been using the internal mysql server then first take a backup of the application and then restore the backup after setting up a linked or external mysql server. *NOTE: the backup and restore has to be performed with the same version of the image and should be version `7.3.2-1` or lower*
+If you have been using the internal mysql server follow these instructions to migrate to a linked mysql container:
+
+Assuming that your mysql data is available at `/opt/gitlab/mysql`
+
+```bash
+docker run --name=mysql -d \
+  -v /opt/gitlab/mysql:/var/lib/mysql \
+  sameersbn/mysql:latest
+```
+
+This will start a mysql container with your existing mysql data. Now login to the mysql container and create a user for the existing `gitlabhq_production` database.
+
+All you need to do now is link this mysql container to the gitlab ci container using the `--link mysql:mysql` option and provide the `DB_NAME`, `DB_USER` and `DB_PASS` parameters.
+
+Refer to [Linking to MySQL Container](#linking-to-mysql-container) for more information.
 
 #### External MySQL Server
 
