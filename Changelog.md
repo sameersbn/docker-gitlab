@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- launch all daemons via supervisord
+
 **7.3.2-1**
 - fix mysql status check
 
