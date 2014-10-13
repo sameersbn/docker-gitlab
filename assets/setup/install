@@ -25,7 +25,7 @@ apt-get install -y gcc g++ make patch pkg-config cmake \
 rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
 
 # add git user
-adduser --disabled-login --shell /bin/dash --gecos 'GitLab' git
+adduser --disabled-login --gecos 'GitLab' git
 passwd -d git
 
 rm -rf /home/git/.ssh
