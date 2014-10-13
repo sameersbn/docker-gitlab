@@ -624,11 +624,12 @@ appStart () {
     sudo -u git -H force=yes bundle exec rake gitlab:setup RAILS_ENV=production >/dev/null
   fi
 
-  # migrate database and compile the assets if the gitlab version has changed.
+  # migrate database and compile the assets if the gitlab version or relative_url has changed.
   CACHE_VERSION=
   GITLAB_VERSION=$(cat VERSION)
   [ -f tmp/cache/VERSION ] && CACHE_VERSION=$(cat tmp/cache/VERSION)
-  if [ "${GITLAB_VERSION}" != "${CACHE_VERSION}" ]; then
+  [ -f tmp/cache/GITLAB_RELATIVE_URL_ROOT ] && CACHE_GITLAB_RELATIVE_URL_ROOT=$(cat tmp/cache/GITLAB_RELATIVE_URL_ROOT)
+  if [ "${GITLAB_VERSION}" != "${CACHE_VERSION}" -o "${GITLAB_RELATIVE_URL_ROOT}" != "${CACHE_GITLAB_RELATIVE_URL_ROOT}" ]; then
     echo "Migrating database..."
     sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production >/dev/null
 
@@ -646,6 +647,7 @@ appStart () {
     sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production 2>/dev/null
     sudo -u git -H touch tmp/cache/VERSION
     sudo -u git -H echo "${GITLAB_VERSION}" > tmp/cache/VERSION
+    sudo -u git -H echo "${GITLAB_RELATIVE_URL_ROOT}" > tmp/cache/GITLAB_RELATIVE_URL_ROOT
   fi
 
   # remove stale unicorn and sidekiq pid's if they exist.
