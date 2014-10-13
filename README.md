@@ -229,7 +229,7 @@ Before you start the GitLab image create user and database for gitlab.
 ```sql
 CREATE USER 'gitlab'@'%.%.%.%' IDENTIFIED BY 'password';
 CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
-GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'%.%.%.%';
+GRANT ALL PRIVILEGES ON `gitlabhq_production`.* TO 'gitlab'@'%.%.%.%';
 ```
 
 We are now ready to start the GitLab application.
