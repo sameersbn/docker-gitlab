@@ -51,7 +51,7 @@ REDIS_PORT=${REDIS_PORT:-}
 
 UNICORN_WORKERS=${UNICORN_WORKERS:-2}
 UNICORN_TIMEOUT=${UNICORN_TIMEOUT:-60}
-SIDEKIQ_CONCURRENCY=${SIDEKIQ_CONCURRENCY:-5}
+SIDEKIQ_CONCURRENCY=${SIDEKIQ_CONCURRENCY:-25}
 
 DB_TYPE=${DB_TYPE:-}
 DB_HOST=${DB_HOST:-}
@@ -392,8 +392,8 @@ sudo -u git -H sed 's/{{DB_USER}}/'"${DB_USER}"'/' -i config/database.yml
 sudo -u git -H sed 's/{{DB_PASS}}/'"${DB_PASS}"'/' -i config/database.yml
 sudo -u git -H sed 's/{{DB_POOL}}/'"${DB_POOL}"'/' -i config/database.yml
 
-# configure sidekiq
-sudo -u git -H sed 's/{{SIDEKIQ_CONCURRENCY}}/'"${SIDEKIQ_CONCURRENCY}"'/' -i config/sidekiq.yml
+# configure sidekiq concurrency
+sed 's/{{SIDEKIQ_CONCURRENCY}}/'"${SIDEKIQ_CONCURRENCY}"'/' -i /etc/supervisor/conf.d/sidekiq.conf
 
 # configure redis
 sudo -u git -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/g' -i config/resque.yml
