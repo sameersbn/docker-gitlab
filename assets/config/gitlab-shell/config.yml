@@ -36,7 +36,7 @@ redis:
 
 # Log file.
 # Default is gitlab-shell.log in the root directory.
-# log_file: "/home/git/gitlab-shell/gitlab-shell.log"
+log_file: "/var/log/gitlab/gitlab-shell/gitlab-shell.log"
 
 # Log level. INFO by default
 log_level: INFO

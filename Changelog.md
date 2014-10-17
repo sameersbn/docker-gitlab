@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- feature: gitlab logs volume
 - automatically compile assets if relative_url is changed
 - launch all daemons via supervisord
 

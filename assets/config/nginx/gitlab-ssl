@@ -94,8 +94,8 @@ server {
   ssl_dhparam {{SSL_DHPARAM_PATH}};
 
   ## Individual nginx logs for this GitLab vhost
-  access_log  /var/log/nginx/gitlab_access.log;
-  error_log   /var/log/nginx/gitlab_error.log;
+  access_log  /var/log/gitlab/nginx/gitlab_access.log;
+  error_log   /var/log/gitlab/nginx/gitlab_error.log;
 
   location {{GITLAB_RELATIVE_URL_ROOT}} {
     # alias {{GITLAB_INSTALL_DIR}}/public;

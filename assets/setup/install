@@ -61,9 +61,13 @@ sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
 sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
 sudo -u git -H cp config/initializers/smtp_settings.rb.sample config/initializers/smtp_settings.rb
 
-# create required tmp and log directories
+# symlink log -> /var/log/gitlab/gitlab
+rm -rf log
+ln -sf /var/log/gitlab/gitlab log
+
+# create required tmp directories
 sudo -u git -H mkdir -p tmp/pids/ tmp/sockets/
-chmod -R u+rwX log tmp
+chmod -R u+rwX tmp
 
 # create symlink to assets in tmp/cache
 rm -rf tmp/cache
@@ -76,9 +80,6 @@ sudo -u git -H ln -s ${GITLAB_DATA_DIR}/tmp/public/assets public/assets
 # create symlink to uploads directory
 rm -rf public/uploads
 sudo -u git -H ln -s ${GITLAB_DATA_DIR}/uploads public/uploads
-
-# create production log
-sudo -u git -H touch log/production.log
 
 # install gems required by gitlab, use local cache if available
 if [ -d "${GEM_CACHE_DIR}" ]; then
@@ -94,9 +95,6 @@ chown -R git:git /home/git/
 cp lib/support/init.d/gitlab /etc/init.d/gitlab
 chmod +x /etc/init.d/gitlab
 
-# install logrotate configuration
-cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
-
 # disable default nginx configuration and enable gitlab's nginx configuration
 rm -f /etc/nginx/sites-enabled/default
 
@@ -107,7 +105,46 @@ echo "UseDNS no" >> /etc/ssh/sshd_config
 
 # configure supervisord log rotation
 cat > /etc/logrotate.d/supervisord <<EOF
-/var/log/supervisor/*.log {
+/var/log/gitlab/supervisor/*.log {
+  weekly
+  missingok
+  rotate 52
+  compress
+  delaycompress
+  notifempty
+  copytruncate
+}
+EOF
+
+# configure gitlab log rotation
+cat > /etc/logrotate.d/gitlab <<EOF
+/var/log/gitlab/gitlab/*.log {
+  weekly
+  missingok
+  rotate 52
+  compress
+  delaycompress
+  notifempty
+  copytruncate
+}
+EOF
+
+# configure gitlab-shell log rotation
+cat > /etc/logrotate.d/gitlab <<EOF
+/var/log/gitlab/gitlab-shell/*.log {
+  weekly
+  missingok
+  rotate 52
+  compress
+  delaycompress
+  notifempty
+  copytruncate
+}
+EOF
+
+# configure gitlab vhost log rotation
+cat > /etc/logrotate.d/gitlab <<EOF
+/var/log/gitlab/nginx/*.log {
   weekly
   missingok
   rotate 52
@@ -129,8 +166,8 @@ user=git
 autostart=true
 autorestart=true
 stopsignal=QUIT
-stdout_logfile=/var/log/supervisor/%(program_name)s.log
-stderr_logfile=/var/log/supervisor/%(program_name)s.log
+stdout_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
+stderr_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
 EOF
 
 # configure supervisord to start sidekiq
@@ -153,8 +190,8 @@ command=bundle exec sidekiq -c {{SIDEKIQ_CONCURRENCY}}
 user=git
 autostart=true
 autorestart=true
-stdout_logfile=/var/log/supervisor/%(program_name)s.log
-stderr_logfile=/var/log/supervisor/%(program_name)s.log
+stdout_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
+stderr_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
 EOF
 
 # configure supervisor to start sshd
@@ -166,8 +203,8 @@ command=/usr/sbin/sshd -D
 user=root
 autostart=true
 autorestart=true
-stdout_logfile=/var/log/supervisor/%(program_name)s.log
-stderr_logfile=/var/log/supervisor/%(program_name)s_error.log
+stdout_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
+stderr_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
 EOF
 
 # configure supervisord to start nginx
@@ -179,8 +216,8 @@ command=/usr/sbin/nginx -g "daemon off;"
 user=root
 autostart=true
 autorestart=true
-stdout_logfile=/var/log/supervisor/%(program_name)s.log
-stderr_logfile=/var/log/supervisor/%(program_name)s.log
+stdout_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
+stderr_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
 EOF
 
 # configure supervisord to start crond
@@ -192,8 +229,8 @@ command=/usr/sbin/cron -f
 user=root
 autostart=true
 autorestart=true
-stdout_logfile=/var/log/supervisor/%(program_name)s.log
-stderr_logfile=/var/log/supervisor/%(program_name)s.log
+stdout_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
+stderr_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
 EOF
 
 # purge build dependencies
