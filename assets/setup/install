@@ -105,7 +105,7 @@ echo "UseDNS no" >> /etc/ssh/sshd_config
 
 # configure supervisord log rotation
 cat > /etc/logrotate.d/supervisord <<EOF
-/var/log/supervisor/*.log {
+/var/log/gitlab/supervisor/*.log {
   weekly
   missingok
   rotate 52
@@ -166,8 +166,8 @@ user=git
 autostart=true
 autorestart=true
 stopsignal=QUIT
-stdout_logfile=/var/log/supervisor/%(program_name)s.log
-stderr_logfile=/var/log/supervisor/%(program_name)s.log
+stdout_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
+stderr_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
 EOF
 
 # configure supervisord to start sidekiq
@@ -190,8 +190,8 @@ command=bundle exec sidekiq -c {{SIDEKIQ_CONCURRENCY}}
 user=git
 autostart=true
 autorestart=true
-stdout_logfile=/var/log/supervisor/%(program_name)s.log
-stderr_logfile=/var/log/supervisor/%(program_name)s.log
+stdout_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
+stderr_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
 EOF
 
 # configure supervisor to start sshd
@@ -203,8 +203,8 @@ command=/usr/sbin/sshd -D
 user=root
 autostart=true
 autorestart=true
-stdout_logfile=/var/log/supervisor/%(program_name)s.log
-stderr_logfile=/var/log/supervisor/%(program_name)s_error.log
+stdout_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
+stderr_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
 EOF
 
 # configure supervisord to start nginx
@@ -216,8 +216,8 @@ command=/usr/sbin/nginx -g "daemon off;"
 user=root
 autostart=true
 autorestart=true
-stdout_logfile=/var/log/supervisor/%(program_name)s.log
-stderr_logfile=/var/log/supervisor/%(program_name)s.log
+stdout_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
+stderr_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
 EOF
 
 # configure supervisord to start crond
@@ -229,8 +229,8 @@ command=/usr/sbin/cron -f
 user=root
 autostart=true
 autorestart=true
-stdout_logfile=/var/log/supervisor/%(program_name)s.log
-stderr_logfile=/var/log/supervisor/%(program_name)s.log
+stdout_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
+stderr_logfile=/var/log/gitlab/supervisor/%(program_name)s.log
 EOF
 
 # purge build dependencies
