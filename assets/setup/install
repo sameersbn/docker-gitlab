@@ -129,6 +129,19 @@ cat > /etc/logrotate.d/gitlab <<EOF
 }
 EOF
 
+# configure gitlab-shell log rotation
+cat > /etc/logrotate.d/gitlab <<EOF
+/var/log/gitlab/gitlab-shell/*.log {
+  weekly
+  missingok
+  rotate 52
+  compress
+  delaycompress
+  notifempty
+  copytruncate
+}
+EOF
+
 # configure supervisord to start unicorn
 cat > /etc/supervisor/conf.d/unicorn.conf <<EOF
 [program:unicorn]
