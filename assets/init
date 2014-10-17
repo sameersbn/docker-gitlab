@@ -272,6 +272,7 @@ fi
 sed -i 's,HostKey /etc/ssh/,HostKey '"${GITLAB_DATA_DIR}"'/ssh/,g' -i /etc/ssh/sshd_config
 
 # populate /var/log/gitlab
+mkdir -m 0755 -p /var/log/gitlab/nginx        && chown -R git:git /var/log/gitlab/nginx
 mkdir -m 0755 -p /var/log/gitlab/gitlab       && chown -R git:git /var/log/gitlab/gitlab
 mkdir -m 0755 -p /var/log/gitlab/gitlab-shell && chown -R git:git /var/log/gitlab/gitlab-shell
 
