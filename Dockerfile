@@ -31,6 +31,7 @@ EXPOSE 80
 EXPOSE 443
 
 VOLUME ["/home/git/data"]
+VOLUME ["/var/log/gitlab"]
 
 ENTRYPOINT ["/app/init"]
 CMD ["app:start"]
