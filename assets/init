@@ -271,6 +271,9 @@ fi
 # configure sshd to pick up the host keys from ${GITLAB_DATA_DIR}/ssh/
 sed -i 's,HostKey /etc/ssh/,HostKey '"${GITLAB_DATA_DIR}"'/ssh/,g' -i /etc/ssh/sshd_config
 
+# populate /var/log/gitlab
+mkdir -m 0755 -p /var/log/gitlab/gitlab       && chown -R git:git /var/log/gitlab/gitlab
+
 cd ${GITLAB_INSTALL_DIR}
 
 # copy configuration templates
