@@ -418,16 +418,7 @@ docker run --name=gitlab -d --link redis:redisio \
 
 The mail configuration should be specified using environment variables while starting the GitLab image. The configuration defaults to using gmail to send emails and requires the specification of a valid username and password to login to the gmail servers.
 
-The following environment variables need to be specified to get mail support to work.
-
-* SMTP_ENABLED (defaults to `true` if `SMTP_USER` is defined, else defaults to `false`)
-* SMTP_DOMAIN (defaults to `www.gmail.com`)
-* SMTP_HOST (defaults to `smtp.gmail.com`)
-* SMTP_PORT (defaults to `587`)
-* SMTP_USER
-* SMTP_PASS
-* SMTP_STARTTLS (defaults to `true`)
-* SMTP_AUTHENTICATION (defaults to `login` if `SMTP_USER` is set)
+Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of SMTP parameters that can be specified.
 
 ```bash
 docker run --name=gitlab -d \
