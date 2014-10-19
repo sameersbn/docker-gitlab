@@ -66,6 +66,7 @@ SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
 SMTP_PORT=${SMTP_PORT:-587}
 SMTP_USER=${SMTP_USER:-}
 SMTP_PASS=${SMTP_PASS:-}
+SMTP_OPENSSL_VERIFY_MODE=${SMTP_OPENSSL_VERIFY_MODE:-}
 SMTP_STARTTLS=${SMTP_STARTTLS:-true}
 if [ -n "${SMTP_USER}" ]; then
   SMTP_ENABLED=${SMTP_ENABLED:-true}
@@ -435,6 +436,12 @@ if [ "${SMTP_ENABLED}" == "true" ]; then
 
   sudo -u git -H sed 's/{{SMTP_DOMAIN}}/'"${SMTP_DOMAIN}"'/' -i config/initializers/smtp_settings.rb
   sudo -u git -H sed 's/{{SMTP_STARTTLS}}/'"${SMTP_STARTTLS}"'/' -i config/initializers/smtp_settings.rb
+
+  if [ -n "${SMTP_OPENSSL_VERIFY_MODE}" ]; then
+    sudo -u git -H sed 's/{{SMTP_OPENSSL_VERIFY_MODE}}/'"${SMTP_OPENSSL_VERIFY_MODE}"'/' -i config/initializers/smtp_settings.rb
+  else
+    sudo -u git -H sed '/{{SMTP_OPENSSL_VERIFY_MODE}}/d' -i config/initializers/smtp_settings.rb
+  fi
 
   case "${SMTP_AUTHENTICATION}" in
     "") sudo -u git -H sed '/{{SMTP_AUTHENTICATION}}/d' -i config/initializers/smtp_settings.rb ;;

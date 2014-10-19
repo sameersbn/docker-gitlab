@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- added SMTP_OPENSSL_VERIFY_MODE configuration option
 - feature: gitlab logs volume
 - automatically compile assets if relative_url is changed
 - launch all daemons via supervisord
