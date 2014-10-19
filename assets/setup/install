@@ -32,6 +32,9 @@ rm -rf /home/git/.ssh
 sudo -u git -H mkdir -p ${GITLAB_DATA_DIR}/.ssh
 sudo -u git -H ln -s ${GITLAB_DATA_DIR}/.ssh /home/git/.ssh
 
+# create the data store
+sudo -u git -H mkdir -p ${GITLAB_DATA_DIR}
+
 # install gitlab-shell, use local copy if available
 echo "Cloning gitlab-shell v.${GITLAB_SHELL_VERSION}..."
 sudo -u git -H git clone -q -b v${GITLAB_SHELL_VERSION} --depth 1 \
