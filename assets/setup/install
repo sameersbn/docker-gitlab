@@ -28,8 +28,8 @@ rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
 adduser --disabled-login --gecos 'GitLab' git
 passwd -d git
 
-# create symlink to ${DATA_DIR}/.ssh
 rm -rf /home/git/.ssh
+sudo -u git -H mkdir -p ${GITLAB_DATA_DIR}/.ssh
 sudo -u git -H ln -s ${GITLAB_DATA_DIR}/.ssh /home/git/.ssh
 
 # install gitlab-shell, use local copy if available
