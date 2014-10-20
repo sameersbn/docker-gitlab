@@ -381,6 +381,7 @@ if [ "${DB_TYPE}" == "postgres" ]; then
   sudo -u git -H sed 's/{{DB_ADAPTER}}/postgresql/' -i config/database.yml
   sudo -u git -H sed 's/{{DB_ENCODING}}/unicode/' -i config/database.yml
   sudo -u git -H sed '/reconnect: /d' -i config/database.yml
+  sudo -u git -H sed '/collation: /d' -i config/database.yml
 elif [ "${DB_TYPE}" == "mysql" ]; then
   sudo -u git -H sed 's/{{DB_ADAPTER}}/mysql2/' -i config/database.yml
   sudo -u git -H sed 's/{{DB_ENCODING}}/utf8/' -i config/database.yml
