@@ -103,6 +103,9 @@ sed 's/UsePAM yes/UsePAM no/' -i /etc/ssh/sshd_config
 sed 's/UsePrivilegeSeparation yes/UsePrivilegeSeparation no/' -i /etc/ssh/sshd_config
 echo "UseDNS no" >> /etc/ssh/sshd_config
 
+# move supervisord.log file to /var/log/redmine/supervisor/
+sed 's|^logfile=.*|logfile=/var/log/gitlab/supervisor/supervisord.log ;|' -i /etc/supervisor/supervisord.conf
+
 # configure supervisord log rotation
 cat > /etc/logrotate.d/supervisord <<EOF
 /var/log/gitlab/supervisor/*.log {
