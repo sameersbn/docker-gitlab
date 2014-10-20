@@ -106,6 +106,10 @@ echo "UseDNS no" >> /etc/ssh/sshd_config
 # move supervisord.log file to /var/log/redmine/supervisor/
 sed 's|^logfile=.*|logfile=/var/log/gitlab/supervisor/supervisord.log ;|' -i /etc/supervisor/supervisord.conf
 
+# move nginx logs to /var/log/gitlab/nginx
+sed 's|access_log /var/log/nginx/access.log;|access_log /var/log/gitlab/nginx/access.log;|' -i /etc/nginx/nginx.conf
+sed 's|error_log /var/log/nginx/error.log;|error_log /var/log/gitlab/nginx/error.log;|' -i /etc/nginx/nginx.conf
+
 # configure supervisord log rotation
 cat > /etc/logrotate.d/supervisord <<EOF
 /var/log/gitlab/supervisor/*.log {
