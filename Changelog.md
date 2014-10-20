@@ -1,6 +1,7 @@
 # Changelog
 
 **latest**
+- gitlab: upgrade to CE v.7.4.0.rc1
 - added SMTP_OPENSSL_VERIFY_MODE configuration option
 - feature: gitlab logs volume
 - automatically compile assets if relative_url is changed

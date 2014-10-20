@@ -119,6 +119,7 @@ production: &base
       new_issue_url: "{{JIRA_URL}}/secure/CreateIssue.jspa"
 
   ## Gravatar
+  ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
     enabled: {{GITLAB_GRAVATAR_ENABLED}}
     # gravatar urls: possible placeholders: %{hash} %{size} %{email}
@@ -134,35 +135,61 @@ production: &base
   #   bundle exec rake gitlab:ldap:check RAILS_ENV=production
   ldap:
     enabled: {{LDAP_ENABLED}}
-    host: "{{LDAP_HOST}}"
-    port: {{LDAP_PORT}}
-    uid: "{{LDAP_UID}}"
-    method: "{{LDAP_METHOD}}" # "tls" or "ssl" or "plain"
-    bind_dn: "{{LDAP_BIND_DN}}"
-    password: "{{LDAP_PASS}}"
-    # If allow_username_or_email_login is enabled, GitLab will ignore everything
-    # after the first '@' in the LDAP username submitted by the user on login.
-    #
-    # Example:
-    # - the user enters 'jane.doe@example.com' and 'p@ssw0rd' as LDAP credentials;
-    # - GitLab queries the LDAP server with 'jane.doe' and 'p@ssw0rd'.
-    #
-    # If you are using "uid: 'userPrincipalName'" on ActiveDirectory you need to
-    # disable this setting, because the userPrincipalName contains an '@'.
-    allow_username_or_email_login: {{LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}}
+    servers:
+      main: # 'main' is the GitLab 'provider ID' of this LDAP server
+        ## label
+        #
+        # A human-friendly name for your LDAP server. It is OK to change the label later,
+        # for instance if you find out it is too large to fit on the web page.
+        #
+        # Example: 'Paris' or 'Acme, Ltd.'
+        label: 'LDAP'
 
-    # Base where we can search for users
-    #
-    #   Ex. ou=People,dc=gitlab,dc=example
-    #
-    base: "{{LDAP_BASE}}"
+        host: "{{LDAP_HOST}}"
+        port: {{LDAP_PORT}}
+        uid: "{{LDAP_UID}}"
+        method: "{{LDAP_METHOD}}" # "tls" or "ssl" or "plain"
+        bind_dn: "{{LDAP_BIND_DN}}"
+        password: "{{LDAP_PASS}}"
 
-    # Filter LDAP users
-    #
-    #   Format: RFC 4515
-    #   Ex. (employeeType=developer)
-    #
-    user_filter: "{{LDAP_USER_FILTER}}"
+        # This setting specifies if LDAP server is Active Directory LDAP server.
+        # For non AD servers it skips the AD specific queries.
+        # If your LDAP server is not AD, set this to false.
+        active_directory: true
+
+        # If allow_username_or_email_login is enabled, GitLab will ignore everything
+        # after the first '@' in the LDAP username submitted by the user on login.
+        #
+        # Example:
+        # - the user enters 'jane.doe@example.com' and 'p@ssw0rd' as LDAP credentials;
+        # - GitLab queries the LDAP server with 'jane.doe' and 'p@ssw0rd'.
+        #
+        # If you are using "uid: 'userPrincipalName'" on ActiveDirectory you need to
+        # disable this setting, because the userPrincipalName contains an '@'.
+        allow_username_or_email_login: {{LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}}
+
+        # Base where we can search for users
+        #
+        #   Ex. ou=People,dc=gitlab,dc=example
+        #
+        base: "{{LDAP_BASE}}"
+
+        # Filter LDAP users
+        #
+        #   Format: RFC 4515 http://tools.ietf.org/search/rfc4515
+        #   Ex. (employeeType=developer)
+        #
+        #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
+        #
+        user_filter: "{{LDAP_USER_FILTER}}"
+
+      # GitLab EE only: add more LDAP servers
+      # Choose an ID made of a-z and 0-9 . This ID will be stored in the database
+      # so that GitLab can remember which LDAP server a user belongs to.
+      # uswest2:
+      #   label:
+      #   host:
+      #   ....
 
 
   ## OmniAuth settings
@@ -210,6 +237,15 @@ production: &base
   backup:
     path: "{{GITLAB_BACKUP_DIR}}"   # Relative paths are relative to Rails.root (default: tmp/backups/)
     keep_time: {{GITLAB_BACKUP_EXPIRY}}   # default: 0 (forever) (in seconds)
+    # upload:
+    #   # Fog storage connection settings, see http://fog.io/storage/ .
+    #   connection:
+    #     provider: AWS
+    #     region: eu-west-1
+    #     aws_access_key_id: AKIAKIAKI
+    #     aws_secret_access_key: 'secret123'
+    #   # The remote 'directory' to store your backups. For S3, this would be the bucket name.
+    #   remote_directory: 'my.s3.bucket'
 
   ## GitLab Shell settings
   gitlab_shell:
@@ -263,8 +299,8 @@ test:
   gravatar:
     enabled: true
   gitlab:
-    host: "{{GITLAB_HOST}}"
-    port: {{GITLAB_PORT}}
+    host: localhost
+    port: 80
 
     # When you run tests we clone and setup gitlab-shell
     # In order to setup it correctly you need to specify
@@ -282,6 +318,20 @@ test:
       project_url: "http://redmine/projects/:issues_tracker_id"
       issues_url: "http://redmine/:project_id/:issues_tracker_id/:id"
       new_issue_url: "http://redmine/projects/:issues_tracker_id/issues/new"
+  ldap:
+    enabled: false
+    servers:
+      main:
+        label: ldap
+        host: 127.0.0.1
+        port: 3890
+        uid: 'uid'
+        method: 'plain' # "tls" or "ssl" or "plain"
+        base: 'dc=example,dc=com'
+        user_filter: ''
+        group_base: 'ou=groups,dc=example,dc=com'
+        admin_group: ''
+        sync_ssh_keys: false
 
 staging:
   <<: *base
