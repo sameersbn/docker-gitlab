@@ -1,6 +1,6 @@
 # Changelog
 
-**latest**
+**7.4.0**
 - gitlab: upgrade to CE v.7.4.0
 - config: added `LDAP_ACTIVE_DIRECTORY` configuration option
 - added SMTP_OPENSSL_VERIFY_MODE configuration option
