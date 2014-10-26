@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- gitlab: upgrade to CE v.7.4.2
+
 **7.4.0**
 - gitlab: upgrade to CE v.7.4.0
 - config: added `LDAP_ACTIVE_DIRECTORY` configuration option
