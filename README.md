@@ -832,7 +832,7 @@ docker run --name=gitlab -it --rm [OPTIONS] \
   sameersbn/gitlab:xx.xx.xx app:rake gitlab:backup:create
 ```
 
-Replace **xx.xx.xx** with the version you are upgrading from. For example, if you are upgrading from version `6.0.0`, set current version to `6.0.0`
+Replace **xx.xx.xx** with the version you are upgrading from. For example, if you are upgrading from version `6.0.0`, set `xx.xx.xx` to `6.0.0`
 
 - **Step 4**: Start the image
 
