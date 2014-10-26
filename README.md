@@ -825,12 +825,14 @@ docker stop gitlab
 docker rm gitlab
 ```
 
-- **Step 3**: Backup the application data.
+- **Step 3**: Create a backup
 
 ```bash
 docker run --name=gitlab -it --rm [OPTIONS] \
-  sameersbn/gitlab:7.4.0 app:rake gitlab:backup:create
+  sameersbn/gitlab:xx.xx.xx app:rake gitlab:backup:create
 ```
+
+Replace **xx.xx.xx** with the version you are upgrading from. For example, if you are upgrading from version `6.0.0`, set current version to `6.0.0`
 
 - **Step 4**: Start the image
 
