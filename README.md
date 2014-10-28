@@ -158,7 +158,7 @@ docker build --tag="$USER/gitlab" .
 
 # Quick Start
 
-Run the gitlab image
+You can launch the image using the docker command line,
 
 ```bash
 docker run --name='gitlab' -it --rm \
@@ -168,6 +168,15 @@ docker run --name='gitlab' -it --rm \
 -v $(which docker):/bin/docker \
 sameersbn/gitlab:7.4.2
 ```
+
+Or you can use [fig](http://www.fig.sh/). Assuming you have fig installed,
+
+```bash
+wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/fig.yml
+fig up
+```
+
+*The rest of the document will use the docker command line. You can quite simply adapt your configuration into a fig.yml file if you wish to do so.*
 
 __NOTE__: Please allow a couple of minutes for the GitLab application to start.
 
@@ -662,7 +671,7 @@ For example, if your Jira server is accessible at `https://jira.example.com`, th
 
 ### Available Configuration Parameters
 
-*Please refer the docker run command options for the `--env-file` flag where you can specify all required environment variables in a single file. This will save you from writing a potentially long docker run command.*
+*Please refer the docker run command options for the `--env-file` flag where you can specify all required environment variables in a single file. This will save you from writing a potentially long docker run command. Alternately you can use fig.*
 
 Below is the complete list of available options that can be used to customize your gitlab installation.
 
