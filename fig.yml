@@ -10,7 +10,7 @@ gitlab:
    - redis:redisio
    - postgresql:postgresql
   ports:
-   - "80"
-   - "22"
+   - "10080:80"
+   - "10022:22"
 redis:
   image: sameersbn/redis:latest
