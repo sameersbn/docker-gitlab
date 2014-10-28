@@ -136,19 +136,19 @@ In your issue report please make sure you provide the following information:
 
 # Installation
 
-Pull the latest version of the image from the docker index. This is the recommended method of installation as it is easier to update image in the future. These builds are performed by the **Docker Trusted Build** service.
-
-```bash
-docker pull sameersbn/gitlab:latest
-```
-
-Since version `6.3.0`, the image builds are being tagged. You can now pull a particular version of gitlab by specifying the version number. For example,
+Pull the image from the docker index. This is the recommended method of installation as it is easier to update image. These builds are performed by the **Docker Trusted Build** service.
 
 ```bash
 docker pull sameersbn/gitlab:7.4.2
 ```
 
-Alternately you can build the image yourself.
+You can also pull the `latest` tag which is built from the repository *HEAD*
+
+```bash
+docker pull sameersbn/gitlab:latest
+```
+
+Alternately you can build the image locally.
 
 ```bash
 git clone https://github.com/sameersbn/docker-gitlab.git
