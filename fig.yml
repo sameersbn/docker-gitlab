@@ -12,9 +12,5 @@ gitlab:
   ports:
    - "80"
    - "22"
-  environment:
-    - DB_USER=gitlab
-    - DB_PASS=airoaroonipouvua
-    - DB_NAME=gitlabhq_production
 redis:
   image: sameersbn/redis:latest
