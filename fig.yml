@@ -1,9 +1,9 @@
 postgresql:
-  image: orchardup/postgresql:latest
+  image: sameersbn/postgresql:9.1-1
   environment:
-    - POSTGRESQL_USER=gitlab
-    - POSTGRESQL_PASS=airoaroonipouvua
-    - POSTGRESQL_DB=gitlabhq_production
+    - DB_USER=gitlab
+    - DB_PASS=airoaroonipouvua
+    - DB_NAME=gitlabhq_production
 gitlab:
   image: sameersbn/gitlab:latest
   links:
