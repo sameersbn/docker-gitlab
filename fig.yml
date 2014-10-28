@@ -2,7 +2,7 @@ postgresql:
   image: sameersbn/postgresql:9.1-1
   environment:
     - DB_USER=gitlab
-    - DB_PASS=airoaroonipouvua
+    - DB_PASS=secretpassword
     - DB_NAME=gitlabhq_production
 gitlab:
   image: sameersbn/gitlab:7.4.2
