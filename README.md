@@ -8,7 +8,7 @@
     - [Storage](#storage)
 - [Supported Web Browsers](#supported-web-browsers)
 - [Contributing](#contributing)
-- [Reporting Issues](#reporting-issues)
+- [Issues](#issues)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Configuration](#configuration)
@@ -106,7 +106,7 @@ If you find this image useful here's how you can help:
 - Help new users with [Issues](https://github.com/sameersbn/docker-gitlab/issues) they may encounter
 - Send me a tip on [Gittip](https://gittip.com/sameersbn/) or using Bitcoin at **16rDxVqJPyYAFYPLduTaSiwe7ZiY1hHqKM**
 
-# Reporting Issues
+# Issues
 
 Docker is a relatively new project and is active being developed and tested by a thriving community of developers and testers and every release of docker features many enhancements and bugfixes.
 
