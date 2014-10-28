@@ -17,4 +17,4 @@ gitlab:
     - DB_PASS=airoaroonipouvua
     - DB_NAME=gitlabhq_production
 redis:
-  image: redis:2.8.9
+  image: sameersbn/redis:latest
