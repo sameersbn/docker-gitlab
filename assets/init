@@ -378,16 +378,8 @@ sudo -u git -H sed 's/{{GITLAB_WEBHOOK_TIMEOUT}}/'"${GITLAB_WEBHOOK_TIMEOUT}"'/'
 
 # configure gravatar support
 sudo -u git -H sed 's/{{GITLAB_GRAVATAR_ENABLED}}/'"${GITLAB_GRAVATAR_ENABLED}"'/' -i config/gitlab.yml
-if [ -n "${GITLAB_GRAVATAR_HTTP_URL}" ]; then
-  sudo -u git -H sed 's,{{GITLAB_GRAVATAR_HTTP_URL}},'"${GITLAB_GRAVATAR_HTTP_URL}"',g' -i config/gitlab.yml
-else
-  sudo -u git -H sed '/plain_url: "{{GITLAB_GRAVATAR_HTTP_URL}}/d' -i config/gitlab.yml
-fi
-if [ -n "${GITLAB_GRAVATAR_HTTPS_URL}" ]; then
-  sudo -u git -H sed 's,{{GITLAB_GRAVATAR_HTTPS_URL}},'"${GITLAB_GRAVATAR_HTTPS_URL}"',g' -i config/gitlab.yml
-else
-  sudo -u git -H sed '/sec_url: "{{GITLAB_GRAVATAR_HTTPS_URL}}/d' -i config/gitlab.yml
-fi
+sudo -u git -H sed 's/{{GITLAB_GRAVATAR_URL}}/'"${GITLAB_GRAVATAR_URL}"'/' -i config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_GRAVATAR_SEC_URL}}/'"${GITLAB_GRAVATAR_SEC_URL}"'/' -i config/gitlab.yml
 
 # configure database
 if [ "${DB_TYPE}" == "postgres" ]; then
