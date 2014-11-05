@@ -122,6 +122,7 @@ production: &base
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
     enabled: {{GITLAB_GRAVATAR_ENABLED}}
+    ssl_url: {{GITLAB_GRAVATAR_SSL_URL}}
     # gravatar urls: possible placeholders: %{hash} %{size} %{email}
     # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
