@@ -27,7 +27,8 @@ GITLAB_RELATIVE_URL_ROOT=${GITLAB_RELATIVE_URL_ROOT:-}
 GITLAB_RESTRICTED_VISIBILITY=${GITLAB_RESTRICTED_VISIBILITY:-}
 GITLAB_WEBHOOK_TIMEOUT=${GITLAB_WEBHOOK_TIMEOUT:-10}
 GITLAB_GRAVATAR_ENABLED=${GITLAB_GRAVATAR_ENABLED:-true}
-GITLAB_GRAVATAR_URL=${GITLAB_GRAVATAR_URL:-https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon}
+GITLAB_GRAVATAR_URL=${GITLAB_GRAVATAR_URL:-http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon}
+GITLAB_GRAVATAR_SEC_URL=${GITLAB_GRAVATAR_SEC_URL:-https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon}
 
 SSL_SELF_SIGNED=${SSL_SELF_SIGNED:-false}
 SSL_CERTIFICATE_PATH=${SSL_CERTIFICATE_PATH:-$GITLAB_DATA_DIR/certs/gitlab.crt}
@@ -378,6 +379,7 @@ sudo -u git -H sed 's/{{GITLAB_WEBHOOK_TIMEOUT}}/'"${GITLAB_WEBHOOK_TIMEOUT}"'/'
 # configure gravatar support
 sudo -u git -H sed 's/{{GITLAB_GRAVATAR_ENABLED}}/'"${GITLAB_GRAVATAR_ENABLED}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_GRAVATAR_URL}}/'"${GITLAB_GRAVATAR_URL}"'/' -i config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_GRAVATAR_SEC_URL}}/'"${GITLAB_GRAVATAR_SEC_URL}"'/' -i config/gitlab.yml
 
 # configure database
 if [ "${DB_TYPE}" == "postgres" ]; then

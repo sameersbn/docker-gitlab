@@ -687,7 +687,8 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_RESTRICTED_VISIBILITY**: Comma separated list of visibility levels to restrict non-admin users to set. Possible visibility options are `public`, `private` and `internal`.
 - **GITLAB_WEBHOOK_TIMEOUT**: Sets the timeout for webhooks. Defaults to `10` seconds.
 - **GITLAB_GRAVATAR_ENABLED**: Enable or disable use of gravatar.com for user avatar. Defaults to `true`
-- **GITLAB_GRAVATAR_SSL_URL**: gravatar.com secure URL. Defaults to `https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`
+- **GITLAB_GRAVATAR_URL**: gravatar.com plain URL. Defaults to `http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`
+- **GITLAB_GRAVATAR_SEC_URL**: gravatar.com secure URL. Defaults to `https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`
 - **GITLAB_BACKUP_DIR**: The backup folder in the container. Defaults to `/home/git/data/backups`
 - **GITLAB_BACKUPS**: Setup cron job to automatic backups. Possible values `disable`, `daily` or `monthly`. Disabled by default
 - **GITLAB_BACKUP_EXPIRY**: Configure how long (in seconds) to keep backups before they are deleted. By default when automated backups are disabled backups are kept forever (0 seconds), else the backups expire in 7 days (604800 seconds).
