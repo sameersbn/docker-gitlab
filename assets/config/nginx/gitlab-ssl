@@ -64,6 +64,8 @@ server {
   ssl on;
   ssl_certificate {{SSL_CERTIFICATE_PATH}};
   ssl_certificate_key {{SSL_KEY_PATH}};
+  ssl_verify_client {{SSL_VERIFY_CLIENT}};
+  ssl_client_certificate {{CA_CERTIFICATES_PATH}};
 
   ssl_ciphers 'AES256+EECDH:AES256+EDH';
 
