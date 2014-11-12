@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+GITLAB_HOME="/home/git"
 GITLAB_INSTALL_DIR="/home/git/gitlab"
 GITLAB_DATA_DIR="/home/git/data"
 GITLAB_BACKUP_DIR="${GITLAB_BACKUP_DIR:-$GITLAB_DATA_DIR/backups}"
@@ -142,6 +143,18 @@ elif [ -n "${POSTGRESQL_PORT_5432_TCP_ADDR}" ]; then
   DB_USER=${DB_USER:-${POSTGRESQL_ENV_USER}}
   DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_PASS}}
   DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_DB}}
+fi
+
+## Adapt uid and gid for git:git
+USERMAP_ORIG_UID=$(id -u git)
+USERMAP_ORIG_GID=$(id -g git)
+USERMAP_GID=${USERMAP_GID:-${USERMAP_UID:-$USERMAP_ORIG_GID}}
+USERMAP_UID=${USERMAP_UID:-$USERMAP_ORIG_UID}
+if [ "${USERMAP_UID}" != "${USERMAP_ORIG_UID}" ] || [ "${USERMAP_GID}" != "${USERMAP_ORIG_GID}" ]; then
+  echo "Adapting uid and gid for git:git to $USERMAP_UID:$USERMAP_GID"
+  groupmod -g "${USERMAP_GID}" git
+  sed -i -e "s/:${USERMAP_ORIG_UID}:${USERMAP_GID}:/:${USERMAP_UID}:${USERMAP_GID}:/" /etc/passwd
+  find ${GITLAB_HOME} -not -path "${GITLAB_DATA_DIR}/*" -print0 | xargs -0 chown -h git:git
 fi
 
 ##
