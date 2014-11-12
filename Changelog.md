@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- added `SSL_VERIFY_CLIENT` configuration option
+
 **7.4.3**
 - gitlab: upgrade to CE v.7.4.3
 
