@@ -3,6 +3,7 @@
 **latest**
 - added `SSL_VERIFY_CLIENT` configuration option
 - added `NGINX_WORKERS` configuration option
+- added `USERMAP_UID` and `USERMAP_GID` configuration option
 
 **7.4.3**
 - gitlab: upgrade to CE v.7.4.3
