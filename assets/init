@@ -256,7 +256,7 @@ case "${GITLAB_HTTPS}" in
 esac
 
 case "${GITLAB_BACKUPS}" in
-  daily|monthly) GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-604800} ;;
+  daily|weekly|monthly) GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-604800} ;;
   disable|*) GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-0} ;;
 esac
 
@@ -689,6 +689,11 @@ appStart () {
     daily)
       sudo -u git -H cat > /tmp/cron.git <<EOF
 00 04 * * * cd ${GITLAB_INSTALL_DIR} && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
+EOF
+      ;;
+    weekly)
+      sudo -u git -H cat > /tmp/cron.git <<EOF
+00 04 * * 0 cd ${GITLAB_INSTALL_DIR} && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
 EOF
       ;;
     monthly)
