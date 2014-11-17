@@ -15,6 +15,8 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv E1DF1F24 \
       libgdbm3 libreadline6 libncurses5 libffi6 \
       libxml2 libxslt1.1 libcurl3 libicu52 \
  && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
+ && locale-gen en_US.UTF-8 \
+ && dpkg-reconfigure locales \
  && gem install --no-document bundler \
  && rm -rf /var/lib/apt/lists/* # 20140918
 
