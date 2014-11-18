@@ -44,6 +44,7 @@
   - [External Issue Trackers](#external-issue-trackers)
     - [Redmine](#redmine)
     - [Jira](#jira)
+  - [Mapping host user and group](#mapping-host-user-and-group)
   - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
     - [Creating Backups](#creating-backups)
@@ -669,6 +670,33 @@ Support for issue tracking using Jira can be added by specifying the complete UR
 
 For example, if your Jira server is accessible at `https://jira.example.com`, then adding `-e 'JIRA_URL=https://jira.example.com'` to the docker run command enables Jira support in GitLab
 
+### Host UID / GID Mapping
+
+Per default the container is configured to run gitlab as user and group
+`git` with `uid` and `gid` `1000`. The host possibly uses this ids for
+different purposes leading to unfavorable effects. From the host it appears as
+if the mounted data volumes are owned by the host's user/group `1000`.
+Also the container processes seem to be executed as the host's user/group
+`1000`. The container can be configured to map the `uid` and `gid` of `git` to
+different ids on host by passing the environment variables `USERMAP_UID` and
+`USERMAP_GID`. The following command maps the ids to user and group `git` on
+the host.
+
+```bash
+docker run --name=gitlab -it --rm [options] \
+  -e "USERMAP_UID=$(id -u git)" -e "USERMAP_GID=$(id -g git)" \
+  sameersbn/gitlab:7.4.3
+```
+
+When changing this mapping, all files and directories in the mounted data
+volume `/home/git/data` have to be re-owned by the new ids. This can be
+achieved automatically using the following command:
+
+```bash
+docker run --name=gitlab -d [OPTIONS] \
+  sameersbn/gitlab:7.4.3 app:sanitize
+```
+
 ### Available Configuration Parameters
 
 *Please refer the docker run command options for the `--env-file` flag where you can specify all required environment variables in a single file. This will save you from writing a potentially long docker run command. Alternately you can use fig.*
@@ -748,6 +776,8 @@ Below is the complete list of available options that can be used to customize yo
 - **OAUTH_GITHUB_APP_SECRET**: GitHub App Client secret. No defaults.
 - **REDMINE_URL**: Location of the redmine server, e.g. `-e 'REDMINE_URL=https://redmine.example.com'`. No defaults.
 - **JIRA_URL**: Location of the jira server, e.g. `-e 'JIRA_URL=https://jira.example.com'`. No defaults.
+- **USERMAP_UID**: Sets the uid for user `git` to the specified uid. Defaults to `1000`.
+- **USERMAP_GID**: Sets the gid for group `git` to the specified gid. Defaults to `USERMAP_UID` if defined, else defaults to `1000`.
 
 # Maintenance
 
