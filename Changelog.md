@@ -2,6 +2,7 @@
 
 **latest**
 - added `SSL_VERIFY_CLIENT` configuration option
+- added `NGINX_WORKERS` configuration option
 
 **7.4.3**
 - gitlab: upgrade to CE v.7.4.3
