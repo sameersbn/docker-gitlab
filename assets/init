@@ -154,7 +154,7 @@ if [ "${USERMAP_UID}" != "${USERMAP_ORIG_UID}" ] || [ "${USERMAP_GID}" != "${USE
   echo "Adapting uid and gid for git:git to $USERMAP_UID:$USERMAP_GID"
   groupmod -g "${USERMAP_GID}" git
   sed -i -e "s/:${USERMAP_ORIG_UID}:${USERMAP_GID}:/:${USERMAP_UID}:${USERMAP_GID}:/" /etc/passwd
-  find ${GITLAB_HOME} -not -path "${GITLAB_DATA_DIR}/*" -print0 | xargs -0 chown -h git:git
+  find ${GITLAB_HOME} -path ${GITLAB_DATA_DIR}/\* -prune -o -print0 | xargs -0 chown -h git:git
 fi
 
 ##
