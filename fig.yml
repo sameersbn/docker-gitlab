@@ -5,7 +5,7 @@ postgresql:
     - DB_PASS=secretpassword
     - DB_NAME=gitlabhq_production
 gitlab:
-  image: sameersbn/gitlab:7.4.3
+  image: sameersbn/gitlab:7.4.4
   links:
    - redis:redisio
    - postgresql:postgresql
