@@ -2,11 +2,11 @@
 set -e
 
 GITLAB_HOME="/home/git"
-GITLAB_INSTALL_DIR="/home/git/gitlab"
-GITLAB_DATA_DIR="/home/git/data"
+GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab"
+GITLAB_DATA_DIR="${GITLAB_HOME}/data"
 GITLAB_LOG_DIR="/var/log/gitlab"
 GITLAB_BACKUP_DIR="${GITLAB_BACKUP_DIR:-$GITLAB_DATA_DIR/backups}"
-GITLAB_SHELL_INSTALL_DIR="/home/git/gitlab-shell"
+GITLAB_SHELL_INSTALL_DIR="${GITLAB_HOME}/gitlab-shell"
 
 SETUP_DIR="/app/setup"
 SYSCONF_TEMPLATES_DIR="${SETUP_DIR}/config"
