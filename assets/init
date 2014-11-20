@@ -4,6 +4,7 @@ set -e
 GITLAB_HOME="/home/git"
 GITLAB_INSTALL_DIR="/home/git/gitlab"
 GITLAB_DATA_DIR="/home/git/data"
+GITLAB_LOG_DIR="/var/log/gitlab"
 GITLAB_BACKUP_DIR="${GITLAB_BACKUP_DIR:-$GITLAB_DATA_DIR/backups}"
 GITLAB_SHELL_INSTALL_DIR="/home/git/gitlab-shell"
 
@@ -288,11 +289,11 @@ fi
 # configure sshd to pick up the host keys from ${GITLAB_DATA_DIR}/ssh/
 sed -i 's,HostKey /etc/ssh/,HostKey '"${GITLAB_DATA_DIR}"'/ssh/,g' -i /etc/ssh/sshd_config
 
-# populate /var/log/gitlab
-mkdir -m 0755 -p /var/log/gitlab/supervisor   && chown -R root:root /var/log/gitlab/supervisor
-mkdir -m 0755 -p /var/log/gitlab/nginx        && chown -R git:git /var/log/gitlab/nginx
-mkdir -m 0755 -p /var/log/gitlab/gitlab       && chown -R git:git /var/log/gitlab/gitlab
-mkdir -m 0755 -p /var/log/gitlab/gitlab-shell && chown -R git:git /var/log/gitlab/gitlab-shell
+# populate ${GITLAB_LOG_DIR}
+mkdir -m 0755 -p ${GITLAB_LOG_DIR}/supervisor   && chown -R root:root ${GITLAB_LOG_DIR}/supervisor
+mkdir -m 0755 -p ${GITLAB_LOG_DIR}/nginx        && chown -R git:git ${GITLAB_LOG_DIR}/nginx
+mkdir -m 0755 -p ${GITLAB_LOG_DIR}/gitlab       && chown -R git:git ${GITLAB_LOG_DIR}/gitlab
+mkdir -m 0755 -p ${GITLAB_LOG_DIR}/gitlab-shell && chown -R git:git ${GITLAB_LOG_DIR}/gitlab-shell
 
 cd ${GITLAB_INSTALL_DIR}
 
