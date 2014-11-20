@@ -769,6 +769,7 @@ Below is the complete list of available options that can be used to customize yo
 - **SMTP_STARTTLS**: Enable STARTTLS. Defaults to `true`.
 - **SMTP_OPENSSL_VERIFY_MODE**: SMTP openssl verification mode. Accepted values are `none`, `peer`, `client_once` and `fail_if_no_peer_cert`. SSL certificate verification is performed by default.
 - **SMTP_AUTHENTICATION**: Specify the SMTP authentication method. Defaults to `login` if `SMTP_USER` is set.
+- **SENDMAIL_ENABLED**: Enable mail delivery via `sendmail`. Defaults to `false`. Switched to `false` if `SMTP_ENABLED` is `true`.
 - **LDAP_ENABLED**: Enable LDAP. Defaults to `false`
 - **LDAP_HOST**: LDAP Host
 - **LDAP_PORT**: LDAP Port. Defaults to `636`
