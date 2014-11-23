@@ -36,7 +36,7 @@ production: &base
     ## Date & Time settings
     # Uncomment and customize if you want to change the default time zone of GitLab application.
     # To see all available zones, run `bundle exec rake time:zones:all`
-    # time_zone: 'UTC'
+    time_zone: "{{GITLAB_TIMEZONE}}"
 
     ## Email settings
     # Uncomment and set to false if you need to disable email sending from GitLab (default: true)
