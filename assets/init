@@ -642,16 +642,18 @@ appStart () {
       ;;
   esac
   timeout=60
+  printf "Waiting for database server to accept connections"
   while ! ${prog} >/dev/null 2>&1
   do
     timeout=$(expr $timeout - 1)
     if [ $timeout -eq 0 ]; then
-      echo "Could not connect to database server. Aborting..."
+      printf "\nCould not connect to database server. Aborting...\n"
       exit 1
     fi
-    echo "Waiting for database server to accept connections..."
+    printf "."
     sleep 1
   done
+  echo
 
   # run the `gitlab:setup` rake task if required
   case "${DB_TYPE}" in
