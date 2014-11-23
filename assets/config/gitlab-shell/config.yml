@@ -8,6 +8,7 @@ user: git
 # only listen on a Unix domain socket.
 gitlab_url: "http://localhost:8080{{GITLAB_RELATIVE_URL_ROOT}}/"
 
+# See installation.md#using-https for additional HTTPS configuration details.
 http_settings:
 #  user: someone
 #  password: somepass
