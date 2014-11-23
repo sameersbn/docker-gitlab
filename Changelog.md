@@ -1,5 +1,9 @@
 # Changelog
 
+**7.5.1**
+- gitlab: upgrade to CE v.7.5.1
+- gitlab-shell to v2.2.0
+
 **7.4.4**
 - gitlab: upgrade to CE v.7.4.4
 - added `SSL_VERIFY_CLIENT` configuration option
