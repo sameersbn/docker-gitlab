@@ -78,6 +78,7 @@ if [ -n "${SMTP_USER}" ]; then
   SMTP_AUTHENTICATION=${SMTP_AUTHENTICATION:-login}
 fi
 SMTP_ENABLED=${SMTP_ENABLED:-false}
+GITLAB_EMAIL_ENABLED=${GITLAB_EMAIL_ENABLED:-$SMTP_ENABLED}
 
 LDAP_ENABLED=${LDAP_ENABLED:-false}
 LDAP_HOST=${LDAP_HOST:-}
@@ -440,8 +441,9 @@ sudo -u git -H sed 's/{{UNICORN_WORKERS}}/'"${UNICORN_WORKERS}"'/' -i config/uni
 # configure unicorn timeout
 sudo -u git -H sed 's/{{UNICORN_TIMEOUT}}/'"${UNICORN_TIMEOUT}"'/' -i config/unicorn.rb
 
+# configure mail delivery
+sudo -u git -H sed 's/{{GITLAB_EMAIL_ENABLED}}/'"${GITLAB_EMAIL_ENABLED}"'/' -i config/gitlab.yml
 if [ "${SMTP_ENABLED}" == "true" ]; then
-  # configure mail delivery
   sudo -u git -H sed 's/{{SMTP_HOST}}/'"${SMTP_HOST}"'/' -i config/initializers/smtp_settings.rb
   sudo -u git -H sed 's/{{SMTP_PORT}}/'"${SMTP_PORT}"'/' -i config/initializers/smtp_settings.rb
 

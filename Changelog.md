@@ -4,6 +4,7 @@
 - gitlab: upgrade to CE v.7.5.1
 - gitlab-shell to v2.2.0
 - added `GITLAB_TIMEZONE` configuration option
+- added `GITLAB_EMAIL_ENABLED` configuration option
 
 **7.4.4**
 - gitlab: upgrade to CE v.7.4.4
