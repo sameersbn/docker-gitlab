@@ -697,7 +697,7 @@ Below is the complete list of available options that can be used to customize yo
 
 - **GITLAB_HOST**: The hostname of the GitLab server. Defaults to `localhost`
 - **GITLAB_PORT**: The port of the GitLab server. Defaults to `80` for plain http and `443` when https is enabled.
-- **GITLAB_TIMEZONE**: Configure the timezone for the gitlab application. Defaults to `UTC`.
+- **GITLAB_TIMEZONE**: Configure the timezone for the gitlab application. This configuration does not effect cron jobs. Defaults to `UTC`.
 - **GITLAB_EMAIL**: The email address for the GitLab server.  Defaults to `example@example.com`.
 - **GITLAB_EMAIL_ENABLED**: Enable or disable gitlab mailer. Defaults to the `SMTP_ENABLED` configuration.
 - **GITLAB_SIGNUP**: Enable or disable user signups. Default is `false`.
