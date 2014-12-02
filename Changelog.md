@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- gitlab: upgrade to CE v.7.5.2
+
 **7.5.1**
 - gitlab: upgrade to CE v.7.5.1
 - gitlab-shell to v2.2.0
