@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- accept `BACKUP` parameter while running the restore rake task, closes #220
+
 **7.5.2**
 - gitlab: upgrade to CE v.7.5.2
 

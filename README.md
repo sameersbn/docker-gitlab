@@ -811,6 +811,13 @@ docker run --name=gitlab -it --rm [OPTIONS] \
 
 The restore operation will list all available backups in reverse chronological order. Select the backup you want to restore and gitlab will do its job.
 
+To avoid user interaction in the restore operation, you can specify the timestamp of the specific backup using the `BACKUP` argument to the rake task.
+
+```bash
+docker run --name=gitlab -it --rm [OPTIONS] \
+  sameersbn/gitlab:7.5.2 app:rake gitlab:backup:restore BACKUP=1417624827
+```
+
 ## Automated Backups
 
 The image can be configured to automatically take backups on a daily, weekly or monthly basis. Adding `-e 'GITLAB_BACKUPS=daily'` to the docker run command will enable daily backups. Adding `-e 'GITLAB_BACKUPS=weekly'` or `-e 'GITLAB_BACKUPS=monthly'` will enable weekly or monthly backups.
