@@ -54,6 +54,9 @@ sudo -u git -H git clone -q -b v${GITLAB_VERSION} --depth 1 \
 
 cd ${GITLAB_INSTALL_DIR}
 
+# run nginx workers as git user
+sed 's/user www-data/user git/' -i /etc/nginx/nginx.conf
+
 # remove HSTS config from the default headers, we configure it in nginx
 sed "/headers\['Strict-Transport-Security'\]/d" -i app/controllers/application_controller.rb
 
