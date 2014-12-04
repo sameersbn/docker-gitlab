@@ -704,10 +704,6 @@ appStart () {
   # remove state unicorn socket if it exists
   rm -rf tmp/sockets/gitlab.socket
 
-  # create satellite directories
-  echo "Creating satellites..."
-  sudo -u git -H bundle exec rake gitlab:satellites:create RAILS_ENV=production >/dev/null
-
   # setup cron job for automatic backups
   case "${GITLAB_BACKUPS}" in
     daily)
