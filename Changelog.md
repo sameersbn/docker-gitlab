@@ -2,7 +2,6 @@
 
 **latest**
 - accept `BACKUP` parameter while running the restore rake task, closes #220
-- run nginx workers as git user
 - init: do not run `gitlab:satellites:create` rake task at startup
 
 **7.5.2**
