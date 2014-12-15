@@ -110,6 +110,9 @@ OAUTH_TWITTER_APP_SECRET=${OAUTH_TWITTER_APP_SECRET:-}
 OAUTH_GITHUB_API_KEY=${OAUTH_GITHUB_API_KEY:-}
 OAUTH_GITHUB_APP_SECRET=${OAUTH_GITHUB_APP_SECRET:-}
 
+PIWIK_URL=${PIWIK_URL:-}
+PIWIK_SITE_ID=${PIWIK_SITE_ID:-}
+
 # is a mysql or postgresql database linked?
 # requires that the mysql or postgresql containers have exposed
 # port 3306 and 5432 respectively.
@@ -545,6 +548,15 @@ else
   sudo -u git -H sed '/{{OAUTH_GITHUB_API_KEY}}/d' -i config/gitlab.yml
   sudo -u git -H sed '/{{OAUTH_GITHUB_APP_SECRET}}/d' -i config/gitlab.yml
   sudo -u git -H sed '/{{OAUTH_GITHUB_SCOPE}}/d' -i config/gitlab.yml
+fi
+
+# piwik
+if [ -n "${PIWIK_URL}" -a -n "${PIWIK_SITE_ID}" ]; then
+  sudo -u git -H sed 's/{{PIWIK_URL}}/'"${PIWIK_URL}"'/' -i config/gitlab.yml
+  sudo -u git -H sed 's/{{PIWIK_SITE_ID}}/'"${PIWIK_SITE_ID}"'/' -i config/gitlab.yml
+else
+  sudo -u git -H sed '/{{PIWIK_URL}}/d' -i config/gitlab.yml
+  sudo -u git -H sed '/{{PIWIK_SITE_ID}}/d' -i config/gitlab.yml
 fi
 
 OAUTH_ENABLED=${OAUTH_ENABLED:-false}
