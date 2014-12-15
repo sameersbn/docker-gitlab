@@ -552,7 +552,7 @@ fi
 
 # piwik
 if [ -n "${PIWIK_URL}" -a -n "${PIWIK_SITE_ID}" ]; then
-  sudo -u git -H sed 's/{{PIWIK_URL}}/'"${PIWIK_URL}"'/' -i config/gitlab.yml
+  sudo -u git -H sed 's,{{PIWIK_URL}},'"${PIWIK_URL}"',' -i config/gitlab.yml
   sudo -u git -H sed 's/{{PIWIK_SITE_ID}}/'"${PIWIK_SITE_ID}"'/' -i config/gitlab.yml
 else
   sudo -u git -H sed '/{{PIWIK_URL}}/d' -i config/gitlab.yml
