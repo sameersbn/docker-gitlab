@@ -45,6 +45,7 @@
     - [Redmine](#redmine)
     - [Jira](#jira)
   - [Mapping host user and group](#mapping-host-user-and-group)
+  - [Piwik](#piwik)
   - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
     - [Creating Backups](#creating-backups)
@@ -689,6 +690,14 @@ docker run --name=gitlab -d [OPTIONS] \
   sameersbn/gitlab:7.5.3 app:sanitize
 ```
 
+### Piwik
+
+If you want to monitor your gitlab instance with [Piwik](http://piwik.org/), there are two options to setup: `PIWIK_URL` and `PIWIK_SITE_ID`.
+These options should contain something like:
+
+- `PIWIK_URL=piwik.example.org`
+- `PIWIK_SITE_ID=42`
+
 ### Available Configuration Parameters
 
 *Please refer the docker run command options for the `--env-file` flag where you can specify all required environment variables in a single file. This will save you from writing a potentially long docker run command. Alternately you can use fig.*
@@ -772,6 +781,8 @@ Below is the complete list of available options that can be used to customize yo
 - **JIRA_URL**: Location of the jira server, e.g. `-e 'JIRA_URL=https://jira.example.com'`. No defaults.
 - **USERMAP_UID**: Sets the uid for user `git` to the specified uid. Defaults to `1000`.
 - **USERMAP_GID**: Sets the gid for group `git` to the specified gid. Defaults to `USERMAP_UID` if defined, else defaults to `1000`.
+- **PIWIK_URL**: Sets the Piwik URL. No defaults.
+- **PIWIK_SITE_ID**: Sets the Piwik site ID. No defaults.
 
 # Maintenance
 
