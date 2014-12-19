@@ -66,6 +66,11 @@ sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
 sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
 sudo -u git -H cp config/initializers/smtp_settings.rb.sample config/initializers/smtp_settings.rb
 
+# disable ipv6 support
+if [ ! -f /proc/net/if_inet6 ]; then
+  sed -e '/listen \[::\]:80/ s/^#*/#/' -i /etc/nginx/sites-enabled/gitlab
+fi
+
 # symlink log -> ${GITLAB_LOG_DIR}/gitlab
 rm -rf log
 ln -sf ${GITLAB_LOG_DIR}/gitlab log
