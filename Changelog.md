@@ -2,6 +2,8 @@
 
 **latest**
 - add support for configuring piwik
+- gitlab-shell: upgrade to v.2.4.0
+- gitlab: upgrade to CE v.7.6.0
 
 **7.5.3**
 - accept `BACKUP` parameter while running the restore rake task, closes #220
