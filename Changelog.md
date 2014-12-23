@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- disable nginx ipv6 if host does not support it.
+
 **7.6.0**
 - add support for configuring piwik
 - gitlab-shell: upgrade to v.2.4.0
