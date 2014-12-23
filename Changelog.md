@@ -1,6 +1,6 @@
 # Changelog
 
-**latest**
+**7.6.0**
 - add support for configuring piwik
 - gitlab-shell: upgrade to v.2.4.0
 - gitlab: upgrade to CE v.7.6.0
