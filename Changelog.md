@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- add support for configuring piwik
+
 **7.5.3**
 - accept `BACKUP` parameter while running the restore rake task, closes #220
 - init: do not run `gitlab:satellites:create` rake task at startup
