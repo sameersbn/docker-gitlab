@@ -603,6 +603,11 @@ else
   sudo -u git -H sed '/{{GITLAB_RELATIVE_URL_ROOT}}/d' -i config/unicorn.rb
 fi
 
+# disable ipv6 support
+if [ ! -f /proc/net/if_inet6 ]; then
+  sed -e '/listen \[::\]:80/ s/^#*/#/' -i /etc/nginx/sites-enabled/gitlab
+fi
+
 # fix permission and ownership of ${GITLAB_DATA_DIR}
 chmod 755 ${GITLAB_DATA_DIR}
 chown git:git ${GITLAB_DATA_DIR}
