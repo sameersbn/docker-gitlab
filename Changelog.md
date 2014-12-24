@@ -3,6 +3,7 @@
 **latest**
 - disable nginx ipv6 if host does not support it.
 - init: added GITLAB_BACKUP_TIME configuration option
+- gitlab: upgrade to CE v.7.6.1
 
 **7.6.0**
 - add support for configuring piwik

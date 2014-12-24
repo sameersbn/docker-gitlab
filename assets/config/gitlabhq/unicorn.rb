@@ -13,9 +13,9 @@
 #
 ENV['RAILS_RELATIVE_URL_ROOT'] = "{{GITLAB_RELATIVE_URL_ROOT}}"
 
-# Use at least one worker per core if you're on a dedicated server,
-# more will usually help for _short_ waits on databases/caches.
-# The minimum is 2
+# Read about unicorn workers here:
+# http://doc.gitlab.com/ee/install/requirements.html#unicorn-workers
+#
 worker_processes {{UNICORN_WORKERS}}
 
 # Since Unicorn is never exposed to outside clients, it does not need to
@@ -37,10 +37,10 @@ listen "127.0.0.1:8080", :tcp_nopush => true
 
 # nuke workers after 30 seconds instead of 60 seconds (the default)
 #
-# NOTICE: git push over http depends on this value. 
-# If you want be able to push huge amount of data to git repository over http 
-# you will have to increase this value too. 
-# 
+# NOTICE: git push over http depends on this value.
+# If you want be able to push huge amount of data to git repository over http
+# you will have to increase this value too.
+#
 # Example of output if you try to push 1GB repo to GitLab over http.
 #   -> git push http://gitlab.... master
 #
