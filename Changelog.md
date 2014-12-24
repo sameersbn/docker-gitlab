@@ -2,6 +2,7 @@
 
 **latest**
 - disable nginx ipv6 if host does not support it.
+- init: added GITLAB_BACKUP_TIME configuration option
 
 **7.6.0**
 - add support for configuring piwik

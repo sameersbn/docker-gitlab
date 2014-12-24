@@ -40,6 +40,7 @@ SSL_VERIFY_CLIENT=${SSL_VERIFY_CLIENT:-off}
 CA_CERTIFICATES_PATH=${CA_CERTIFICATES_PATH:-$GITLAB_DATA_DIR/certs/ca.crt}
 
 GITLAB_BACKUPS=${GITLAB_BACKUPS:-disable}
+GITLAB_BACKUP_TIME=${GITLAB_BACKUP_TIME:-04:00}
 GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-}
 
 NGINX_WORKERS=${NGINX_WORKERS:-1}
@@ -723,20 +724,21 @@ appStart () {
   rm -rf tmp/sockets/gitlab.socket
 
   # setup cron job for automatic backups
+  read hour min <<< ${GITLAB_BACKUP_TIME//[:]/ }
   case "${GITLAB_BACKUPS}" in
     daily)
       sudo -u git -H cat > /tmp/cron.git <<EOF
-00 04 * * * cd ${GITLAB_INSTALL_DIR} && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
+$min $hour * * * cd ${GITLAB_INSTALL_DIR} && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
 EOF
       ;;
     weekly)
       sudo -u git -H cat > /tmp/cron.git <<EOF
-00 04 * * 0 cd ${GITLAB_INSTALL_DIR} && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
+$min $hour * * 0 cd ${GITLAB_INSTALL_DIR} && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
 EOF
       ;;
     monthly)
       sudo -u git -H cat > /tmp/cron.git <<EOF
-00 04 01 * * cd ${GITLAB_INSTALL_DIR} && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
+$min $hour 01 * * cd ${GITLAB_INSTALL_DIR} && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
 EOF
       ;;
   esac

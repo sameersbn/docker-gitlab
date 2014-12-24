@@ -721,6 +721,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_BACKUP_DIR**: The backup folder in the container. Defaults to `/home/git/data/backups`
 - **GITLAB_BACKUPS**: Setup cron job to automatic backups. Possible values `disable`, `daily`, `weekly` or `monthly`. Disabled by default
 - **GITLAB_BACKUP_EXPIRY**: Configure how long (in seconds) to keep backups before they are deleted. By default when automated backups are disabled backups are kept forever (0 seconds), else the backups expire in 7 days (604800 seconds).
+- **GITLAB_BACKUP_TIME**: Set a time for the automatic backups in `HH:MM` format. Defaults to `04:00`.
 - **GITLAB_SSH_HOST**: The ssh host. Defaults to **GITLAB_HOST**.
 - **GITLAB_SSH_PORT**: The ssh port number. Defaults to `22`.
 - **GITLAB_RELATIVE_URL_ROOT**: The relative url of the GitLab server, e.g. `/git`. No default.
@@ -833,7 +834,7 @@ docker run --name=gitlab -it --rm [OPTIONS] \
 
 The image can be configured to automatically take backups on a daily, weekly or monthly basis. Adding `-e 'GITLAB_BACKUPS=daily'` to the docker run command will enable daily backups. Adding `-e 'GITLAB_BACKUPS=weekly'` or `-e 'GITLAB_BACKUPS=monthly'` will enable weekly or monthly backups.
 
-Daily backups are created at 4 am (UTC) everyday. Weelkly backups are created every Sunday at the same time as the daily backups. Monthly backups are created on the 1st of every month at the same time as the daily backups.
+Daily backups are created at `GITLAB_BACKUP_TIME` which defaults to `04:00` everyday. Weekly backups are created every Sunday at the same time as the daily backups. Monthly backups are created on the 1st of every month at the same time as the daily backups.
 
 By default, when automated backups are enabled, backups are held for a period of 7 days. While when automated backups are disabled, the backups are held for an infinite period of time. This can behavior can be configured via the `GITLAB_BACKUP_EXPIRY` option.
 
