@@ -1,6 +1,6 @@
 # Changelog
 
-**latest**
+**7.6.2**
 - gitlab: upgrade to CE v.7.6.2
 
 **7.6.1**
