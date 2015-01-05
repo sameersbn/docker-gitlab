@@ -782,6 +782,7 @@ Below is the complete list of available options that can be used to customize yo
 - **JIRA_URL**: Location of the jira server, e.g. `-e 'JIRA_URL=https://jira.example.com'`. No defaults.
 - **USERMAP_UID**: Sets the uid for user `git` to the specified uid. Defaults to `1000`.
 - **USERMAP_GID**: Sets the gid for group `git` to the specified gid. Defaults to `USERMAP_UID` if defined, else defaults to `1000`.
+- **GOOGLE_ANALYTICS_ID**: Google Analytics ID. No defaults.
 - **PIWIK_URL**: Sets the Piwik URL. No defaults.
 - **PIWIK_SITE_ID**: Sets the Piwik site ID. No defaults.
 

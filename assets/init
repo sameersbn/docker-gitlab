@@ -111,6 +111,8 @@ OAUTH_TWITTER_APP_SECRET=${OAUTH_TWITTER_APP_SECRET:-}
 OAUTH_GITHUB_API_KEY=${OAUTH_GITHUB_API_KEY:-}
 OAUTH_GITHUB_APP_SECRET=${OAUTH_GITHUB_APP_SECRET:-}
 
+GOOGLE_ANALYTICS_ID=${GOOGLE_ANALYTICS_ID:-}
+
 PIWIK_URL=${PIWIK_URL:-}
 PIWIK_SITE_ID=${PIWIK_SITE_ID:-}
 
@@ -549,6 +551,13 @@ else
   sudo -u git -H sed '/{{OAUTH_GITHUB_API_KEY}}/d' -i config/gitlab.yml
   sudo -u git -H sed '/{{OAUTH_GITHUB_APP_SECRET}}/d' -i config/gitlab.yml
   sudo -u git -H sed '/{{OAUTH_GITHUB_SCOPE}}/d' -i config/gitlab.yml
+fi
+
+# google analytics
+if [ -n "${GOOGLE_ANALYTICS_ID}" ]; then
+  sudo -u git -H sed 's/{{GOOGLE_ANALYTICS_ID}}/'"${GOOGLE_ANALYTICS_ID}"'/' -i config/gitlab.yml
+else
+  sudo -u git -H sed '/{{GOOGLE_ANALYTICS_ID}}/d' -i config/gitlab.yml
 fi
 
 # piwik
