@@ -125,6 +125,12 @@ production: &base
       issues_url: "{{JIRA_URL}}/browse/:id"
       new_issue_url: "{{JIRA_URL}}/secure/CreateIssue.jspa"
 
+    mantis:
+      title: "Mantis"
+      project_url: "{{MANTIS_URL}}/set_project.php?project_id=:issues_tracker_id&ref=view_all_bug_page.php"
+      issues_url: "{{MANTIS_URL}}/view.php?id=:id"
+      new_issue_url: "{{MANTIS_URL}}/set_project.php?project_id=:issues_tracker_id&ref=bug_report_page.php"
+
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:

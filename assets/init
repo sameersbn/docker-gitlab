@@ -98,6 +98,7 @@ GITLAB_HTTPS_HSTS_MAXAGE=${GITLAB_HTTPS_HSTS_MAXAGE:-31536000}
 
 REDMINE_URL=${REDMINE_URL:-}
 JIRA_URL=${JIRA_URL:-}
+MANTIS_URL=${MANTIS_URL:-}
 
 OAUTH_ALLOW_SSO=${OAUTH_ALLOW_SSO:-false}
 OAUTH_BLOCK_AUTO_CREATED_USERS=${OAUTH_BLOCK_AUTO_CREATED_USERS:-true}
@@ -513,6 +514,18 @@ else
   sudo -u git -H sed '/project_url: "{{JIRA_URL}}/d' -i config/gitlab.yml
   sudo -u git -H sed '/issues_url: "{{JIRA_URL}}/d' -i config/gitlab.yml
   sudo -u git -H sed '/new_issue_url: "{{JIRA_URL}}/d' -i config/gitlab.yml
+fi
+
+# apply mantis configuration
+if [ -n "${MANTIS_URL}" ]; then
+  sudo -u git -H sed 's,{{MANTIS_URL}},'"${MANTIS_URL}"',g' -i config/gitlab.yml
+else
+  # remove the jira configuration block
+  sudo -u git -H sed '/mantis:/d' -i config/gitlab.yml
+  sudo -u git -H sed '/title: "Mantis"/d' -i config/gitlab.yml
+  sudo -u git -H sed '/project_url: "{{MANTIS_URL}}/d' -i config/gitlab.yml
+  sudo -u git -H sed '/issues_url: "{{MANTIS_URL}}/d' -i config/gitlab.yml
+  sudo -u git -H sed '/new_issue_url: "{{MANTIS_URL}}/d' -i config/gitlab.yml
 fi
 
 # apply oauth configuration
