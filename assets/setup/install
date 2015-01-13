@@ -142,7 +142,7 @@ ${GITLAB_LOG_DIR}/gitlab/*.log {
 EOF
 
 # configure gitlab-shell log rotation
-cat > /etc/logrotate.d/gitlab <<EOF
+cat > /etc/logrotate.d/gitlab-shell <<EOF
 ${GITLAB_LOG_DIR}/gitlab-shell/*.log {
   weekly
   missingok
@@ -155,7 +155,7 @@ ${GITLAB_LOG_DIR}/gitlab-shell/*.log {
 EOF
 
 # configure gitlab vhost log rotation
-cat > /etc/logrotate.d/gitlab <<EOF
+cat > /etc/logrotate.d/gitlab-nginx <<EOF
 ${GITLAB_LOG_DIR}/nginx/*.log {
   weekly
   missingok
