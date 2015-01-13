@@ -44,6 +44,7 @@
   - [External Issue Trackers](#external-issue-trackers)
     - [Redmine](#redmine)
     - [Jira](#jira)
+    - [Mantis](#mantis)
   - [Mapping host user and group](#mapping-host-user-and-group)
   - [Piwik](#piwik)
   - [Available Configuration Parameters](#available-configuration-parameters)
@@ -670,6 +671,12 @@ By using the above option the `/home/git/data/repositories` directory will be ac
 Support for issue tracking using Jira can be added by specifying the complete URL of the Jira web server in the `JIRA_URL` configuration option.
 
 For example, if your Jira server is accessible at `https://jira.example.com`, then adding `-e 'JIRA_URL=https://jira.example.com'` to the docker run command enables Jira support in GitLab
+
+#### Mantis
+
+Support for issue tracking using [mantis](https://www.mantisbt.org/) can be added by specifying the complete URL of the mantis web server in the `MANTIS_URL` configuration option.
+
+For example, if your mantis server is accessible at `https://mantis.example.com`, then adding `-e 'MANTIS_URL=https://mantis.example.com'` to the docker run command enables mantis support in GitLab.
 
 ### Host UID / GID Mapping
 
