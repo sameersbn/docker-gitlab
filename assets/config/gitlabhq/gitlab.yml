@@ -253,7 +253,7 @@ production: &base
     upload:
       # Fog storage connection settings, see http://fog.io/storage/ .
       connection:
-        provider: AWS
+        provider: {{GITLAB_BACKUP_PROVIDER}}
         region: {{GITLAB_BACKUP_AWS_REGION}}
         aws_access_key_id: {{GITLAB_BACKUP_AWS_ID}}
         aws_secret_access_key: '{{GITLAB_BACKUP_AWS_SECRET}}'

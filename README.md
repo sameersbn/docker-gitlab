@@ -729,6 +729,11 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_BACKUPS**: Setup cron job to automatic backups. Possible values `disable`, `daily`, `weekly` or `monthly`. Disabled by default
 - **GITLAB_BACKUP_EXPIRY**: Configure how long (in seconds) to keep backups before they are deleted. By default when automated backups are disabled backups are kept forever (0 seconds), else the backups expire in 7 days (604800 seconds).
 - **GITLAB_BACKUP_TIME**: Set a time for the automatic backups in `HH:MM` format. Defaults to `04:00`.
+- **GITLAB_BACKUP_PROVIDER**: Currently, only `AWS` is supported. None selected by default.
+- **GITLAB_BACKUP_AWS_REGION**: AWS Region. The region in which your S3 bucket lives. (Required if **GITLAB_BACKUP_PROVIDER=`AWS`**)
+- **GITLAB_BACKUP_AWS_ID**: AWS Identity (Required if **GITLAB_BACKUP_PROVIDER=`AWS`**)
+- **GITLAB_BACKUP_AWS_SECRET**: AWS Secret Key (Required if **GITLAB_BACKUP_PROVIDER=`AWS`**)
+- **GITLAB_BACKUP_AWS_S3_BUCKET**: S3 bucket name to upload backup files to. (Required if **GITLAB_BACKUP_PROVIDER=`AWS`**)
 - **GITLAB_SSH_HOST**: The ssh host. Defaults to **GITLAB_HOST**.
 - **GITLAB_SSH_PORT**: The ssh port number. Defaults to `22`.
 - **GITLAB_RELATIVE_URL_ROOT**: The relative url of the GitLab server, e.g. `/git`. No default.
