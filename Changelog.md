@@ -4,6 +4,8 @@
 - init: added GOOGLE_ANALYTICS_ID configuration option
 - added support for mantis issue tracker
 - fixed log rotation configuration
+- gitlab-shell: upgrade to v.2.4.1
+- gitlab: upgrade to CE v.7.7.0
 
 **7.6.2**
 - gitlab: upgrade to CE v.7.6.2
