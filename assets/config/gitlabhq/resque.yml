@@ -1,0 +1,3 @@
+development: "redis://{{REDIS_HOST}}:{{REDIS_PORT}}"
+test: "redis://{{REDIS_HOST}}:{{REDIS_PORT}}"
+production: "redis://{{REDIS_HOST}}:{{REDIS_PORT}}"

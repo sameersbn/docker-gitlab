@@ -1,0 +1,59 @@
+postgresqlstorage:
+  image: sameersbn/postgresql:9.1-1
+  volumes:
+    - /opt/gitlab/db:/var/lib/postgresql
+postgresql:
+  image: sameersbn/postgresql:9.1-1
+  volumes_from:
+    - postgresqlstorage
+  environment:
+    - DB_USER=gitlab
+    - DB_PASS=secretpassword
+    - DB_NAME=gitlabhq_production
+gitlabstorage:
+  build: busybox
+  volumes:
+   - /opt/gitlab/data:/home/git/data
+   - /opt/gitlab/logs:/var/log/gitlab
+gitlab:
+  build: .
+  volumes_from:
+    - gitlabstorage
+  links:
+   - redis:redisio
+   - postgresql:postgresql
+  ports:
+   - "80:80"
+   - "443:443"
+   - "2222:22"
+  environment:
+   - GITLAB_HOST=gitlab.imshealth.com
+   - GITLAB_SSH_PORT=2222
+   - GITLAB_HTTPS=true
+   - SSL_SELF_SIGNED=true
+   - GITLAB_EMAIL=git@us.imshealth.com
+   - GITLAB_PROJECTS_LIMIT=100000
+   - GITLAB_BACKUPS=daily
+   - GITLAB_BACKUP_EXPIRY=86400
+   - GITLAB_BACKUP_TIME=04:00
+   - GITLAB_BACKUP_PROVIDER=AWS
+   - GITLAB_BACKUP_AWS_REGION=us-west-2
+   - GITLAB_BACKUP_AWS_ID=AKIAIGQ56KRB22ASNRSQ
+   - GITLAB_BACKUP_AWS_SECRET=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
+   - GITLAB_BACKUP_AWS_S3_BUCKET=ims-gitlab-backup
+   - NGINX_MAX_UPLOAD_SIZE=1024m
+   - UNICORN_TIMEOUT=7200
+   - GITLAB_SIGNIN=false
+   - LDAP_ENABLED=true
+   - LDAP_HOST=10.10.2.95
+   - LDAP_PORT=3890
+   - LDAP_UID=sAMAccountName
+   - LDAP_METHOD=plain
+   - LDAP_BIND_DN=CN=seaasvc-appature,OU=SEA - Service Accounts,OU=Seattle - SEA,OU=US,DC=internal,DC=imsglobal,DC=com
+   - LDAP_PASS=SkittleBix.99
+   - LDAP_ACTIVE_DIRECTORY=true
+   - LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN=true
+   - LDAP_BASE=DC=internal,DC=imsglobal,DC=com
+   - JIRA_URL=https://360vantage.jira.com
+redis:
+  image: sameersbn/redis:latest
