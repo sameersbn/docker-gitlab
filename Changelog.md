@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- gitlab: upgrade to CE v.7.7.1
+
 **7.7.0**
 - init: added GOOGLE_ANALYTICS_ID configuration option
 - added support for mantis issue tracker
