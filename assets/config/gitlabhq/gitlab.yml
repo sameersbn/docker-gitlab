@@ -81,10 +81,10 @@ production: &base
 
     ## Default project features settings
     default_projects_features:
-      issues: true
-      merge_requests: true
-      wiki: true
-      snippets: false
+      issues: {{GITLAB_PROJECTS_ISSUES}}
+      merge_requests: {{GITLAB_PROJECTS_MERGE_REQUESTS}}
+      wiki: {{GITLAB_PROJECTS_WIKI}}
+      snippets: {{GITLAB_PROJECTS_SNIPPETS}}
       visibility_level: "{{GITLAB_PROJECTS_VISIBILITY}}"  # can be "private" | "internal" | "public"
 
     ## Webhook settings
