@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- update postgresql client to the latest version, Closes #249
+
 **7.7.2**
 - gitlab-shell: upgrade to v.2.4.2
 - gitlab: upgrade to CE v.7.7.2
