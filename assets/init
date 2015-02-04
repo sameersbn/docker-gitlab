@@ -186,23 +186,23 @@ if [ -z "${DB_HOST}" -a -n "$(which docker)" -a -S /var/run/docker.sock ]; then
   echo "Database connection details not specified."
   echo "Will try to spin up a new postgresql image with the name postgresql-gitlab."
   echo "Please manually configure the database connection in production."
-  case "$(docker inspect --format {{.State.Running}} postgresql-gitlab 2>/dev/null)" in
+  case "$(docker inspect --format {{.State.Running}} postgresql-gitlab)" in
     true)
       echo "Using existing postgresql container..."
       ;;
     false)
       echo "Starting up existing postgresql container..."
-      docker start postgresql-gitlab >/dev/null 2>/dev/null
+      docker start postgresql-gitlab >/dev/null
       ;;
     *)
       echo "Starting up a new postgresql container..."
       docker run --name='postgresql-gitlab' -d \
         -e 'DB_USER=gitlab_user' -e 'DB_PASS=gitlab_pass' -e 'DB_NAME=gitlab_db' \
-        sameersbn/postgresql:latest >/dev/null 2>/dev/null
+        sameersbn/postgresql:latest >/dev/null
       ;;
   esac
   DB_TYPE=postgres
-  DB_HOST=$(docker inspect --format {{.NetworkSettings.IPAddress}} postgresql-gitlab 2>/dev/null)
+  DB_HOST=$(docker inspect --format {{.NetworkSettings.IPAddress}} postgresql-gitlab)
   DB_PORT=5432
   DB_USER=gitlab_user
   DB_PASS=gitlab_pass
@@ -252,20 +252,20 @@ if [ -z "${REDIS_HOST}" -a -n "$(which docker)" -a -S /var/run/docker.sock ]; th
   echo "Redis connection details not specified."
   echo "Will try to spin up a new redis image with the name redis-gitlab."
   echo "Please manually configure the redis connection in production."
-  case "$(docker inspect --format {{.State.Running}} redis-gitlab 2>/dev/null)" in
+  case "$(docker inspect --format {{.State.Running}} redis-gitlab)" in
     true)
       echo "Using existing redis container..."
       ;;
     false)
       echo "Starting up existing redis container..."
-      docker start redis-gitlab >/dev/null 2>/dev/null
+      docker start redis-gitlab >/dev/null
       ;;
     *)
       echo "Starting up a new redis container..."
-      docker run --name='redis-gitlab' -d sameersbn/redis:latest >/dev/null 2>/dev/null
+      docker run --name='redis-gitlab' -d sameersbn/redis:latest >/dev/null
       ;;
   esac
-  REDIS_HOST=$(docker inspect --format {{.NetworkSettings.IPAddress}} redis-gitlab 2>/dev/null)
+  REDIS_HOST=$(docker inspect --format {{.NetworkSettings.IPAddress}} redis-gitlab)
   REDIS_PORT=6379
 fi
 
@@ -705,7 +705,7 @@ appStart () {
   esac
   timeout=60
   printf "Waiting for database server to accept connections"
-  while ! ${prog} >/dev/null
+  while ! ${prog} >/dev/null 2>&1
   do
     timeout=$(expr $timeout - 1)
     if [ $timeout -eq 0 ]; then
@@ -725,7 +725,7 @@ appStart () {
       ;;
     postgres)
       QUERY="SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public';"
-      COUNT=$(PGPASSWORD="${DB_PASS}" psql -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -Atw -c "${QUERY}" 2>/dev/null)
+      COUNT=$(PGPASSWORD="${DB_PASS}" psql -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -Atw -c "${QUERY}")
       ;;
   esac
   if [ -z "${COUNT}" -o ${COUNT} -eq 0 ]; then
@@ -753,7 +753,7 @@ appStart () {
 
     echo "Compiling assets. Please be patient, this could take a while..."
     sudo -u git -H bundle exec rake assets:clean RAILS_ENV=production
-    sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production 2>/dev/null
+    sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
     sudo -u git -H touch tmp/cache/VERSION
     sudo -u git -H echo "${GITLAB_VERSION}" > tmp/cache/VERSION
     sudo -u git -H echo "${GITLAB_RELATIVE_URL_ROOT}" > tmp/cache/GITLAB_RELATIVE_URL_ROOT
@@ -785,7 +785,7 @@ $min $hour 01 * * cd ${GITLAB_INSTALL_DIR} && PATH=/usr/local/bin:/usr/bin:/bin 
 EOF
       ;;
   esac
-  crontab -u git /tmp/cron.git 2>/dev/null && rm -rf /tmp/cron.git
+  crontab -u git /tmp/cron.git && rm -rf /tmp/cron.git
 
   # start supervisord
   echo "Starting supervisord..."
