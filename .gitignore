@@ -1,2 +1,6 @@
 *.gem
+*.ipr
+*.iml
+*.iws
+.idea/
 *.tar.gz
