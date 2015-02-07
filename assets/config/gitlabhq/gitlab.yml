@@ -66,7 +66,7 @@ production: &base
     ## Standard login settings
     # The standard login can be disabled to force login via LDAP
     # default: true - If set to false the standard login form won't be shown on the sign-in page
-    signin_enabled: {{GITLAB_SIGNIN}}
+    # signin_enabled: false
 
     # Restrict setting visibility levels for non-admin users.
     # The default is to allow all levels.
