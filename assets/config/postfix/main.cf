@@ -1,0 +1,10 @@
+mydomain = {{GITLAB_HOST}}
+myorigin = $mydomain
+mynetworks = 127.0.0.0/8
+relay_domains =
+relayhost =
+mydestination =
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all
+inet_protocols = all

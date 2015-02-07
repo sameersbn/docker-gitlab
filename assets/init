@@ -81,6 +81,9 @@ fi
 SMTP_ENABLED=${SMTP_ENABLED:-false}
 GITLAB_EMAIL_ENABLED=${GITLAB_EMAIL_ENABLED:-$SMTP_ENABLED}
 
+SENDMAIL_ENABLED=${SENDMAIL_ENABLED:-false}
+[ "$SMTP_ENABLED" == "true" ] && SENDMAIL_ENABLED=false
+
 LDAP_ENABLED=${LDAP_ENABLED:-false}
 LDAP_HOST=${LDAP_HOST:-}
 LDAP_PORT=${LDAP_PORT:-636}
@@ -334,6 +337,9 @@ sudo -u git -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/rack_attack.rb    config/ini
 [ "${SMTP_ENABLED}" == "true" ] && \
 sudo -u git -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb  config/initializers/smtp_settings.rb
 
+[ "${SENDMAIL_ENABLED}" == "true" ] && \
+sudo -u git -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/sendmail_settings.rb config/initializers/smtp_settings.rb
+
 # override default configuration templates with user templates
 case "${GITLAB_HTTPS}" in
   true)
@@ -352,7 +358,7 @@ esac
 [ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/database.yml ]     && sudo -u git -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/database.yml     config/database.yml
 [ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/unicorn.rb ]       && sudo -u git -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/unicorn.rb       config/unicorn.rb
 [ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/rack_attack.rb ]   && sudo -u git -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/rack_attack.rb   config/initializers/rack_attack.rb
-[ "${SMTP_ENABLED}" == "true" ] && \
+[ "${SMTP_ENABLED}" == "true" ] || [ "${SENDMAIL_ENABLED}" == "true" ] && \
 [ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb ] && sudo -u git -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb config/initializers/smtp_settings.rb
 
 if [ -f "${SSL_CERTIFICATE_PATH}" -o -f "${CA_CERTIFICATES_PATH}" ]; then
@@ -484,6 +490,13 @@ if [ "${SMTP_ENABLED}" == "true" ]; then
     "") sudo -u git -H sed '/{{SMTP_AUTHENTICATION}}/d' -i config/initializers/smtp_settings.rb ;;
     *) sudo -u git -H sed 's/{{SMTP_AUTHENTICATION}}/'"${SMTP_AUTHENTICATION}"'/' -i config/initializers/smtp_settings.rb ;;
   esac
+fi
+
+if [ "${SENDMAIL_ENABLED}" == "true" ]; then
+  # configure postfix
+  sudo cp ${SYSCONF_TEMPLATES_DIR}/postfix/main.cf /etc/postfix/main.cf
+  sudo sed 's/{{GITLAB_HOST}}/'"${GITLAB_HOST}"'/' -i /etc/postfix/main.cf
+  sudo service postfix start
 fi
 
 # apply LDAP configuration
