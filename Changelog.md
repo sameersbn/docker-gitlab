@@ -6,6 +6,7 @@
 - removed `GITLAB_SIGNIN` configuration option, can be set from gitlab ui
 - removed `GITLAB_PROJECTS_LIMIT` configuration option, can be set from gitlab ui
 - removed `GITLAB_GRAVATAR_ENABLED` configuration option, can be set from gitlab ui
+- gitlab-shell: upgrade to v.2.5.3
 
 **7.7.2**
 - gitlab-shell: upgrade to v.2.4.2
