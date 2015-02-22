@@ -785,6 +785,8 @@ Below is the complete list of available options that can be used to customize yo
 - **OAUTH_TWITTER_APP_SECRET**: Twitter App API secret. No defaults.
 - **OAUTH_GITHUB_API_KEY**: GitHub App Client ID. No defaults.
 - **OAUTH_GITHUB_APP_SECRET**: GitHub App Client secret. No defaults.
+- **OAUTH_GITLAB_API_KEY**: GitLab App Client ID. No defaults.
+- **OAUTH_GITLAB_APP_SECRET**: GitLab App Client secret. No defaults.
 - **REDMINE_URL**: Location of the redmine server, e.g. `-e 'REDMINE_URL=https://redmine.example.com'`. No defaults.
 - **JIRA_URL**: Location of the jira server, e.g. `-e 'JIRA_URL=https://jira.example.com'`. No defaults.
 - **USERMAP_UID**: Sets the uid for user `git` to the specified uid. Defaults to `1000`.

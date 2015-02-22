@@ -221,6 +221,9 @@ production: &base
       - { name: 'github', app_id: '{{OAUTH_GITHUB_API_KEY}}',
           app_secret: '{{OAUTH_GITHUB_APP_SECRET}}',
           args: { scope: '{{OAUTH_GITHUB_SCOPE}}' } }
+      - { name: 'gitlab', app_id: '{{OAUTH_GITLAB_API_KEY}}',
+          app_secret: '{{OAUTH_GITLAB_APP_SECRET}}',
+          args: { scope: '{{OAUTH_GITLAB_SCOPE}}' } }
 
 
 

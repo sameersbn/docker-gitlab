@@ -112,6 +112,9 @@ OAUTH_TWITTER_APP_SECRET=${OAUTH_TWITTER_APP_SECRET:-}
 OAUTH_GITHUB_API_KEY=${OAUTH_GITHUB_API_KEY:-}
 OAUTH_GITHUB_APP_SECRET=${OAUTH_GITHUB_APP_SECRET:-}
 
+OAUTH_GITLAB_API_KEY=${OAUTH_GITLAB_API_KEY:-}
+OAUTH_GITLAB_APP_SECRET=${OAUTH_GITLAB_APP_SECRET:-}
+
 GOOGLE_ANALYTICS_ID=${GOOGLE_ANALYTICS_ID:-}
 
 PIWIK_URL=${PIWIK_URL:-}
@@ -571,6 +574,18 @@ else
   sudo -u git -H sed '/{{OAUTH_GITHUB_API_KEY}}/d' -i config/gitlab.yml
   sudo -u git -H sed '/{{OAUTH_GITHUB_APP_SECRET}}/d' -i config/gitlab.yml
   sudo -u git -H sed '/{{OAUTH_GITHUB_SCOPE}}/d' -i config/gitlab.yml
+fi
+
+# gitlab
+if [ -n "${OAUTH_GITLAB_API_KEY}" -a -n "${OAUTH_GITLAB_APP_SECRET}" ]; then
+  OAUTH_ENABLED=true
+  sudo -u git -H sed 's/{{OAUTH_GITLAB_API_KEY}}/'"${OAUTH_GITLAB_API_KEY}"'/' -i config/gitlab.yml
+  sudo -u git -H sed 's/{{OAUTH_GITLAB_APP_SECRET}}/'"${OAUTH_GITLAB_APP_SECRET}"'/' -i config/gitlab.yml
+  sudo -u git -H sed 's/{{OAUTH_GITLAB_SCOPE}}/api/' -i config/gitlab.yml
+else
+  sudo -u git -H sed '/{{OAUTH_GITLAB_API_KEY}}/d' -i config/gitlab.yml
+  sudo -u git -H sed '/{{OAUTH_GITLAB_APP_SECRET}}/d' -i config/gitlab.yml
+  sudo -u git -H sed '/{{OAUTH_GITLAB_SCOPE}}/d' -i config/gitlab.yml
 fi
 
 # google analytics
