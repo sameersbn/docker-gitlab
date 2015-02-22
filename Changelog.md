@@ -9,6 +9,7 @@
 - gitlab-shell: upgrade to v.2.5.3
 - gitlab: upgrade to CE v.7.8.0
 - init: set `LDAP_PORT` default value to `389`
+- init: set `LDAP_METHOD` default value to `plain`
 
 **7.7.2**
 - gitlab-shell: upgrade to v.2.4.2

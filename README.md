@@ -769,7 +769,7 @@ Below is the complete list of available options that can be used to customize yo
 - **LDAP_HOST**: LDAP Host
 - **LDAP_PORT**: LDAP Port. Defaults to `389`
 - **LDAP_UID**: LDAP UID. Defaults to `sAMAccountName`
-- **LDAP_METHOD**: LDAP method, Possible values are `ssl`, `tls` and `plain`. Defaults to `ssl`
+- **LDAP_METHOD**: LDAP method, Possible values are `ssl`, `tls` and `plain`. Defaults to `plain`
 - **LDAP_BIND_DN**: No default.
 - **LDAP_PASS**: LDAP password
 - **LDAP_ACTIVE_DIRECTORY**: Specifies if LDAP server is Active Directory LDAP server. If your LDAP server is not AD, set this to `false`. Defaults to `true`,
