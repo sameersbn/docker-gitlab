@@ -1,6 +1,6 @@
 # Changelog
 
-**latest**
+**7.8.0**
 - update postgresql client to the latest version, Closes #249
 - removed `GITLAB_SIGNUP` configuration option, can be set from gitlab ui
 - removed `GITLAB_SIGNIN` configuration option, can be set from gitlab ui
