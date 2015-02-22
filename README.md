@@ -767,7 +767,7 @@ Below is the complete list of available options that can be used to customize yo
 - **SMTP_AUTHENTICATION**: Specify the SMTP authentication method. Defaults to `login` if `SMTP_USER` is set.
 - **LDAP_ENABLED**: Enable LDAP. Defaults to `false`
 - **LDAP_HOST**: LDAP Host
-- **LDAP_PORT**: LDAP Port. Defaults to `636`
+- **LDAP_PORT**: LDAP Port. Defaults to `389`
 - **LDAP_UID**: LDAP UID. Defaults to `sAMAccountName`
 - **LDAP_METHOD**: LDAP method, Possible values are `ssl`, `tls` and `plain`. Defaults to `ssl`
 - **LDAP_BIND_DN**: No default.
