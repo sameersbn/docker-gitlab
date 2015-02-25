@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- gitlab-shell: upgrade to v.2.5.4
+
 **7.8.0**
 - update postgresql client to the latest version, Closes #249
 - removed `GITLAB_SIGNUP` configuration option, can be set from gitlab ui
