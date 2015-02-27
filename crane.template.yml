@@ -56,8 +56,39 @@ containers:
         "2222:22"
       ]
       env: [
+       "GITLAB_HOST=docker",
+       # "GITLAB_HTTPS=true",
+       # "SSL_SELF_SIGNED=true",
+       # "GITLAB_SSH_PORT=2222",
+       # "GITLAB_EMAIL=gitlab@mycompany.com",
+       # "SMTP_ENABLED=true",
+       # "SMTP_OPENSSL_VERIFY_MODE=none",
+       # "SMTP_PORT=2525",
+       # "SMTP_HOST=127.0.0.1",
+       # "SMTP_DOMAIN=mycompany.com",
+       "GITLAB_PROJECTS_LIMIT=100000",
+       "GITLAB_BACKUPS=daily",
+       "GITLAB_BACKUP_EXPIRY=86400",
+       "GITLAB_BACKUP_TIME=04:40",
+       # "GITLAB_BACKUP_PROVIDER=AWS",
+       # "GITLAB_BACKUP_AWS_REGION=us-west-2",
+       # "GITLAB_BACKUP_AWS_ID=MYAWSID",
+       # "GITLAB_BACKUP_AWS_SECRET=MYawSSecreTKey",
+       # "GITLAB_BACKUP_AWS_S3_BUCKET=s3-bucket-name",
+       "NGINX_MAX_UPLOAD_SIZE=1024m",
+       "UNICORN_TIMEOUT=7200",
+       # "LDAP_ENABLED=true",
+       # "LDAP_HOST=127.0.0.1",
+       # "LDAP_PORT=3890",
+       # "LDAP_UID=sAMAccountName",
+       # "LDAP_METHOD=plain",
+       # "LDAP_BIND_DN=LDAP_BIND_OBJECT_DN",
+       # "LDAP_PASS=LDAP_BIND_OBJECT_PASS",
+       # "LDAP_ACTIVE_DIRECTORY=true",
+       # "LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN=true",
+       # "LDAP_BASE=LDAP_SEARCH_SCOPE_DN"
       ]
 groups:
   default: ["postgresqlstorage", "gitlabstorage", "redis", "postgresql", "gitlab"]
   data: ["redis", "postgresqlstorage", "postgresql"]
-
+  app: ["gitlab"]
