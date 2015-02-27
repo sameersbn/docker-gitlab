@@ -1,3 +1,4 @@
 *.gem
 *.tar.gz
 fig_local.yml
+crane_local.yml
