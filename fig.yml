@@ -22,15 +22,15 @@ gitlabstorage:
    - /opt/gitlab/data:/home/git/data
    - /opt/gitlab/logs:/var/log/gitlab
 gitlab:
-  build: /Workspaces/appature/git/docker-gitlab
+  image: sameersbn/gitlab:7.8.1
   volumes_from:
     - gitlabstorage
   links:
    - redis:redisio
    - postgresql:postgresql
   ports:
-   - "80:80"
-   - "443:443"
+   - "10080:80"
+   - "10022:22"
    - "2222:22"
   environment:
 #######################
