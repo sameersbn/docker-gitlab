@@ -1,5 +1,5 @@
 ## GitLab
-## Contributors: randx, yin8086, sashkab, orkoden, axilleas, bbodenmiller
+## Contributors: randx, yin8086, sashkab, orkoden, axilleas, bbodenmiller, DouweM
 ##
 ## Modified from nginx http version
 ## Modified from http://blog.phusion.nl/2012/04/21/tutorial-setting-up-gitlab-on-debian-6/
@@ -61,7 +61,7 @@ server {
   client_max_body_size {{NGINX_MAX_UPLOAD_SIZE}};
 
   ## Strong SSL Security
-  ## https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
+  ## https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html & https://cipherli.st/
   ssl on;
   ssl_certificate {{SSL_CERTIFICATE_PATH}};
   ssl_certificate_key {{SSL_KEY_PATH}};
