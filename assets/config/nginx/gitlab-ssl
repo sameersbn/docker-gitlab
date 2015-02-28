@@ -133,6 +133,7 @@ server {
     ## If you use HTTPS make sure you disable gzip compression
     ## to be safe against BREACH attack.
     gzip off;
+    add_header X-Accel-Buffering {{NGINX_ACCEL_BUFFERING}};
 
     ## https://github.com/gitlabhq/gitlabhq/issues/694
     ## Some requests take more than 30 seconds.
