@@ -550,6 +550,9 @@ docker run --name=gitlab -d -p 10022:22 -p 10080:80 \
   sameersbn/gitlab:7.8.4
 ```
 
+In case Gitlab responds to any kind of POST request (login, project settings etc.) with a 422 HTTP Error, consider adding this to your reverse proxy configuration:
+`proxy_set_header X-Forwarded-Ssl on;` (nginx format)
+
 Again, drop the `-e 'SSL_SELF_SIGNED=true'` option if you are using CA certified SSL certificates.
 
 #### Establishing trust with your server
