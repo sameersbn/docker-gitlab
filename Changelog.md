@@ -1,5 +1,14 @@
 # Changelog
 
+**latest**
+- gitlab-shell: upgrade to v.2.6.0
+- gitlab: upgrade to CE v.7.9.0
+- init: set default value of `UNICORN_WORKERS` to `3`
+- init: set default value of `SMTP_OPENSSL_VERIFY_MODE` to `peer`
+- init: removed `GITLAB_RESTRICTED_VISIBILITY` configuration option, can be set from the UI
+- init: added BitBucket OAuth configuration support
+- init: added `GITLAB_EMAIL_DISPLAY_NAME` configuration option
+
 **7.8.4**
 - gitlab: upgrade to CE v.7.8.4
 

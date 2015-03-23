@@ -719,7 +719,8 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_PORT**: The port of the GitLab server. Defaults to `80` for plain http and `443` when https is enabled.
 - **GITLAB_TIMEZONE**: Configure the timezone for the gitlab application. This configuration does not effect cron jobs. Defaults to `UTC`.
 - **GITLAB_ROOT_PASSWORD**: The password for the root user. Defaults to `5iveL!fe`.
-- **GITLAB_EMAIL**: The email address for the GitLab server.  Defaults to `example@example.com`.
+- **GITLAB_EMAIL**: The email address for the GitLab server. Defaults to `example@example.com`.
+- **GITLAB_EMAIL_DISPLAY_NAME**: The name displayed in emails sent out by the GitLab mailer. Defaults to `GitLab`.
 - **GITLAB_EMAIL_ENABLED**: Enable or disable gitlab mailer. Defaults to the `SMTP_ENABLED` configuration.
 - **GITLAB_USERNAME_CHANGE**: Enable or disable ability for users to change their username. Defaults is `true`.
 - **GITLAB_CREATE_GROUP**: Enable or disable ability for users to create groups. Defaults is `true`.
@@ -728,7 +729,6 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_PROJECTS_WIKI**: Set if *wiki* feature should be enabled by default for new projects. Defaults is `true`.
 - **GITLAB_PROJECTS_SNIPPETS**: Set if *snippets* feature should be enabled by default for new projects. Defaults is `false`.
 - **GITLAB_PROJECTS_VISIBILITY**: Set default projects visibility level. Possible values `public`, `private` and `internal`. Defaults to `private`.
-- **GITLAB_RESTRICTED_VISIBILITY**: Comma separated list of visibility levels to restrict non-admin users to set. Possible visibility options are `public`, `private` and `internal`.
 - **GITLAB_WEBHOOK_TIMEOUT**: Sets the timeout for webhooks. Defaults to `10` seconds.
 - **GITLAB_BACKUP_DIR**: The backup folder in the container. Defaults to `/home/git/data/backups`
 - **GITLAB_BACKUPS**: Setup cron job to automatic backups. Possible values `disable`, `daily`, `weekly` or `monthly`. Disabled by default
@@ -751,7 +751,7 @@ Below is the complete list of available options that can be used to customize yo
 - **NGINX_X_FORWARDED_PROTO**: Advanced configuration option for the `proxy_set_header X-Forwarded-Proto` setting in the gitlab nginx vHost configuration. Defaults to `https` when `GITLAB_HTTPS` is `true`, else defaults to `$scheme`.
 - **REDIS_HOST**: The hostname of the redis server. Defaults to `localhost`
 - **REDIS_PORT**: The connection port of the redis server. Defaults to `6379`.
-- **UNICORN_WORKERS**: The number of unicorn workers to start. Defaults to `2`.
+- **UNICORN_WORKERS**: The number of unicorn workers to start. Defaults to `3`.
 - **UNICORN_TIMEOUT**: Sets the timeout of unicorn worker processes. Defaults to `60` seconds.
 - **SIDEKIQ_CONCURRENCY**: The number of concurrent sidekiq jobs to run. Defaults to `25`
 - **DB_TYPE**: The database type. Possible values: `mysql`, `postgres`. Defaults to `mysql`.
@@ -768,7 +768,7 @@ Below is the complete list of available options that can be used to customize yo
 - **SMTP_USER**: SMTP username.
 - **SMTP_PASS**: SMTP password.
 - **SMTP_STARTTLS**: Enable STARTTLS. Defaults to `true`.
-- **SMTP_OPENSSL_VERIFY_MODE**: SMTP openssl verification mode. Accepted values are `none`, `peer`, `client_once` and `fail_if_no_peer_cert`. SSL certificate verification is performed by default.
+- **SMTP_OPENSSL_VERIFY_MODE**: SMTP openssl verification mode. Accepted values are `none`, `peer`, `client_once` and `fail_if_no_peer_cert`. Defaults to `peer`.
 - **SMTP_AUTHENTICATION**: Specify the SMTP authentication method. Defaults to `login` if `SMTP_USER` is set.
 - **LDAP_ENABLED**: Enable LDAP. Defaults to `false`
 - **LDAP_HOST**: LDAP Host
@@ -792,6 +792,8 @@ Below is the complete list of available options that can be used to customize yo
 - **OAUTH_GITHUB_APP_SECRET**: GitHub App Client secret. No defaults.
 - **OAUTH_GITLAB_API_KEY**: GitLab App Client ID. No defaults.
 - **OAUTH_GITLAB_APP_SECRET**: GitLab App Client secret. No defaults.
+- **OAUTH_BITBUCKET_API_KEY**: BitBucket App Client ID. No defaults.
+- **OAUTH_BITBUCKET_APP_SECRET**: BitBucket App Client secret. No defaults.
 - **REDMINE_URL**: Location of the redmine server, e.g. `-e 'REDMINE_URL=https://redmine.example.com'`. No defaults.
 - **JIRA_URL**: Location of the jira server, e.g. `-e 'JIRA_URL=https://jira.example.com'`. No defaults.
 - **USERMAP_UID**: Sets the uid for user `git` to the specified uid. Defaults to `1000`.
