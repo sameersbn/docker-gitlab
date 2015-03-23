@@ -1,6 +1,6 @@
 # Changelog
 
-**latest**
+**7.9.0**
 - gitlab-shell: upgrade to v.2.6.0
 - gitlab: upgrade to CE v.7.9.0
 - init: set default value of `UNICORN_WORKERS` to `3`
