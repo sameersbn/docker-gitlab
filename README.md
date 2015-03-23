@@ -552,6 +552,10 @@ docker run --name=gitlab -d -p 10022:22 -p 10080:80 \
 
 Again, drop the `-e 'SSL_SELF_SIGNED=true'` option if you are using CA certified SSL certificates.
 
+In case Gitlab responds to any kind of POST request (login, OAUTH, changing settings etc.) with a 422 HTTP Error, consider adding this to your reverse proxy configuration:
+
+`proxy_set_header X-Forwarded-Ssl on;` (nginx format)
+
 #### Establishing trust with your server
 
 This section deals will self-signed ssl certificates. If you are using CA certified certificates, your done.
