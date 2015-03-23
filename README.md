@@ -823,7 +823,7 @@ docker run --name=gitlab -it --rm [OPTIONS] \
 
 A backup will be created in the backups folder of the [Data Store](#data-store). You can change that behavior by setting your own path within the container. To do so you have to pass the argument `-e "GITLAB_BACKUP_DIR:/path/to/backups"` to the docker run command.
 
-*P.S. Backups can also be generated on a running gitlab instance using `docker exec` as described in the [Rake Tasks](#rake-tasks) section. However, I would advice against running backup and restore operations on a running gitlab instance.*
+*P.S. Backups can also be generated on a running gitlab instance using `docker exec` as described in the [Rake Tasks](#rake-tasks) section. However, I strongly advice against running backup and restore operations on a running gitlab instance.*
 
 ## Restoring Backups
 
@@ -946,6 +946,8 @@ docker exec -it gitlab bundle exec rake gitlab:import:repos RAILS_ENV=production
 ```
 
 For a complete list of available rake tasks please refer https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks or the help section of your gitlab installation.
+
+*P.S. Please avoid running the rake tasks for backup and restore operations on a running gitlab instance.*
 
 # References
   * https://github.com/gitlabhq/gitlabhq
