@@ -81,7 +81,7 @@ if [ -d "${GEM_CACHE_DIR}" ]; then
   mv ${GEM_CACHE_DIR} vendor/
   chown -R git:git vendor/cache
 fi
-sudo -u git -H bundle install --deployment --without development test aws
+sudo -u git -H bundle install -j$(nproc) --deployment --without development test aws
 
 # install gitlab-shell
 sudo -u git -H bundle exec rake gitlab:shell:install[v${GITLAB_SHELL_VERSION}] REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
