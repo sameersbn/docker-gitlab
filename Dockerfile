@@ -37,5 +37,6 @@ EXPOSE 443
 VOLUME ["/home/git/data"]
 VOLUME ["/var/log/gitlab"]
 
+WORKDIR /home/git/gitlab
 ENTRYPOINT ["/app/init"]
 CMD ["app:start"]
