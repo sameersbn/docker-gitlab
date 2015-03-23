@@ -808,7 +808,7 @@ Below is the complete list of available options that can be used to customize yo
 
 Gitlab defines a rake task to easily take a backup of your gitlab installation. The backup consists of all git repositories, uploaded files and as you might expect, the sql database.
 
-Before taking a backup, please make sure that the gitlab image is not running for obvious reasons
+Before taking a backup, please make sure that the gitlab image is not running for obvious reasons,
 
 ```bash
 docker stop gitlab
@@ -822,6 +822,8 @@ docker run --name=gitlab -it --rm [OPTIONS] \
 ```
 
 A backup will be created in the backups folder of the [Data Store](#data-store). You can change that behavior by setting your own path within the container. To do so you have to pass the argument `-e "GITLAB_BACKUP_DIR:/path/to/backups"` to the docker run command.
+
+*P.S. Backups can also be generated on a running gitlab instance using `docker exec` as described in the [Rake Tasks](#rake-tasks) section. However, I would advice against running backup and restore operations on a running gitlab instance.*
 
 ## Restoring Backups
 
@@ -924,11 +926,23 @@ docker run --name=gitlab -d [OPTIONS] \
   sameersbn/gitlab:7.9.0 app:rake gitlab:env:info
 ```
 
+You can also use `docker exec` to run raketasks on running gitlab instance. For example,
+
+```bash
+docker exec -it gitlab bundle exec rake gitlab:env:info RAILS_ENV=production
+```
+
 Similarly, to import bare repositories into GitLab project instance
 
 ```bash
 docker run --name=gitlab -d [OPTIONS] \
   sameersbn/gitlab:7.9.0 app:rake gitlab:import:repos
+```
+
+Or
+
+```bash
+docker exec -it gitlab bundle exec rake gitlab:import:repos RAILS_ENV=production
 ```
 
 For a complete list of available rake tasks please refer https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks or the help section of your gitlab installation.
