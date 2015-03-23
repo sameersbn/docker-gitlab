@@ -4,6 +4,7 @@
 - gitlab-shell: upgrade to v.2.6.0
 - gitlab: upgrade to CE v.7.9.0
 - init: set default value of `UNICORN_WORKERS` to `3`
+- init: set default value of `SMTP_OPENSSL_VERIFY_MODE` to `peer`
 
 **7.8.4**
 - gitlab: upgrade to CE v.7.8.4
