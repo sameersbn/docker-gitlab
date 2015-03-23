@@ -169,6 +169,7 @@ docker run --name='gitlab' -it --rm \
 -p 10022:22 -p 10080:80 \
 -v /var/run/docker.sock:/run/docker.sock \
 -v $(which docker):/bin/docker \
+-v /usr/lib/libdevmapper.so.1.02:/usr/lib/libdevmapper.so.1.02 \
 sameersbn/gitlab:7.8.4
 ```
 
