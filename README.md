@@ -719,7 +719,8 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_PORT**: The port of the GitLab server. Defaults to `80` for plain http and `443` when https is enabled.
 - **GITLAB_TIMEZONE**: Configure the timezone for the gitlab application. This configuration does not effect cron jobs. Defaults to `UTC`.
 - **GITLAB_ROOT_PASSWORD**: The password for the root user. Defaults to `5iveL!fe`.
-- **GITLAB_EMAIL**: The email address for the GitLab server.  Defaults to `example@example.com`.
+- **GITLAB_EMAIL**: The email address for the GitLab server. Defaults to `example@example.com`.
+- **GITLAB_EMAIL_DISPLAY_NAME**: The name displayed in emails sent out by the GitLab mailer. Defaults to `GitLab`.
 - **GITLAB_EMAIL_ENABLED**: Enable or disable gitlab mailer. Defaults to the `SMTP_ENABLED` configuration.
 - **GITLAB_USERNAME_CHANGE**: Enable or disable ability for users to change their username. Defaults is `true`.
 - **GITLAB_CREATE_GROUP**: Enable or disable ability for users to create groups. Defaults is `true`.

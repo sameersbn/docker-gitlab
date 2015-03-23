@@ -19,6 +19,7 @@ GITLAB_SSH_PORT=${GITLAB_SSH_PORT:-$GITLAB_SHELL_SSH_PORT} # for backwards compa
 GITLAB_SSH_PORT=${GITLAB_SSH_PORT:-22}
 GITLAB_HTTPS=${GITLAB_HTTPS:-false}
 GITLAB_EMAIL=${GITLAB_EMAIL:-example@example.com}
+GITLAB_EMAIL_DISPLAY_NAME=${GITLAB_EMAIL_DISPLAY_NAME:-GitLab}
 GITLAB_TIMEZONE=${GITLAB_TIMEZONE:-UTC}
 GITLAB_USERNAME_CHANGE=${GITLAB_USERNAME_CHANGE:-true}
 GITLAB_CREATE_GROUP=${GITLAB_CREATE_GROUP:-true}
@@ -382,6 +383,7 @@ sudo -u git -H sed 's/{{GITLAB_HOST}}/'"${GITLAB_HOST}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_PORT}}/'"${GITLAB_PORT}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_HTTPS}}/'"${GITLAB_HTTPS}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_EMAIL}}/'"${GITLAB_EMAIL}"'/' -i config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_EMAIL_DISPLAY_NAME}}/'"${GITLAB_EMAIL_DISPLAY_NAME}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_BACKUP_EXPIRY}}/'"${GITLAB_BACKUP_EXPIRY}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_MAX_SIZE}}/'"${GITLAB_MAX_SIZE}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{GITLAB_SSH_HOST}}/'"${GITLAB_SSH_HOST}"'/' -i config/gitlab.yml
