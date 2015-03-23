@@ -28,7 +28,6 @@ GITLAB_PROJECTS_WIKI=${GITLAB_PROJECTS_WIKI:-true}
 GITLAB_PROJECTS_SNIPPETS=${GITLAB_PROJECTS_SNIPPETS:-false}
 GITLAB_PROJECTS_VISIBILITY=${GITLAB_PROJECTS_VISIBILITY:-private}
 GITLAB_RELATIVE_URL_ROOT=${GITLAB_RELATIVE_URL_ROOT:-}
-GITLAB_RESTRICTED_VISIBILITY=${GITLAB_RESTRICTED_VISIBILITY:-}
 GITLAB_WEBHOOK_TIMEOUT=${GITLAB_WEBHOOK_TIMEOUT:-10}
 
 SSL_SELF_SIGNED=${SSL_SELF_SIGNED:-false}
@@ -408,9 +407,6 @@ sudo -u git -H sed 's/{{GITLAB_PROJECTS_SNIPPETS}}/'"${GITLAB_PROJECTS_SNIPPETS}
 
 # configure gitlab default project feature: visibility_level
 sudo -u git -H sed 's/{{GITLAB_PROJECTS_VISIBILITY}}/'"${GITLAB_PROJECTS_VISIBILITY}"'/' -i config/gitlab.yml
-
-# configure gitlab restricted_visibility_levels
-sudo -u git -H sed 's/{{GITLAB_RESTRICTED_VISIBILITY}}/'"${GITLAB_RESTRICTED_VISIBILITY}"'/' -i config/gitlab.yml
 
 # configure gitlab webhook timeout
 sudo -u git -H sed 's/{{GITLAB_WEBHOOK_TIMEOUT}}/'"${GITLAB_WEBHOOK_TIMEOUT}"'/' -i config/gitlab.yml
