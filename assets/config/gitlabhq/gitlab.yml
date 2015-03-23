@@ -220,9 +220,9 @@ production: &base
           args: { scope: '{{OAUTH_GITHUB_SCOPE}}' } }
       - { name: 'gitlab', app_id: '{{OAUTH_GITLAB_API_KEY}}',
           app_secret: '{{OAUTH_GITLAB_APP_SECRET}}',
-          args: { scope: '{{OAUTH_GITLAB_SCOPE}}' } }
-      # - { name: 'bitbucket', app_id: 'YOUR_APP_ID',
-      #     app_secret: 'YOUR_APP_SECRET'}
+          args: { scope: '{{OAUTH_GITLAB_SCOPE}}' } },
+      - { name: 'bitbucket', app_id: '{{OAUTH_BITBUCKET_API_KEY}}',
+          app_secret: '{{OAUTH_BITBUCKET_APP_SECRET}}'}
 
 
 
