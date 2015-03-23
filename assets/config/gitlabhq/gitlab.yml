@@ -43,6 +43,7 @@ production: &base
     email_enabled: {{GITLAB_EMAIL_ENABLED}}
     # Email address used in the "From" field in mails sent by GitLab
     email_from: "{{GITLAB_EMAIL}}"
+    email_display_name: GitLab
 
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 
@@ -55,10 +56,6 @@ production: &base
     ##   GRAY   = 4
     ##   COLOR  = 5
     # default_theme: 2 # default: 2
-
-    # Restrict setting visibility levels for non-admin users.
-    # The default is to allow all levels.
-    restricted_visibility_levels: [ {{GITLAB_RESTRICTED_VISIBILITY}} ]
 
     ## Automatic issue closing
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
@@ -224,6 +221,8 @@ production: &base
       - { name: 'gitlab', app_id: '{{OAUTH_GITLAB_API_KEY}}',
           app_secret: '{{OAUTH_GITLAB_APP_SECRET}}',
           args: { scope: '{{OAUTH_GITLAB_SCOPE}}' } }
+      # - { name: 'bitbucket', app_id: 'YOUR_APP_ID',
+      #     app_secret: 'YOUR_APP_SECRET'}
 
 
 
