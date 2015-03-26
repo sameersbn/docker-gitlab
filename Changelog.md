@@ -1,6 +1,6 @@
 # Changelog
 
-**latest**
+**7.9.1**
 - init: set default value of `SMTP_OPENSSL_VERIFY_MODE` to `none`
 - gitlab: upgrade to CE v.7.9.1
 
