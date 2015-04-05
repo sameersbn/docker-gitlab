@@ -602,7 +602,7 @@ docker run --name=gitlab -it --rm \
 
 GitLab will now be accessible at the `/git` path, e.g. `http://www.example.com/git`.
 
-**Note**: *The `GITLAB_RELATIVE_URL_ROOT` parameter should always begin with a slash and **SHOULD NOT** have any trailing slashes.*
+**Note**: *The `GITLAB_RELATIVE_URL_ROOT` parameter should always begin with a slash and* **SHOULD NOT** *have any trailing slashes.*
 
 ### Putting it all together
 
