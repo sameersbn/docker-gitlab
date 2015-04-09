@@ -798,6 +798,9 @@ Below is the complete list of available options that can be used to customize yo
 - **OAUTH_BITBUCKET_APP_SECRET**: BitBucket App Client secret. No defaults.
 - **REDMINE_URL**: Location of the redmine server, e.g. `-e 'REDMINE_URL=https://redmine.example.com'`. No defaults.
 - **JIRA_URL**: Location of the jira server, e.g. `-e 'JIRA_URL=https://jira.example.com'`. No defaults.
+- **GITLAB_GRAVATAR_ENABLED**: Enables gravatar integration. Defaults to `true`.
+- **GITLAB_GRAVATAR_HTTP_URL**: Sets a custom gravatar url. Defaults to `http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`. This can be used for [Libravatar integration](http://doc.gitlab.com/ce/customization/libravatar.html).
+- **GITLAB_GRAVATAR_HTTPS_URL**: Same as above, but for https. Defaults to `https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`.
 - **USERMAP_UID**: Sets the uid for user `git` to the specified uid. Defaults to `1000`.
 - **USERMAP_GID**: Sets the gid for group `git` to the specified gid. Defaults to `USERMAP_UID` if defined, else defaults to `1000`.
 - **GOOGLE_ANALYTICS_ID**: Google Analytics ID. No defaults.
