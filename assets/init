@@ -102,6 +102,10 @@ REDMINE_URL=${REDMINE_URL:-}
 JIRA_URL=${JIRA_URL:-}
 MANTIS_URL=${MANTIS_URL:-}
 
+GITLAB_GRAVATAR_ENABLED=${GITLAB_GRAVATAR_ENABLED:-true}
+GITLAB_GRAVATAR_HTTP_URL=${GITLAB_GRAVATAR_HTTP_URL:-}
+GITLAB_GRAVATAR_HTTPS_URL=${GITLAB_GRAVATAR_HTTPS_URL:-}
+
 OAUTH_ALLOW_SSO=${OAUTH_ALLOW_SSO:-false}
 OAUTH_BLOCK_AUTO_CREATED_USERS=${OAUTH_BLOCK_AUTO_CREATED_USERS:-true}
 
@@ -534,6 +538,21 @@ else
   sudo -u git -H sed '/project_url: "{{MANTIS_URL}}/d' -i config/gitlab.yml
   sudo -u git -H sed '/issues_url: "{{MANTIS_URL}}/d' -i config/gitlab.yml
   sudo -u git -H sed '/new_issue_url: "{{MANTIS_URL}}/d' -i config/gitlab.yml
+fi
+
+# apply gravatar configuration
+sudo -u git -H sed 's/{{GITLAB_GRAVATAR_ENABLED}}/'"${GITLAB_GRAVATAR_ENABLED}"'/' -i config/gitlab.yml
+if [ -n "${GITLAB_GRAVATAR_HTTP_URL}" ]; then
+  GITLAB_GRAVATAR_HTTP_URL=$(echo "${GITLAB_GRAVATAR_HTTP_URL}" | sed 's/&/\\&/')  # escape ampersand for sed
+  sudo -u git -H sed 's,{{GITLAB_GRAVATAR_HTTP_URL}},'"${GITLAB_GRAVATAR_HTTP_URL}"',g' -i config/gitlab.yml
+else
+  sudo -u git -H sed '/plain_url: "{{GITLAB_GRAVATAR_HTTP_URL}}/d' -i config/gitlab.yml
+fi
+if [ -n "${GITLAB_GRAVATAR_HTTPS_URL}" ]; then
+  GITLAB_GRAVATAR_HTTPS_URL=$(echo "${GITLAB_GRAVATAR_HTTPS_URL}" | sed 's/&/\\&/')  # escape ampersand for sed
+  sudo -u git -H sed 's,{{GITLAB_GRAVATAR_HTTPS_URL}},'"${GITLAB_GRAVATAR_HTTPS_URL}"',g' -i config/gitlab.yml
+else
+  sudo -u git -H sed '/ssl_url: "{{GITLAB_GRAVATAR_HTTPS_URL}}/d' -i config/gitlab.yml
 fi
 
 # apply oauth configuration
