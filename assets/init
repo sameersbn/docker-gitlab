@@ -51,6 +51,9 @@ case "$NGINX_MAX_UPLOAD_SIZE" in
   *[mM] ) GITLAB_MAX_SIZE=$(($GITLAB_MAX_SIZE * 1048576));;
   *[gG] ) GITLAB_MAX_SIZE=$(($GITLAB_MAX_SIZE * 1073741824));;
 esac
+NGINX_PROXY_BUFFERING=${NGINX_PROXY_BUFFERING:-on}
+NGINX_PROXY_MAX_TEMP_FILE_SIZE=${NGINX_PROXY_MAX_TEMP_FILE_SIZE:-1024m}
+NGINX_ACCEL_BUFFERING=${NGINX_ACCEL_BUFFERING:-yes}
 
 REDIS_HOST=${REDIS_HOST:-}
 REDIS_PORT=${REDIS_PORT:-}
@@ -632,6 +635,9 @@ fi
 sed 's/worker_processes .*/worker_processes '"${NGINX_WORKERS}"';/' -i /etc/nginx/nginx.conf
 sed 's/{{NGINX_MAX_UPLOAD_SIZE}}/'"${NGINX_MAX_UPLOAD_SIZE}"'/' -i /etc/nginx/sites-enabled/gitlab
 sed 's/{{NGINX_X_FORWARDED_PROTO}}/'"${NGINX_X_FORWARDED_PROTO}"'/' -i /etc/nginx/sites-enabled/gitlab
+sed 's/{{NGINX_PROXY_BUFFERING}}/'"${NGINX_PROXY_BUFFERING}"'/' -i /etc/nginx/sites-enabled/gitlab
+sed 's/{{NGINX_PROXY_MAX_TEMP_FILE_SIZE}}/'"${NGINX_PROXY_MAX_TEMP_FILE_SIZE}"'/' -i /etc/nginx/sites-enabled/gitlab
+sed 's/{{NGINX_ACCEL_BUFFERING}}/'"${NGINX_ACCEL_BUFFERING}"'/' -i /etc/nginx/sites-enabled/gitlab
 
 if [ "${GITLAB_HTTPS_HSTS_ENABLED}" == "true" ]; then
   sed 's/{{GITLAB_HTTPS_HSTS_MAXAGE}}/'"${GITLAB_HTTPS_HSTS_MAXAGE}"'/' -i /etc/nginx/sites-enabled/gitlab
