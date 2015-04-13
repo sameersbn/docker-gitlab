@@ -85,15 +85,14 @@ server {
     ## to be safe against BREACH attack.
     # gzip off;
     add_header X-Accel-Buffering {{NGINX_ACCEL_BUFFERING}};
-    
+
     ## https://github.com/gitlabhq/gitlabhq/issues/694
     ## Some requests take more than 30 seconds.
     proxy_read_timeout       300;
     proxy_connect_timeout    300;
     proxy_redirect           off;
     proxy_buffering          {{NGINX_PROXY_BUFFERING}};
-    proxy_max_temp_file_size {{NGINX_PROXY_MAX_TEMP_FILE_SIZE}};
-  
+
     proxy_set_header    Host                $http_host;
     proxy_set_header    X-Real-IP           $remote_addr;
     proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
