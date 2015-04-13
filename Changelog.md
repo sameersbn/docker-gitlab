@@ -1,6 +1,6 @@
 # Changelog
 
-**latest**
+**7.9.3**
 - added `NGINX_PROXY_BUFFERING` option
 - added `NGINX_ACCEL_BUFFERING` option
 - added `GITLAB_GRAVATAR_ENABLED` option
