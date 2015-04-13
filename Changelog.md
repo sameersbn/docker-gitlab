@@ -1,5 +1,13 @@
 # Changelog
 
+**latest**
+- added `NGINX_PROXY_BUFFERING` option
+- added `NGINX_ACCEL_BUFFERING` option
+- added `GITLAB_GRAVATAR_ENABLED` option
+- added `GITLAB_GRAVATAR_HTTP_URL` option
+- added `GITLAB_GRAVATAR_HTTPS_URL` option
+- fixes: "transfer closed with xxx bytes remaining to read" error
+
 **7.9.2**
 - gitlab: upgrade to CE v.7.9.2
 
