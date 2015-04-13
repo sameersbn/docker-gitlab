@@ -7,6 +7,7 @@
 - added `GITLAB_GRAVATAR_HTTP_URL` option
 - added `GITLAB_GRAVATAR_HTTPS_URL` option
 - fixes: "transfer closed with xxx bytes remaining to read" error
+- gitlab: upgrade to CE v.7.9.3
 
 **7.9.2**
 - gitlab: upgrade to CE v.7.9.2
