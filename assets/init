@@ -546,13 +546,13 @@ if [ -n "${GITLAB_GRAVATAR_HTTP_URL}" ]; then
   GITLAB_GRAVATAR_HTTP_URL=$(echo "${GITLAB_GRAVATAR_HTTP_URL}" | sed 's/&/\\&/')  # escape ampersand for sed
   sudo -u git -H sed 's,{{GITLAB_GRAVATAR_HTTP_URL}},'"${GITLAB_GRAVATAR_HTTP_URL}"',g' -i config/gitlab.yml
 else
-  sudo -u git -H sed '/plain_url: "{{GITLAB_GRAVATAR_HTTP_URL}}/d' -i config/gitlab.yml
+  sudo -u git -H sed '/{{GITLAB_GRAVATAR_HTTP_URL}}/d' -i config/gitlab.yml
 fi
 if [ -n "${GITLAB_GRAVATAR_HTTPS_URL}" ]; then
   GITLAB_GRAVATAR_HTTPS_URL=$(echo "${GITLAB_GRAVATAR_HTTPS_URL}" | sed 's/&/\\&/')  # escape ampersand for sed
   sudo -u git -H sed 's,{{GITLAB_GRAVATAR_HTTPS_URL}},'"${GITLAB_GRAVATAR_HTTPS_URL}"',g' -i config/gitlab.yml
 else
-  sudo -u git -H sed '/ssl_url: "{{GITLAB_GRAVATAR_HTTPS_URL}}/d' -i config/gitlab.yml
+  sudo -u git -H sed '/{{GITLAB_GRAVATAR_HTTPS_URL}}/d' -i config/gitlab.yml
 fi
 
 # apply oauth configuration
