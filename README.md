@@ -29,7 +29,7 @@
   - [SSL](#ssl)
     - [Generation of Self Signed Certificates](#generation-of-self-signed-certificates)
     - [Strengthening the server security](#strengthening-the-server-security)
-    - [Installation of the Certificates](#installation-of-the-certificates)
+    - [Installation of the SSL Certificates](#installation-of-the-ssl-certificates)
     - [Enabling HTTPS support](#enabling-https-support)
     - [Configuring HSTS](#configuring-hsts)
     - [Using HTTPS with a load balancer](#using-https-with-a-load-balancer)
