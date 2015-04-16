@@ -101,6 +101,9 @@ sed 's/UsePAM yes/UsePAM no/' -i /etc/ssh/sshd_config
 sed 's/UsePrivilegeSeparation yes/UsePrivilegeSeparation no/' -i /etc/ssh/sshd_config
 echo "UseDNS no" >> /etc/ssh/sshd_config
 
+# configure verbose logging for sshd
+sed 's/LogLevel INFO/LogLevel VERBOSE/' -i /etc/ssh/sshd_config
+
 # move supervisord.log file to ${GITLAB_LOG_DIR}/supervisor/
 sed 's|^logfile=.*|logfile='"${GITLAB_LOG_DIR}"'/supervisor/supervisord.log ;|' -i /etc/supervisor/supervisord.conf
 
@@ -204,7 +207,7 @@ mkdir -p /var/run/sshd
 cat > /etc/supervisor/conf.d/sshd.conf <<EOF
 [program:sshd]
 directory=/
-command=/usr/sbin/sshd -D
+command=/usr/sbin/sshd -D -E ${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 user=root
 autostart=true
 autorestart=true
