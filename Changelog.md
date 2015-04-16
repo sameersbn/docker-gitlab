@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- gitlab: upgrade to CE v.7.9.4
+
 **7.9.3**
 - added `NGINX_PROXY_BUFFERING` option
 - added `NGINX_ACCEL_BUFFERING` option
