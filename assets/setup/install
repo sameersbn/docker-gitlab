@@ -101,6 +101,9 @@ sed 's/UsePAM yes/UsePAM no/' -i /etc/ssh/sshd_config
 sed 's/UsePrivilegeSeparation yes/UsePrivilegeSeparation no/' -i /etc/ssh/sshd_config
 echo "UseDNS no" >> /etc/ssh/sshd_config
 
+# permit password login
+sed 's/#PasswordAuthentication yes/PasswordAuthentication no/' -i /etc/ssh/sshd_config
+
 # configure verbose logging for sshd
 sed 's/LogLevel INFO/LogLevel VERBOSE/' -i /etc/ssh/sshd_config
 
