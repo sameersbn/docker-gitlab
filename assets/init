@@ -721,7 +721,7 @@ chmod 700 ${GITLAB_DATA_DIR}/.ssh
 chmod 600 ${GITLAB_DATA_DIR}/.ssh/authorized_keys
 chown -R git:git ${GITLAB_DATA_DIR}/.ssh
 
-appStart () {
+appInit () {
   # due to the nature of docker and its use cases, we allow some time
   # for the database server to come online.
   case "${DB_TYPE}" in
@@ -818,7 +818,10 @@ EOF
     esac
     crontab -u git /tmp/cron.git && rm -rf /tmp/cron.git
   fi
+}
 
+appStart () {
+  appInit
   # start supervisord
   echo "Starting supervisord..."
   exec /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
@@ -893,6 +896,7 @@ appRake () {
 appHelp () {
   echo "Available options:"
   echo " app:start          - Starts the gitlab server (default)"
+  echo " app:init           - Initialize the gitlab server (e.g. create databases, compile assets), but don't start it."
   echo " app:sanitize       - Fix repository/satellites directory permissions."
   echo " app:rake <task>    - Execute a rake task."
   echo " app:help           - Displays the help"
@@ -902,6 +906,9 @@ appHelp () {
 case "$1" in
   app:start)
     appStart
+    ;;
+  app:init)
+    appInit
     ;;
   app:sanitize)
     appSanitize
