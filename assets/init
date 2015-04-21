@@ -93,6 +93,7 @@ LDAP_BIND_DN=${LDAP_BIND_DN:-}
 LDAP_PASS=${LDAP_PASS:-}
 LDAP_ACTIVE_DIRECTORY=${LDAP_ACTIVE_DIRECTORY:-true}
 LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN=${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN:-}
+LDAP_BLOCK_AUTO_CREATED_USERS=${LDAP_BLOCK_AUTO_CREATED_USERS:-false}
 LDAP_BASE=${LDAP_BASE:-}
 LDAP_USER_FILTER=${LDAP_USER_FILTER:-}
 
@@ -499,6 +500,7 @@ sudo -u git -H sed 's/{{LDAP_BIND_DN}}/'"${LDAP_BIND_DN}"'/' -i config/gitlab.ym
 sudo -u git -H sed 's/{{LDAP_PASS}}/'"${LDAP_PASS}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{LDAP_ACTIVE_DIRECTORY}}/'"${LDAP_ACTIVE_DIRECTORY}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}}/'"${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}"'/' -i config/gitlab.yml
+sudo -u git -H sed 's/{{LDAP_BLOCK_AUTO_CREATED_USERS}}/'"${LDAP_BLOCK_AUTO_CREATED_USERS}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{LDAP_BASE}}/'"${LDAP_BASE}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{LDAP_USER_FILTER}}/'"${LDAP_USER_FILTER}"'/' -i config/gitlab.yml
 

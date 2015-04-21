@@ -5,6 +5,7 @@
 - gitlab: upgrade to CE v.7.10.0
 - init: removed ENV variables to configure *External Issue Tracker* integration
 - init: added `GITLAB_EMAIL_REPLY_TO` configuration option
+- init: added `LDAP_BLOCK_AUTO_CREATED_USERS` configuration option
 
 **7.9.4**
 - gitlab: upgrade to CE v.7.9.4
