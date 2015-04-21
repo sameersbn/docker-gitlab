@@ -3,6 +3,7 @@
 **latest**
 - gitlab-shell: upgrade to v.2.6.2
 - gitlab: upgrade to CE v.7.10.0
+- init: removed ENV variables to configure *External Issue Tracker* integration
 
 **7.9.4**
 - gitlab: upgrade to CE v.7.9.4

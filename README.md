@@ -42,9 +42,6 @@
     - [Twitter](#twitter)
     - [GitHub](#github)
   - [External Issue Trackers](#external-issue-trackers)
-    - [Redmine](#redmine)
-    - [Jira](#jira)
-    - [Mantis](#mantis)
   - [Mapping host user and group](#mapping-host-user-and-group)
   - [Piwik](#piwik)
   - [Available Configuration Parameters](#available-configuration-parameters)
@@ -660,29 +657,11 @@ For example, if your Client ID is `xxx` and the Client secret is `yyy`, then add
 
 ### External Issue Trackers
 
-GitLab can be configured to use third party issue trackers such as Redmine and Atlassian Jira. Use of third party issue trackers have to be configured on a per project basis from the project settings page. This means that the GitLab's issue tracker is always the default tracker unless specified otherwise.
+Since version `7.10.0` support for external issue trackers can be enabled in the "Service Templates" section of the settings panel.
 
-#### Redmine
+If you are using the [docker-redmine](https://github.com/sameersbn/docker-redmine) image, you can *one up* the gitlab integration with redmine by adding `--volumes-from=gitlab` flag to the docker run command while starting the redmine container.
 
-Support for issue tracking using Redmine can be added by specifying the complete URL of the Redmine web server in the `REDMINE_URL` configuration option.
-
-For example, if your Redmine server is accessible at `https://redmine.example.com`, then adding `-e 'REDMINE_URL=https://redmine.example.com'` to the docker run command enables Redmine support in GitLab
-
-If you are using the [docker-redmine](https://github.com/sameersbn/docker-redmine) image, then you can *one up* the gitlab integration with redmine by adding `--volumes-from=gitlab` flag to the docker run command while starting the redmine container.
-
-By using the above option the `/home/git/data/repositories` directory will be accessible by the redmine container and now you can add your git repository path to your redmine project. If, for example, in your gitlab server you have a project named `opensource/gitlab`, the bare repository will be accessible at `/home/git/data/repositories/opensource/gitlab.git`.
-
-#### Jira
-
-Support for issue tracking using Jira can be added by specifying the complete URL of the Jira web server in the `JIRA_URL` configuration option.
-
-For example, if your Jira server is accessible at `https://jira.example.com`, then adding `-e 'JIRA_URL=https://jira.example.com'` to the docker run command enables Jira support in GitLab
-
-#### Mantis
-
-Support for issue tracking using [mantis](https://www.mantisbt.org/) can be added by specifying the complete URL of the mantis web server in the `MANTIS_URL` configuration option.
-
-For example, if your mantis server is accessible at `https://mantis.example.com`, then adding `-e 'MANTIS_URL=https://mantis.example.com'` to the docker run command enables mantis support in GitLab.
+By using the above option the `/home/git/data/repositories` directory will be accessible by the redmine container and now you can add your git repository path to your redmine project. If, for example, in your gitlab server you have a project named `opensource/gitlab`, the bare repository will be accessible at `/home/git/data/repositories/opensource/gitlab.git` in the redmine container.
 
 ### Host UID / GID Mapping
 
@@ -798,8 +777,6 @@ Below is the complete list of available options that can be used to customize yo
 - **OAUTH_GITLAB_APP_SECRET**: GitLab App Client secret. No defaults.
 - **OAUTH_BITBUCKET_API_KEY**: BitBucket App Client ID. No defaults.
 - **OAUTH_BITBUCKET_APP_SECRET**: BitBucket App Client secret. No defaults.
-- **REDMINE_URL**: Location of the redmine server, e.g. `-e 'REDMINE_URL=https://redmine.example.com'`. No defaults.
-- **JIRA_URL**: Location of the jira server, e.g. `-e 'JIRA_URL=https://jira.example.com'`. No defaults.
 - **GITLAB_GRAVATAR_ENABLED**: Enables gravatar integration. Defaults to `true`.
 - **GITLAB_GRAVATAR_HTTP_URL**: Sets a custom gravatar url. Defaults to `http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`. This can be used for [Libravatar integration](http://doc.gitlab.com/ce/customization/libravatar.html).
 - **GITLAB_GRAVATAR_HTTPS_URL**: Same as above, but for https. Defaults to `https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`.
