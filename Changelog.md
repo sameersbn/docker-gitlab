@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- gitlab-shell: upgrade to v.2.6.2
+
 **7.9.4**
 - gitlab: upgrade to CE v.7.9.4
 
