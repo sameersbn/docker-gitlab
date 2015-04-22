@@ -423,7 +423,7 @@ sudo -u git -H sed 's/{{GITLAB_PROJECTS_VISIBILITY}}/'"${GITLAB_PROJECTS_VISIBIL
 # configure gitlab webhook timeout
 sudo -u git -H sed 's/{{GITLAB_WEBHOOK_TIMEOUT}}/'"${GITLAB_WEBHOOK_TIMEOUT}"'/' -i config/gitlab.yml
 
-# configure gitlab webhook timeout
+# configure gitlab satellite timeout
 sudo -u git -H sed 's/{{GITLAB_SATELLITES_TIMEOUT}}/'"${GITLAB_SATELLITES_TIMEOUT}"'/' -i config/gitlab.yml
 
 # configure database
