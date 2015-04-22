@@ -169,14 +169,14 @@ docker run --name='gitlab' -it --rm \
 sameersbn/gitlab:7.9.4
 ```
 
-Or you can use [fig](http://www.fig.sh/). Assuming you have fig installed,
+Or you can use [docker-compose](https://docs.docker.com/compose/). Assuming you have docker-compose installed,
 
 ```bash
-wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/fig.yml
-fig up
+wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml
+docker-compose up
 ```
 
-*The rest of the document will use the docker command line. You can quite simply adapt your configuration into a fig.yml file if you wish to do so.*
+*The rest of the document will use the docker command line. You can quite simply adapt your configuration into a `docker-compose.yml` file if you wish to do so.*
 
 __NOTE__: Please allow a couple of minutes for the GitLab application to start.
 
