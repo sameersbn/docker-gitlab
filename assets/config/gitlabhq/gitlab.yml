@@ -147,7 +147,7 @@ production: &base
         allow_username_or_email_login: {{LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}}
 
         # To maintain tight control over the number of active users on your GitLab installation,
-        # enable this setting to keep new users blocked until they have been cleared by the admin 
+        # enable this setting to keep new users blocked until they have been cleared by the admin
         # (default: false).
         block_auto_created_users: {{LDAP_BLOCK_AUTO_CREATED_USERS}}
 
@@ -260,7 +260,7 @@ production: &base
     # This value can be increased if you have very large commits
     max_size: {{GITLAB_MAX_SIZE}} # 20.megabytes
     # Git timeout to read a commit, in seconds
-    timeout: 10
+    timeout: {{GIT_TIMEOUT}}
 
   #
   # 4. Extra customization

@@ -32,6 +32,7 @@ GITLAB_PROJECTS_VISIBILITY=${GITLAB_PROJECTS_VISIBILITY:-private}
 GITLAB_RELATIVE_URL_ROOT=${GITLAB_RELATIVE_URL_ROOT:-}
 GITLAB_WEBHOOK_TIMEOUT=${GITLAB_WEBHOOK_TIMEOUT:-10}
 GITLAB_SATELLITES_TIMEOUT=${GITLAB_SATELLITES_TIMEOUT:-30}
+GIT_TIMEOUT=${GIT_TIMEOUT:-10}
 
 SSL_SELF_SIGNED=${SSL_SELF_SIGNED:-false}
 SSL_CERTIFICATE_PATH=${SSL_CERTIFICATE_PATH:-$GITLAB_DATA_DIR/certs/gitlab.crt}
@@ -424,6 +425,9 @@ sudo -u git -H sed 's/{{GITLAB_WEBHOOK_TIMEOUT}}/'"${GITLAB_WEBHOOK_TIMEOUT}"'/'
 
 # configure gitlab satellite timeout
 sudo -u git -H sed 's/{{GITLAB_SATELLITES_TIMEOUT}}/'"${GITLAB_SATELLITES_TIMEOUT}"'/' -i config/gitlab.yml
+
+# configure git timeout
+sudo -u git -H sed 's/{{GIT_TIMEOUT}}/'"${GIT_TIMEOUT}"'/' -i config/gitlab.yml
 
 # configure database
 if [ "${DB_TYPE}" == "postgres" ]; then
