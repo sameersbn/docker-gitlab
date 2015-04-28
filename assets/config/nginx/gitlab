@@ -1,5 +1,5 @@
 ## GitLab
-## Contributors: randx, yin8086, sashkab, orkoden, axilleas, bbodenmiller
+## Contributors: randx, yin8086, sashkab, orkoden, axilleas, bbodenmiller, DouweM
 ##
 ## Lines starting with two hashes (##) are comments with information.
 ## Lines starting with one hash (#) are configuration parameters that can be uncommented.
@@ -57,9 +57,8 @@ server {
     try_files $uri $uri/index.html $uri.html @gitlab;
   }
 
-  ## If a file, which is not found in the root folder is requested,
-  ## then the proxy passes the request to the upsteam (gitlab unicorn).
-  location @gitlab {
+  ## We route uploads through GitLab to prevent XSS and enforce access control.
+  location {{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}uploads/ {
     ## If you use HTTPS make sure you disable gzip compression
     ## to be safe against BREACH attack.
     # gzip off;
@@ -69,6 +68,30 @@ server {
     proxy_read_timeout      300;
     proxy_connect_timeout   300;
     proxy_redirect          off;
+
+    proxy_set_header    Host                $http_host;
+    proxy_set_header    X-Real-IP           $remote_addr;
+    proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+    proxy_set_header    X-Forwarded-Proto   {{NGINX_X_FORWARDED_PROTO}};
+    proxy_set_header    X-Frame-Options     SAMEORIGIN;
+
+    proxy_pass http://gitlab;
+  }
+
+  ## If a file, which is not found in the root folder is requested,
+  ## then the proxy passes the request to the upsteam (gitlab unicorn).
+  location @gitlab {
+    ## If you use HTTPS make sure you disable gzip compression
+    ## to be safe against BREACH attack.
+    # gzip off;
+    add_header X-Accel-Buffering {{NGINX_ACCEL_BUFFERING}};
+
+    ## https://github.com/gitlabhq/gitlabhq/issues/694
+    ## Some requests take more than 30 seconds.
+    proxy_read_timeout       300;
+    proxy_connect_timeout    300;
+    proxy_redirect           off;
+    proxy_buffering          {{NGINX_PROXY_BUFFERING}};
 
     proxy_set_header    Host                $http_host;
     proxy_set_header    X-Real-IP           $remote_addr;
