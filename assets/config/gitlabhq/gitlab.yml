@@ -260,7 +260,7 @@ production: &base
     # This value can be increased if you have very large commits
     max_size: {{GITLAB_MAX_SIZE}} # 20.megabytes
     # Git timeout to read a commit, in seconds
-    timeout: {{GIT_TIMEOUT}}
+    timeout: {{GITLAB_TIMEOUT}}
 
   #
   # 4. Extra customization
