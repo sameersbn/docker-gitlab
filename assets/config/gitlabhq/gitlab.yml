@@ -2,6 +2,11 @@
 # GitLab application config file  #
 # # # # # # # # # # # # # # # # # #
 #
+###########################  NOTE  #####################################
+# This file should not receive new settings. All configuration options #
+# are being moved to ApplicationSetting model!                         #
+########################################################################
+#
 # How to use:
 # 1. Copy file as gitlab.yml
 # 2. Update gitlab -> host with your fully qualified domain name
@@ -43,10 +48,12 @@ production: &base
     email_enabled: {{GITLAB_EMAIL_ENABLED}}
     # Email address used in the "From" field in mails sent by GitLab
     email_from: "{{GITLAB_EMAIL}}"
+    email_display_name: "{{GITLAB_EMAIL_DISPLAY_NAME}}"
+    email_reply_to: "{{GITLAB_EMAIL_REPLY_TO}}"
 
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 
-    default_can_create_group: {{GITLAB_CREATE_GROUP}} # default: true - User can create groups
+    default_can_create_group: {{GITLAB_CREATE_GROUP}}  # default: true
     username_changing_enabled: {{GITLAB_USERNAME_CHANGE}} # default: true - User can change her username/namespace
     ## Default theme
     ##   BASIC  = 1
@@ -56,16 +63,12 @@ production: &base
     ##   COLOR  = 5
     # default_theme: 2 # default: 2
 
-    # Restrict setting visibility levels for non-admin users.
-    # The default is to allow all levels.
-    restricted_visibility_levels: [ {{GITLAB_RESTRICTED_VISIBILITY}} ]
-
     ## Automatic issue closing
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
     # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
-    # Tip: you can test your closing pattern at http://rubular.com
-    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]|ing)|[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?#\d+(?:(?:, *| +and +)?))+)'
+    # Tip: you can test your closing pattern at http://rubular.com.
+    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?#\d+(?:(?:, *| +and +)?))+)'
 
     ## Default project features settings
     default_projects_features:
@@ -84,48 +87,13 @@ production: &base
     # The default is 'tmp/repositories' relative to the root of the Rails app.
     # repository_downloads_path: tmp/repositories
 
-  ## External issues trackers
-  issues_tracker:
-    redmine:
-      title: "Redmine"
-    #   ## If not nil, link 'Issues' on project page will be replaced with this
-    #   ## Use placeholders:
-    #   ##  :project_id        - GitLab project identifier
-    #   ##  :issues_tracker_id - Project Name or Id in external issue tracker
-      project_url: "{{REDMINE_URL}}/projects/:issues_tracker_id"
-    #
-    #   ## If not nil, links from /#\d/ entities from commit messages will replaced with this
-    #   ## Use placeholders:
-    #   ##  :project_id        - GitLab project identifier
-    #   ##  :issues_tracker_id - Project Name or Id in external issue tracker
-    #   ##  :id                - Issue id (from commit messages)
-      issues_url: "{{REDMINE_URL}}/issues/:id"
-    #
-    #   ## If not nil, links to creating new issues will be replaced with this
-    #   ## Use placeholders:
-    #   ##  :project_id        - GitLab project identifier
-    #   ##  :issues_tracker_id - Project Name or Id in external issue tracker
-      new_issue_url: "{{REDMINE_URL}}/projects/:issues_tracker_id/issues/new"
-    #
-    jira:
-      title: "Atlassian Jira"
-      project_url: "{{JIRA_URL}}/issues/?jql=project=:issues_tracker_id"
-      issues_url: "{{JIRA_URL}}/browse/:id"
-      new_issue_url: "{{JIRA_URL}}/secure/CreateIssue.jspa"
-
-    mantis:
-      title: "Mantis"
-      project_url: "{{MANTIS_URL}}/set_project.php?project_id=:issues_tracker_id&ref=view_all_bug_page.php"
-      issues_url: "{{MANTIS_URL}}/view.php?id=:id"
-      new_issue_url: "{{MANTIS_URL}}/set_project.php?project_id=:issues_tracker_id&ref=bug_report_page.php"
-
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
-    enabled: true                 # Use user avatar image from Gravatar.com (default: true)
+    enabled: {{GITLAB_GRAVATAR_ENABLED}}  # Use user avatar image from Gravatar.com (default: true)
     # gravatar urls: possible placeholders: %{hash} %{size} %{email}
-    # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
-    # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
+    plain_url: "{{GITLAB_GRAVATAR_HTTP_URL}}"     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
+    ssl_url:   "{{GITLAB_GRAVATAR_HTTPS_URL}}"    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
   #
   # 2. Auth settings
@@ -137,6 +105,15 @@ production: &base
   ldap:
     enabled: {{LDAP_ENABLED}}
     servers:
+      ##########################################################################
+      #
+      # Since GitLab 7.4, LDAP servers get ID's (below the ID is 'main'). GitLab
+      # Enterprise Edition now supports connecting to multiple LDAP servers.
+      #
+      # If you are updating from the old (pre-7.4) syntax, you MUST give your
+      # old server the ID 'main'.
+      #
+      ##########################################################################
       main: # 'main' is the GitLab 'provider ID' of this LDAP server
         ## label
         #
@@ -168,6 +145,11 @@ production: &base
         # If you are using "uid: 'userPrincipalName'" on ActiveDirectory you need to
         # disable this setting, because the userPrincipalName contains an '@'.
         allow_username_or_email_login: {{LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}}
+
+        # To maintain tight control over the number of active users on your GitLab installation,
+        # enable this setting to keep new users blocked until they have been cleared by the admin 
+        # (default: false).
+        block_auto_created_users: {{LDAP_BLOCK_AUTO_CREATED_USERS}}
 
         # Base where we can search for users
         #
@@ -223,7 +205,9 @@ production: &base
           args: { scope: '{{OAUTH_GITHUB_SCOPE}}' } }
       - { name: 'gitlab', app_id: '{{OAUTH_GITLAB_API_KEY}}',
           app_secret: '{{OAUTH_GITLAB_APP_SECRET}}',
-          args: { scope: '{{OAUTH_GITLAB_SCOPE}}' } }
+          args: { scope: '{{OAUTH_GITLAB_SCOPE}}' } },
+      - { name: 'bitbucket', app_id: '{{OAUTH_BITBUCKET_API_KEY}}',
+          app_secret: '{{OAUTH_BITBUCKET_APP_SECRET}}'}
 
 
   #
@@ -291,6 +275,9 @@ production: &base
 
   rack_attack:
     git_basic_auth:
+      # Rack Attack IP banning enabled
+      # enabled: true
+      #
       # Whitelist requests from 127.0.0.1 for web proxies (NGINX/Apache) with incorrect headers
       # ip_whitelist: ["127.0.0.1"]
       #
