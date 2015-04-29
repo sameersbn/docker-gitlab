@@ -209,8 +209,6 @@ production: &base
       - { name: 'bitbucket', app_id: '{{OAUTH_BITBUCKET_API_KEY}}',
           app_secret: '{{OAUTH_BITBUCKET_APP_SECRET}}'}
 
-
-
   #
   # 3. Advanced settings
   # ==========================
@@ -225,15 +223,15 @@ production: &base
   backup:
     path: "{{GITLAB_BACKUP_DIR}}"   # Relative paths are relative to Rails.root (default: tmp/backups/)
     keep_time: {{GITLAB_BACKUP_EXPIRY}}   # default: 0 (forever) (in seconds)
-    # upload:
-    #   # Fog storage connection settings, see http://fog.io/storage/ .
-    #   connection:
-    #     provider: AWS
-    #     region: eu-west-1
-    #     aws_access_key_id: AKIAKIAKI
-    #     aws_secret_access_key: 'secret123'
-    #   # The remote 'directory' to store your backups. For S3, this would be the bucket name.
-    #   remote_directory: 'my.s3.bucket'
+    upload:
+      # Fog storage connection settings, see http://fog.io/storage/ .
+      connection:
+        provider: {{GITLAB_BACKUP_PROVIDER}}
+        region: {{GITLAB_BACKUP_AWS_REGION}}
+        aws_access_key_id: {{GITLAB_BACKUP_AWS_ID}}
+        aws_secret_access_key: '{{GITLAB_BACKUP_AWS_SECRET}}'
+      # The remote 'directory' to store your backups. For S3, this would be the bucket name.
+      remote_directory: '{{GITLAB_BACKUP_AWS_S3_BUCKET}}'
 
   ## GitLab Shell settings
   gitlab_shell:

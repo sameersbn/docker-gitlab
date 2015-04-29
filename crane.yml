@@ -1,0 +1,62 @@
+containers:
+  #######################
+  # Data-only containers
+  #######################
+  postgresqlstorage:
+    image: busybox
+    run:
+      volume: [ "/opt/gitlab/db:/var/lib/postgresql" ]
+
+  gitlabstorage:
+    image: busybox
+    run:
+      volume: [
+        "/opt/gitlab/data:/home/git/data",
+        "/opt/gitlab/logs:/var/log/gitlab"
+      ]
+
+  #######################
+  # SQL
+  #######################
+  postgresql:
+    image: sameersbn/postgresql:9.4
+    run:
+      detach: true
+      volumes-from: [ "postgresqlstorage" ]
+      env: [
+        "DB_USER=gitlab",
+        "DB_PASS=secretpassword",
+        "DB_NAME=gitlabhq_production"
+      ]
+
+  #######################
+  # Cache
+  #######################
+  redis:
+    image: sameersbn/redis:latest
+    run:
+      detach: true
+
+  #######################
+  # WEBAPP
+  #######################
+  gitlab:
+    dockerfile: .
+    image: gitlab
+    run:
+      detach: true
+      volumes-from: [ "gitlabstorage" ]
+      link: [
+        "redis:redisio",
+        "postgresql:postgresql"
+      ]
+      publish: [
+        "80:80",
+        "10443:443",
+        "2222:22"
+      ]
+      env-file: [ "gitlab_config.env" ]
+groups:
+  default: [ "postgresqlstorage", "gitlabstorage", "redis", "postgresql", "gitlab" ]
+  data: [ "redis", "postgresqlstorage", "postgresql" ]
+  app: [ "gitlab" ]

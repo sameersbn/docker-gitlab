@@ -46,6 +46,14 @@ GITLAB_BACKUPS=${GITLAB_BACKUPS:-disable}
 GITLAB_BACKUP_TIME=${GITLAB_BACKUP_TIME:-04:00}
 GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-}
 
+if [ "${GITLAB_BACKUP_PROVIDER}" == "AWS" ]; then
+  echo "Configuring AWS backups for S3 bucket: ${GITLAB_BACKUP_AWS_S3_BUCKET}"
+  GITLAB_BACKUP_AWS_REGION=${GITLAB_BACKUP_AWS_REGION:-}
+  GITLAB_BACKUP_AWS_ID=${GITLAB_BACKUP_AWS_ID:-}
+  GITLAB_BACKUP_AWS_SECRET=${GITLAB_BACKUP_AWS_SECRET:-}
+  GITLAB_BACKUP_AWS_S3_BUCKET=${GITLAB_BACKUP_AWS_S3_BUCKET:-}
+fi
+
 NGINX_WORKERS=${NGINX_WORKERS:-1}
 NGINX_ACCEL_BUFFERING=${NGINX_ACCEL_BUFFERING:-no}
 NGINX_PROXY_BUFFERING=${NGINX_PROXY_BUFFERING:-off}
@@ -497,6 +505,13 @@ if [ "${SMTP_ENABLED}" == "true" ]; then
     *) sudo -u git -H sed 's/{{SMTP_AUTHENTICATION}}/'"${SMTP_AUTHENTICATION}"'/' -i config/initializers/smtp_settings.rb ;;
   esac
 fi
+
+# apply BACKUP configuration
+sudo -u git -H sed 's/{{GITLAB_BACKUP_PROVIDER}}/'"${GITLAB_BACKUP_PROVIDER}"'/' -i config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_BACKUP_AWS_REGION}}/'"${GITLAB_BACKUP_AWS_REGION}"'/' -i config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_BACKUP_AWS_ID}}/'"${GITLAB_BACKUP_AWS_ID}"'/' -i config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_BACKUP_AWS_SECRET}}/'"${GITLAB_BACKUP_AWS_SECRET}"'/' -i config/gitlab.yml
+sudo -u git -H sed 's/{{GITLAB_BACKUP_AWS_S3_BUCKET}}/'"${GITLAB_BACKUP_AWS_S3_BUCKET}"'/' -i config/gitlab.yml
 
 # apply LDAP configuration
 sudo -u git -H sed 's/{{LDAP_ENABLED}}/'"${LDAP_ENABLED}"'/' -i config/gitlab.yml
