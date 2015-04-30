@@ -517,6 +517,10 @@ sudo -u git -H sed 's/{{LDAP_USER_FILTER}}/'"${LDAP_USER_FILTER}"'/' -i config/g
 # apply aws s3 backup configuration
 case "${AWS_BACKUPS}" in
   true)
+    if [ -z "${AWS_BACKUP_REGION}" -o -z "${AWS_BACKUP_ACCESS_KEY_ID}" -o -z "${AWS_BACKUP_SECRET_ACCESS_KEY}" -o -z "${AWS_BACKUP_BUCKET}" ]; then
+      printf "\nMissing AWS options. Aborting...\n"
+      exit 1
+    fi
     sudo -u git -H sed 's/{{AWS_BACKUP_REGION}}/'"${AWS_BACKUP_REGION}"'/' -i config/gitlab.yml
     sudo -u git -H sed 's/{{AWS_BACKUP_ACCESS_KEY_ID}}/'"${AWS_BACKUP_ACCESS_KEY_ID}"'/' -i config/gitlab.yml
     sudo -u git -H sed 's,{{AWS_BACKUP_SECRET_ACCESS_KEY}},'"${AWS_BACKUP_SECRET_ACCESS_KEY}"',' -i config/gitlab.yml
