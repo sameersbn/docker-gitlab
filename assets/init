@@ -46,6 +46,12 @@ GITLAB_BACKUPS=${GITLAB_BACKUPS:-disable}
 GITLAB_BACKUP_TIME=${GITLAB_BACKUP_TIME:-04:00}
 GITLAB_BACKUP_EXPIRY=${GITLAB_BACKUP_EXPIRY:-}
 
+AWS_BACKUPS=${AWS_BACKUPS:-false}
+AWS_BACKUP_REGION=${AWS_BACKUP_REGION}
+AWS_BACKUP_ACCESS_KEY_ID=${AWS_BACKUP_ACCESS_KEY_ID}
+AWS_BACKUP_SECRET_ACCESS_KEY=${AWS_BACKUP_SECRET_ACCESS_KEY}
+AWS_BACKUP_BUCKET=${AWS_BACKUP_BUCKET}
+
 NGINX_WORKERS=${NGINX_WORKERS:-1}
 NGINX_ACCEL_BUFFERING=${NGINX_ACCEL_BUFFERING:-no}
 NGINX_PROXY_BUFFERING=${NGINX_PROXY_BUFFERING:-off}
@@ -511,6 +517,24 @@ sudo -u git -H sed 's/{{LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}}/'"${LDAP_ALLOW_USER
 sudo -u git -H sed 's/{{LDAP_BLOCK_AUTO_CREATED_USERS}}/'"${LDAP_BLOCK_AUTO_CREATED_USERS}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{LDAP_BASE}}/'"${LDAP_BASE}"'/' -i config/gitlab.yml
 sudo -u git -H sed 's/{{LDAP_USER_FILTER}}/'"${LDAP_USER_FILTER}"'/' -i config/gitlab.yml
+
+# apply aws s3 backup configuration
+case "${AWS_BACKUPS}" in
+  true)
+    if [ -z "${AWS_BACKUP_REGION}" -o -z "${AWS_BACKUP_ACCESS_KEY_ID}" -o -z "${AWS_BACKUP_SECRET_ACCESS_KEY}" -o -z "${AWS_BACKUP_BUCKET}" ]; then
+      printf "\nMissing AWS options. Aborting...\n"
+      exit 1
+    fi
+    sudo -u git -H sed 's/{{AWS_BACKUP_REGION}}/'"${AWS_BACKUP_REGION}"'/' -i config/gitlab.yml
+    sudo -u git -H sed 's/{{AWS_BACKUP_ACCESS_KEY_ID}}/'"${AWS_BACKUP_ACCESS_KEY_ID}"'/' -i config/gitlab.yml
+    sudo -u git -H sed 's,{{AWS_BACKUP_SECRET_ACCESS_KEY}},'"${AWS_BACKUP_SECRET_ACCESS_KEY}"',' -i config/gitlab.yml
+    sudo -u git -H sed 's/{{AWS_BACKUP_BUCKET}}/'"${AWS_BACKUP_BUCKET}"'/' -i config/gitlab.yml
+    ;;
+  *)
+    # remove backup configuration lines
+    sudo -u git -H sed /upload:/,/remote_directory:/d -i config/gitlab.yml
+    ;;
+esac
 
 # apply gravatar configuration
 sudo -u git -H sed 's/{{GITLAB_GRAVATAR_ENABLED}}/'"${GITLAB_GRAVATAR_ENABLED}"'/' -i config/gitlab.yml
