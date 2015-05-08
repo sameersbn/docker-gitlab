@@ -1,5 +1,8 @@
 # Changelog
 
+**latest**
+- init: added support for remote AWS backups
+
 **7.10.1**
 - gitlab: upgrade to CE v.7.10.1
 
