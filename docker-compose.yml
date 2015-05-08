@@ -4,6 +4,8 @@ postgresql:
     - DB_USER=gitlab
     - DB_PASS=secretpassword
     - DB_NAME=gitlabhq_production
+  volumes:
+    - /srv/docker/gitlab/postgresql:/var/lib/postgresql
 gitlab:
   image: sameersbn/gitlab:7.10.2
   links:
@@ -15,5 +17,9 @@ gitlab:
   environment:
    - GITLAB_PORT=10080
    - GITLAB_SSH_PORT=10022
+  volumes:
+   - /srv/docker/gitlab/gitlab:/home/git/data
 redis:
   image: sameersbn/redis:latest
+  volumes:
+   - /srv/docker/gitlab/redis:/var/lib/redis
