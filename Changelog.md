@@ -2,6 +2,7 @@
 
 **latest**
 - init: added support for remote AWS backups
+- gitlab: upgrade to CE v.7.10.2
 
 **7.10.1**
 - gitlab: upgrade to CE v.7.10.1
