@@ -159,25 +159,35 @@ docker build --tag="$USER/gitlab" .
 
 # Quick Start
 
-You can launch the image using the docker command line,
+Follow this simple 3 step procedure to get started.
+
+Step 1. Launch a postgresql container
 
 ```bash
-docker run --name='gitlab' -it --rm \
--e 'GITLAB_PORT=10080' -e 'GITLAB_SSH_PORT=10022' \
--p 10022:22 -p 10080:80 \
--v /var/run/docker.sock:/run/docker.sock \
--v $(which docker):/bin/docker \
+docker run --name=postgresql -d \
+  -e 'DB_NAME=gitlabhq_production' -e 'DB_USER=gitlab' -e 'DB_PASS=password' \
+  -v /srv/docker/gitlab/postgresql:/var/lib/postgresql \
+  sameersbn/postgresql:9.4
+```
+
+Step 2. Launch a redis container
+
+```bash
+docker run --name=redis -d \
+  -v /srv/docker/gitlab/redis:/var/lib/redis \
+  sameersbn/redis:latest
+```
+
+Step 3. Launch the gitlab container
+
+```bash
+docker run --name='gitlab' -d \
+  --link=postgresql:postgresql --link=redis:redisio \
+  -e 'GITLAB_PORT=10080' -e 'GITLAB_SSH_PORT=10022' \
+  -p 10022:22 -p 10080:80 \
+  -v /srv/docker/gitlab/gitlab:/home/git/data \
 sameersbn/gitlab:7.10.2
 ```
-
-Or you can use [docker-compose](https://docs.docker.com/compose/). Assuming you have docker-compose installed,
-
-```bash
-wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml
-docker-compose up
-```
-
-*The rest of the document will use the docker command line. You can quite simply adapt your configuration into a `docker-compose.yml` file if you wish to do so.*
 
 __NOTE__: Please allow a couple of minutes for the GitLab application to start.
 
@@ -187,6 +197,15 @@ Point your browser to `http://localhost:10080` and login using the default usern
 * password: **5iveL!fe**
 
 You should now have the GitLab application up and ready for testing. If you want to use this image in production the please read on.
+
+The above setup can also be achieved using [docker-compose](https://docs.docker.com/compose/). Assuming you have docker-compose installed,
+
+```bash
+wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml
+docker-compose up
+```
+
+*The rest of the document will use the docker command line. You can quite simply adapt your configuration into a `docker-compose.yml` file if you wish to do so.*
 
 # Configuration
 
