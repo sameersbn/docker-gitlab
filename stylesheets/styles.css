@@ -351,6 +351,6 @@ footer p + p {
 }
 @media print {
   header p.view a small:before {
-    content: 'at http://github.com/';
+    content: 'at https://github.com/';
   }
 }

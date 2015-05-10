@@ -28,22 +28,52 @@
       </header>
       <section>
         <h1>
-<a name="zero-to-gitlab-in-5-seconds-or-less" class="anchor" href="#zero-to-gitlab-in-5-seconds-or-less"><span class="octicon octicon-link"></span></a>Zero to GitLab in 5 seconds or less*</h1>
+<a id="zero-to-gitlab-in-5-seconds-or-less" class="anchor" href="#zero-to-gitlab-in-5-seconds-or-less" aria-hidden="true"><span class="octicon octicon-link"></span></a>Zero to GitLab in 5 seconds or less*</h1>
 
-<div class="highlight highlight-bash"><pre>docker run --name<span class="o">=</span><span class="s1">'gitlab'</span> -it --rm <span class="se">\</span>
--e <span class="s1">'GITLAB_PORT=10080'</span> -e <span class="s1">'GITLAB_SSH_PORT=10022'</span> <span class="se">\</span>
--p 10022:22 -p 10080:80 <span class="se">\</span>
--v /var/run/docker.sock:/run/docker.sock <span class="se">\</span>
--v <span class="k">$(</span>which docker<span class="k">)</span>:/bin/docker <span class="se">\</span>
-sameersbn/gitlab:latest
-</pre></div>
+<p>Follow this simple 3 step procedure to get started.</p>
+
+<p>Step 1. Launch a postgresql container</p>
+
+<div class="highlight highlight-bash"><pre>docker run --name=postgresql-gitlab -d \
+  --env=<span class="pl-s"><span class="pl-pds">'</span>DB_NAME=gitlabhq_production<span class="pl-pds">'</span></span> \
+  --env=<span class="pl-s"><span class="pl-pds">'</span>DB_USER=gitlab<span class="pl-pds">'</span></span> --env=<span class="pl-s"><span class="pl-pds">'</span>DB_PASS=password<span class="pl-pds">'</span></span> \
+  --volume=/srv/docker/gitlab/postgresql:/var/lib/postgresql \
+  sameersbn/postgresql:9.4</pre></div>
+
+<p>Step 2. Launch a redis container</p>
+
+<div class="highlight highlight-bash"><pre>docker run --name=redis-gitlab -d \
+  --volume=/srv/docker/gitlab/redis:/var/lib/redis \
+  sameersbn/redis:latest</pre></div>
+
+<p>Step 3. Launch the GitLab container</p>
+
+<div class="highlight highlight-bash"><pre>docker run --name=<span class="pl-s"><span class="pl-pds">'</span>gitlab<span class="pl-pds">'</span></span> -d \
+  --link=postgresql-gitlab:postgresql --link=redis-gitlab:redisio \
+  --env=<span class="pl-s"><span class="pl-pds">'</span>GITLAB_PORT=10080<span class="pl-pds">'</span></span> --env=<span class="pl-s"><span class="pl-pds">'</span>GITLAB_SSH_PORT=10022<span class="pl-pds">'</span></span> \
+  --publish=10022:22 --publish=10080:80 \
+  --volume=/srv/docker/gitlab/gitlab:/home/git/data \
+sameersbn/gitlab:7.10.2</pre></div>
+
+<p><strong>NOTE</strong>: Please allow a couple of minutes for the GitLab application to start.</p>
 
 <p>Point your browser to <code>http://localhost:10080</code> and login using the default username and password:</p>
 
 <ul>
-<li>username: root</li>
-<li>password: 5iveL!fe</li>
-</ul><p>* <em>download and start up times not included</em></p>
+<li>username: <strong>root</strong>
+</li>
+<li>password: <strong>5iveL!fe</strong>
+</li>
+</ul>
+
+<p>You should now have the GitLab application up and ready for testing. Please refer the <a href="https://github.com/sameersbn/docker-gitlab/blob/master/README.md">docs</a> for customization options.</p>
+
+<p>The above setup can also be achieved using <a href="https://docs.docker.com/compose/">docker-compose</a>. Assuming you have docker-compose installed,</p>
+
+<div class="highlight highlight-bash"><pre>wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml
+docker-compose up</pre></div>
+
+<p>* <em>download and start up times not included</em></p>
       </section>
     </div>
     <footer>
