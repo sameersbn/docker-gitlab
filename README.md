@@ -261,7 +261,7 @@ Refer to [Linking to MySQL Container](#linking-to-mysql-container) for more info
 
 #### External MySQL Server
 
-The image can be configured to use an external MySQL database instead of starting a MySQL server internally. The database configuration should be specified using environment variables while starting the GitLab image.
+The image can be configured to use an external MySQL database. The database configuration should be specified using environment variables while starting the GitLab image.
 
 Before you start the GitLab image create user and database for gitlab.
 
@@ -416,7 +416,7 @@ The internal redis server has been removed from the image. Please use a [linked 
 
 ### External Redis Server
 
-The image can be configured to use an external redis server instead of starting a redis server internally. The configuration should be specified using environment variables while starting the GitLab image.
+The image can be configured to use an external redis server. The configuration should be specified using environment variables while starting the GitLab image.
 
 *Assuming that the redis server host is 192.168.1.100*
 
