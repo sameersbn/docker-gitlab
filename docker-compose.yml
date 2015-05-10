@@ -1,4 +1,4 @@
-postgresql:
+postgresql-gitlab:
   image: sameersbn/postgresql:9.4
   environment:
     - DB_USER=gitlab
@@ -9,8 +9,8 @@ postgresql:
 gitlab:
   image: sameersbn/gitlab:7.10.2
   links:
-    - redis:redisio
-    - postgresql:postgresql
+    - redis-gitlab:redisio
+    - postgresql-gitlab:postgresql
   ports:
     - "10080:80"
     - "10022:22"
@@ -19,7 +19,7 @@ gitlab:
     - GITLAB_SSH_PORT=10022
   volumes:
     - /srv/docker/gitlab/gitlab:/home/git/data
-redis:
+redis-gitlab:
   image: sameersbn/redis:latest
   volumes:
     - /srv/docker/gitlab/redis:/var/lib/redis
