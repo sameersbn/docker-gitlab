@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-GITLAB_VERSION=7.10.2
+GITLAB_VERSION=7.10.3
 GITLAB_SHELL_VERSION=2.6.2
 
 GITLAB_HOME="/home/git"
