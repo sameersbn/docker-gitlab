@@ -184,8 +184,8 @@ Step 3. Launch the gitlab container
 ```bash
 docker run --name='gitlab' -d \
   --link=postgresql-gitlab:postgresql --link=redis-gitlab:redisio \
-  --env='GITLAB_PORT=10080' --env='GITLAB_SSH_PORT=10022' \
   --publish=10022:22 --publish=10080:80 \
+  --env='GITLAB_PORT=10080' --env='GITLAB_SSH_PORT=10022' \
   --volume=/srv/docker/gitlab/gitlab:/home/git/data \
 sameersbn/gitlab:7.10.3
 ```
@@ -569,7 +569,8 @@ When using a load balancer, you probably want to make sure the load balancer per
 In summation, when using a load balancer, the docker command would look for the most part something like this:
 
 ```bash
-docker run --name=gitlab -d --publish=10022:22 --publish=10080:80 \
+docker run --name=gitlab -d \
+  --publish=10022:22 --publish=10080:80 \
   --env='GITLAB_SSH_PORT=10022' --env='GITLAB_PORT=443' \
   --env='GITLAB_HTTPS=true' --env='SSL_SELF_SIGNED=true' \
   --volume=/srv/docker/gitlab/gitlab:/home/git/data \
