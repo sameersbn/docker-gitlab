@@ -26,6 +26,8 @@ gitlab:
     - SMTP_PORT=587
     - SMTP_USER=mailer@example.com
     - SMTP_PASS=password
+    - SMTP_STARTTLS=true
+    - SMTP_AUTHENTICATION=login
     - GITLAB_TIMEZONE=Kolkata
     - GITLAB_HOST=localhost
     - GITLAB_PORT=10080
