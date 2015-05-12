@@ -16,10 +16,6 @@ gitlab:
     - "10022:22"
   environment:
     - TZ=Asia/Kolkata
-    - DB_TYPE=postgres
-    - DB_USER=gitlab
-    - DB_PASS=secretpassword
-    - DB_NAME=gitlabhq_production
     - SMTP_ENABLED=false
     - SMTP_DOMAIN=www.example.com
     - SMTP_HOST=smtp.gmail.com
