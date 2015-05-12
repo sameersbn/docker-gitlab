@@ -159,7 +159,14 @@ docker build --tag="$USER/gitlab" .
 
 # Quick Start
 
-Follow this simple 3 step procedure to get started.
+The quickest way to get started is using [docker-compose](https://docs.docker.com/compose/).
+
+```bash
+wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml
+docker-compose up
+```
+
+Alternately, you can manually launch the `gitlab` container and the supporting `postgresql` and `redis` containers by following three step guide.
 
 Step 1. Launch a postgresql container
 
@@ -198,13 +205,6 @@ Point your browser to `http://localhost:10080` and login using the default usern
 * password: **5iveL!fe**
 
 You should now have the GitLab application up and ready for testing. If you want to use this image in production the please read on.
-
-The above setup can also be achieved using [docker-compose](https://docs.docker.com/compose/). Assuming you have docker-compose installed,
-
-```bash
-wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml
-docker-compose up
-```
 
 *The rest of the document will use the docker command line. You can quite simply adapt your configuration into a `docker-compose.yml` file if you wish to do so.*
 
