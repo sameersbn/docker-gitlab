@@ -15,8 +15,25 @@ gitlab:
     - "10080:80"
     - "10022:22"
   environment:
+    - TZ=Asia/Kolkata
+    - DB_TYPE=postgres
+    - DB_USER=gitlab
+    - DB_PASS=secretpassword
+    - DB_NAME=gitlabhq_production
+    - SMTP_ENABLED=false
+    - SMTP_DOMAIN=www.example.com
+    - SMTP_HOST=smtp.gmail.com
+    - SMTP_PORT=587
+    - SMTP_USER=mailer@example.com
+    - SMTP_PASS=password
+    - GITLAB_TIMEZONE=Kolkata
+    - GITLAB_HOST=localhost
     - GITLAB_PORT=10080
     - GITLAB_SSH_PORT=10022
+    - GITLAB_EMAIL=admin@example.com
+    - GITLAB_EMAIL_REPLY_TO=noreply@example.com
+    - GITLAB_BACKUPS=daily
+    - GITLAB_BACKUP_TIME=01:00
   volumes:
     - /srv/docker/gitlab/gitlab:/home/git/data
 redis:
