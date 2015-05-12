@@ -30,7 +30,12 @@
         <h1>
 <a id="zero-to-gitlab-in-5-seconds-or-less" class="anchor" href="#zero-to-gitlab-in-5-seconds-or-less" aria-hidden="true"><span class="octicon octicon-link"></span></a>Zero to GitLab in 5 seconds or less*</h1>
 
-<p>Follow this simple 3 step procedure to get started.</p>
+<p>The quickest way to get started is using <a href="https://docs.docker.com/compose/">docker-compose</a>.</p>
+
+<div class="highlight highlight-bash"><pre>wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml
+docker-compose up</pre></div>
+
+<p>Alternately, you can manually launch the <code>gitlab</code> container and the supporting <code>postgresql</code> and <code>redis</code> containers by following three step guide.</p>
 
 <p>Step 1. Launch a postgresql container</p>
 
@@ -46,14 +51,14 @@
   --volume=/srv/docker/gitlab/redis:/var/lib/redis \
   sameersbn/redis:latest</pre></div>
 
-<p>Step 3. Launch the GitLab container</p>
+<p>Step 3. Launch the gitlab container</p>
 
 <div class="highlight highlight-bash"><pre>docker run --name=<span class="pl-s"><span class="pl-pds">'</span>gitlab<span class="pl-pds">'</span></span> -d \
   --link=postgresql-gitlab:postgresql --link=redis-gitlab:redisio \
-  --env=<span class="pl-s"><span class="pl-pds">'</span>GITLAB_PORT=10080<span class="pl-pds">'</span></span> --env=<span class="pl-s"><span class="pl-pds">'</span>GITLAB_SSH_PORT=10022<span class="pl-pds">'</span></span> \
   --publish=10022:22 --publish=10080:80 \
+  --env=<span class="pl-s"><span class="pl-pds">'</span>GITLAB_PORT=10080<span class="pl-pds">'</span></span> --env=<span class="pl-s"><span class="pl-pds">'</span>GITLAB_SSH_PORT=10022<span class="pl-pds">'</span></span> \
   --volume=/srv/docker/gitlab/gitlab:/home/git/data \
-sameersbn/gitlab:7.10.2</pre></div>
+sameersbn/gitlab:7.10.4</pre></div>
 
 <p><strong>NOTE</strong>: Please allow a couple of minutes for the GitLab application to start.</p>
 
@@ -67,11 +72,6 @@ sameersbn/gitlab:7.10.2</pre></div>
 </ul>
 
 <p>You should now have the GitLab application up and ready for testing. Please refer the <a href="https://github.com/sameersbn/docker-gitlab/blob/master/README.md">docs</a> for customization options.</p>
-
-<p>The above setup can also be achieved using <a href="https://docs.docker.com/compose/">docker-compose</a>. Assuming you have docker-compose installed,</p>
-
-<div class="highlight highlight-bash"><pre>wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml
-docker-compose up</pre></div>
 
 <p>* <em>download and start up times not included</em></p>
       </section>
