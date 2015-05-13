@@ -403,6 +403,7 @@ docker run --name=gitlab -d --link=postgresql-gitlab:postgresql \
 
 Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the postgresql container as they are specified in the `docker run` command for the postgresql container. This is made possible using the magic of docker links and works with the following images:
 
+ - [postgresql](https://registry.hub.docker.com/_/postgresql/)
  - [sameersbn/postgresql](https://registry.hub.docker.com/u/sameersbn/postgresql/)
  - [orchardup/postgresql](https://registry.hub.docker.com/u/orchardup/postgresql/)
  - [paintedfox/postgresql](https://registry.hub.docker.com/u/paintedfox/postgresql/)
