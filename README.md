@@ -58,7 +58,7 @@
 
 # Introduction
 
-Dockerfile to build a GitLab container image.
+Dockerfile to build a [GitLab](https://about.gitlab.com/) container image.
 
 ## Version
 
