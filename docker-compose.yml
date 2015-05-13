@@ -2,7 +2,7 @@ postgresql:
   image: sameersbn/postgresql:9.4
   environment:
     - DB_USER=gitlab
-    - DB_PASS=secretpassword
+    - DB_PASS=password
     - DB_NAME=gitlabhq_production
   volumes:
     - /srv/docker/gitlab/postgresql:/var/lib/postgresql
