@@ -7,6 +7,7 @@ This file only reflects the changes that are made in the the docker image. Pleas
 - init: added `SIDEKIQ_SHUTDOWN_TIMEOUT` configuration option
 - gitlab-shell: upgrade to v.2.6.3
 - gitlab: upgrade to CE v.7.11.0
+- init: removed `GITLAB_PROJECTS_VISIBILITY` ENV parameter
 
 **7.10.4**
 - gitlab: upgrade to CE v.7.10.4

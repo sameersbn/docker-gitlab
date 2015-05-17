@@ -741,7 +741,6 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_PROJECTS_MERGE_REQUESTS**: Set if *merge requests* feature should be enabled by default for new projects. Defaults is `true`.
 - **GITLAB_PROJECTS_WIKI**: Set if *wiki* feature should be enabled by default for new projects. Defaults is `true`.
 - **GITLAB_PROJECTS_SNIPPETS**: Set if *snippets* feature should be enabled by default for new projects. Defaults is `false`.
-- **GITLAB_PROJECTS_VISIBILITY**: Set default projects visibility level. Possible values `public`, `private` and `internal`. Defaults to `private`.
 - **GITLAB_WEBHOOK_TIMEOUT**: Sets the timeout for webhooks. Defaults to `10` seconds.
 - **GITLAB_SATELLITES_TIMEOUT**: Sets the timeout for satellites. Defaults to `30` seconds.
 - **GITLAB_TIMEOUT**: Sets the timeout for git commands. Defaults to `10` seconds.
