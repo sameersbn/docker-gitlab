@@ -4,6 +4,7 @@ This file only reflects the changes that are made in the the docker image. Pleas
 
 **latest**
 - init: added `SIDEKIQ_MEMORY_KILLER_MAX_RSS` configuration option
+- init: added `SIDEKIQ_SHUTDOWN_TIMEOUT` configuration option
 
 **7.10.4**
 - gitlab: upgrade to CE v.7.10.4
