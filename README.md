@@ -62,7 +62,7 @@ Dockerfile to build a [GitLab](https://about.gitlab.com/) container image.
 
 ## Version
 
-Current Version: **7.10.4**
+Current Version: **7.11.0**
 
 # Hardware Requirements
 
@@ -140,7 +140,7 @@ In your issue report please make sure you provide the following information:
 Pull the image from the docker index. This is the recommended method of installation as it is easier to update image. These builds are performed by the **Docker Trusted Build** service.
 
 ```bash
-docker pull sameersbn/gitlab:7.10.4
+docker pull sameersbn/gitlab:7.11.0
 ```
 
 You can also pull the `latest` tag which is built from the repository *HEAD*
@@ -194,7 +194,7 @@ docker run --name='gitlab' -d \
   --publish=10022:22 --publish=10080:80 \
   --env='GITLAB_PORT=10080' --env='GITLAB_SSH_PORT=10022' \
   --volume=/srv/docker/gitlab/gitlab:/home/git/data \
-sameersbn/gitlab:7.10.4
+sameersbn/gitlab:7.11.0
 ```
 
 __NOTE__: Please allow a couple of minutes for the GitLab application to start.
@@ -228,7 +228,7 @@ Volumes can be mounted in docker by specifying the **'-v'** option in the docker
 ```bash
 docker run --name=gitlab -d \
   --volume=/srv/docker/gitlab/gitlab:/home/git/data \
-  sameersbn/gitlab:7.10.4
+  sameersbn/gitlab:7.11.0
 ```
 
 ## Database
@@ -280,7 +280,7 @@ docker run --name=gitlab -d \
   --env='DB_HOST=192.168.1.100' --env='DB_NAME=gitlabhq_production' \
   --env='DB_USER=gitlab' --env='DB_PASS=password' \
   --volume=/srv/docker/gitlab/gitlab:/home/git/data \
-  sameersbn/gitlab:7.10.4
+  sameersbn/gitlab:7.11.0
 ```
 
 #### Linking to MySQL Container
@@ -323,7 +323,7 @@ We are now ready to start the GitLab application.
 ```bash
 docker run --name=gitlab -d --link=mysql-gitlab:mysql \
   --volume=/srv/docker/gitlab/gitlab:/home/git/data \
-  sameersbn/gitlab:7.10.4
+  sameersbn/gitlab:7.11.0
 ```
 
 Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the mysql container as they are specified in the `docker run` command for the mysql container. This is made possible using the magic of docker links and works with the following images:
@@ -355,7 +355,7 @@ docker run --name=gitlab -d \
   --env='DB_NAME=gitlabhq_production' \
   --env='DB_USER=gitlab' --env='DB_PASS=password' \
   --volume=/srv/docker/gitlab/gitlab:/home/git/data \
-  sameersbn/gitlab:7.10.4
+  sameersbn/gitlab:7.11.0
 ```
 
 #### Linking to PostgreSQL Container
@@ -398,7 +398,7 @@ We are now ready to start the GitLab application.
 ```bash
 docker run --name=gitlab -d --link=postgresql-gitlab:postgresql \
   --volume=/srv/docker/gitlab/gitlab:/home/git/data \
-  sameersbn/gitlab:7.10.4
+  sameersbn/gitlab:7.11.0
 ```
 
 Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the postgresql container as they are specified in the `docker run` command for the postgresql container. This is made possible using the magic of docker links and works with the following images:
@@ -426,7 +426,7 @@ The image can be configured to use an external redis server. The configuration s
 docker run --name=gitlab -it --rm \
   --env='REDIS_HOST=192.168.1.100' --env='REDIS_PORT=6379' \
   --volume=/srv/docker/gitlab/redis:/var/lib/redis \
-  sameersbn/gitlab:7.10.4
+  sameersbn/gitlab:7.11.0
 ```
 
 ### Linking to Redis Container
@@ -451,7 +451,7 @@ We are now ready to start the GitLab application.
 
 ```bash
 docker run --name=gitlab -d --link=redis-gitlab:redisio \
-  sameersbn/gitlab:7.10.4
+  sameersbn/gitlab:7.11.0
 ```
 
 ### Mail
@@ -464,7 +464,7 @@ Please refer the [Available Configuration Parameters](#available-configuration-p
 docker run --name=gitlab -d \
   --env='SMTP_USER=USER@gmail.com' --env='SMTP_PASS=PASSWORD' \
   --volume=/srv/docker/gitlab/gitlab:/home/git/data \
-  sameersbn/gitlab:7.10.4
+  sameersbn/gitlab:7.11.0
 ```
 
 ### SSL
@@ -537,7 +537,7 @@ HTTPS support can be enabled by setting the `GITLAB_HTTPS` option to `true`. Add
 docker run --name=gitlab -d \
   --env='GITLAB_HTTPS=true' --env='SSL_SELF_SIGNED=true' \
   --volume=/srv/docker/gitlab/gitlab:/home/git/data \
-  sameersbn/gitlab:7.10.4
+  sameersbn/gitlab:7.11.0
 ```
 
 In this configuration, any requests made over the plain http protocol will automatically be redirected to use the https protocol. However, this is not optimal when using a load balancer.
@@ -553,7 +553,7 @@ docker run --name=gitlab -d \
  --env='GITLAB_HTTPS=true' --env='SSL_SELF_SIGNED=true' \
  --env='GITLAB_HTTPS_HSTS_MAXAGE=2592000'
  --volume=/srv/docker/gitlab/gitlab:/home/git/data \
- sameersbn/gitlab:7.10.4
+ sameersbn/gitlab:7.11.0
 ```
 
 If you want to completely disable HSTS set `GITLAB_HTTPS_HSTS_ENABLED` to `false`.
@@ -576,7 +576,7 @@ docker run --name=gitlab -d \
   --env='GITLAB_SSH_PORT=10022' --env='GITLAB_PORT=443' \
   --env='GITLAB_HTTPS=true' --env='SSL_SELF_SIGNED=true' \
   --volume=/srv/docker/gitlab/gitlab:/home/git/data \
-  sameersbn/gitlab:7.10.4
+  sameersbn/gitlab:7.11.0
 ```
 
 Again, drop the `--env='SSL_SELF_SIGNED=true'` option if you are using CA certified SSL certificates.
@@ -624,7 +624,7 @@ Let's assume we want to deploy our application to '/git'. GitLab needs to know t
 docker run --name=gitlab -it --rm \
   --env='GITLAB_RELATIVE_URL_ROOT=/git' \
   --volume=/srv/docker/gitlab/gitlab:/home/git/data \
-  sameersbn/gitlab:7.10.4
+  sameersbn/gitlab:7.11.0
 ```
 
 GitLab will now be accessible at the `/git` path, e.g. `http://www.example.com/git`.
@@ -639,7 +639,7 @@ docker run --name=gitlab -d -h git.local.host \
   --volume=/srv/docker/gitlab/mysql:/var/lib/mysql \
   --env='GITLAB_HOST=git.local.host' --env='GITLAB_EMAIL=gitlab@local.host' \
   --env='SMTP_USER=USER@gmail.com' --env='SMTP_PASS=PASSWORD' \
-  sameersbn/gitlab:7.10.4
+  sameersbn/gitlab:7.11.0
 ```
 
 If you are using an external mysql database
@@ -651,7 +651,7 @@ docker run --name=gitlab -d -h git.local.host \
   --env='DB_USER=gitlab' --env='DB_PASS=password' \
   --env='GITLAB_HOST=git.local.host' --env='GITLAB_EMAIL=gitlab@local.host' \
   --env='SMTP_USER=USER@gmail.com' --env='SMTP_PASS=PASSWORD' \
-  sameersbn/gitlab:7.10.4
+  sameersbn/gitlab:7.11.0
 ```
 
 ### OmniAuth Integration
@@ -688,7 +688,7 @@ For example, if your Client ID is `xxx` and the Client secret is `yyy`, then add
 
 ### External Issue Trackers
 
-Since version `7.10.4` support for external issue trackers can be enabled in the "Service Templates" section of the settings panel.
+Since version `7.11.0` support for external issue trackers can be enabled in the "Service Templates" section of the settings panel.
 
 If you are using the [docker-redmine](https://github.com/sameersbn/docker-redmine) image, you can *one up* the gitlab integration with redmine by adding `--volumes-from=gitlab` flag to the docker run command while starting the redmine container.
 
@@ -703,14 +703,14 @@ Also the container processes seem to be executed as the host's user/group `1000`
 ```bash
 docker run --name=gitlab -it --rm [options] \
   --env="USERMAP_UID=$(id -u git)" --env="USERMAP_GID=$(id -g git)" \
-  sameersbn/gitlab:7.10.4
+  sameersbn/gitlab:7.11.0
 ```
 
 When changing this mapping, all files and directories in the mounted data volume `/home/git/data` have to be re-owned by the new ids. This can be achieved automatically using the following command:
 
 ```bash
 docker run --name=gitlab -d [OPTIONS] \
-  sameersbn/gitlab:7.10.4 app:sanitize
+  sameersbn/gitlab:7.11.0 app:sanitize
 ```
 
 ### Piwik
@@ -843,7 +843,7 @@ To take a backup all you need to do is run the gitlab rake task to create a back
 
 ```bash
 docker run --name=gitlab -it --rm [OPTIONS] \
-  sameersbn/gitlab:7.10.4 app:rake gitlab:backup:create
+  sameersbn/gitlab:7.11.0 app:rake gitlab:backup:create
 ```
 
 A backup will be created in the backups folder of the [Data Store](#data-store). You can change that behavior by setting your own path within the container. To do so you have to pass the argument `--env="GITLAB_BACKUP_DIR:/path/to/backups"` to the docker run command.
@@ -862,7 +862,7 @@ To restore a backup, run the image in interactive (-it) mode and pass the "app:r
 
 ```bash
 docker run --name=gitlab -it --rm [OPTIONS] \
-  sameersbn/gitlab:7.10.4 app:rake gitlab:backup:restore
+  sameersbn/gitlab:7.11.0 app:rake gitlab:backup:restore
 ```
 
 The restore operation will list all available backups in reverse chronological order. Select the backup you want to restore and gitlab will do its job.
@@ -871,7 +871,7 @@ To avoid user interaction in the restore operation, you can specify the timestam
 
 ```bash
 docker run --name=gitlab -it --rm [OPTIONS] \
-  sameersbn/gitlab:7.10.4 app:rake gitlab:backup:restore BACKUP=1417624827
+  sameersbn/gitlab:7.11.0 app:rake gitlab:backup:restore BACKUP=1417624827
 ```
 
 ## Automated Backups
@@ -925,7 +925,7 @@ To upgrade to newer gitlab releases, simply follow this 4 step upgrade procedure
 - **Step 1**: Update the docker image.
 
 ```bash
-docker pull sameersbn/gitlab:7.10.4
+docker pull sameersbn/gitlab:7.11.0
 ```
 
 - **Step 2**: Stop and remove the currently running image
@@ -947,7 +947,7 @@ Replace `x.x.x` with the version you are upgrading from. For example, if you are
 - **Step 4**: Start the image
 
 ```bash
-docker run --name=gitlab -d [OPTIONS] sameersbn/gitlab:7.10.4
+docker run --name=gitlab -d [OPTIONS] sameersbn/gitlab:7.11.0
 ```
 
 ## Rake Tasks
@@ -956,7 +956,7 @@ The `app:rake` command allows you to run gitlab rake tasks. To run a rake task s
 
 ```bash
 docker run --name=gitlab -d [OPTIONS] \
-  sameersbn/gitlab:7.10.4 app:rake gitlab:env:info
+  sameersbn/gitlab:7.11.0 app:rake gitlab:env:info
 ```
 
 You can also use `docker exec` to run raketasks on running gitlab instance. For example,
@@ -969,7 +969,7 @@ Similarly, to import bare repositories into GitLab project instance
 
 ```bash
 docker run --name=gitlab -d [OPTIONS] \
-  sameersbn/gitlab:7.10.4 app:rake gitlab:import:repos
+  sameersbn/gitlab:7.11.0 app:rake gitlab:import:repos
 ```
 
 Or
