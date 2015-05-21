@@ -2,6 +2,9 @@
 
 This file only reflects the changes that are made in the the docker image. Please refer to the upstream GitLab [CHANGELOG](https://github.com/gitlabhq/gitlabhq/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**latest**
+- init: added `SIDEKIQ_MEMORY_KILLER_MAX_RSS` configuration option
+
 **7.10.4**
 - gitlab: upgrade to CE v.7.10.4
 
