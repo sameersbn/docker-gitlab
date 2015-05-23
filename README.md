@@ -36,7 +36,6 @@
     - [Establishing trust with your server](#establishing-trust-with-your-server)
     - [Installing Trusted SSL Server Certificates](#installing-trusted-ssl-server-certificates)
   - [Deploy to a subdirectory (relative url root)](#deploy-to-a-subdirectory-relative-url-root)
-  - [Putting it all together](#putting-it-all-together)
   - [OmniAuth Integration](#omniauth-integration)
     - [Google](#google)
     - [Twitter](#twitter)
@@ -630,29 +629,6 @@ docker run --name=gitlab -it --rm \
 GitLab will now be accessible at the `/git` path, e.g. `http://www.example.com/git`.
 
 **Note**: *The `GITLAB_RELATIVE_URL_ROOT` parameter should always begin with a slash and* **SHOULD NOT** *have any trailing slashes.*
-
-### Putting it all together
-
-```bash
-docker run --name=gitlab -d -h git.local.host \
-  --volume=/srv/docker/gitlab/gitlab:/home/git/data \
-  --volume=/srv/docker/gitlab/mysql:/var/lib/mysql \
-  --env='GITLAB_HOST=git.local.host' --env='GITLAB_EMAIL=gitlab@local.host' \
-  --env='SMTP_USER=USER@gmail.com' --env='SMTP_PASS=PASSWORD' \
-  sameersbn/gitlab:7.11.0
-```
-
-If you are using an external mysql database
-
-```bash
-docker run --name=gitlab -d -h git.local.host \
-  --volume=/srv/docker/gitlab/gitlab:/home/git/data \
-  --env='DB_HOST=192.168.1.100' --env='DB_NAME=gitlabhq_production' \
-  --env='DB_USER=gitlab' --env='DB_PASS=password' \
-  --env='GITLAB_HOST=git.local.host' --env='GITLAB_EMAIL=gitlab@local.host' \
-  --env='SMTP_USER=USER@gmail.com' --env='SMTP_PASS=PASSWORD' \
-  sameersbn/gitlab:7.11.0
-```
 
 ### OmniAuth Integration
 
