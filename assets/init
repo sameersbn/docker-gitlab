@@ -28,7 +28,6 @@ GITLAB_PROJECTS_ISSUES=${GITLAB_PROJECTS_ISSUES:-true}
 GITLAB_PROJECTS_MERGE_REQUESTS=${GITLAB_PROJECTS_MERGE_REQUESTS:-true}
 GITLAB_PROJECTS_WIKI=${GITLAB_PROJECTS_WIKI:-true}
 GITLAB_PROJECTS_SNIPPETS=${GITLAB_PROJECTS_SNIPPETS:-false}
-GITLAB_PROJECTS_VISIBILITY=${GITLAB_PROJECTS_VISIBILITY:-private}
 GITLAB_RELATIVE_URL_ROOT=${GITLAB_RELATIVE_URL_ROOT:-}
 GITLAB_WEBHOOK_TIMEOUT=${GITLAB_WEBHOOK_TIMEOUT:-10}
 GITLAB_SATELLITES_TIMEOUT=${GITLAB_SATELLITES_TIMEOUT:-30}
@@ -68,7 +67,10 @@ REDIS_PORT=${REDIS_PORT:-}
 
 UNICORN_WORKERS=${UNICORN_WORKERS:-3}
 UNICORN_TIMEOUT=${UNICORN_TIMEOUT:-60}
+
+SIDEKIQ_SHUTDOWN_TIMEOUT=${SIDEKIQ_SHUTDOWN_TIMEOUT:-4}
 SIDEKIQ_CONCURRENCY=${SIDEKIQ_CONCURRENCY:-25}
+SIDEKIQ_MEMORY_KILLER_MAX_RSS=${SIDEKIQ_MEMORY_KILLER_MAX_RSS:-1000000}
 
 DB_TYPE=${DB_TYPE:-}
 DB_HOST=${DB_HOST:-}
@@ -364,9 +366,6 @@ sudo -u git -H sed 's/{{GITLAB_PROJECTS_WIKI}}/'"${GITLAB_PROJECTS_WIKI}"'/' -i 
 # configure gitlab default project feature: snippets
 sudo -u git -H sed 's/{{GITLAB_PROJECTS_SNIPPETS}}/'"${GITLAB_PROJECTS_SNIPPETS}"'/' -i config/gitlab.yml
 
-# configure gitlab default project feature: visibility_level
-sudo -u git -H sed 's/{{GITLAB_PROJECTS_VISIBILITY}}/'"${GITLAB_PROJECTS_VISIBILITY}"'/' -i config/gitlab.yml
-
 # configure gitlab webhook timeout
 sudo -u git -H sed 's/{{GITLAB_WEBHOOK_TIMEOUT}}/'"${GITLAB_WEBHOOK_TIMEOUT}"'/' -i config/gitlab.yml
 
@@ -399,6 +398,20 @@ sudo -u git -H sed 's/{{DB_POOL}}/'"${DB_POOL}"'/' -i config/database.yml
 
 # configure sidekiq concurrency
 sed 's/{{SIDEKIQ_CONCURRENCY}}/'"${SIDEKIQ_CONCURRENCY}"'/' -i /etc/supervisor/conf.d/sidekiq.conf
+
+# configure sidekiq shutdown timeout
+sed 's/{{SIDEKIQ_SHUTDOWN_TIMEOUT}}/'"${SIDEKIQ_SHUTDOWN_TIMEOUT}"'/' -i /etc/supervisor/conf.d/sidekiq.conf
+
+# enable SidekiqMemoryKiller
+## The MemoryKiller is enabled by gitlab if the `SIDEKIQ_MEMORY_KILLER_MAX_RSS` is
+## defined in the programs environment and has a non-zero value.
+##
+## Simply exporting the variable makes it available in the programs environment and
+## therefore should enable the MemoryKiller.
+##
+## Every other MemoryKiller option specified in the docker env will automatically
+## be exported, so why bother
+export SIDEKIQ_MEMORY_KILLER_MAX_RSS
 
 # configure redis
 sudo -u git -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/g' -i config/resque.yml
