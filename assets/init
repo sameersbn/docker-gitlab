@@ -752,17 +752,20 @@ appInit () {
     case "${GITLAB_BACKUPS}" in
       daily)
         sudo -u git -H cat > /tmp/cron.git <<EOF
-$min $hour * * * cd ${GITLAB_INSTALL_DIR} && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
+# Automatic Backups: daily
+$min $hour * * * /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=production'
 EOF
         ;;
       weekly)
         sudo -u git -H cat > /tmp/cron.git <<EOF
-$min $hour * * 0 cd ${GITLAB_INSTALL_DIR} && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
+# Automatic Backups: weekly
+$min $hour * * 0 /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=production'
 EOF
         ;;
       monthly)
         sudo -u git -H cat > /tmp/cron.git <<EOF
-$min $hour 01 * * cd ${GITLAB_INSTALL_DIR} && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
+# Automatic Backups: monthly
+$min $hour 01 * * /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=production'
 EOF
         ;;
     esac
