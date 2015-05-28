@@ -807,43 +807,45 @@ Below is the complete list of available options that can be used to customize yo
 
 ## Creating backups
 
-Gitlab defines a rake task to easily take a backup of your gitlab installation. The backup consists of all git repositories, uploaded files and as you might expect, the sql database.
+Gitlab defines a rake task to take a backup of your gitlab installation. The backup consists of all git repositories, uploaded files and as you might expect, the sql database.
 
-Before taking a backup, please make sure that the gitlab image is not running for obvious reasons,
+Before taking a backup make sure the container is stopped and removed to avoid container name conflicts.
 
 ```bash
-docker stop gitlab
+docker stop gitlab && docker rm gitlab
 ```
 
-To take a backup all you need to do is run the gitlab rake task to create a backup.
+Execute the rake task to create a backup.
 
 ```bash
 docker run --name=gitlab -it --rm [OPTIONS] \
   sameersbn/gitlab:7.11.4 app:rake gitlab:backup:create
 ```
 
-A backup will be created in the backups folder of the [Data Store](#data-store). You can change that behavior by setting your own path within the container. To do so you have to pass the argument `--env="GITLAB_BACKUP_DIR:/path/to/backups"` to the docker run command.
+A backup will be created in the backups folder of the [Data Store](#data-store). You can change the location of the backups using the `GITLAB_CI_BACKUP_DIR` configuration parameter.
 
-*P.S. Backups can also be generated on a running gitlab instance using `docker exec` as described in the [Rake Tasks](#rake-tasks) section. However, I strongly advice against running backup and restore operations on a running gitlab instance.*
+*P.S. Backups can also be generated on a running instance using `docker exec` as described in the [Rake Tasks](#rake-tasks) section. However, to avoid undesired side-effects, I advice against running backup and restore operations on a running instance.*
 
 ## Restoring Backups
 
-Gitlab defines a rake task to easily restore a backup of your gitlab installation. Before performing the restore operation please make sure that the gitlab image is not running.
+Gitlab also defines a rake task to restore a backup.
+
+Before performing a restore make sure the container is stopped and removed to avoid container name conflicts.
 
 ```bash
-docker stop gitlab
+docker stop gitlab && docker rm gitlab
 ```
 
-To restore a backup, run the image in interactive (-it) mode and pass the "app:restore" command to the container image.
+Execute the rake task to restore a backup. Make sure you run the container in interactive mode `-it`.
 
 ```bash
 docker run --name=gitlab -it --rm [OPTIONS] \
   sameersbn/gitlab:7.11.4 app:rake gitlab:backup:restore
 ```
 
-The restore operation will list all available backups in reverse chronological order. Select the backup you want to restore and gitlab will do its job.
+The list of all available backups will be displayed in reverse chronological order. Select the backup you want to restore and continue.
 
-To avoid user interaction in the restore operation, you can specify the timestamp of the specific backup using the `BACKUP` argument to the rake task.
+To avoid user interaction in the restore operation, specify the timestamp of the backup using the `BACKUP` argument to the rake task.
 
 ```bash
 docker run --name=gitlab -it --rm [OPTIONS] \
@@ -852,7 +854,7 @@ docker run --name=gitlab -it --rm [OPTIONS] \
 
 ## Automated Backups
 
-The image can be configured to automatically take backups on a daily, weekly or monthly basis. Adding `--env='GITLAB_BACKUPS=daily'` to the docker run command will enable daily backups. Adding `--env='GITLAB_BACKUPS=weekly'` or `--env='GITLAB_BACKUPS=monthly'` will enable weekly or monthly backups.
+The image can be configured to automatically take backups `daily`, `weekly` or `monthly` using the `GITLAB_BACKUPS` configuration option.
 
 Daily backups are created at `GITLAB_BACKUP_TIME` which defaults to `04:00` everyday. Weekly backups are created every Sunday at the same time as the daily backups. Monthly backups are created on the 1st of every month at the same time as the daily backups.
 
