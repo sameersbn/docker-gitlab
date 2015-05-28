@@ -30,6 +30,11 @@ rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
 adduser --disabled-login --gecos 'GitLab' git
 passwd -d git
 
+# set PATH (fixes cron job PATH issues)
+cat >> ${GITLAB_HOME}/.profile <<EOF
+PATH=/usr/local/sbin:/usr/local/bin:\$PATH
+EOF
+
 rm -rf ${GITLAB_HOME}/.ssh
 sudo -u git -H mkdir -p ${GITLAB_DATA_DIR}/.ssh
 sudo -u git -H ln -s ${GITLAB_DATA_DIR}/.ssh ${GITLAB_HOME}/.ssh
