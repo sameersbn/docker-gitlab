@@ -656,7 +656,7 @@ chown git:git ${GITLAB_DATA_DIR}/gitlab-satellites
 rm -rf ${GITLAB_DATA_DIR}/cache
 
 # create the backups directory
-sudo -u git -H mkdir -p ${GITLAB_BACKUP_DIR}
+mkdir -p ${GITLAB_BACKUP_DIR}
 chown git:git ${GITLAB_BACKUP_DIR}
 
 # create the uploads directory
