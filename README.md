@@ -474,7 +474,7 @@ To secure your application via SSL you basically need two things:
 - **Private key (.key)**
 - **SSL certificate (.crt)**
 
-When using CA certified certificates, these files are provided to you by the CA. When using self-signed certificates you need to generate these files yourself. Skip the following section if you are armed with CA certified SSL certificates.
+When using CA certified certificates, these files are provided to you by the CA. When using self-signed certificates you need to generate these files yourself. Skip to [Strengthening the server security](#using-https-with-a-load-balancer) section if you are armed with CA certified SSL certificates.
 
 Jump to the [Using HTTPS with a load balancer](#using-https-with-a-load-balancer) section if you are using a load balancer such as hipache, haproxy or nginx.
 
