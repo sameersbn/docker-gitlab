@@ -346,6 +346,8 @@ sudo -u git -H sed 's/{{GITLAB_SSH_HOST}}/'"${GITLAB_SSH_HOST}"'/' -i config/git
 sudo -u git -H sed 's/{{GITLAB_SSH_PORT}}/'"${GITLAB_SSH_PORT}"'/' -i config/gitlab.yml
 
 # configure default timezone
+# escaping timezone 
+GITLAB_TIMEZONE=$(echo "$GITLAB_TIMEZONE" | sed -e 's/[]\/$*.^|[]/\\&/g')
 sudo -u git -H sed 's/{{GITLAB_TIMEZONE}}/'"${GITLAB_TIMEZONE}"'/' -i config/gitlab.yml
 
 # configure gitlab username_changing_enabled
