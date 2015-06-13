@@ -1,4 +1,4 @@
-FROM sameersbn/ubuntu:14.04.20150604
+FROM sameersbn/ubuntu:14.04.20150613
 MAINTAINER sameer@damagehead.com
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv E1DD270288B4E6030699E45FA1715D88E1DF1F24 \
@@ -20,7 +20,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv E1DD270288B4E6030699E45F
  && locale-gen en_US.UTF-8 \
  && dpkg-reconfigure locales \
  && gem install --no-document bundler \
- && rm -rf /var/lib/apt/lists/* # 20150604
+ && rm -rf /var/lib/apt/lists/* # 20150613
 
 COPY assets/setup/ /app/setup/
 RUN chmod 755 /app/setup/install
