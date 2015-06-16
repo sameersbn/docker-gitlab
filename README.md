@@ -424,7 +424,6 @@ The image can be configured to use an external redis server. The configuration s
 ```bash
 docker run --name=gitlab -it --rm \
   --env='REDIS_HOST=192.168.1.100' --env='REDIS_PORT=6379' \
-  --volume=/srv/docker/gitlab/redis:/var/lib/redis \
   sameersbn/gitlab:7.11.4-1
 ```
 
@@ -443,7 +442,9 @@ docker pull sameersbn/redis:latest
 Lets start the redis container
 
 ```bash
-docker run --name=redis-gitlab -d sameersbn/redis:latest
+docker run --name=redis-gitlab -d \
+  --volume=/srv/docker/gitlab/redis:/var/lib/redis \
+  sameersbn/redis:latest
 ```
 
 We are now ready to start the GitLab application.
