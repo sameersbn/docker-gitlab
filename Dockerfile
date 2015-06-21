@@ -36,8 +36,8 @@ COPY assets/setup/ ${SETUP_DIR}/
 RUN bash ${SETUP_DIR}/install.sh
 
 COPY assets/config/ ${SETUP_DIR}/config/
-COPY assets/entrypoint.sh /app/entrypoint.sh
-RUN chmod 755 /app/entrypoint.sh
+COPY assets/entrypoint.sh /sbin/entrypoint.sh
+RUN chmod 755 /sbin/entrypoint.sh
 
 EXPOSE 22
 EXPOSE 80
@@ -47,5 +47,5 @@ VOLUME ["${GITLAB_DATA_DIR}"]
 VOLUME ["${GITLAB_LOG_DIR}"]
 
 WORKDIR ${GITLAB_INSTALL_DIR}
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["/sbin/entrypoint.sh"]
 CMD ["app:start"]
