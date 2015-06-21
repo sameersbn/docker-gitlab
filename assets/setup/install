@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 
-SETUP_DIR="/app/setup"
 GEM_CACHE_DIR="${SETUP_DIR}/cache"
 
 # rebuild apt cache

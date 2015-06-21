@@ -4,7 +4,8 @@ MAINTAINER sameer@damagehead.com
 ENV GITLAB_VERSION=7.11.4 \
     GITLAB_SHELL_VERSION=2.6.3 \
     GITLAB_HOME="/home/git" \
-    GITLAB_LOG_DIR="/var/log/gitlab"
+    GITLAB_LOG_DIR="/var/log/gitlab" \
+    SETUP_DIR="/app/setup"
 
 ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
     GITLAB_SHELL_INSTALL_DIR="${GITLAB_HOME}/gitlab-shell" \
@@ -31,10 +32,10 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv E1DD270288B4E6030699E45F
  && gem install --no-document bundler \
  && rm -rf /var/lib/apt/lists/*
 
-COPY assets/setup/ /app/setup/
-RUN bash /app/setup/install
+COPY assets/setup/ ${SETUP_DIR}/
+RUN bash ${SETUP_DIR}/install
 
-COPY assets/config/ /app/setup/config/
+COPY assets/config/ ${SETUP_DIR}/config/
 COPY assets/init /app/init
 RUN chmod 755 /app/init
 
