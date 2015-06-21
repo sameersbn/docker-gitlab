@@ -33,7 +33,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv E1DD270288B4E6030699E45F
  && rm -rf /var/lib/apt/lists/*
 
 COPY assets/setup/ ${SETUP_DIR}/
-RUN bash ${SETUP_DIR}/install
+RUN bash ${SETUP_DIR}/install.sh
 
 COPY assets/config/ ${SETUP_DIR}/config/
 COPY assets/init /app/init
