@@ -14,13 +14,20 @@ build:
 	@docker build --tag=${USER}/gitlab .
 
 quickstart:
-	@echo "Starting gitlab..."
+	@echo "Starting postgresql container..."
+	@docker run --name=gitlab-postgresql -d \
+		--env='DB_NAME=gitlabhq_production' \
+		--env='DB_USER=gitlab' --env='DB_PASS=password' \
+		sameersbn/postgresql:latest
+	@echo "Starting redis container..."
+	@docker run --name=gitlab-redis -d \
+		sameersbn/redis:latest
+	@echo "Starting gitlab container..."
 	@docker run --name='gitlab-demo' -d \
-		-e 'GITLAB_PORT=10080' -e 'GITLAB_SSH_PORT=10022' \
-		-p 10022:22 -p 10080:80 \
-		-v /var/run/docker.sock:/run/docker.sock \
-		-v $(shell which docker):/bin/docker \
-		${USER}/gitlab:latest >/dev/null
+		--link=gitlab-postgresql:postgresql --link=gitlab-redis:redisio \
+		--publish=10022:22 --publish=10080:80 \
+		--env='GITLAB_PORT=10080' --env='GITLAB_SSH_PORT=10022' \
+		${USER}/gitlab:latest
 	@echo "Please be patient. This could take a while..."
 	@echo "GitLab will be available at http://localhost:10080"
 	@echo "Type 'make logs' for the logs"
@@ -28,10 +35,16 @@ quickstart:
 stop:
 	@echo "Stopping gitlab..."
 	@docker stop gitlab-demo >/dev/null
+	@echo "Stopping redis..."
+	@docker stop gitlab-redis >/dev/null
+	@echo "Stopping postgresql..."
+	@docker stop gitlab-postgresql >/dev/null
 
 purge: stop
-	@echo "Removing stopped container..."
-	@docker rm gitlab-demo >/dev/null
+	@echo "Removing stopped containers..."
+	@docker rm -v gitlab-demo >/dev/null
+	@docker rm -v gitlab-redis >/dev/null
+	@docker rm -v gitlab-postgresql >/dev/null
 
 logs:
 	@docker logs -f gitlab-demo
