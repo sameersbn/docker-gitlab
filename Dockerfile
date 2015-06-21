@@ -39,10 +39,7 @@ COPY assets/config/ ${SETUP_DIR}/config/
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
 
-EXPOSE 22
-EXPOSE 80
-EXPOSE 443
-
+EXPOSE 22/tcp 80/tcp 443/tcp
 
 VOLUME ["${GITLAB_DATA_DIR}", "${GITLAB_LOG_DIR}"]
 WORKDIR ${GITLAB_INSTALL_DIR}
