@@ -20,7 +20,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv E1DD270288B4E6030699E45F
  && locale-gen en_US.UTF-8 \
  && dpkg-reconfigure locales \
  && gem install --no-document bundler \
- && rm -rf /var/lib/apt/lists/* # 20150613
+ && rm -rf /var/lib/apt/lists/*
 
 COPY assets/setup/ /app/setup/
 RUN chmod 755 /app/setup/install
