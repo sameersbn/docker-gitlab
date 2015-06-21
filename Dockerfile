@@ -1,6 +1,9 @@
 FROM sameersbn/ubuntu:14.04.20150613
 MAINTAINER sameer@damagehead.com
 
+ENV GITLAB_VERSION=7.11.4 \
+    GITLAB_SHELL_VERSION=2.6.3
+
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv E1DD270288B4E6030699E45FA1715D88E1DF1F24 \
  && echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" >> /etc/apt/sources.list \
  && apt-key adv --keyserver keyserver.ubuntu.com --recv 80F70E11F0F0D5F10CB20E62F5DA5F09C3173AA6 \
