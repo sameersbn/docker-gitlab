@@ -174,16 +174,16 @@ elif [ -n "${POSTGRESQL_PORT_5432_TCP_ADDR}" ]; then
   DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_DB}}
 fi
 
-## Adapt uid and gid for git:git
+## Adapt uid and gid for ${GITLAB_USER}:${GITLAB_USER}
 USERMAP_ORIG_UID=$(id -u git)
 USERMAP_ORIG_GID=$(id -g git)
 USERMAP_GID=${USERMAP_GID:-${USERMAP_UID:-$USERMAP_ORIG_GID}}
 USERMAP_UID=${USERMAP_UID:-$USERMAP_ORIG_UID}
 if [ "${USERMAP_UID}" != "${USERMAP_ORIG_UID}" ] || [ "${USERMAP_GID}" != "${USERMAP_ORIG_GID}" ]; then
-  echo "Adapting uid and gid for git:git to $USERMAP_UID:$USERMAP_GID"
+  echo "Adapting uid and gid for ${GITLAB_USER}:${GITLAB_USER} to $USERMAP_UID:$USERMAP_GID"
   groupmod -g "${USERMAP_GID}" git
   sed -i -e "s/:${USERMAP_ORIG_UID}:${USERMAP_GID}:/:${USERMAP_UID}:${USERMAP_GID}:/" /etc/passwd
-  find ${GITLAB_HOME} -path ${GITLAB_DATA_DIR}/\* -prune -o -print0 | xargs -0 chown -h git:git
+  find ${GITLAB_HOME} -path ${GITLAB_DATA_DIR}/\* -prune -o -print0 | xargs -0 chown -h ${GITLAB_USER}:${GITLAB_USER}
 fi
 
 if [ -z "${DB_HOST}" ]; then
@@ -259,9 +259,9 @@ sed -i 's,HostKey /etc/ssh/,HostKey '"${GITLAB_DATA_DIR}"'/ssh/,g' -i /etc/ssh/s
 
 # populate ${GITLAB_LOG_DIR}
 mkdir -m 0755 -p ${GITLAB_LOG_DIR}/supervisor   && chown -R root:root ${GITLAB_LOG_DIR}/supervisor
-mkdir -m 0755 -p ${GITLAB_LOG_DIR}/nginx        && chown -R git:git ${GITLAB_LOG_DIR}/nginx
-mkdir -m 0755 -p ${GITLAB_LOG_DIR}/gitlab       && chown -R git:git ${GITLAB_LOG_DIR}/gitlab
-mkdir -m 0755 -p ${GITLAB_LOG_DIR}/gitlab-shell && chown -R git:git ${GITLAB_LOG_DIR}/gitlab-shell
+mkdir -m 0755 -p ${GITLAB_LOG_DIR}/nginx        && chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_LOG_DIR}/nginx
+mkdir -m 0755 -p ${GITLAB_LOG_DIR}/gitlab       && chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_LOG_DIR}/gitlab
+mkdir -m 0755 -p ${GITLAB_LOG_DIR}/gitlab-shell && chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_LOG_DIR}/gitlab-shell
 
 cd ${GITLAB_INSTALL_DIR}
 
@@ -279,14 +279,14 @@ case "${GITLAB_HTTPS}" in
   *) cp ${SYSCONF_TEMPLATES_DIR}/nginx/gitlab /etc/nginx/sites-enabled/gitlab ;;
 esac
 
-sudo -u git -H cp ${SYSCONF_TEMPLATES_DIR}/gitlab-shell/config.yml    ${GITLAB_SHELL_INSTALL_DIR}/config.yml
-sudo -u git -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/gitlab.yml        config/gitlab.yml
-sudo -u git -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/resque.yml        config/resque.yml
-sudo -u git -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/database.yml      config/database.yml
-sudo -u git -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/unicorn.rb        config/unicorn.rb
-sudo -u git -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/rack_attack.rb    config/initializers/rack_attack.rb
+sudo -u ${GITLAB_USER} -H cp ${SYSCONF_TEMPLATES_DIR}/gitlab-shell/config.yml    ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+sudo -u ${GITLAB_USER} -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/gitlab.yml        config/gitlab.yml
+sudo -u ${GITLAB_USER} -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/resque.yml        config/resque.yml
+sudo -u ${GITLAB_USER} -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/database.yml      config/database.yml
+sudo -u ${GITLAB_USER} -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/unicorn.rb        config/unicorn.rb
+sudo -u ${GITLAB_USER} -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/rack_attack.rb    config/initializers/rack_attack.rb
 [ "${SMTP_ENABLED}" == "true" ] && \
-sudo -u git -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb  config/initializers/smtp_settings.rb
+sudo -u ${GITLAB_USER} -H cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb  config/initializers/smtp_settings.rb
 
 # override default configuration templates with user templates
 case "${GITLAB_HTTPS}" in
@@ -300,14 +300,14 @@ case "${GITLAB_HTTPS}" in
   *) [ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab ] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab /etc/nginx/sites-enabled/gitlab ;;
 esac
 
-[ -f ${USERCONF_TEMPLATES_DIR}/gitlab-shell/config.yml ]   && sudo -u git -H cp ${USERCONF_TEMPLATES_DIR}/gitlab-shell/config.yml   ${GITLAB_SHELL_INSTALL_DIR}/config.yml
-[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/gitlab.yml ]       && sudo -u git -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/gitlab.yml       config/gitlab.yml
-[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/resque.yml ]       && sudo -u git -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/resque.yml       config/resque.yml
-[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/database.yml ]     && sudo -u git -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/database.yml     config/database.yml
-[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/unicorn.rb ]       && sudo -u git -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/unicorn.rb       config/unicorn.rb
-[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/rack_attack.rb ]   && sudo -u git -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/rack_attack.rb   config/initializers/rack_attack.rb
+[ -f ${USERCONF_TEMPLATES_DIR}/gitlab-shell/config.yml ]   && sudo -u ${GITLAB_USER} -H cp ${USERCONF_TEMPLATES_DIR}/gitlab-shell/config.yml   ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/gitlab.yml ]       && sudo -u ${GITLAB_USER} -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/gitlab.yml       config/gitlab.yml
+[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/resque.yml ]       && sudo -u ${GITLAB_USER} -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/resque.yml       config/resque.yml
+[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/database.yml ]     && sudo -u ${GITLAB_USER} -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/database.yml     config/database.yml
+[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/unicorn.rb ]       && sudo -u ${GITLAB_USER} -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/unicorn.rb       config/unicorn.rb
+[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/rack_attack.rb ]   && sudo -u ${GITLAB_USER} -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/rack_attack.rb   config/initializers/rack_attack.rb
 [ "${SMTP_ENABLED}" == "true" ] && \
-[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb ] && sudo -u git -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb config/initializers/smtp_settings.rb
+[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb ] && sudo -u ${GITLAB_USER} -H cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb config/initializers/smtp_settings.rb
 
 if [ -f "${SSL_CERTIFICATE_PATH}" -o -f "${CA_CERTIFICATES_PATH}" ]; then
   echo "Updating CA certificates..."
@@ -317,77 +317,77 @@ if [ -f "${SSL_CERTIFICATE_PATH}" -o -f "${CA_CERTIFICATES_PATH}" ]; then
 fi
 
 # configure git for the 'git' user
-sudo -u git -H git config --global user.name "GitLab"
-sudo -u git -H git config --global user.email "${GITLAB_EMAIL}"
-sudo -u git -H git config --global core.autocrlf input
+sudo -u ${GITLAB_USER} -H git config --global user.name "GitLab"
+sudo -u ${GITLAB_USER} -H git config --global user.email "${GITLAB_EMAIL}"
+sudo -u ${GITLAB_USER} -H git config --global core.autocrlf input
 
 # configure application paths
-sudo -u git -H sed 's,{{GITLAB_DATA_DIR}},'"${GITLAB_DATA_DIR}"',g' -i config/gitlab.yml
-sudo -u git -H sed 's,{{GITLAB_BACKUP_DIR}},'"${GITLAB_BACKUP_DIR}"',g' -i config/gitlab.yml
-sudo -u git -H sed 's,{{GITLAB_SHELL_INSTALL_DIR}},'"${GITLAB_SHELL_INSTALL_DIR}"',g' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_DATA_DIR}},'"${GITLAB_DATA_DIR}"',g' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_BACKUP_DIR}},'"${GITLAB_BACKUP_DIR}"',g' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_SHELL_INSTALL_DIR}},'"${GITLAB_SHELL_INSTALL_DIR}"',g' -i config/gitlab.yml
 
 # configure gitlab
-sudo -u git -H sed 's/{{GITLAB_HOST}}/'"${GITLAB_HOST}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{GITLAB_PORT}}/'"${GITLAB_PORT}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{GITLAB_HTTPS}}/'"${GITLAB_HTTPS}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{GITLAB_EMAIL}}/'"${GITLAB_EMAIL}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{GITLAB_EMAIL_DISPLAY_NAME}}/'"${GITLAB_EMAIL_DISPLAY_NAME}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{GITLAB_EMAIL_REPLY_TO}}/'"${GITLAB_EMAIL_REPLY_TO}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{GITLAB_BACKUP_EXPIRY}}/'"${GITLAB_BACKUP_EXPIRY}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{GITLAB_MAX_SIZE}}/'"${GITLAB_MAX_SIZE}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{GITLAB_SSH_HOST}}/'"${GITLAB_SSH_HOST}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{GITLAB_SSH_PORT}}/'"${GITLAB_SSH_PORT}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_HOST}}/'"${GITLAB_HOST}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_PORT}}/'"${GITLAB_PORT}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_HTTPS}}/'"${GITLAB_HTTPS}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_EMAIL}}/'"${GITLAB_EMAIL}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_EMAIL_DISPLAY_NAME}}/'"${GITLAB_EMAIL_DISPLAY_NAME}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_EMAIL_REPLY_TO}}/'"${GITLAB_EMAIL_REPLY_TO}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_BACKUP_EXPIRY}}/'"${GITLAB_BACKUP_EXPIRY}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_MAX_SIZE}}/'"${GITLAB_MAX_SIZE}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_SSH_HOST}}/'"${GITLAB_SSH_HOST}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_SSH_PORT}}/'"${GITLAB_SSH_PORT}"'/' -i config/gitlab.yml
 
 # configure default timezone
-sudo -u git -H sed 's/{{GITLAB_TIMEZONE}}/'"${GITLAB_TIMEZONE}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_TIMEZONE}}/'"${GITLAB_TIMEZONE}"'/' -i config/gitlab.yml
 
 # configure gitlab username_changing_enabled
-sudo -u git -H sed 's/{{GITLAB_USERNAME_CHANGE}}/'"${GITLAB_USERNAME_CHANGE}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_USERNAME_CHANGE}}/'"${GITLAB_USERNAME_CHANGE}"'/' -i config/gitlab.yml
 
 # configure gitlab default_can_create_group
-sudo -u git -H sed 's/{{GITLAB_CREATE_GROUP}}/'"${GITLAB_CREATE_GROUP}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_CREATE_GROUP}}/'"${GITLAB_CREATE_GROUP}"'/' -i config/gitlab.yml
 
 # configure gitlab default project feature: issues
-sudo -u git -H sed 's/{{GITLAB_PROJECTS_ISSUES}}/'"${GITLAB_PROJECTS_ISSUES}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_PROJECTS_ISSUES}}/'"${GITLAB_PROJECTS_ISSUES}"'/' -i config/gitlab.yml
 
 # configure gitlab default project feature: merge_requests
-sudo -u git -H sed 's/{{GITLAB_PROJECTS_MERGE_REQUESTS}}/'"${GITLAB_PROJECTS_MERGE_REQUESTS}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_PROJECTS_MERGE_REQUESTS}}/'"${GITLAB_PROJECTS_MERGE_REQUESTS}"'/' -i config/gitlab.yml
 
 # configure gitlab default project feature: wiki
-sudo -u git -H sed 's/{{GITLAB_PROJECTS_WIKI}}/'"${GITLAB_PROJECTS_WIKI}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_PROJECTS_WIKI}}/'"${GITLAB_PROJECTS_WIKI}"'/' -i config/gitlab.yml
 
 # configure gitlab default project feature: snippets
-sudo -u git -H sed 's/{{GITLAB_PROJECTS_SNIPPETS}}/'"${GITLAB_PROJECTS_SNIPPETS}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_PROJECTS_SNIPPETS}}/'"${GITLAB_PROJECTS_SNIPPETS}"'/' -i config/gitlab.yml
 
 # configure gitlab webhook timeout
-sudo -u git -H sed 's/{{GITLAB_WEBHOOK_TIMEOUT}}/'"${GITLAB_WEBHOOK_TIMEOUT}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_WEBHOOK_TIMEOUT}}/'"${GITLAB_WEBHOOK_TIMEOUT}"'/' -i config/gitlab.yml
 
 # configure gitlab satellite timeout
-sudo -u git -H sed 's/{{GITLAB_SATELLITES_TIMEOUT}}/'"${GITLAB_SATELLITES_TIMEOUT}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_SATELLITES_TIMEOUT}}/'"${GITLAB_SATELLITES_TIMEOUT}"'/' -i config/gitlab.yml
 
 # configure git timeout
-sudo -u git -H sed 's/{{GITLAB_TIMEOUT}}/'"${GITLAB_TIMEOUT}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_TIMEOUT}}/'"${GITLAB_TIMEOUT}"'/' -i config/gitlab.yml
 
 # configure database
 if [ "${DB_TYPE}" == "postgres" ]; then
-  sudo -u git -H sed 's/{{DB_ADAPTER}}/postgresql/' -i config/database.yml
-  sudo -u git -H sed 's/{{DB_ENCODING}}/unicode/' -i config/database.yml
-  sudo -u git -H sed '/reconnect: /d' -i config/database.yml
-  sudo -u git -H sed '/collation: /d' -i config/database.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{DB_ADAPTER}}/postgresql/' -i config/database.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{DB_ENCODING}}/unicode/' -i config/database.yml
+  sudo -u ${GITLAB_USER} -H sed '/reconnect: /d' -i config/database.yml
+  sudo -u ${GITLAB_USER} -H sed '/collation: /d' -i config/database.yml
 elif [ "${DB_TYPE}" == "mysql" ]; then
-  sudo -u git -H sed 's/{{DB_ADAPTER}}/mysql2/' -i config/database.yml
-  sudo -u git -H sed 's/{{DB_ENCODING}}/utf8/' -i config/database.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{DB_ADAPTER}}/mysql2/' -i config/database.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{DB_ENCODING}}/utf8/' -i config/database.yml
 else
   echo "Invalid database type: '$DB_TYPE'. Supported choices: [mysql, postgres]."
 fi
 
 # configure database connection
-sudo -u git -H sed 's/{{DB_HOST}}/'"${DB_HOST}"'/' -i config/database.yml
-sudo -u git -H sed 's/{{DB_PORT}}/'"${DB_PORT}"'/' -i config/database.yml
-sudo -u git -H sed 's/{{DB_NAME}}/'"${DB_NAME}"'/' -i config/database.yml
-sudo -u git -H sed 's/{{DB_USER}}/'"${DB_USER}"'/' -i config/database.yml
-sudo -u git -H sed 's/{{DB_PASS}}/'"${DB_PASS}"'/' -i config/database.yml
-sudo -u git -H sed 's/{{DB_POOL}}/'"${DB_POOL}"'/' -i config/database.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{DB_HOST}}/'"${DB_HOST}"'/' -i config/database.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{DB_PORT}}/'"${DB_PORT}"'/' -i config/database.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{DB_NAME}}/'"${DB_NAME}"'/' -i config/database.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{DB_USER}}/'"${DB_USER}"'/' -i config/database.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{DB_PASS}}/'"${DB_PASS}"'/' -i config/database.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{DB_POOL}}/'"${DB_POOL}"'/' -i config/database.yml
 
 # configure sidekiq concurrency
 sed 's/{{SIDEKIQ_CONCURRENCY}}/'"${SIDEKIQ_CONCURRENCY}"'/' -i /etc/supervisor/conf.d/sidekiq.conf
@@ -407,63 +407,63 @@ sed 's/{{SIDEKIQ_SHUTDOWN_TIMEOUT}}/'"${SIDEKIQ_SHUTDOWN_TIMEOUT}"'/' -i /etc/su
 export SIDEKIQ_MEMORY_KILLER_MAX_RSS
 
 # configure redis
-sudo -u git -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/g' -i config/resque.yml
-sudo -u git -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/g' -i config/resque.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/g' -i config/resque.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/g' -i config/resque.yml
 
 # configure gitlab-shell
 sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'"${GITLAB_RELATIVE_URL_ROOT}"',' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
-sudo -u git -H sed 's,{{GITLAB_DATA_DIR}},'"${GITLAB_DATA_DIR}"',g' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
-sudo -u git -H sed 's,{{GITLAB_BACKUP_DIR}},'"${GITLAB_BACKUP_DIR}"',g' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
-sudo -u git -H sed 's/{{SSL_SELF_SIGNED}}/'"${SSL_SELF_SIGNED}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
-sudo -u git -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
-sudo -u git -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_DATA_DIR}},'"${GITLAB_DATA_DIR}"',g' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_BACKUP_DIR}},'"${GITLAB_BACKUP_DIR}"',g' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{SSL_SELF_SIGNED}}/'"${SSL_SELF_SIGNED}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 
 # configure unicorn workers
-sudo -u git -H sed 's,{{GITLAB_INSTALL_DIR}},'"${GITLAB_INSTALL_DIR}"',g' -i config/unicorn.rb
-sudo -u git -H sed 's/{{UNICORN_WORKERS}}/'"${UNICORN_WORKERS}"'/' -i config/unicorn.rb
+sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_INSTALL_DIR}},'"${GITLAB_INSTALL_DIR}"',g' -i config/unicorn.rb
+sudo -u ${GITLAB_USER} -H sed 's/{{UNICORN_WORKERS}}/'"${UNICORN_WORKERS}"'/' -i config/unicorn.rb
 
 # configure unicorn timeout
-sudo -u git -H sed 's/{{UNICORN_TIMEOUT}}/'"${UNICORN_TIMEOUT}"'/' -i config/unicorn.rb
+sudo -u ${GITLAB_USER} -H sed 's/{{UNICORN_TIMEOUT}}/'"${UNICORN_TIMEOUT}"'/' -i config/unicorn.rb
 
 # configure mail delivery
-sudo -u git -H sed 's/{{GITLAB_EMAIL_ENABLED}}/'"${GITLAB_EMAIL_ENABLED}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_EMAIL_ENABLED}}/'"${GITLAB_EMAIL_ENABLED}"'/' -i config/gitlab.yml
 if [ "${SMTP_ENABLED}" == "true" ]; then
-  sudo -u git -H sed 's/{{SMTP_HOST}}/'"${SMTP_HOST}"'/' -i config/initializers/smtp_settings.rb
-  sudo -u git -H sed 's/{{SMTP_PORT}}/'"${SMTP_PORT}"'/' -i config/initializers/smtp_settings.rb
+  sudo -u ${GITLAB_USER} -H sed 's/{{SMTP_HOST}}/'"${SMTP_HOST}"'/' -i config/initializers/smtp_settings.rb
+  sudo -u ${GITLAB_USER} -H sed 's/{{SMTP_PORT}}/'"${SMTP_PORT}"'/' -i config/initializers/smtp_settings.rb
 
   case "${SMTP_USER}" in
-    "") sudo -u git -H sed '/{{SMTP_USER}}/d' -i config/initializers/smtp_settings.rb ;;
-    *) sudo -u git -H sed 's/{{SMTP_USER}}/'"${SMTP_USER}"'/' -i config/initializers/smtp_settings.rb ;;
+    "") sudo -u ${GITLAB_USER} -H sed '/{{SMTP_USER}}/d' -i config/initializers/smtp_settings.rb ;;
+    *) sudo -u ${GITLAB_USER} -H sed 's/{{SMTP_USER}}/'"${SMTP_USER}"'/' -i config/initializers/smtp_settings.rb ;;
   esac
 
   case "${SMTP_PASS}" in
-    "") sudo -u git -H sed '/{{SMTP_PASS}}/d' -i config/initializers/smtp_settings.rb ;;
-    *) sudo -u git -H sed 's/{{SMTP_PASS}}/'"${SMTP_PASS}"'/' -i config/initializers/smtp_settings.rb ;;
+    "") sudo -u ${GITLAB_USER} -H sed '/{{SMTP_PASS}}/d' -i config/initializers/smtp_settings.rb ;;
+    *) sudo -u ${GITLAB_USER} -H sed 's/{{SMTP_PASS}}/'"${SMTP_PASS}"'/' -i config/initializers/smtp_settings.rb ;;
   esac
 
-  sudo -u git -H sed 's/{{SMTP_DOMAIN}}/'"${SMTP_DOMAIN}"'/' -i config/initializers/smtp_settings.rb
-  sudo -u git -H sed 's/{{SMTP_STARTTLS}}/'"${SMTP_STARTTLS}"'/' -i config/initializers/smtp_settings.rb
-  sudo -u git -H sed 's/{{SMTP_OPENSSL_VERIFY_MODE}}/'"${SMTP_OPENSSL_VERIFY_MODE}"'/' -i config/initializers/smtp_settings.rb
+  sudo -u ${GITLAB_USER} -H sed 's/{{SMTP_DOMAIN}}/'"${SMTP_DOMAIN}"'/' -i config/initializers/smtp_settings.rb
+  sudo -u ${GITLAB_USER} -H sed 's/{{SMTP_STARTTLS}}/'"${SMTP_STARTTLS}"'/' -i config/initializers/smtp_settings.rb
+  sudo -u ${GITLAB_USER} -H sed 's/{{SMTP_OPENSSL_VERIFY_MODE}}/'"${SMTP_OPENSSL_VERIFY_MODE}"'/' -i config/initializers/smtp_settings.rb
 
   case "${SMTP_AUTHENTICATION}" in
-    "") sudo -u git -H sed '/{{SMTP_AUTHENTICATION}}/d' -i config/initializers/smtp_settings.rb ;;
-    *) sudo -u git -H sed 's/{{SMTP_AUTHENTICATION}}/'"${SMTP_AUTHENTICATION}"'/' -i config/initializers/smtp_settings.rb ;;
+    "") sudo -u ${GITLAB_USER} -H sed '/{{SMTP_AUTHENTICATION}}/d' -i config/initializers/smtp_settings.rb ;;
+    *) sudo -u ${GITLAB_USER} -H sed 's/{{SMTP_AUTHENTICATION}}/'"${SMTP_AUTHENTICATION}"'/' -i config/initializers/smtp_settings.rb ;;
   esac
 fi
 
 # apply LDAP configuration
-sudo -u git -H sed 's/{{LDAP_ENABLED}}/'"${LDAP_ENABLED}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_HOST}}/'"${LDAP_HOST}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_PORT}}/'"${LDAP_PORT}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_UID}}/'"${LDAP_UID}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_METHOD}}/'"${LDAP_METHOD}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_BIND_DN}}/'"${LDAP_BIND_DN}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_PASS}}/'"${LDAP_PASS}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_ACTIVE_DIRECTORY}}/'"${LDAP_ACTIVE_DIRECTORY}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}}/'"${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_BLOCK_AUTO_CREATED_USERS}}/'"${LDAP_BLOCK_AUTO_CREATED_USERS}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_BASE}}/'"${LDAP_BASE}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{LDAP_USER_FILTER}}/'"${LDAP_USER_FILTER}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{LDAP_ENABLED}}/'"${LDAP_ENABLED}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{LDAP_HOST}}/'"${LDAP_HOST}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{LDAP_PORT}}/'"${LDAP_PORT}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{LDAP_UID}}/'"${LDAP_UID}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{LDAP_METHOD}}/'"${LDAP_METHOD}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{LDAP_BIND_DN}}/'"${LDAP_BIND_DN}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{LDAP_PASS}}/'"${LDAP_PASS}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{LDAP_ACTIVE_DIRECTORY}}/'"${LDAP_ACTIVE_DIRECTORY}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}}/'"${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{LDAP_BLOCK_AUTO_CREATED_USERS}}/'"${LDAP_BLOCK_AUTO_CREATED_USERS}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{LDAP_BASE}}/'"${LDAP_BASE}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{LDAP_USER_FILTER}}/'"${LDAP_USER_FILTER}"'/' -i config/gitlab.yml
 
 # apply aws s3 backup configuration
 case "${AWS_BACKUPS}" in
@@ -472,30 +472,30 @@ case "${AWS_BACKUPS}" in
       printf "\nMissing AWS options. Aborting...\n"
       exit 1
     fi
-    sudo -u git -H sed 's/{{AWS_BACKUP_REGION}}/'"${AWS_BACKUP_REGION}"'/' -i config/gitlab.yml
-    sudo -u git -H sed 's/{{AWS_BACKUP_ACCESS_KEY_ID}}/'"${AWS_BACKUP_ACCESS_KEY_ID}"'/' -i config/gitlab.yml
-    sudo -u git -H sed 's,{{AWS_BACKUP_SECRET_ACCESS_KEY}},'"${AWS_BACKUP_SECRET_ACCESS_KEY}"',' -i config/gitlab.yml
-    sudo -u git -H sed 's/{{AWS_BACKUP_BUCKET}}/'"${AWS_BACKUP_BUCKET}"'/' -i config/gitlab.yml
+    sudo -u ${GITLAB_USER} -H sed 's/{{AWS_BACKUP_REGION}}/'"${AWS_BACKUP_REGION}"'/' -i config/gitlab.yml
+    sudo -u ${GITLAB_USER} -H sed 's/{{AWS_BACKUP_ACCESS_KEY_ID}}/'"${AWS_BACKUP_ACCESS_KEY_ID}"'/' -i config/gitlab.yml
+    sudo -u ${GITLAB_USER} -H sed 's,{{AWS_BACKUP_SECRET_ACCESS_KEY}},'"${AWS_BACKUP_SECRET_ACCESS_KEY}"',' -i config/gitlab.yml
+    sudo -u ${GITLAB_USER} -H sed 's/{{AWS_BACKUP_BUCKET}}/'"${AWS_BACKUP_BUCKET}"'/' -i config/gitlab.yml
     ;;
   *)
     # remove backup configuration lines
-    sudo -u git -H sed /upload:/,/remote_directory:/d -i config/gitlab.yml
+    sudo -u ${GITLAB_USER} -H sed /upload:/,/remote_directory:/d -i config/gitlab.yml
     ;;
 esac
 
 # apply gravatar configuration
-sudo -u git -H sed 's/{{GITLAB_GRAVATAR_ENABLED}}/'"${GITLAB_GRAVATAR_ENABLED}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{GITLAB_GRAVATAR_ENABLED}}/'"${GITLAB_GRAVATAR_ENABLED}"'/' -i config/gitlab.yml
 if [ -n "${GITLAB_GRAVATAR_HTTP_URL}" ]; then
   GITLAB_GRAVATAR_HTTP_URL=$(echo "${GITLAB_GRAVATAR_HTTP_URL}" | sed 's/&/\\&/')  # escape ampersand for sed
-  sudo -u git -H sed 's,{{GITLAB_GRAVATAR_HTTP_URL}},'"${GITLAB_GRAVATAR_HTTP_URL}"',g' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_GRAVATAR_HTTP_URL}},'"${GITLAB_GRAVATAR_HTTP_URL}"',g' -i config/gitlab.yml
 else
-  sudo -u git -H sed '/{{GITLAB_GRAVATAR_HTTP_URL}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{GITLAB_GRAVATAR_HTTP_URL}}/d' -i config/gitlab.yml
 fi
 if [ -n "${GITLAB_GRAVATAR_HTTPS_URL}" ]; then
   GITLAB_GRAVATAR_HTTPS_URL=$(echo "${GITLAB_GRAVATAR_HTTPS_URL}" | sed 's/&/\\&/')  # escape ampersand for sed
-  sudo -u git -H sed 's,{{GITLAB_GRAVATAR_HTTPS_URL}},'"${GITLAB_GRAVATAR_HTTPS_URL}"',g' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_GRAVATAR_HTTPS_URL}},'"${GITLAB_GRAVATAR_HTTPS_URL}"',g' -i config/gitlab.yml
 else
-  sudo -u git -H sed '/{{GITLAB_GRAVATAR_HTTPS_URL}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{GITLAB_GRAVATAR_HTTPS_URL}}/d' -i config/gitlab.yml
 fi
 
 # apply oauth configuration
@@ -503,81 +503,81 @@ fi
 # google
 if [ -n "${OAUTH_GOOGLE_API_KEY}" -a -n "${OAUTH_GOOGLE_APP_SECRET}" ]; then
   OAUTH_ENABLED=true
-  sudo -u git -H sed 's/{{OAUTH_GOOGLE_API_KEY}}/'"${OAUTH_GOOGLE_API_KEY}"'/' -i config/gitlab.yml
-  sudo -u git -H sed 's/{{OAUTH_GOOGLE_APP_SECRET}}/'"${OAUTH_GOOGLE_APP_SECRET}"'/' -i config/gitlab.yml
-  sudo -u git -H sed 's/{{OAUTH_GOOGLE_RESTRICT_DOMAIN}}/'"${OAUTH_GOOGLE_RESTRICT_DOMAIN}"'/' -i config/gitlab.yml
-  sudo -u git -H sed 's/{{OAUTH_GOOGLE_APPROVAL_PROMPT}}//' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_GOOGLE_API_KEY}}/'"${OAUTH_GOOGLE_API_KEY}"'/' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_GOOGLE_APP_SECRET}}/'"${OAUTH_GOOGLE_APP_SECRET}"'/' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_GOOGLE_RESTRICT_DOMAIN}}/'"${OAUTH_GOOGLE_RESTRICT_DOMAIN}"'/' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_GOOGLE_APPROVAL_PROMPT}}//' -i config/gitlab.yml
 else
-  sudo -u git -H sed '/{{OAUTH_GOOGLE_API_KEY}}/d' -i config/gitlab.yml
-  sudo -u git -H sed '/{{OAUTH_GOOGLE_APP_SECRET}}/d' -i config/gitlab.yml
-  sudo -u git -H sed '/{{OAUTH_GOOGLE_RESTRICT_DOMAIN}}/d' -i config/gitlab.yml
-  sudo -u git -H sed '/{{OAUTH_GOOGLE_APPROVAL_PROMPT}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{OAUTH_GOOGLE_API_KEY}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{OAUTH_GOOGLE_APP_SECRET}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{OAUTH_GOOGLE_RESTRICT_DOMAIN}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{OAUTH_GOOGLE_APPROVAL_PROMPT}}/d' -i config/gitlab.yml
 fi
 
 # twitter
 if [ -n "${OAUTH_TWITTER_API_KEY}" -a -n "${OAUTH_TWITTER_APP_SECRET}" ]; then
   OAUTH_ENABLED=true
-  sudo -u git -H sed 's/{{OAUTH_TWITTER_API_KEY}}/'"${OAUTH_TWITTER_API_KEY}"'/' -i config/gitlab.yml
-  sudo -u git -H sed 's/{{OAUTH_TWITTER_APP_SECRET}}/'"${OAUTH_TWITTER_APP_SECRET}"'/' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_TWITTER_API_KEY}}/'"${OAUTH_TWITTER_API_KEY}"'/' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_TWITTER_APP_SECRET}}/'"${OAUTH_TWITTER_APP_SECRET}"'/' -i config/gitlab.yml
 else
-  sudo -u git -H sed '/{{OAUTH_TWITTER_API_KEY}}/d' -i config/gitlab.yml
-  sudo -u git -H sed '/{{OAUTH_TWITTER_APP_SECRET}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{OAUTH_TWITTER_API_KEY}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{OAUTH_TWITTER_APP_SECRET}}/d' -i config/gitlab.yml
 fi
 
 # github
 if [ -n "${OAUTH_GITHUB_API_KEY}" -a -n "${OAUTH_GITHUB_APP_SECRET}" ]; then
   OAUTH_ENABLED=true
-  sudo -u git -H sed 's/{{OAUTH_GITHUB_API_KEY}}/'"${OAUTH_GITHUB_API_KEY}"'/' -i config/gitlab.yml
-  sudo -u git -H sed 's/{{OAUTH_GITHUB_APP_SECRET}}/'"${OAUTH_GITHUB_APP_SECRET}"'/' -i config/gitlab.yml
-  sudo -u git -H sed 's/{{OAUTH_GITHUB_SCOPE}}/user:email/' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_GITHUB_API_KEY}}/'"${OAUTH_GITHUB_API_KEY}"'/' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_GITHUB_APP_SECRET}}/'"${OAUTH_GITHUB_APP_SECRET}"'/' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_GITHUB_SCOPE}}/user:email/' -i config/gitlab.yml
 else
-  sudo -u git -H sed '/{{OAUTH_GITHUB_API_KEY}}/d' -i config/gitlab.yml
-  sudo -u git -H sed '/{{OAUTH_GITHUB_APP_SECRET}}/d' -i config/gitlab.yml
-  sudo -u git -H sed '/{{OAUTH_GITHUB_SCOPE}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{OAUTH_GITHUB_API_KEY}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{OAUTH_GITHUB_APP_SECRET}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{OAUTH_GITHUB_SCOPE}}/d' -i config/gitlab.yml
 fi
 
 # gitlab
 if [ -n "${OAUTH_GITLAB_API_KEY}" -a -n "${OAUTH_GITLAB_APP_SECRET}" ]; then
   OAUTH_ENABLED=true
-  sudo -u git -H sed 's/{{OAUTH_GITLAB_API_KEY}}/'"${OAUTH_GITLAB_API_KEY}"'/' -i config/gitlab.yml
-  sudo -u git -H sed 's/{{OAUTH_GITLAB_APP_SECRET}}/'"${OAUTH_GITLAB_APP_SECRET}"'/' -i config/gitlab.yml
-  sudo -u git -H sed 's/{{OAUTH_GITLAB_SCOPE}}/api/' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_GITLAB_API_KEY}}/'"${OAUTH_GITLAB_API_KEY}"'/' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_GITLAB_APP_SECRET}}/'"${OAUTH_GITLAB_APP_SECRET}"'/' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_GITLAB_SCOPE}}/api/' -i config/gitlab.yml
 else
-  sudo -u git -H sed '/{{OAUTH_GITLAB_API_KEY}}/d' -i config/gitlab.yml
-  sudo -u git -H sed '/{{OAUTH_GITLAB_APP_SECRET}}/d' -i config/gitlab.yml
-  sudo -u git -H sed '/{{OAUTH_GITLAB_SCOPE}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{OAUTH_GITLAB_API_KEY}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{OAUTH_GITLAB_APP_SECRET}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{OAUTH_GITLAB_SCOPE}}/d' -i config/gitlab.yml
 fi
 
 # bitbucket
 if [ -n "${OAUTH_BITBUCKET_API_KEY}" -a -n "${OAUTH_BITBUCKET_APP_SECRET}" ]; then
   OAUTH_ENABLED=true
-  sudo -u git -H sed 's/{{OAUTH_BITBUCKET_API_KEY}}/'"${OAUTH_BITBUCKET_API_KEY}"'/' -i config/gitlab.yml
-  sudo -u git -H sed 's/{{OAUTH_BITBUCKET_APP_SECRET}}/'"${OAUTH_BITBUCKET_APP_SECRET}"'/' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_BITBUCKET_API_KEY}}/'"${OAUTH_BITBUCKET_API_KEY}"'/' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_BITBUCKET_APP_SECRET}}/'"${OAUTH_BITBUCKET_APP_SECRET}"'/' -i config/gitlab.yml
 else
-  sudo -u git -H sed '/{{OAUTH_BITBUCKET_API_KEY}}/d' -i config/gitlab.yml
-  sudo -u git -H sed '/{{OAUTH_BITBUCKET_APP_SECRET}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{OAUTH_BITBUCKET_API_KEY}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{OAUTH_BITBUCKET_APP_SECRET}}/d' -i config/gitlab.yml
 fi
 
 # google analytics
 if [ -n "${GOOGLE_ANALYTICS_ID}" ]; then
-  sudo -u git -H sed 's/{{GOOGLE_ANALYTICS_ID}}/'"${GOOGLE_ANALYTICS_ID}"'/' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{GOOGLE_ANALYTICS_ID}}/'"${GOOGLE_ANALYTICS_ID}"'/' -i config/gitlab.yml
 else
-  sudo -u git -H sed '/{{GOOGLE_ANALYTICS_ID}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{GOOGLE_ANALYTICS_ID}}/d' -i config/gitlab.yml
 fi
 
 # piwik
 if [ -n "${PIWIK_URL}" -a -n "${PIWIK_SITE_ID}" ]; then
-  sudo -u git -H sed 's,{{PIWIK_URL}},'"${PIWIK_URL}"',' -i config/gitlab.yml
-  sudo -u git -H sed 's/{{PIWIK_SITE_ID}}/'"${PIWIK_SITE_ID}"'/' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's,{{PIWIK_URL}},'"${PIWIK_URL}"',' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's/{{PIWIK_SITE_ID}}/'"${PIWIK_SITE_ID}"'/' -i config/gitlab.yml
 else
-  sudo -u git -H sed '/{{PIWIK_URL}}/d' -i config/gitlab.yml
-  sudo -u git -H sed '/{{PIWIK_SITE_ID}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{PIWIK_URL}}/d' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed '/{{PIWIK_SITE_ID}}/d' -i config/gitlab.yml
 fi
 
 OAUTH_ENABLED=${OAUTH_ENABLED:-false}
-sudo -u git -H sed 's/{{OAUTH_ENABLED}}/'"${OAUTH_ENABLED}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{OAUTH_ALLOW_SSO}}/'"${OAUTH_ALLOW_SSO}"'/' -i config/gitlab.yml
-sudo -u git -H sed 's/{{OAUTH_BLOCK_AUTO_CREATED_USERS}}/'"${OAUTH_BLOCK_AUTO_CREATED_USERS}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_ENABLED}}/'"${OAUTH_ENABLED}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_ALLOW_SSO}}/'"${OAUTH_ALLOW_SSO}"'/' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_BLOCK_AUTO_CREATED_USERS}}/'"${OAUTH_BLOCK_AUTO_CREATED_USERS}"'/' -i config/gitlab.yml
 
 # configure nginx vhost
 sed 's,{{GITLAB_INSTALL_DIR}},'"${GITLAB_INSTALL_DIR}"',g' -i /etc/nginx/sites-enabled/gitlab
@@ -611,13 +611,13 @@ if [ -n "${GITLAB_RELATIVE_URL_ROOT}" ]; then
   sed 's,{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}},'"${GITLAB_RELATIVE_URL_ROOT}/"',' -i /etc/nginx/sites-enabled/gitlab
   sed 's,# alias '"${GITLAB_INSTALL_DIR}"'/public,alias '"${GITLAB_INSTALL_DIR}"'/public,' -i /etc/nginx/sites-enabled/gitlab
 
-  sudo -u git -H sed 's,# config.relative_url_root = "/gitlab",config.relative_url_root = "'${GITLAB_RELATIVE_URL_ROOT}'",' -i config/application.rb
-  sudo -u git -H sed 's,# relative_url_root: {{GITLAB_RELATIVE_URL_ROOT}},relative_url_root: '${GITLAB_RELATIVE_URL_ROOT}',' -i config/gitlab.yml
-  sudo -u git -H sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'"${GITLAB_RELATIVE_URL_ROOT}"',' -i config/unicorn.rb
+  sudo -u ${GITLAB_USER} -H sed 's,# config.relative_url_root = "/gitlab",config.relative_url_root = "'${GITLAB_RELATIVE_URL_ROOT}'",' -i config/application.rb
+  sudo -u ${GITLAB_USER} -H sed 's,# relative_url_root: {{GITLAB_RELATIVE_URL_ROOT}},relative_url_root: '${GITLAB_RELATIVE_URL_ROOT}',' -i config/gitlab.yml
+  sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'"${GITLAB_RELATIVE_URL_ROOT}"',' -i config/unicorn.rb
 else
   sed 's,{{GITLAB_RELATIVE_URL_ROOT}},/,' -i /etc/nginx/sites-enabled/gitlab
   sed 's,{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}},/,' -i /etc/nginx/sites-enabled/gitlab
-  sudo -u git -H sed '/{{GITLAB_RELATIVE_URL_ROOT}}/d' -i config/unicorn.rb
+  sudo -u ${GITLAB_USER} -H sed '/{{GITLAB_RELATIVE_URL_ROOT}}/d' -i config/unicorn.rb
 fi
 
 # disable ipv6 support
@@ -628,41 +628,41 @@ fi
 
 # fix permission and ownership of ${GITLAB_DATA_DIR}
 chmod 755 ${GITLAB_DATA_DIR}
-chown git:git ${GITLAB_DATA_DIR}
+chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}
 
 # set executable flags on ${GITLAB_DATA_DIR} (needed if mounted from a data-only
 # container using --volumes-from)
 chmod +x ${GITLAB_DATA_DIR}
 
 # create the repositories directory and make sure it has the right permissions
-sudo -u git -H mkdir -p ${GITLAB_DATA_DIR}/repositories/
-chown git:git ${GITLAB_DATA_DIR}/repositories/
+sudo -u ${GITLAB_USER} -H mkdir -p ${GITLAB_DATA_DIR}/repositories/
+chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/repositories/
 chmod ug+rwX,o-rwx ${GITLAB_DATA_DIR}/repositories/
-sudo -u git -H chmod g+s ${GITLAB_DATA_DIR}/repositories/
+sudo -u ${GITLAB_USER} -H chmod g+s ${GITLAB_DATA_DIR}/repositories/
 
 # create the satellites directory and make sure it has the right permissions
-sudo -u git -H mkdir -p ${GITLAB_DATA_DIR}/gitlab-satellites/
+sudo -u ${GITLAB_USER} -H mkdir -p ${GITLAB_DATA_DIR}/gitlab-satellites/
 chmod u+rwx,g=rx,o-rwx ${GITLAB_DATA_DIR}/gitlab-satellites
-chown git:git ${GITLAB_DATA_DIR}/gitlab-satellites
+chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/gitlab-satellites
 
 # remove old cache directory (remove this line after a few releases)
 rm -rf ${GITLAB_DATA_DIR}/cache
 
 # create the backups directory
 mkdir -p ${GITLAB_BACKUP_DIR}
-chown git:git ${GITLAB_BACKUP_DIR}
+chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_BACKUP_DIR}
 
 # create the uploads directory
-sudo -u git -H mkdir -p ${GITLAB_DATA_DIR}/uploads/
+sudo -u ${GITLAB_USER} -H mkdir -p ${GITLAB_DATA_DIR}/uploads/
 chmod -R u+rwX ${GITLAB_DATA_DIR}/uploads/
-chown git:git ${GITLAB_DATA_DIR}/uploads/
+chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/uploads/
 
 # create the .ssh directory
-sudo -u git -H mkdir -p ${GITLAB_DATA_DIR}/.ssh/
+sudo -u ${GITLAB_USER} -H mkdir -p ${GITLAB_DATA_DIR}/.ssh/
 touch ${GITLAB_DATA_DIR}/.ssh/authorized_keys
 chmod 700 ${GITLAB_DATA_DIR}/.ssh
 chmod 600 ${GITLAB_DATA_DIR}/.ssh/authorized_keys
-chown -R git:git ${GITLAB_DATA_DIR}/.ssh
+chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/.ssh
 
 appInit () {
   # due to the nature of docker and its use cases, we allow some time
@@ -703,7 +703,7 @@ appInit () {
   esac
   if [ -z "${COUNT}" -o ${COUNT} -eq 0 ]; then
     echo "Setting up GitLab for firstrun. Please be patient, this could take a while..."
-    sudo -u git -H force=yes bundle exec rake gitlab:setup RAILS_ENV=production ${GITLAB_ROOT_PASSWORD:+GITLAB_ROOT_PASSWORD=$GITLAB_ROOT_PASSWORD} >/dev/null
+    sudo -u ${GITLAB_USER} -H force=yes bundle exec rake gitlab:setup RAILS_ENV=production ${GITLAB_ROOT_PASSWORD:+GITLAB_ROOT_PASSWORD=$GITLAB_ROOT_PASSWORD} >/dev/null
   fi
 
   # migrate database and compile the assets if the gitlab version or relative_url has changed.
@@ -713,23 +713,23 @@ appInit () {
   [ -f tmp/cache/GITLAB_RELATIVE_URL_ROOT ] && CACHE_GITLAB_RELATIVE_URL_ROOT=$(cat tmp/cache/GITLAB_RELATIVE_URL_ROOT)
   if [ "${GITLAB_VERSION}" != "${CACHE_VERSION}" -o "${GITLAB_RELATIVE_URL_ROOT}" != "${CACHE_GITLAB_RELATIVE_URL_ROOT}" ]; then
     echo "Migrating database..."
-    sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production >/dev/null
+    sudo -u ${GITLAB_USER} -H bundle exec rake db:migrate RAILS_ENV=production >/dev/null
 
     # recreate the tmp directory
     rm -rf ${GITLAB_DATA_DIR}/tmp
-    sudo -u git -H mkdir -p ${GITLAB_DATA_DIR}/tmp/
+    sudo -u ${GITLAB_USER} -H mkdir -p ${GITLAB_DATA_DIR}/tmp/
     chmod -R u+rwX ${GITLAB_DATA_DIR}/tmp/
 
     # create the tmp/cache and tmp/public/assets directory
-    sudo -u git -H mkdir -p ${GITLAB_DATA_DIR}/tmp/cache/
-    sudo -u git -H mkdir -p ${GITLAB_DATA_DIR}/tmp/public/assets/
+    sudo -u ${GITLAB_USER} -H mkdir -p ${GITLAB_DATA_DIR}/tmp/cache/
+    sudo -u ${GITLAB_USER} -H mkdir -p ${GITLAB_DATA_DIR}/tmp/public/assets/
 
     echo "Compiling assets. Please be patient, this could take a while..."
-    sudo -u git -H bundle exec rake assets:clean RAILS_ENV=production >/dev/null 2>&1
-    sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production >/dev/null 2>&1
-    sudo -u git -H touch tmp/cache/VERSION
-    sudo -u git -H echo "${GITLAB_VERSION}" > tmp/cache/VERSION
-    sudo -u git -H echo "${GITLAB_RELATIVE_URL_ROOT}" > tmp/cache/GITLAB_RELATIVE_URL_ROOT
+    sudo -u ${GITLAB_USER} -H bundle exec rake assets:clean RAILS_ENV=production >/dev/null 2>&1
+    sudo -u ${GITLAB_USER} -H bundle exec rake assets:precompile RAILS_ENV=production >/dev/null 2>&1
+    sudo -u ${GITLAB_USER} -H touch tmp/cache/VERSION
+    sudo -u ${GITLAB_USER} -H echo "${GITLAB_VERSION}" > tmp/cache/VERSION
+    sudo -u ${GITLAB_USER} -H echo "${GITLAB_RELATIVE_URL_ROOT}" > tmp/cache/GITLAB_RELATIVE_URL_ROOT
   fi
 
   # remove stale unicorn and sidekiq pid's if they exist.
@@ -744,19 +744,19 @@ appInit () {
     read hour min <<< ${GITLAB_BACKUP_TIME//[:]/ }
     case "${GITLAB_BACKUPS}" in
       daily)
-        sudo -u git -H cat > /tmp/cron.git <<EOF
+        sudo -u ${GITLAB_USER} -H cat > /tmp/cron.git <<EOF
 # Automatic Backups: daily
 $min $hour * * * /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=production'
 EOF
         ;;
       weekly)
-        sudo -u git -H cat > /tmp/cron.git <<EOF
+        sudo -u ${GITLAB_USER} -H cat > /tmp/cron.git <<EOF
 # Automatic Backups: weekly
 $min $hour * * 0 /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=production'
 EOF
         ;;
       monthly)
-        sudo -u git -H cat > /tmp/cron.git <<EOF
+        sudo -u ${GITLAB_USER} -H cat > /tmp/cron.git <<EOF
 # Automatic Backups: monthly
 $min $hour 01 * * /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=production'
 EOF
@@ -778,20 +778,20 @@ appSanitize () {
   chmod -R ug+rwX,o-rwx ${GITLAB_DATA_DIR}/repositories/
   chmod -R ug-s ${GITLAB_DATA_DIR}/repositories/
   find ${GITLAB_DATA_DIR}/repositories/ -type d -print0 | xargs -0 chmod g+s
-  chown -R git:git ${GITLAB_DATA_DIR}/repositories
+  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/repositories
 
   echo "Checking satellites directories permissions..."
-  sudo -u git -H mkdir -p ${GITLAB_DATA_DIR}/gitlab-satellites/
+  sudo -u ${GITLAB_USER} -H mkdir -p ${GITLAB_DATA_DIR}/gitlab-satellites/
   chmod u+rwx,g=rx,o-rwx ${GITLAB_DATA_DIR}/gitlab-satellites
-  chown -R git:git ${GITLAB_DATA_DIR}/gitlab-satellites
+  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/gitlab-satellites
 
   echo "Checking uploads directory permissions..."
   chmod -R u+rwX ${GITLAB_DATA_DIR}/uploads/
-  chown git:git -R ${GITLAB_DATA_DIR}/uploads/
+  chown ${GITLAB_USER}:${GITLAB_USER} -R ${GITLAB_DATA_DIR}/uploads/
 
   echo "Checking tmp directory permissions..."
   chmod -R u+rwX ${GITLAB_DATA_DIR}/tmp/
-  chown git:git -R ${GITLAB_DATA_DIR}/tmp/
+  chown ${GITLAB_USER}:${GITLAB_USER} -R ${GITLAB_DATA_DIR}/tmp/
 }
 
 appRake () {
@@ -832,10 +832,10 @@ appRake () {
       fi
       timestamp=$(echo $file | cut -d'_' -f1)
     fi
-    sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=$timestamp RAILS_ENV=production
+    sudo -u ${GITLAB_USER} -H bundle exec rake gitlab:backup:restore BACKUP=$timestamp RAILS_ENV=production
   else
     [ "$1" == "gitlab:import:repos" ] && appSanitize
-    sudo -u git -H bundle exec rake $@ RAILS_ENV=production
+    sudo -u ${GITLAB_USER} -H bundle exec rake $@ RAILS_ENV=production
   fi
 }
 

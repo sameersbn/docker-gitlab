@@ -3,6 +3,7 @@ MAINTAINER sameer@damagehead.com
 
 ENV GITLAB_VERSION=7.11.4 \
     GITLAB_SHELL_VERSION=2.6.3 \
+    GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
     SETUP_DIR="/app/setup"
