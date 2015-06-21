@@ -23,8 +23,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv E1DD270288B4E6030699E45F
  && rm -rf /var/lib/apt/lists/*
 
 COPY assets/setup/ /app/setup/
-RUN chmod 755 /app/setup/install
-RUN /app/setup/install
+RUN bash /app/setup/install
 
 COPY assets/config/ /app/setup/config/
 COPY assets/init /app/init
