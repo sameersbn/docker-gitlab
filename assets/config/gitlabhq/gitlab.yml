@@ -198,7 +198,7 @@ production: &base
     block_auto_created_users: {{OAUTH_BLOCK_AUTO_CREATED_USERS}}
     # Look up new users in LDAP servers. If a match is found (same uid), automatically
     # link the omniauth identity with the LDAP account. (default: false)
-    auto_link_ldap_user: false
+    auto_link_ldap_user: {{OAUTH_AUTO_LINK_LDAP_USER}}
 
     ## Auth providers
     # Uncomment the following lines and fill in the data of the auth provider you want to use

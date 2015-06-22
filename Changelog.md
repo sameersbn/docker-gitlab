@@ -5,6 +5,7 @@ This file only reflects the changes that are made in the the docker image. Pleas
 **latest**
 - added `SMTP_TLS` configuration parameter
 - gitlab: upgrade to CE v.7.12.0
+- added `OAUTH_AUTO_LINK_LDAP_USER` configuration parameter
 
 **7.11.4-1**
 - base image update to fix SSL vulnerability
