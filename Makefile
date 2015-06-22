@@ -1,4 +1,4 @@
-all: help
+all: build
 
 help:
 	@echo ""
