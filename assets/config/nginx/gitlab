@@ -53,8 +53,8 @@ server {
   ## See app/controllers/application_controller.rb for headers set
 
   ## Individual nginx logs for this GitLab vhost
-  access_log  /var/log/gitlab/nginx/gitlab_access.log;
-  error_log   /var/log/gitlab/nginx/gitlab_error.log;
+  access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_access.log;
+  error_log   {{GITLAB_LOG_DIR}}/nginx/gitlab_error.log;
 
   location {{GITLAB_RELATIVE_URL_ROOT}} {
     # alias {{GITLAB_INSTALL_DIR}}/public;

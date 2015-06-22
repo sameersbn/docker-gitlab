@@ -584,6 +584,7 @@ sudo -u ${GITLAB_USER} -H sed 's/{{OAUTH_AUTO_LINK_LDAP_USER}}/'"${OAUTH_AUTO_LI
 
 # configure nginx vhost
 sed 's,{{GITLAB_INSTALL_DIR}},'"${GITLAB_INSTALL_DIR}"',g' -i /etc/nginx/sites-enabled/gitlab
+sed 's,{{GITLAB_LOG_DIR}},'"${GITLAB_LOG_DIR}"',g' -i /etc/nginx/sites-enabled/gitlab
 sed 's/{{YOUR_SERVER_FQDN}}/'"${GITLAB_HOST}"'/' -i /etc/nginx/sites-enabled/gitlab
 sed 's/{{GITLAB_PORT}}/'"${GITLAB_PORT}"'/' -i /etc/nginx/sites-enabled/gitlab
 sed 's,{{SSL_CERTIFICATE_PATH}},'"${SSL_CERTIFICATE_PATH}"',' -i /etc/nginx/sites-enabled/gitlab

@@ -49,8 +49,8 @@ server {
   server_name _; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
   return 301 https://$host:{{GITLAB_PORT}}$request_uri;
-  access_log  /var/log/gitlab/nginx/gitlab_access.log;
-  error_log   /var/log/gitlab/nginx/gitlab_error.log;
+  access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_access.log;
+  error_log   {{GITLAB_LOG_DIR}}/nginx/gitlab_error.log;
 }
 
 
@@ -101,8 +101,8 @@ server {
   ssl_dhparam {{SSL_DHPARAM_PATH}};
 
   ## Individual nginx logs for this GitLab vhost
-  access_log  /var/log/gitlab/nginx/gitlab_access.log;
-  error_log   /var/log/gitlab/nginx/gitlab_error.log;
+  access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_access.log;
+  error_log   {{GITLAB_LOG_DIR}}/nginx/gitlab_error.log;
 
   location {{GITLAB_RELATIVE_URL_ROOT}} {
     # alias {{GITLAB_INSTALL_DIR}}/public;
