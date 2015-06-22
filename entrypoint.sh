@@ -318,8 +318,6 @@ if [ -f "${SSL_CERTIFICATE_PATH}" -o -f "${CA_CERTIFICATES_PATH}" ]; then
 fi
 
 # configure git for the 'git' user
-sudo -u ${GITLAB_USER} -H git config --global user.name "GitLab"
-sudo -u ${GITLAB_USER} -H git config --global user.email "${GITLAB_EMAIL}"
 sudo -u ${GITLAB_USER} -H git config --global core.autocrlf input
 
 # configure application paths
