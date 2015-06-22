@@ -325,6 +325,7 @@ sudo -u ${GITLAB_USER} -H git config --global core.autocrlf input
 # configure application paths
 sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_DATA_DIR}},'"${GITLAB_DATA_DIR}"',g' -i config/gitlab.yml
 sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_BACKUP_DIR}},'"${GITLAB_BACKUP_DIR}"',g' -i config/gitlab.yml
+sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_INSTALL_DIR}},'"${GITLAB_INSTALL_DIR}"',g' -i config/gitlab.yml
 sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_SHELL_INSTALL_DIR}},'"${GITLAB_SHELL_INSTALL_DIR}"',g' -i config/gitlab.yml
 
 # configure gitlab
