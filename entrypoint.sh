@@ -414,6 +414,7 @@ sudo -u ${GITLAB_USER} -H sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/g' -i config/r
 # configure gitlab-shell
 sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'"${GITLAB_RELATIVE_URL_ROOT}"',' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_HOME}},'"${GITLAB_HOME}"',g' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_LOG_DIR}},'"${GITLAB_LOG_DIR}"',g' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_DATA_DIR}},'"${GITLAB_DATA_DIR}"',g' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_BACKUP_DIR}},'"${GITLAB_BACKUP_DIR}"',g' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -u ${GITLAB_USER} -H sed 's/{{SSL_SELF_SIGNED}}/'"${SSL_SELF_SIGNED}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
