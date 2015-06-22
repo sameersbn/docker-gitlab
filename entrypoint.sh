@@ -177,13 +177,13 @@ elif [ -n "${POSTGRESQL_PORT_5432_TCP_ADDR}" ]; then
 fi
 
 ## Adapt uid and gid for ${GITLAB_USER}:${GITLAB_USER}
-USERMAP_ORIG_UID=$(id -u git)
-USERMAP_ORIG_GID=$(id -g git)
+USERMAP_ORIG_UID=$(id -u ${GITLAB_USER})
+USERMAP_ORIG_GID=$(id -g ${GITLAB_USER})
 USERMAP_GID=${USERMAP_GID:-${USERMAP_UID:-$USERMAP_ORIG_GID}}
 USERMAP_UID=${USERMAP_UID:-$USERMAP_ORIG_UID}
 if [ "${USERMAP_UID}" != "${USERMAP_ORIG_UID}" ] || [ "${USERMAP_GID}" != "${USERMAP_ORIG_GID}" ]; then
   echo "Adapting uid and gid for ${GITLAB_USER}:${GITLAB_USER} to $USERMAP_UID:$USERMAP_GID"
-  groupmod -g "${USERMAP_GID}" git
+  groupmod -g "${USERMAP_GID}" ${GITLAB_USER}
   sed -i -e "s/:${USERMAP_ORIG_UID}:${USERMAP_GID}:/:${USERMAP_UID}:${USERMAP_GID}:/" /etc/passwd
   find ${GITLAB_HOME} -path ${GITLAB_DATA_DIR}/\* -prune -o -print0 | xargs -0 chown -h ${GITLAB_USER}:${GITLAB_USER}
 fi
@@ -748,25 +748,25 @@ appInit () {
     read hour min <<< ${GITLAB_BACKUP_TIME//[:]/ }
     case "${GITLAB_BACKUPS}" in
       daily)
-        sudo -Hu ${GITLAB_USER} cat > /tmp/cron.git <<EOF
+        sudo -Hu ${GITLAB_USER} cat > /tmp/cron.${GITLAB_USER} <<EOF
 # Automatic Backups: daily
 $min $hour * * * /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=production'
 EOF
         ;;
       weekly)
-        sudo -Hu ${GITLAB_USER} cat > /tmp/cron.git <<EOF
+        sudo -Hu ${GITLAB_USER} cat > /tmp/cron.${GITLAB_USER} <<EOF
 # Automatic Backups: weekly
 $min $hour * * 0 /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=production'
 EOF
         ;;
       monthly)
-        sudo -Hu ${GITLAB_USER} cat > /tmp/cron.git <<EOF
+        sudo -Hu ${GITLAB_USER} cat > /tmp/cron.${GITLAB_USER} <<EOF
 # Automatic Backups: monthly
 $min $hour 01 * * /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=production'
 EOF
         ;;
     esac
-    crontab -u git /tmp/cron.git && rm -rf /tmp/cron.git
+    crontab -u ${GITLAB_USER} /tmp/cron.${GITLAB_USER} && rm -rf /tmp/cron.${GITLAB_USER}
   fi
 }
 
