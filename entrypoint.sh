@@ -317,9 +317,6 @@ if [ -f "${SSL_CERTIFICATE_PATH}" -o -f "${CA_CERTIFICATES_PATH}" ]; then
   update-ca-certificates --fresh >/dev/null
 fi
 
-# configure git for the 'git' user
-sudo -u ${GITLAB_USER} -H git config --global core.autocrlf input
-
 # configure application paths
 sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_DATA_DIR}},'"${GITLAB_DATA_DIR}"',g' -i config/gitlab.yml
 sudo -u ${GITLAB_USER} -H sed 's,{{GITLAB_BACKUP_DIR}},'"${GITLAB_BACKUP_DIR}"',g' -i config/gitlab.yml

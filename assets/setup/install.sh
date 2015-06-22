@@ -32,6 +32,9 @@ sudo -u ${GITLAB_USER} -H ln -s ${GITLAB_DATA_DIR}/.ssh ${GITLAB_HOME}/.ssh
 # create the data store
 sudo -u ${GITLAB_USER} -H mkdir -p ${GITLAB_DATA_DIR}
 
+# configure git for the 'git' user
+sudo -u ${GITLAB_USER} -H git config --global core.autocrlf input
+
 # shallow clone gitlab-ce
 echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
 sudo -u ${GITLAB_USER} -H git clone -q -b v${GITLAB_VERSION} --depth 1 \
