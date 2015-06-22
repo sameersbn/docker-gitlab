@@ -2,7 +2,7 @@
 
 This file only reflects the changes that are made in the the docker image. Please refer to the upstream GitLab [CHANGELOG](https://github.com/gitlabhq/gitlabhq/blob/master/CHANGELOG) for the list of changes in GitLab.
 
-**latest**
+**7.12.0**
 - added `SMTP_TLS` configuration parameter
 - gitlab: upgrade to CE v.7.12.0
 - added `OAUTH_AUTO_LINK_LDAP_USER` configuration parameter
