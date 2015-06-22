@@ -80,6 +80,7 @@ SMTP_USER=${SMTP_USER:-}
 SMTP_PASS=${SMTP_PASS:-}
 SMTP_OPENSSL_VERIFY_MODE=${SMTP_OPENSSL_VERIFY_MODE:-none}
 SMTP_STARTTLS=${SMTP_STARTTLS:-true}
+SMTP_TLS=${SMTP_TLS:-false}
 if [ -n "${SMTP_USER}" ]; then
   SMTP_ENABLED=${SMTP_ENABLED:-true}
   SMTP_AUTHENTICATION=${SMTP_AUTHENTICATION:-login}
@@ -443,6 +444,7 @@ if [ "${SMTP_ENABLED}" == "true" ]; then
 
   sudo -u ${GITLAB_USER} -H sed 's/{{SMTP_DOMAIN}}/'"${SMTP_DOMAIN}"'/' -i config/initializers/smtp_settings.rb
   sudo -u ${GITLAB_USER} -H sed 's/{{SMTP_STARTTLS}}/'"${SMTP_STARTTLS}"'/' -i config/initializers/smtp_settings.rb
+  sudo -u ${GITLAB_USER} -H sed 's/{{SMTP_TLS}}/'"${SMTP_TLS}"'/' -i config/initializers/smtp_settings.rb
   sudo -u ${GITLAB_USER} -H sed 's/{{SMTP_OPENSSL_VERIFY_MODE}}/'"${SMTP_OPENSSL_VERIFY_MODE}"'/' -i config/initializers/smtp_settings.rb
 
   case "${SMTP_AUTHENTICATION}" in

@@ -763,6 +763,7 @@ Below is the complete list of available options that can be used to customize yo
 - **SMTP_USER**: SMTP username.
 - **SMTP_PASS**: SMTP password.
 - **SMTP_STARTTLS**: Enable STARTTLS. Defaults to `true`.
+- **SMTP_TLS**: Enable SSL/TLS. Defaults to `false`.
 - **SMTP_OPENSSL_VERIFY_MODE**: SMTP openssl verification mode. Accepted values are `none`, `peer`, `client_once` and `fail_if_no_peer_cert`. Defaults to `none`.
 - **SMTP_AUTHENTICATION**: Specify the SMTP authentication method. Defaults to `login` if `SMTP_USER` is set.
 - **LDAP_ENABLED**: Enable LDAP. Defaults to `false`
