@@ -6,7 +6,7 @@ ENV GITLAB_VERSION=7.12.0 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
-    SETUP_DIR="/app/setup"
+    SETUP_DIR="/var/cache/gitlab"
 
 ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
     GITLAB_SHELL_INSTALL_DIR="${GITLAB_HOME}/gitlab-shell" \
