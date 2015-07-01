@@ -35,6 +35,15 @@ sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_DATA_DIR}
 # configure git for the 'git' user
 sudo -HEu ${GITLAB_USER} git config --global core.autocrlf input
 
+# install gitlab-shell
+echo "Cloning gitlab-shell v.${GITLAB_SHELL_VERSION}..."
+sudo -u git -H git clone -q -b v${GITLAB_SHELL_VERSION} --depth 1 \
+  https://github.com/gitlabhq/gitlab-shell.git ${GITLAB_SHELL_INSTALL_DIR}
+
+cd ${GITLAB_SHELL_INSTALL_DIR}
+sudo -u git -H cp -a config.yml.example config.yml
+sudo -u git -H ./bin/install
+
 # shallow clone gitlab-ce
 echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
 sudo -HEu ${GITLAB_USER} git clone -q -b v${GITLAB_VERSION} --depth 1 \
@@ -80,11 +89,6 @@ if [ -d "${GEM_CACHE_DIR}" ]; then
   chown -R ${GITLAB_USER}:${GITLAB_USER} vendor/cache
 fi
 sudo -HEu ${GITLAB_USER} bundle install -j$(nproc) --deployment --without development test aws
-
-# install gitlab-shell
-sudo -HEu ${GITLAB_USER} bundle exec \
-  rake gitlab:shell:install[v${GITLAB_SHELL_VERSION}] \
-    REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
 
 # make sure everything in ${GITLAB_HOME} is owned by the git user
 chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_HOME}/
