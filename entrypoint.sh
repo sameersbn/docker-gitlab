@@ -743,31 +743,33 @@ appInit () {
   # remove state unicorn socket if it exists
   rm -rf tmp/sockets/gitlab.socket
 
-  if [ "${GITLAB_BACKUPS}" != "disable" ]; then
-    # setup cron job for automatic backups
-    read hour min <<< ${GITLAB_BACKUP_TIME//[:]/ }
-    case "${GITLAB_BACKUPS}" in
-      daily)
-        sudo -HEu ${GITLAB_USER} cat > /tmp/cron.${GITLAB_USER} <<EOF
+  # setup cron job for automatic backups
+  case "${GITLAB_BACKUPS}" in
+    daily|weekly|monthly)
+      read hour min <<< ${GITLAB_BACKUP_TIME//[:]/ }
+      case "${GITLAB_BACKUPS}" in
+        daily)
+          sudo -HEu ${GITLAB_USER} cat > /tmp/cron.${GITLAB_USER} <<EOF
 # Automatic Backups: daily
 $min $hour * * * /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=production'
 EOF
-        ;;
-      weekly)
-        sudo -HEu ${GITLAB_USER} cat > /tmp/cron.${GITLAB_USER} <<EOF
+          ;;
+        weekly)
+          sudo -HEu ${GITLAB_USER} cat > /tmp/cron.${GITLAB_USER} <<EOF
 # Automatic Backups: weekly
 $min $hour * * 0 /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=production'
 EOF
-        ;;
-      monthly)
-        sudo -HEu ${GITLAB_USER} cat > /tmp/cron.${GITLAB_USER} <<EOF
+          ;;
+        monthly)
+          sudo -HEu ${GITLAB_USER} cat > /tmp/cron.${GITLAB_USER} <<EOF
 # Automatic Backups: monthly
 $min $hour 01 * * /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=production'
 EOF
-        ;;
-    esac
-    crontab -u ${GITLAB_USER} /tmp/cron.${GITLAB_USER} && rm -rf /tmp/cron.${GITLAB_USER}
-  fi
+          ;;
+      esac
+      crontab -u ${GITLAB_USER} /tmp/cron.${GITLAB_USER} && rm -rf /tmp/cron.${GITLAB_USER}
+      ;;
+  esac
 }
 
 appStart () {
