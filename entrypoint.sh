@@ -832,7 +832,7 @@ appRake () {
       done
       read -p "Select a backup to restore: " file
 
-      if [[ ! -f "${GITLAB_BACKUP_DIR}/${file}" ]]; then
+      if [[ ! -f ${GITLAB_BACKUP_DIR}/${file} ]]; then
         echo "Specified backup does not exist. Aborting..."
         return 1
       fi
