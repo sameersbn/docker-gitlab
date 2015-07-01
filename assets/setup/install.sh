@@ -84,7 +84,7 @@ rm -rf public/uploads
 sudo -HEu ${GITLAB_USER} ln -s ${GITLAB_DATA_DIR}/uploads public/uploads
 
 # install gems required by gitlab, use local cache if available
-if [ -d "${GEM_CACHE_DIR}" ]; then
+if [[ -d ${GEM_CACHE_DIR} ]]; then
   mv ${GEM_CACHE_DIR} vendor/
   chown -R ${GITLAB_USER}:${GITLAB_USER} vendor/cache
 fi
