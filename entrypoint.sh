@@ -712,7 +712,6 @@ appInit () {
 
   # migrate database and compile the assets if the gitlab version or relative_url has changed.
   CACHE_VERSION=
-  GITLAB_VERSION=$(cat VERSION)
   [[ -f tmp/cache/VERSION ]] && CACHE_VERSION=$(cat tmp/cache/VERSION)
   [[ -f tmp/cache/GITLAB_RELATIVE_URL_ROOT ]] && CACHE_GITLAB_RELATIVE_URL_ROOT=$(cat tmp/cache/GITLAB_RELATIVE_URL_ROOT)
   if [[ ${GITLAB_VERSION} != ${CACHE_VERSION} || ${GITLAB_RELATIVE_URL_ROOT} != ${CACHE_GITLAB_RELATIVE_URL_ROOT} ]]; then
