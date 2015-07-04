@@ -176,18 +176,6 @@ elif [[ -n ${POSTGRESQL_PORT_5432_TCP_ADDR} ]]; then
   DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_DB}}
 fi
 
-## Adapt uid and gid for ${GITLAB_USER}:${GITLAB_USER}
-USERMAP_ORIG_UID=$(id -u ${GITLAB_USER})
-USERMAP_ORIG_GID=$(id -g ${GITLAB_USER})
-USERMAP_GID=${USERMAP_GID:-${USERMAP_UID:-$USERMAP_ORIG_GID}}
-USERMAP_UID=${USERMAP_UID:-$USERMAP_ORIG_UID}
-if [[ ${USERMAP_UID} != ${USERMAP_ORIG_UID} ]] || [[ ${USERMAP_GID} != ${USERMAP_ORIG_GID} ]]; then
-  echo "Adapting uid and gid for ${GITLAB_USER}:${GITLAB_USER} to $USERMAP_UID:$USERMAP_GID"
-  groupmod -g ${USERMAP_GID} ${GITLAB_USER}
-  sed -i -e "s/:${USERMAP_ORIG_UID}:${USERMAP_GID}:/:${USERMAP_UID}:${USERMAP_GID}:/" /etc/passwd
-  find ${GITLAB_HOME} -path ${GITLAB_DATA_DIR}/\* -prune -o -print0 | xargs -0 chown -h ${GITLAB_USER}:${GITLAB_USER}
-fi
-
 if [[ -z ${DB_HOST} ]]; then
   echo "ERROR: "
   echo "  Please configure the database connection."
@@ -249,6 +237,18 @@ case ${LDAP_UID} in
   userPrincipalName) LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN=${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN:-false} ;;
   *) LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN=${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN:-true}
 esac
+
+## Adapt uid and gid for ${GITLAB_USER}:${GITLAB_USER}
+USERMAP_ORIG_UID=$(id -u ${GITLAB_USER})
+USERMAP_ORIG_GID=$(id -g ${GITLAB_USER})
+USERMAP_GID=${USERMAP_GID:-${USERMAP_UID:-$USERMAP_ORIG_GID}}
+USERMAP_UID=${USERMAP_UID:-$USERMAP_ORIG_UID}
+if [[ ${USERMAP_UID} != ${USERMAP_ORIG_UID} ]] || [[ ${USERMAP_GID} != ${USERMAP_ORIG_GID} ]]; then
+  echo "Adapting uid and gid for ${GITLAB_USER}:${GITLAB_USER} to $USERMAP_UID:$USERMAP_GID"
+  groupmod -g ${USERMAP_GID} ${GITLAB_USER}
+  sed -i -e "s/:${USERMAP_ORIG_UID}:${USERMAP_GID}:/:${USERMAP_UID}:${USERMAP_GID}:/" /etc/passwd
+  find ${GITLAB_HOME} -path ${GITLAB_DATA_DIR}/\* -prune -o -print0 | xargs -0 chown -h ${GITLAB_USER}:${GITLAB_USER}
+fi
 
 if [[ ! -e ${GITLAB_DATA_DIR}/ssh/ssh_host_rsa_key ]]; then
   # create ssh host keys and move them to the data store.
