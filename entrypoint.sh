@@ -132,6 +132,9 @@ GOOGLE_ANALYTICS_ID=${GOOGLE_ANALYTICS_ID:-}
 PIWIK_URL=${PIWIK_URL:-}
 PIWIK_SITE_ID=${PIWIK_SITE_ID:-}
 
+GITLAB_ROBOTS_OVERRIDE=${GITLAB_ROBOTS_OVERRIDE:-false}
+GITLAB_ROBOTS_PATH=${GITLAB_ROBOTS_PATH:-$SYSCONF_TEMPLATES_DIR/gitlabhq/robots.txt}
+
 # is a mysql or postgresql database linked?
 # requires that the mysql or postgresql containers have exposed
 # port 3306 and 5432 respectively.
@@ -289,6 +292,10 @@ sudo -HEu ${GITLAB_USER} cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/unicorn.rb        
 sudo -HEu ${GITLAB_USER} cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/rack_attack.rb    config/initializers/rack_attack.rb
 [[ ${SMTP_ENABLED} == true ]] && \
 sudo -HEu ${GITLAB_USER} cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb  config/initializers/smtp_settings.rb
+
+# allow to override robots.txt to block bots
+[[ ${GITLAB_ROBOTS_OVERRIDE} == true ]] && \
+sudo -HEu ${GITLAB_USER} cp ${GITLAB_ROBOTS_PATH} public/robots.txt
 
 # override default configuration templates with user templates
 case ${GITLAB_HTTPS} in
