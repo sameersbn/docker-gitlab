@@ -2,6 +2,9 @@
 
 This file only reflects the changes that are made in the the docker image. Please refer to the upstream GitLab [CHANGELOG](https://github.com/gitlabhq/gitlabhq/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**latest**
+- enable persistence `.secret` file used in 2FA
+
 **7.12.2-1**
 - fixed gitlab:backup:restore raketask
 

@@ -83,6 +83,10 @@ sudo -HEu ${GITLAB_USER} ln -s ${GITLAB_DATA_DIR}/tmp/public/assets public/asset
 rm -rf public/uploads
 sudo -HEu ${GITLAB_USER} ln -s ${GITLAB_DATA_DIR}/uploads public/uploads
 
+# create symlink to .secret in GITLAB_DATA_DIR
+rm -rf .secret
+sudo -HEu ${GITLAB_USER} ln -sf ${GITLAB_DATA_DIR}/.secret
+
 # install gems required by gitlab, use local cache if available
 if [[ -d ${GEM_CACHE_DIR} ]]; then
   mv ${GEM_CACHE_DIR} vendor/
