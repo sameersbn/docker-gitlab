@@ -13,6 +13,9 @@ help:
 build:
 	@docker build --tag=${USER}/gitlab .
 
+release: build
+	@docker build --tag=${USER}/gitlab:$(shell cat VERSION) .
+
 quickstart:
 	@echo "Starting postgresql container..."
 	@docker run --name=gitlab-postgresql -d \
