@@ -811,7 +811,7 @@ appRake () {
     # check if the BACKUP argument is specified
     for a in $@
     do
-      if [[[ $a == BACKUP=* ]]]; then
+      if [[ $a == BACKUP=* ]]; then
         timestamp=${a:7}
         break
       fi
