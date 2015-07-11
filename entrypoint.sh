@@ -812,20 +812,18 @@ appRake () {
     return 1
   fi
 
-  echo "Running gitlab rake task..."
-
   if [[ ${1} == gitlab:backup:restore ]]; then
-    # check if the BACKUP argument is specified
-    for a in $@
+    interactive=true
+    for arg in $@
     do
-      if [[ $a == BACKUP=* ]]; then
-        timestamp=${a:7}
+      if [[ $arg == BACKUP=* ]]; then
+        interactive=false
         break
       fi
     done
 
-    if [[ -z ${timestamp} ]]; then
-      # user needs to select the backup to restore
+    # user needs to select the backup to restore
+    if [[ $interactive == true ]]; then
       nBackups=$(ls ${GITLAB_BACKUP_DIR}/*_gitlab_backup.tar | wc -l)
       if [[ $nBackups -eq 0 ]]; then
         echo "No backup present. Cannot continue restore process.".
@@ -842,13 +840,15 @@ appRake () {
         echo "Specified backup does not exist. Aborting..."
         return 1
       fi
-      timestamp=$(echo $file | cut -d'_' -f1)
+      BACKUP=$(echo $file | cut -d'_' -f1)
     fi
-    sudo -HEu ${GITLAB_USER} bundle exec rake gitlab:backup:restore BACKUP=$timestamp RAILS_ENV=production
-  else
-    [[ ${1} == gitlab:import:repos ]] && appSanitize
-    sudo -HEu ${GITLAB_USER} bundle exec rake $@ RAILS_ENV=production
+  elif [[ ${1} == gitlab:import:repos ]]; then
+    # sanitize the data volume to ensure there are no permission issues
+    appSanitize
   fi
+
+  echo "Running \"${1}\" rake task ..."
+  sudo -HEu ${GITLAB_USER} bundle exec rake $@ ${BACKUP:+BACKUP=$BACKUP} RAILS_ENV=production
 }
 
 appHelp () {
