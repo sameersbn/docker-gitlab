@@ -714,7 +714,7 @@ appInit () {
   esac
   if [[ -z ${COUNT} || ${COUNT} -eq 0 ]]; then
     echo "Setting up GitLab for firstrun. Please be patient, this could take a while..."
-    sudo -HEu ${GITLAB_USER} force=yes bundle exec rake gitlab:setup RAILS_ENV=production ${GITLAB_ROOT_PASSWORD:+GITLAB_ROOT_PASSWORD=$GITLAB_ROOT_PASSWORD} >/dev/null
+    sudo -HEu ${GITLAB_USER} force=yes bundle exec rake gitlab:setup ${GITLAB_ROOT_PASSWORD:+GITLAB_ROOT_PASSWORD=$GITLAB_ROOT_PASSWORD} >/dev/null
   fi
 
   # migrate database and compile the assets if the gitlab version or relative_url has changed.
@@ -723,7 +723,7 @@ appInit () {
   [[ -f tmp/cache/GITLAB_RELATIVE_URL_ROOT ]] && CACHE_GITLAB_RELATIVE_URL_ROOT=$(cat tmp/cache/GITLAB_RELATIVE_URL_ROOT)
   if [[ ${GITLAB_VERSION} != ${CACHE_VERSION} || ${GITLAB_RELATIVE_URL_ROOT} != ${CACHE_GITLAB_RELATIVE_URL_ROOT} ]]; then
     echo "Migrating database..."
-    sudo -HEu ${GITLAB_USER} bundle exec rake db:migrate RAILS_ENV=production >/dev/null
+    sudo -HEu ${GITLAB_USER} bundle exec rake db:migrate >/dev/null
 
     # recreate the tmp directory
     rm -rf ${GITLAB_DATA_DIR}/tmp
@@ -735,8 +735,8 @@ appInit () {
     sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_DATA_DIR}/tmp/public/assets/
 
     echo "Compiling assets. Please be patient, this could take a while..."
-    sudo -HEu ${GITLAB_USER} bundle exec rake assets:clean RAILS_ENV=production >/dev/null 2>&1
-    sudo -HEu ${GITLAB_USER} bundle exec rake assets:precompile RAILS_ENV=production >/dev/null 2>&1
+    sudo -HEu ${GITLAB_USER} bundle exec rake assets:clean >/dev/null 2>&1
+    sudo -HEu ${GITLAB_USER} bundle exec rake assets:precompile >/dev/null 2>&1
     sudo -HEu ${GITLAB_USER} touch tmp/cache/VERSION
     sudo -HEu ${GITLAB_USER} echo "${GITLAB_VERSION}" > tmp/cache/VERSION
     sudo -HEu ${GITLAB_USER} echo "${GITLAB_RELATIVE_URL_ROOT}" > tmp/cache/GITLAB_RELATIVE_URL_ROOT
@@ -757,19 +757,19 @@ appInit () {
         daily)
           sudo -HEu ${GITLAB_USER} cat > /tmp/cron.${GITLAB_USER} <<EOF
 # Automatic Backups: daily
-$min $hour * * * /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=production'
+$min $hour * * * /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=${RAILS_ENV}'
 EOF
           ;;
         weekly)
           sudo -HEu ${GITLAB_USER} cat > /tmp/cron.${GITLAB_USER} <<EOF
 # Automatic Backups: weekly
-$min $hour * * 0 /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=production'
+$min $hour * * 0 /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=${RAILS_ENV}'
 EOF
           ;;
         monthly)
           sudo -HEu ${GITLAB_USER} cat > /tmp/cron.${GITLAB_USER} <<EOF
 # Automatic Backups: monthly
-$min $hour 01 * * /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=production'
+$min $hour 01 * * /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=${RAILS_ENV}'
 EOF
           ;;
       esac
@@ -848,7 +848,7 @@ appRake () {
   fi
 
   echo "Running \"${1}\" rake task ..."
-  sudo -HEu ${GITLAB_USER} bundle exec rake $@ ${BACKUP:+BACKUP=$BACKUP} RAILS_ENV=production
+  sudo -HEu ${GITLAB_USER} bundle exec rake $@ ${BACKUP:+BACKUP=$BACKUP}
 }
 
 appHelp () {

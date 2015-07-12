@@ -180,7 +180,7 @@ cat > /etc/supervisor/conf.d/unicorn.conf <<EOF
 priority=10
 directory=${GITLAB_INSTALL_DIR}
 environment=HOME=${GITLAB_HOME}
-command=bundle exec unicorn_rails -c ${GITLAB_INSTALL_DIR}/config/unicorn.rb -E production
+command=bundle exec unicorn_rails -c ${GITLAB_INSTALL_DIR}/config/unicorn.rb -E ${RAILS_ENV}
 user=git
 autostart=true
 autorestart=true
@@ -204,7 +204,7 @@ command=bundle exec sidekiq -c {{SIDEKIQ_CONCURRENCY}}
   -q gitlab_shell
   -q common
   -q default
-  -e production
+  -e ${RAILS_ENV}
   -t {{SIDEKIQ_SHUTDOWN_TIMEOUT}}
   -P ${GITLAB_INSTALL_DIR}/tmp/pids/sidekiq.pid
   -L ${GITLAB_INSTALL_DIR}/log/sidekiq.log
