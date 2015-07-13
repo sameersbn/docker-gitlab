@@ -188,7 +188,7 @@ production: &base
 
     # Uncomment this to automatically sign in with a specific omniauth provider's without
     # showing GitLab's sign-in page (default: show the GitLab sign-in page)
-    # auto_sign_in_with_provider: saml
+    auto_sign_in_with_provider: {{OAUTH_AUTO_SIGN_IN_WITH_PROVIDER}}
 
     # CAUTION!
     # This allows users to login without having a user account first (default: false).
