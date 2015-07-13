@@ -2,12 +2,12 @@
 - [Introduction](#introduction)
     - [Version](#version)
     - [Changelog](Changelog.md)
+- [Contributing](#contributing)
 - [Hardware Requirements](#hardware-requirements)
     - [CPU](#cpu)
     - [Memory](#memory)
     - [Storage](#storage)
 - [Supported Web Browsers](#supported-web-browsers)
-- [Contributing](#contributing)
 - [Issues](#issues)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
@@ -66,6 +66,14 @@ Dockerfile to build a [GitLab](https://about.gitlab.com/) container image.
 
 Current Version: **7.12.2-2**
 
+# Contributing
+
+If you find this image useful here's how you can help:
+
+- Send a Pull Request with your awesome new features and bug fixes
+- Help new users with [Issues](https://github.com/sameersbn/docker-gitlab/issues) they may encounter
+- Support the development of this image with a [donation](http://www.damagehead.com/donate/)
+
 # Hardware Requirements
 
 ## CPU
@@ -100,14 +108,6 @@ If you have enough RAM memory and a recent CPU the speed of GitLab is mainly lim
 - Safari 7+ (Know problem: required fields in html5 do not work)
 - Opera (Latest released version)
 - IE 10+
-
-# Contributing
-
-If you find this image useful here's how you can help:
-
-- Send a Pull Request with your awesome new features and bug fixes
-- Help new users with [Issues](https://github.com/sameersbn/docker-gitlab/issues) they may encounter
-- Send me a tip via [Bitcoin](https://www.coinbase.com/sameersbn) or using [Gratipay](https://gratipay.com/sameersbn/)
 
 # Issues
 
