@@ -502,7 +502,7 @@ case ${AWS_BACKUPS} in
     ;;
   *)
     # remove backup configuration lines
-    sudo -HEu ${GITLAB_USER} sed /upload:/,/remote_directory:/d -i config/gitlab.yml
+    sudo -HEu ${GITLAB_USER} sed '/upload:/,/remote_directory:/d' -i config/gitlab.yml
     ;;
 esac
 
