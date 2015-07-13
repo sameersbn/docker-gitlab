@@ -221,14 +221,13 @@ production: &base
           args: { scope: '{{OAUTH_GITLAB_SCOPE}}' } }
       - { name: 'bitbucket', app_id: '{{OAUTH_BITBUCKET_API_KEY}}',
           app_secret: '{{OAUTH_BITBUCKET_APP_SECRET}}'}
-      # - { name: 'saml',
-      #     args: {
-      #             assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-      #             idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
-      #             idp_sso_target_url: 'https://login.example.com/idp',
-      #             issuer: 'https://gitlab.example.com',
-      #             name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
-      #           } }
+      - { name: 'saml',
+          args: {
+                  assertion_consumer_service_url: '{{OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL}}',
+                  idp_cert_fingerprint: '{{OAUTH_SAML_IDP_CERT_FINGERPRINT}}',
+                  idp_sso_target_url: '{{OAUTH_SAML_IDP_SSO_TARGET_URL}}',
+                  issuer: '{{OAUTH_SAML_ISSUER}}',
+                  name_identifier_format: '{{OAUTH_SAML_NAME_IDENTIFIER_FORMAT}}' } }
 
 
 

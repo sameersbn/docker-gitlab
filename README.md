@@ -40,6 +40,7 @@
     - [Google](#google)
     - [Twitter](#twitter)
     - [GitHub](#github)
+    - [SAML](#saml)
   - [External Issue Trackers](#external-issue-trackers)
   - [Mapping host user and group](#mapping-host-user-and-group)
   - [Piwik](#piwik)
@@ -663,6 +664,14 @@ Once you have the Client ID and secret generated, configure them using the `OAUT
 
 For example, if your Client ID is `xxx` and the Client secret is `yyy`, then adding `--env='OAUTH_GITHUB_API_KEY=xxx' --env='OAUTH_GITHUB_APP_SECRET=yyy'` to the docker run command enables support for GitHub OAuth.
 
+#### SAML
+
+GitLab can be configured to act as a SAML 2.0 Service Provider (SP). This allows GitLab to consume assertions from a SAML 2.0 Identity Provider (IdP) such as Microsoft ADFS to authenticate users. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/saml.html).
+
+The following parameters have to be configured to enable SAML OAuth support in this image: `OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL`, `OAUTH_SAML_IDP_CERT_FINGERPRINT`, `OAUTH_SAML_IDP_SSO_TARGET_URL`, `OAUTH_SAML_ISSUER` and `OAUTH_SAML_NAME_IDENTIFIER_FORMAT`
+
+Please refer to [Available Configuration Parameters](#available-configuration-parameters) for the default configurations of these parameters.
+
 ### External Issue Trackers
 
 Since version `7.12.2-2` support for external issue trackers can be enabled in the "Service Templates" section of the settings panel.
@@ -792,6 +801,11 @@ Below is the complete list of available options that can be used to customize yo
 - **OAUTH_GITLAB_APP_SECRET**: GitLab App Client secret. No defaults.
 - **OAUTH_BITBUCKET_API_KEY**: BitBucket App Client ID. No defaults.
 - **OAUTH_BITBUCKET_APP_SECRET**: BitBucket App Client secret. No defaults.
+- **OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL**: The URL at which the SAML assertion should be received. When `GITLAB_HTTPS=true`, defaults to `https://${GITLAB_HOST}/users/auth/saml/callback` else defaults to `http://${GITLAB_HOST}/users/auth/saml/callback`.
+- **OAUTH_SAML_IDP_CERT_FINGERPRINT**: The SHA1 fingerprint of the certificate. No Defaults.
+- **OAUTH_SAML_IDP_SSO_TARGET_URL**: The URL to which the authentication request should be sent. No defaults.
+- **OAUTH_SAML_ISSUER**: The name of your application. When `GITLAB_HTTPS=true`, defaults to `https://${GITLAB_HOST}` else defaults to `http://${GITLAB_HOST}`.
+- **OAUTH_SAML_NAME_IDENTIFIER_FORMAT**: Describes the format of the username required by GitLab, Defaults to `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`
 - **GITLAB_GRAVATAR_ENABLED**: Enables gravatar integration. Defaults to `true`.
 - **GITLAB_GRAVATAR_HTTP_URL**: Sets a custom gravatar url. Defaults to `http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`. This can be used for [Libravatar integration](http://doc.gitlab.com/ce/customization/libravatar.html).
 - **GITLAB_GRAVATAR_HTTPS_URL**: Same as above, but for https. Defaults to `https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`.
