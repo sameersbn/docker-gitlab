@@ -51,8 +51,8 @@
     - [Automated Backups](#automated-backups)
     - [Amazon Web Services (AWS) Remote Backups](#amazon-web-services-aws-remote-backups)
     - [Shell Access](#shell-access)
-- [Upgrading](#upgrading)
 - [Rake Tasks](#rake-tasks)
+- [Upgrading](#upgrading)
 - [References](#references)
 
 # Introduction
@@ -881,6 +881,38 @@ For debugging and maintenance purposes you may want access the containers shell.
 docker exec -it gitlab bash
 ```
 
+## Rake Tasks
+
+The `app:rake` command allows you to run gitlab rake tasks. To run a rake task simply specify the task to be executed to the `app:rake` command. For example, if you want to gather information about GitLab and the system it runs on.
+
+```bash
+docker run --name=gitlab -d [OPTIONS] \
+    sameersbn/gitlab:7.12.2-2 app:rake gitlab:env:info
+```
+
+You can also use `docker exec` to run raketasks on running gitlab instance. For example,
+
+```bash
+docker exec -it gitlab sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
+```
+
+Similarly, to import bare repositories into GitLab project instance
+
+```bash
+docker run --name=gitlab -d [OPTIONS] \
+    sameersbn/gitlab:7.12.2-2 app:rake gitlab:import:repos
+```
+
+Or
+
+```bash
+docker exec -it gitlab sudo -u git -H bundle exec rake gitlab:import:repos RAILS_ENV=production
+```
+
+For a complete list of available rake tasks please refer https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks or the help section of your gitlab installation.
+
+*P.S. Please avoid running the rake tasks for backup and restore operations on a running gitlab instance.*
+
 # Upgrading
 
 GitLabHQ releases new versions on the 22nd of every month, bugfix releases immediately follow. I update this project almost immediately when a release is made (at least it has been the case so far). If you are using the image in production environments I recommend that you delay updates by a couple of days after the gitlab release, allowing some time for the dust to settle down.
@@ -914,38 +946,6 @@ Replace `x.x.x` with the version you are upgrading from. For example, if you are
 ```bash
 docker run --name=gitlab -d [OPTIONS] sameersbn/gitlab:7.12.2-2
 ```
-
-## Rake Tasks
-
-The `app:rake` command allows you to run gitlab rake tasks. To run a rake task simply specify the task to be executed to the `app:rake` command. For example, if you want to gather information about GitLab and the system it runs on.
-
-```bash
-docker run --name=gitlab -d [OPTIONS] \
-    sameersbn/gitlab:7.12.2-2 app:rake gitlab:env:info
-```
-
-You can also use `docker exec` to run raketasks on running gitlab instance. For example,
-
-```bash
-docker exec -it gitlab sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
-```
-
-Similarly, to import bare repositories into GitLab project instance
-
-```bash
-docker run --name=gitlab -d [OPTIONS] \
-    sameersbn/gitlab:7.12.2-2 app:rake gitlab:import:repos
-```
-
-Or
-
-```bash
-docker exec -it gitlab sudo -u git -H bundle exec rake gitlab:import:repos RAILS_ENV=production
-```
-
-For a complete list of available rake tasks please refer https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks or the help section of your gitlab installation.
-
-*P.S. Please avoid running the rake tasks for backup and restore operations on a running gitlab instance.*
 
 # References
     * https://github.com/gitlabhq/gitlabhq
