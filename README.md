@@ -61,7 +61,7 @@ Dockerfile to build a [GitLab](https://about.gitlab.com/) container image.
 
 ## Version
 
-Current Version: **7.12.2-2**
+Current Version: `7.12.2-2`
 
 # Contributing
 
