@@ -193,7 +193,7 @@ mkdir -p /srv/docker/gitlab/gitlab
 sudo chcon -Rt svirt_sandbox_file_t /srv/docker/gitlab/gitlab
 ```
 
-Volumes can be mounted in docker by specifying the **'-v'** option in the docker run command.
+Volumes can be mounted in docker by specifying the `-v` option in the docker run command.
 
 ```bash
 docker run --name gitlab -d \
