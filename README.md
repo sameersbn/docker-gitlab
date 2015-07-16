@@ -5,6 +5,7 @@
     - [Changelog](Changelog.md)
 - [Contributing](#contributing)
 - [Issues](#issues)
+- [Announcements](https://github.com/sameersbn/docker-gitlab/issues/39)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
@@ -52,7 +53,6 @@
     - [Shell Access](#shell-access)
 - [Upgrading](#upgrading)
 - [Rake Tasks](#rake-tasks)
-- [Announcements](https://github.com/sameersbn/docker-gitlab/issues/39)
 - [References](#references)
 
 # Introduction
