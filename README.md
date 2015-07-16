@@ -10,7 +10,7 @@
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Configuration](#configuration)
-    - [Data Store](#data-store)
+    - [Persistence](#persistence)
     - [Database](#database)
         - [PostgreSQL (Recommended)](#postgresql)
             - [External PostgreSQL Server](#external-postgresql-server)
@@ -180,7 +180,7 @@ You should now have the GitLab application up and ready for testing. If you want
 
 # Configuration
 
-## Data Store
+## Persistence
 
 GitLab is a code hosting software and as such you don't want to lose your code when the docker container is stopped/deleted. To avoid losing any data, you should mount a volume at,
 
