@@ -1,8 +1,8 @@
 [![Deploy to Tutum](https://s.tutum.co/deploy-to-tutum.svg)](https://dashboard.tutum.co/stack/deploy/)
 # Table of Contents
 - [Introduction](#introduction)
-        - [Version](#version)
-        - [Changelog](Changelog.md)
+    - [Version](#version)
+    - [Changelog](Changelog.md)
 - [Contributing](#contributing)
 - [Issues](#issues)
 - [Announcements](https://github.com/sameersbn/docker-gitlab/issues/39)
