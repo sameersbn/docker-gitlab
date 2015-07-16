@@ -165,6 +165,8 @@ docker run --name gitlab -d \
 sameersbn/gitlab:7.12.2-2
 ```
 
+*Please refer to [Available Configuration Parameters](#available-configuration-parameters) to understand `GITLAB_PORT` and other configuration options*
+
 __NOTE__: Please allow a couple of minutes for the GitLab application to start.
 
 Point your browser to `http://localhost:10080` and login using the default username and password:
@@ -698,7 +700,7 @@ These options should contain something like:
 Below is the complete list of available options that can be used to customize your gitlab installation.
 
 - **GITLAB_HOST**: The hostname of the GitLab server. Defaults to `localhost`
-- **GITLAB_PORT**: The port of the GitLab server. Defaults to `80` for plain http and `443` when https is enabled.
+- **GITLAB_PORT**: The port of the GitLab server. This value indicates the public port on which the GitLab application will be accessible on the network and appropriately configures GitLab to generate the correct urls. It does not affect the port on which the internal nginx server will be listening on. Defaults to `443` if `GITLAB_HTTPS=true`, else defaults to `80`.
 - **GITLAB_TIMEZONE**: Configure the timezone for the gitlab application. This configuration does not effect cron jobs. Defaults to `UTC`. See the list of [acceptable values](http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html).
 - **GITLAB_ROOT_PASSWORD**: The password for the root user. Defaults to `5iveL!fe`.
 - **GITLAB_EMAIL**: The email address for the GitLab server. Defaults to `example@example.com`.
