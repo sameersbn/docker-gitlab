@@ -4,8 +4,8 @@
     - [Version](#version)
     - [Changelog](Changelog.md)
 - [Contributing](#contributing)
-- [Prerequisites](#prerequisites)
 - [Issues](#issues)
+- [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Configuration](#configuration)
@@ -71,10 +71,6 @@ If you find this image useful here's how you can help:
 - Help new users with [Issues](https://github.com/sameersbn/docker-gitlab/issues) they may encounter
 - Support the development of this image with a [donation](http://www.damagehead.com/donate/)
 
-# Prerequisites
-
-Your docker host needs to have 1GB or more of available RAM to run GitLab. Please refer to the GitLab [hardware requirements](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md#hardware-requirements) documentation for additional information.
-
 # Issues
 
 Docker is a relatively new project and is active being developed and tested by a thriving community of developers and testers and every release of docker features many enhancements and bugfixes.
@@ -102,6 +98,10 @@ In your issue report please make sure you provide the following information:
 - Output of the `docker version` command
 - Output of the `docker info` command
 - The `docker run` command you used to run the image (mask out the sensitive bits).
+
+# Prerequisites
+
+Your docker host needs to have 1GB or more of available RAM to run GitLab. Please refer to the GitLab [hardware requirements](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md#hardware-requirements) documentation for additional information.
 
 # Installation
 
