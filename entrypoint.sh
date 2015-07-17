@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+[[ -n $DEBUG_ENTRYPOINT ]] && set -x
+
 SYSCONF_TEMPLATES_DIR="${SETUP_DIR}/config"
 USERCONF_TEMPLATES_DIR="${GITLAB_DATA_DIR}/config"
 
