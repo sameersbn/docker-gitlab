@@ -50,9 +50,9 @@
     - [Restoring Backups](#restoring-backups)
     - [Automated Backups](#automated-backups)
     - [Amazon Web Services (AWS) Remote Backups](#amazon-web-services-aws-remote-backups)
+    - [Rake Tasks](#rake-tasks)
+    - [Upgrading](#upgrading)
     - [Shell Access](#shell-access)
-- [Rake Tasks](#rake-tasks)
-- [Upgrading](#upgrading)
 - [References](#references)
 
 # Introduction
@@ -878,14 +878,6 @@ More details about the appropriate IAM user properties can found on [doc.gitlab.
 
 AWS uploads are performed alongside normal backups, both through the appropriate `app:rake` command and when an automatic backup is performed.
 
-## Shell Access
-
-For debugging and maintenance purposes you may want access the containers shell. If you are using docker version `1.3.0` or higher you can access a running containers shell using `docker exec` command.
-
-```bash
-docker exec -it gitlab bash
-```
-
 ## Rake Tasks
 
 The `app:rake` command allows you to run gitlab rake tasks. To run a rake task simply specify the task to be executed to the `app:rake` command. For example, if you want to gather information about GitLab and the system it runs on.
@@ -918,7 +910,7 @@ For a complete list of available rake tasks please refer https://github.com/gitl
 
 *P.S. Please avoid running the rake tasks for backup and restore operations on a running gitlab instance.*
 
-# Upgrading
+## Upgrading
 
 GitLabHQ releases new versions on the 22nd of every month, bugfix releases immediately follow. I update this project almost immediately when a release is made (at least it has been the case so far). If you are using the image in production environments I recommend that you delay updates by a couple of days after the gitlab release, allowing some time for the dust to settle down.
 
@@ -950,6 +942,14 @@ Replace `x.x.x` with the version you are upgrading from. For example, if you are
 
 ```bash
 docker run --name gitlab -d [OPTIONS] sameersbn/gitlab:7.12.2-2
+```
+
+## Shell Access
+
+For debugging and maintenance purposes you may want access the containers shell. If you are using docker version `1.3.0` or higher you can access a running containers shell using `docker exec` command.
+
+```bash
+docker exec -it gitlab bash
 ```
 
 # References
