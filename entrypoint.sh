@@ -7,6 +7,7 @@ SYSCONF_TEMPLATES_DIR="${SETUP_DIR}/config"
 USERCONF_TEMPLATES_DIR="${GITLAB_DATA_DIR}/config"
 
 GITLAB_BACKUP_DIR="${GITLAB_BACKUP_DIR:-$GITLAB_DATA_DIR/backups}"
+GITLAB_REPOS_DIR="${GITLAB_REPOS_DIR:-$GITLAB_DATA_DIR/repositories}"
 GITLAB_HOST=${GITLAB_HOST:-localhost}
 GITLAB_PORT=${GITLAB_PORT:-}
 GITLAB_SSH_HOST=${GITLAB_SSH_HOST:-$GITLAB_HOST}
@@ -346,6 +347,7 @@ fi
 # configure application paths
 sudo -HEu ${GITLAB_USER} sed 's,{{GITLAB_DATA_DIR}},'"${GITLAB_DATA_DIR}"',g' -i config/gitlab.yml
 sudo -HEu ${GITLAB_USER} sed 's,{{GITLAB_BACKUP_DIR}},'"${GITLAB_BACKUP_DIR}"',g' -i config/gitlab.yml
+sudo -HEu ${GITLAB_USER} sed 's,{{GITLAB_REPOS_DIR}},'"${GITLAB_REPOS_DIR}"',g' -i config/gitlab.yml
 sudo -HEu ${GITLAB_USER} sed 's,{{GITLAB_INSTALL_DIR}},'"${GITLAB_INSTALL_DIR}"',g' -i config/gitlab.yml
 sudo -HEu ${GITLAB_USER} sed 's,{{GITLAB_SHELL_INSTALL_DIR}},'"${GITLAB_SHELL_INSTALL_DIR}"',g' -i config/gitlab.yml
 
@@ -439,6 +441,7 @@ sudo -HEu ${GITLAB_USER} sed 's,{{GITLAB_HOME}},'"${GITLAB_HOME}"',g' -i ${GITLA
 sudo -HEu ${GITLAB_USER} sed 's,{{GITLAB_LOG_DIR}},'"${GITLAB_LOG_DIR}"',g' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -HEu ${GITLAB_USER} sed 's,{{GITLAB_DATA_DIR}},'"${GITLAB_DATA_DIR}"',g' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -HEu ${GITLAB_USER} sed 's,{{GITLAB_BACKUP_DIR}},'"${GITLAB_BACKUP_DIR}"',g' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+sudo -HEu ${GITLAB_USER} sed 's,{{GITLAB_REPOS_DIR}},'"${GITLAB_REPOS_DIR}"',g' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -HEu ${GITLAB_USER} sed 's,{{GITLAB_SHELL_INSTALL_DIR}},'"${GITLAB_SHELL_INSTALL_DIR}"',g' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -HEu ${GITLAB_USER} sed 's/{{SSL_SELF_SIGNED}}/'"${SSL_SELF_SIGNED}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -HEu ${GITLAB_USER} sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/' -i ${GITLAB_SHELL_INSTALL_DIR}/config.yml
@@ -690,10 +693,10 @@ chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}
 chmod +x ${GITLAB_DATA_DIR}
 
 # create the repositories directory and make sure it has the right permissions
-sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_DATA_DIR}/repositories/
-chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/repositories/
-chmod ug+rwX,o-rwx ${GITLAB_DATA_DIR}/repositories/
-sudo -HEu ${GITLAB_USER} chmod g+s ${GITLAB_DATA_DIR}/repositories/
+sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_REPOS_DIR}/
+chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_REPOS_DIR}/
+chmod ug+rwX,o-rwx ${GITLAB_REPOS_DIR}/
+sudo -HEu ${GITLAB_USER} chmod g+s ${GITLAB_REPOS_DIR}/
 
 # create the satellites directory and make sure it has the right permissions
 sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_DATA_DIR}/gitlab-satellites/
@@ -831,10 +834,10 @@ appStart () {
 
 appSanitize () {
   echo "Checking repository directories permissions..."
-  chmod -R ug+rwX,o-rwx ${GITLAB_DATA_DIR}/repositories/
-  chmod -R ug-s ${GITLAB_DATA_DIR}/repositories/
-  find ${GITLAB_DATA_DIR}/repositories/ -type d -print0 | xargs -0 chmod g+s
-  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/repositories
+  chmod -R ug+rwX,o-rwx ${GITLAB_REPOS_DIR}/
+  chmod -R ug-s ${GITLAB_REPOS_DIR}/
+  find ${GITLAB_REPOS_DIR}/ -type d -print0 | xargs -0 chmod g+s
+  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_REPOS_DIR}
 
   echo "Checking satellites directories permissions..."
   sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_DATA_DIR}/gitlab-satellites/

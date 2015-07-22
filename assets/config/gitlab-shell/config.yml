@@ -20,7 +20,7 @@ http_settings:
 # Give the canonicalized absolute pathname,
 # REPOS_PATH MUST NOT CONTAIN ANY SYMLINK!!!
 # Check twice that none of the components is a symlink, including "/home".
-repos_path: "{{GITLAB_DATA_DIR}}/repositories"
+repos_path: "{{GITLAB_REPOS_DIR}}"
 
 # File used as authorized_keys for gitlab user
 auth_file: "{{GITLAB_HOME}}/.ssh/authorized_keys"
