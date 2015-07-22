@@ -265,7 +265,7 @@ production: &base
     path: "{{GITLAB_SHELL_INSTALL_DIR}}/"
 
     # REPOS_PATH MUST NOT BE A SYMLINK!!!
-    repos_path: "{{GITLAB_DATA_DIR}}/repositories/"
+    repos_path: "{{GITLAB_REPOS_DIR}}/"
     hooks_path: "{{GITLAB_SHELL_INSTALL_DIR}}/hooks/"
 
     # File that contains the secret key for verifying access for gitlab-shell.
