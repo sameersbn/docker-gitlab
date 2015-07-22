@@ -5,6 +5,7 @@ This file only reflects the changes that are made in the the docker image. Pleas
 **latest**
 - expose SAML OAuth provider configuration
 - expose `OAUTH_AUTO_SIGN_IN_WITH_PROVIDER` configuration
+- gitlab: upgrade to CE v.7.13.0
 
 **7.12.2-2**
 - enable persistence `.secret` file used in 2FA
