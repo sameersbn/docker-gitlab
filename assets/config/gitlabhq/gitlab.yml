@@ -60,14 +60,15 @@ production: &base
 
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 
-    default_can_create_group: {{GITLAB_CREATE_GROUP}}  # default: true
-    username_changing_enabled: {{GITLAB_USERNAME_CHANGE}} # default: true - User can change her username/namespace
-    ## Default theme
-    ##   BASIC  = 1
-    ##   MARS   = 2
-    ##   MODERN = 3
-    ##   GRAY   = 4
-    ##   COLOR  = 5
+    # default_can_create_group: false  # default: true
+    # username_changing_enabled: false # default: true - User can change her username/namespace
+    ## Default theme ID
+    ##   1 - Graphite
+    ##   2 - Charcoal
+    ##   3 - Green
+    ##   4 - Gray
+    ##   5 - Violet
+    ##   6 - Blue
     # default_theme: 2 # default: 2
 
     ## Automatic issue closing
