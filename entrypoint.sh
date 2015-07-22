@@ -693,13 +693,13 @@ chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}
 chmod +x ${GITLAB_DATA_DIR}
 
 # create the repositories directory and make sure it has the right permissions
-sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_REPOS_DIR}/
+mkdir -p ${GITLAB_REPOS_DIR}/
 chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_REPOS_DIR}/
 chmod ug+rwX,o-rwx ${GITLAB_REPOS_DIR}/
 sudo -HEu ${GITLAB_USER} chmod g+s ${GITLAB_REPOS_DIR}/
 
 # create the satellites directory and make sure it has the right permissions
-sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_DATA_DIR}/gitlab-satellites/
+mkdir -p ${GITLAB_DATA_DIR}/gitlab-satellites/
 chmod u+rwx,g=rx,o-rwx ${GITLAB_DATA_DIR}/gitlab-satellites
 chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/gitlab-satellites
 
@@ -711,12 +711,12 @@ mkdir -p ${GITLAB_BACKUP_DIR}
 chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_BACKUP_DIR}
 
 # create the uploads directory
-sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_DATA_DIR}/uploads/
+mkdir -p ${GITLAB_DATA_DIR}/uploads/
 chmod -R u+rwX ${GITLAB_DATA_DIR}/uploads/
 chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/uploads/
 
 # create the .ssh directory
-sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_DATA_DIR}/.ssh/
+mkdir -p ${GITLAB_DATA_DIR}/.ssh/
 touch ${GITLAB_DATA_DIR}/.ssh/authorized_keys
 chmod 700 ${GITLAB_DATA_DIR}/.ssh
 chmod 600 ${GITLAB_DATA_DIR}/.ssh/authorized_keys
