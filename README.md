@@ -528,7 +528,7 @@ With `GITLAB_HTTPS_HSTS_MAXAGE` you can configure that value. The default value 
 ```bash
 docker run --name gitlab -d \
  --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
- --env 'GITLAB_HTTPS_HSTS_MAXAGE=2592000'
+ --env 'GITLAB_HTTPS_HSTS_MAXAGE=2592000' \
  --volume /srv/docker/gitlab/gitlab:/home/git/data \
  sameersbn/gitlab:7.13.1
 ```
