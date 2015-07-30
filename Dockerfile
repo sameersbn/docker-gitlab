@@ -1,7 +1,7 @@
 FROM sameersbn/ubuntu:14.04.20150712
 MAINTAINER sameer@damagehead.com
 
-ENV GITLAB_VERSION=7.13.1 \
+ENV GITLAB_VERSION=7.13.2 \
     GITLAB_SHELL_VERSION=2.6.3 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
