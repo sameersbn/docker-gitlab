@@ -128,7 +128,7 @@ production: &base
         # for instance if you find out it is too large to fit on the web page.
         #
         # Example: 'Paris' or 'Acme, Ltd.'
-        label: 'LDAP'
+        label: "{{LDAP_LABEL}}"
 
         host: "{{LDAP_HOST}}"
         port: {{LDAP_PORT}}
