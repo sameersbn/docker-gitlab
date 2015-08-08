@@ -2,7 +2,7 @@
 
 This file only reflects the changes that are made in the the docker image. Please refer to the upstream GitLab [CHANGELOG](https://github.com/gitlabhq/gitlabhq/blob/master/CHANGELOG) for the list of changes in GitLab.
 
-**latest**
+**7.13.4**
 - gitlab: upgrade to CE v.7.13.4
 
 **7.13.3**
