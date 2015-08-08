@@ -84,6 +84,9 @@ SMTP_PASS=${SMTP_PASS:-}
 SMTP_OPENSSL_VERIFY_MODE=${SMTP_OPENSSL_VERIFY_MODE:-none}
 SMTP_STARTTLS=${SMTP_STARTTLS:-true}
 SMTP_TLS=${SMTP_TLS:-false}
+SMTP_CA_ENABLED=${SMTP_CA_ENABLED:-false}
+SMTP_CA_PATH=${SMTP_CA_PATH:-$GITLAB_DATA_DIR/certs}
+SMTP_CA_FILE=${SMTP_CA_FILE:-$GITLAB_DATA_DIR/certs/ca.crt}
 if [[ -n ${SMTP_USER} ]]; then
   SMTP_ENABLED=${SMTP_ENABLED:-true}
   SMTP_AUTHENTICATION=${SMTP_AUTHENTICATION:-login}
@@ -486,6 +489,19 @@ if [[ ${SMTP_ENABLED} == true ]]; then
     "") sudo -HEu ${GITLAB_USER} sed '/{{SMTP_AUTHENTICATION}}/d' -i config/initializers/smtp_settings.rb ;;
     *) sudo -HEu ${GITLAB_USER} sed 's/{{SMTP_AUTHENTICATION}}/'"${SMTP_AUTHENTICATION}"'/' -i config/initializers/smtp_settings.rb ;;
   esac
+
+  if [[ ${SMTP_CA_ENABLED} == true ]]; then
+    if [[ -d ${SMTP_CA_PATH} ]]; then
+      sudo -HEu ${GITLAB_USER} sed 's,{{SMTP_CA_PATH}},'"${SMTP_CA_PATH}"',' -i config/initializers/smtp_settings.rb
+    fi
+
+    if [[ -f ${SMTP_CA_FILE} ]]; then
+      sudo -HEu ${GITLAB_USER} sed 's,{{SMTP_CA_FILE}},'"${SMTP_CA_FILE}"',' -i config/initializers/smtp_settings.rb
+    fi
+  else
+    sudo -HEu ${GITLAB_USER} sed '/{{SMTP_CA_PATH}}/d' -i config/initializers/smtp_settings.rb
+    sudo -HEu ${GITLAB_USER} sed '/{{SMTP_CA_FILE}}/d' -i config/initializers/smtp_settings.rb
+  fi
 fi
 
 # apply LDAP configuration
