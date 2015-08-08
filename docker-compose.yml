@@ -1,5 +1,5 @@
 postgresql:
-  image: sameersbn/postgresql:9.4-2
+  image: sameersbn/postgresql:9.4-3
   environment:
     - DB_USER=gitlab
     - DB_PASS=password
