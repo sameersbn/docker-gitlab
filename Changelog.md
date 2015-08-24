@@ -4,6 +4,7 @@ This file only reflects the changes that are made in the the docker image. Pleas
 
 **latest**
 - gitlab-shell: upgrade to v.2.6.4
+- gitlab: upgrade to CE v.7.14.0
 
 **7.13.5**
 - gitlab: upgrade to CE v.7.13.5
