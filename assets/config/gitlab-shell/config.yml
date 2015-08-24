@@ -1,3 +1,8 @@
+#
+# If you change this file in a Merge Request, please also create
+# a Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
+#
+
 # GitLab user. git by default
 user: git
 
