@@ -7,11 +7,14 @@ GEM_CACHE_DIR="${SETUP_DIR}/cache"
 apt-get update
 
 # install build dependencies for gem installation
-apt-get install -y gcc g++ make patch pkg-config cmake \
+apt-get install -y gcc g++ make patch pkg-config cmake paxctl \
   libc6-dev ruby2.1-dev \
   libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
   libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
+
+# https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
+paxctl -Cm `which nodejs`
 
 # remove the host keys generated during openssh-server installation
 rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
@@ -255,7 +258,7 @@ stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 EOF
 
 # purge build dependencies
-apt-get purge -y --auto-remove gcc g++ make patch pkg-config cmake \
+apt-get purge -y --auto-remove gcc g++ make patch pkg-config cmake paxctl \
   libc6-dev ruby2.1-dev \
   libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
