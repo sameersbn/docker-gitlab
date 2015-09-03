@@ -841,7 +841,7 @@ docker run --name gitlab -it --rm [OPTIONS] \
     sameersbn/gitlab:7.14.1 app:rake gitlab:backup:create
 ```
 
-A backup will be created in the backups folder of the [Data Store](#data-store). You can change the location of the backups using the `GITLAB_CI_BACKUP_DIR` configuration parameter.
+A backup will be created in the backups folder of the [Data Store](#data-store). You can change the location of the backups using the `GITLAB_BACKUP_DIR` configuration parameter.
 
 *P.S. Backups can also be generated on a running instance using `docker exec` as described in the [Rake Tasks](#rake-tasks) section. However, to avoid undesired side-effects, I advice against running backup and restore operations on a running instance.*
 
