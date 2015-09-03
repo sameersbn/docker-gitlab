@@ -806,8 +806,7 @@ appInit () {
     sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_DATA_DIR}/tmp/public/assets/
 
     echo "Compiling assets. Please be patient, this could take a while..."
-    sudo -HEu ${GITLAB_USER} bundle exec rake assets:clean >/dev/null 2>&1
-    sudo -HEu ${GITLAB_USER} bundle exec rake assets:precompile >/dev/null 2>&1
+    sudo -HEu ${GITLAB_USER} bundle exec rake assets:clean assets:precompile cache:clear >/dev/null 2>&1
     sudo -HEu ${GITLAB_USER} touch tmp/cache/VERSION
     sudo -HEu ${GITLAB_USER} echo "${GITLAB_VERSION}" > tmp/cache/VERSION
     sudo -HEu ${GITLAB_USER} echo "${GITLAB_RELATIVE_URL_ROOT}" > tmp/cache/GITLAB_RELATIVE_URL_ROOT
