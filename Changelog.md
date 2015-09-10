@@ -6,6 +6,7 @@ This file only reflects the changes that are made in the the docker image. Pleas
 - Apply grsecurity policies to nodejs binary #394
 - Fix broken emojis post migration #196
 - gitlab-shell: upgrade to v.2.6.5
+- gitlab: upgrade to CE v.7.14.2
 
 **7.14.1**
 - gitlab: upgrade to CE v.7.14.1
