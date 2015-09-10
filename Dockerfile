@@ -2,7 +2,7 @@ FROM sameersbn/ubuntu:14.04.20150825
 MAINTAINER sameer@damagehead.com
 
 ENV GITLAB_VERSION=7.14.1 \
-    GITLAB_SHELL_VERSION=2.6.4 \
+    GITLAB_SHELL_VERSION=2.6.5 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
