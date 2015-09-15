@@ -210,6 +210,9 @@ if [[ -z ${DB_HOST} ]]; then
   exit 1
 fi
 
+# DB_TYPE defaults to postgres
+DB_TYPE=${DB_TYPE:-postgres}
+
 # use default port number if it is still not set
 case ${DB_TYPE} in
   mysql) DB_PORT=${DB_PORT:-3306} ;;
