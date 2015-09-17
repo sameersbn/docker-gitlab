@@ -4,6 +4,8 @@ This file only reflects the changes that are made in the the docker image. Pleas
 
 **latest**
 - set default value of `DB_TYPE` to `postgres`
+- added sample Kubernetes rc and service description files
+- expose `GITLAB_BACKUP_ARCHIVE_PERMISSIONS` parameter
 
 **7.14.3**
 - gitlab: upgrade to CE v.7.14.3
