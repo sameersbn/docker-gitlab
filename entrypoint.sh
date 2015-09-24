@@ -759,7 +759,7 @@ if [[ -f /etc/nginx/sites-enabled/gitlab_ci ]]; then
   sed 's/{{GITLAB_HOST}}/'"${GITLAB_HOST}"'/g' -i /etc/nginx/sites-enabled/gitlab_ci
   sed 's/{{GITLAB_CI_HOST}}/'"${GITLAB_CI_HOST}"'/' -i /etc/nginx/sites-enabled/gitlab_ci
 
-  DNS_RESOLVERS=$(cat /etc/resolv.conf  | grep nameserver | awk '{print $2}' ORS=' ')
+  DNS_RESOLVERS=$(cat /etc/resolv.conf  | grep '^\s*nameserver' | awk '{print $2}' ORS=' ')
   sed 's/{{DNS_RESOLVERS}}/'"${DNS_RESOLVERS}"'/' -i /etc/nginx/sites-enabled/gitlab_ci
 fi
 
