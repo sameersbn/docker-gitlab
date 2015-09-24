@@ -861,8 +861,7 @@ Below is the complete list of available options that can be used to customize yo
 - **AWS_BACKUP_ACCESS_KEY_ID**: AWS access key id. No defaults.
 - **AWS_BACKUP_SECRET_ACCESS_KEY**: AWS secret access key. No defaults.
 - **AWS_BACKUP_BUCKET**: AWS bucket for backup uploads. No defaults.
-- **GITLAB_ROBOTS_OVERRIDE**: Override `robots.txt`. Defaults to `false`.
-- **GITLAB_ROBOTS_PATH**: Location of `robots.txt`. See [www.robotstxt.org](http://www.robotstxt.org) for examples. Defaults to `robots.txt` which [prevents robots scanning gitlab](http://www.robotstxt.org/faq/prevent.html).
+- **GITLAB_ROBOTS_PATH**: Location of custom `robots.txt`. Uses GitLab's default `robots.txt` configuration by default. See [www.robotstxt.org](http://www.robotstxt.org) for examples.
 
 # Maintenance
 

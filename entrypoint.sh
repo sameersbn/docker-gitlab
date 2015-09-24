@@ -180,8 +180,7 @@ GOOGLE_ANALYTICS_ID=${GOOGLE_ANALYTICS_ID:-}
 PIWIK_URL=${PIWIK_URL:-}
 PIWIK_SITE_ID=${PIWIK_SITE_ID:-}
 
-GITLAB_ROBOTS_OVERRIDE=${GITLAB_ROBOTS_OVERRIDE:-false}
-GITLAB_ROBOTS_PATH=${GITLAB_ROBOTS_PATH:-$SYSCONF_TEMPLATES_DIR/gitlabhq/robots.txt}
+GITLAB_ROBOTS_PATH=${GITLAB_ROBOTS_PATH:-${USERCONF_TEMPLATES_DIR}/gitlabhq/robots.txt}
 
 # is a mysql or postgresql database linked?
 # requires that the mysql or postgresql containers have exposed
@@ -357,11 +356,6 @@ sudo -HEu ${GITLAB_USER} cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/unicorn.rb        
 sudo -HEu ${GITLAB_USER} cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/rack_attack.rb    config/initializers/rack_attack.rb
 [[ ${SMTP_ENABLED} == true ]] && \
 sudo -HEu ${GITLAB_USER} cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb  config/initializers/smtp_settings.rb
-
-# allow to override robots.txt to block bots
-[[ ${GITLAB_ROBOTS_OVERRIDE} == true ]] && \
-sudo -HEu ${GITLAB_USER} cp ${GITLAB_ROBOTS_PATH} public/robots.txt
-
 [[ ${IMAP_ENABLED} == true ]] && \
 sudo -HEu ${GITLAB_USER} cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/mail_room.yml     config/mail_room.yml
 
@@ -388,6 +382,9 @@ esac
 [[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb ]] && sudo -HEu ${GITLAB_USER} cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb config/initializers/smtp_settings.rb
 [[ ${IMAP_ENABLED} == true ]] && \
 [[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/mail_room.yml ]]    && sudo -HEu ${GITLAB_USER} cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/mail_room.yml    config/mail_room.yml
+
+# override robots.txt if a user configuration exists
+[[ -f ${GITLAB_ROBOTS_PATH} ]]                               && sudo -HEu ${GITLAB_USER} cp ${GITLAB_ROBOTS_PATH}                               public/robots.txt
 
 if [[ -f ${SSL_CERTIFICATE_PATH} || -f ${CA_CERTIFICATES_PATH} ]]; then
   echo "Updating CA certificates..."
