@@ -1,7 +1,7 @@
 FROM sameersbn/ubuntu:14.04.20150825
 MAINTAINER sameer@damagehead.com
 
-ENV GITLAB_VERSION=7.14.3 \
+ENV GITLAB_VERSION=8.0.0 \
     GITLAB_SHELL_VERSION=2.6.5 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
@@ -11,6 +11,7 @@ ENV GITLAB_VERSION=7.14.3 \
 
 ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
     GITLAB_SHELL_INSTALL_DIR="${GITLAB_HOME}/gitlab-shell" \
+    GITLAB_GIT_HTTP_SERVER_INSTALL_DIR="${GITLAB_HOME}/gitlab-git-http-server" \
     GITLAB_DATA_DIR="${GITLAB_HOME}/data"
 
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E6030699E45FA1715D88E1DF1F24 \

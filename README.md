@@ -135,6 +135,13 @@ The quickest way to get started is using [docker-compose](https://docs.docker.co
 
 ```bash
 wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml.dist -O docker-compose.yml
+```
+
+Generate a random string and assign to `GITLAB_SECRETS_DB_KEY_BASE` environment variable. Once set you should not change this value and ensure you keep a backup of this value.
+
+> **Tip**: You can generate a random string using `pwgen -Bsv1 64` and assign it as the value of `GITLAB_SECRETS_DB_KEY_BASE`.
+
+```bash
 docker-compose up
 ```
 
@@ -165,6 +172,7 @@ docker run --name gitlab -d \
     --link gitlab-postgresql:postgresql --link gitlab-redis:redisio \
     --publish 10022:22 --publish 10080:80 \
     --env 'GITLAB_PORT=10080' --env 'GITLAB_SSH_PORT=10022' \
+    --env 'GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alpha-numeric-string' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
 sameersbn/gitlab:7.14.3
 ```
@@ -708,6 +716,7 @@ Below is the complete list of available options that can be used to customize yo
 - **DEBUG_ENTRYPOINT**: Set this to `true` to enable entrypoint debugging.
 - **GITLAB_HOST**: The hostname of the GitLab server. Defaults to `localhost`
 - **GITLAB_PORT**: The port of the GitLab server. This value indicates the public port on which the GitLab application will be accessible on the network and appropriately configures GitLab to generate the correct urls. It does not affect the port on which the internal nginx server will be listening on. Defaults to `443` if `GITLAB_HTTPS=true`, else defaults to `80`.
+- **GITLAB_SECRETS_DB_KEY_BASE**: Used to encrypt build variables. Ensure that you don't lose it. You can generate one using `pwgen -Bsv1 64`. If you are migrating from GitLab CI, you need to set this value to the value of `GITLAB_CI_SECRETS_DB_KEY_BASE`. No defaults.
 - **GITLAB_TIMEZONE**: Configure the timezone for the gitlab application. This configuration does not effect cron jobs. Defaults to `UTC`. See the list of [acceptable values](http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html).
 - **GITLAB_ROOT_PASSWORD**: The password for the root user. Defaults to `5iveL!fe`.
 - **GITLAB_EMAIL**: The email address for the GitLab server. Defaults to `example@example.com`.
@@ -725,6 +734,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_TIMEOUT**: Sets the timeout for git commands. Defaults to `10` seconds.
 - **GITLAB_REPOS_DIR**: The git repositories folder in the container. Defaults to `/home/git/data/repositories`
 - **GITLAB_BACKUP_DIR**: The backup folder in the container. Defaults to `/home/git/data/backups`
+- **GITLAB_BUILDS_DIR**: The build traces directory. Defaults to `/home/git/data/builds`
 - **GITLAB_BACKUPS**: Setup cron job to automatic backups. Possible values `disable`, `daily`, `weekly` or `monthly`. Disabled by default
 - **GITLAB_BACKUP_EXPIRY**: Configure how long (in seconds) to keep backups before they are deleted. By default when automated backups are disabled backups are kept forever (0 seconds), else the backups expire in 7 days (604800 seconds).
 - **GITLAB_BACKUP_ARCHIVE_PERMISSIONS**: Sets the permissions of the backup archives. Defaults to `0600`. [See](http://doc.gitlab.com/ce/raketasks/backup_restore.html#backup-archive-permissions)

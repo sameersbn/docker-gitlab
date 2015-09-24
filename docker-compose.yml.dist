@@ -32,6 +32,7 @@ gitlab:
     - GITLAB_EMAIL_REPLY_TO=noreply@example.com
     - GITLAB_BACKUPS=daily
     - GITLAB_BACKUP_TIME=01:00
+    - GITLAB_SECRETS_DB_KEY_BASE=
   volumes:
     - /srv/docker/gitlab/gitlab:/home/git/data
 redis:

@@ -8,6 +8,7 @@ USERCONF_TEMPLATES_DIR="${GITLAB_DATA_DIR}/config"
 
 GITLAB_BACKUP_DIR="${GITLAB_BACKUP_DIR:-$GITLAB_DATA_DIR/backups}"
 GITLAB_REPOS_DIR="${GITLAB_REPOS_DIR:-$GITLAB_DATA_DIR/repositories}"
+GITLAB_BUILDS_DIR="${GITLAB_BUILDS_DIR:-$GITLAB_DATA_DIR/builds}"
 GITLAB_HOST=${GITLAB_HOST:-localhost}
 GITLAB_PORT=${GITLAB_PORT:-}
 GITLAB_SSH_HOST=${GITLAB_SSH_HOST:-$GITLAB_HOST}
@@ -28,6 +29,8 @@ GITLAB_RELATIVE_URL_ROOT=${GITLAB_RELATIVE_URL_ROOT:-}
 GITLAB_WEBHOOK_TIMEOUT=${GITLAB_WEBHOOK_TIMEOUT:-10}
 GITLAB_SATELLITES_TIMEOUT=${GITLAB_SATELLITES_TIMEOUT:-30}
 GITLAB_TIMEOUT=${GITLAB_TIMEOUT:-10}
+
+GITLAB_SECRETS_DB_KEY_BASE=${GITLAB_SECRETS_DB_KEY_BASE:-}
 
 SSL_SELF_SIGNED=${SSL_SELF_SIGNED:-false}
 SSL_CERTIFICATE_PATH=${SSL_CERTIFICATE_PATH:-$GITLAB_DATA_DIR/certs/gitlab.crt}
@@ -247,6 +250,13 @@ if [[ -z ${REDIS_HOST} ]]; then
   exit 1
 fi
 
+if [[ -z $GITLAB_SECRETS_DB_KEY_BASE ]]; then
+  echo "ERROR: "
+  echo "  Please configure the GITLAB_SECRETS_DB_KEY_BASE parameter."
+  echo "  Cannot continue. Aborting..."
+  exit 1
+fi
+
 case ${GITLAB_HTTPS} in
   true)
     GITLAB_PORT=${GITLAB_PORT:-443}
@@ -319,6 +329,7 @@ esac
 
 sudo -HEu ${GITLAB_USER} cp ${SYSCONF_TEMPLATES_DIR}/gitlab-shell/config.yml    ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -HEu ${GITLAB_USER} cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/gitlab.yml        config/gitlab.yml
+sudo -HEu ${GITLAB_USER} cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/secrets.yml       config/secrets.yml
 sudo -HEu ${GITLAB_USER} cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/resque.yml        config/resque.yml
 sudo -HEu ${GITLAB_USER} cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/database.yml      config/database.yml
 sudo -HEu ${GITLAB_USER} cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/unicorn.rb        config/unicorn.rb
@@ -344,6 +355,7 @@ esac
 
 [[ -f ${USERCONF_TEMPLATES_DIR}/gitlab-shell/config.yml ]]   && sudo -HEu ${GITLAB_USER} cp ${USERCONF_TEMPLATES_DIR}/gitlab-shell/config.yml   ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 [[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/gitlab.yml ]]       && sudo -HEu ${GITLAB_USER} cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/gitlab.yml       config/gitlab.yml
+[[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/secrets.yml ]]      && sudo -HEu ${GITLAB_USER} cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/secrets.yml      config/secrets.yml
 [[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/resque.yml ]]       && sudo -HEu ${GITLAB_USER} cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/resque.yml       config/resque.yml
 [[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/database.yml ]]     && sudo -HEu ${GITLAB_USER} cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/database.yml     config/database.yml
 [[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/unicorn.rb ]]       && sudo -HEu ${GITLAB_USER} cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/unicorn.rb       config/unicorn.rb
@@ -364,6 +376,10 @@ sudo -HEu ${GITLAB_USER} sed 's,{{GITLAB_BACKUP_DIR}},'"${GITLAB_BACKUP_DIR}"',g
 sudo -HEu ${GITLAB_USER} sed 's,{{GITLAB_REPOS_DIR}},'"${GITLAB_REPOS_DIR}"',g' -i config/gitlab.yml
 sudo -HEu ${GITLAB_USER} sed 's,{{GITLAB_INSTALL_DIR}},'"${GITLAB_INSTALL_DIR}"',g' -i config/gitlab.yml
 sudo -HEu ${GITLAB_USER} sed 's,{{GITLAB_SHELL_INSTALL_DIR}},'"${GITLAB_SHELL_INSTALL_DIR}"',g' -i config/gitlab.yml
+sudo -HEu ${GITLAB_USER} sed 's,{{GITLAB_BUILDS_DIR}},'"${GITLAB_BUILDS_DIR}"',g' -i config/gitlab.yml
+
+# configure gitlab-git-http-server
+sed 's,{{GITLAB_REPOS_DIR}},'"${GITLAB_REPOS_DIR}"',' -i /etc/supervisor/conf.d/gitlab-git-http-server.conf
 
 # configure gitlab
 sudo -HEu ${GITLAB_USER} sed 's/{{GITLAB_HOST}}/'"${GITLAB_HOST}"'/' -i config/gitlab.yml
@@ -377,6 +393,9 @@ sudo -HEu ${GITLAB_USER} sed 's/{{GITLAB_BACKUP_ARCHIVE_PERMISSIONS}}/'"${GITLAB
 sudo -HEu ${GITLAB_USER} sed 's/{{GITLAB_MAX_SIZE}}/'"${GITLAB_MAX_SIZE}"'/' -i config/gitlab.yml
 sudo -HEu ${GITLAB_USER} sed 's/{{GITLAB_SSH_HOST}}/'"${GITLAB_SSH_HOST}"'/' -i config/gitlab.yml
 sudo -HEu ${GITLAB_USER} sed 's/{{GITLAB_SSH_PORT}}/'"${GITLAB_SSH_PORT}"'/' -i config/gitlab.yml
+
+# configure secrets
+sudo -HEu ${GITLAB_USER} sed 's/{{GITLAB_SECRETS_DB_KEY_BASE}}/'"${GITLAB_SECRETS_DB_KEY_BASE}"'/' -i config/secrets.yml
 
 # configure default timezone
 sudo -HEu ${GITLAB_USER} sed 's/{{GITLAB_TIMEZONE}}/'"${GITLAB_TIMEZONE}"'/' -i config/gitlab.yml
@@ -681,10 +700,10 @@ else
 fi
 
 sed 's/worker_processes .*/worker_processes '"${NGINX_WORKERS}"';/' -i /etc/nginx/nginx.conf
-sed 's/{{NGINX_PROXY_BUFFERING}}/'"${NGINX_PROXY_BUFFERING}"'/' -i /etc/nginx/sites-enabled/gitlab
-sed 's/{{NGINX_ACCEL_BUFFERING}}/'"${NGINX_ACCEL_BUFFERING}"'/' -i /etc/nginx/sites-enabled/gitlab
+sed 's/{{NGINX_PROXY_BUFFERING}}/'"${NGINX_PROXY_BUFFERING}"'/g' -i /etc/nginx/sites-enabled/gitlab
+sed 's/{{NGINX_ACCEL_BUFFERING}}/'"${NGINX_ACCEL_BUFFERING}"'/g' -i /etc/nginx/sites-enabled/gitlab
 sed 's/{{NGINX_MAX_UPLOAD_SIZE}}/'"${NGINX_MAX_UPLOAD_SIZE}"'/' -i /etc/nginx/sites-enabled/gitlab
-sed 's/{{NGINX_X_FORWARDED_PROTO}}/'"${NGINX_X_FORWARDED_PROTO}"'/' -i /etc/nginx/sites-enabled/gitlab
+sed 's/{{NGINX_X_FORWARDED_PROTO}}/'"${NGINX_X_FORWARDED_PROTO}"'/g' -i /etc/nginx/sites-enabled/gitlab
 
 if [[ ${GITLAB_HTTPS_HSTS_ENABLED} == true ]]; then
   sed 's/{{GITLAB_HTTPS_HSTS_MAXAGE}}/'"${GITLAB_HTTPS_HSTS_MAXAGE}"'/' -i /etc/nginx/sites-enabled/gitlab
@@ -713,6 +732,9 @@ if [[ ! -f /proc/net/if_inet6 ]]; then
   sed -e '/listen \[::\]:443/ s/^#*/#/' -i /etc/nginx/sites-enabled/gitlab
 fi
 
+# fix permissions of secrets.yml
+chmod 0600 config/secrets.yml
+
 # fix permission and ownership of ${GITLAB_DATA_DIR}
 chmod 755 ${GITLAB_DATA_DIR}
 chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}
@@ -727,10 +749,14 @@ chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_REPOS_DIR}/
 chmod ug+rwX,o-rwx ${GITLAB_REPOS_DIR}/
 sudo -HEu ${GITLAB_USER} chmod g+s ${GITLAB_REPOS_DIR}/
 
-# create the satellites directory and make sure it has the right permissions
-mkdir -p ${GITLAB_DATA_DIR}/gitlab-satellites/
-chmod u+rwx,g=rx,o-rwx ${GITLAB_DATA_DIR}/gitlab-satellites
-chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/gitlab-satellites
+# create build traces directory
+mkdir -p ${GITLAB_BUILDS_DIR}
+chmod u+rwX ${GITLAB_BUILDS_DIR}
+chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_BUILDS_DIR}
+
+# symlink builds/ -> ${GITLAB_BUILDS_DIR}
+rm -rf builds
+ln -sf ${GITLAB_BUILDS_DIR} builds
 
 # remove old cache directory (remove this line after a few releases)
 rm -rf ${GITLAB_DATA_DIR}/cache
@@ -828,21 +854,22 @@ appInit () {
   case ${GITLAB_BACKUPS} in
     daily|weekly|monthly)
       read hour min <<< ${GITLAB_BACKUP_TIME//[:]/ }
+      crontab -u ${GITLAB_USER} -l > /tmp/cron.${GITLAB_USER}
       case ${GITLAB_BACKUPS} in
         daily)
-          sudo -HEu ${GITLAB_USER} cat > /tmp/cron.${GITLAB_USER} <<EOF
+          sudo -HEu ${GITLAB_USER} cat >> /tmp/cron.${GITLAB_USER} <<EOF
 # Automatic Backups: daily
 $min $hour * * * /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=${RAILS_ENV}'
 EOF
           ;;
         weekly)
-          sudo -HEu ${GITLAB_USER} cat > /tmp/cron.${GITLAB_USER} <<EOF
+          sudo -HEu ${GITLAB_USER} cat >> /tmp/cron.${GITLAB_USER} <<EOF
 # Automatic Backups: weekly
 $min $hour * * 0 /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=${RAILS_ENV}'
 EOF
           ;;
         monthly)
-          sudo -HEu ${GITLAB_USER} cat > /tmp/cron.${GITLAB_USER} <<EOF
+          sudo -HEu ${GITLAB_USER} cat >> /tmp/cron.${GITLAB_USER} <<EOF
 # Automatic Backups: monthly
 $min $hour 01 * * /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=${RAILS_ENV}'
 EOF
@@ -867,10 +894,10 @@ appSanitize () {
   find ${GITLAB_REPOS_DIR}/ -type d -print0 | xargs -0 chmod g+s
   chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_REPOS_DIR}
 
-  echo "Checking satellites directories permissions..."
-  sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_DATA_DIR}/gitlab-satellites/
-  chmod u+rwx,g=rx,o-rwx ${GITLAB_DATA_DIR}/gitlab-satellites
-  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/gitlab-satellites
+  echo "Checking builds directories permissions..."
+  sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_BUILDS_DIR}
+  chmod -R u+rwX ${GITLAB_BUILDS_DIR}
+  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_BUILDS_DIR}
 
   echo "Checking uploads directory permissions..."
   chmod -R u+rwX ${GITLAB_DATA_DIR}/uploads/
@@ -930,7 +957,7 @@ appHelp () {
   echo "Available options:"
   echo " app:start          - Starts the gitlab server (default)"
   echo " app:init           - Initialize the gitlab server (e.g. create databases, compile assets), but don't start it."
-  echo " app:sanitize       - Fix repository/satellites directory permissions."
+  echo " app:sanitize       - Fix repository/builds directory permissions."
   echo " app:rake <task>    - Execute a rake task."
   echo " app:help           - Displays the help"
   echo " [command]          - Execute the specified linux command eg. bash."

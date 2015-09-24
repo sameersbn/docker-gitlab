@@ -22,6 +22,9 @@ spec:
             - name: GITLAB_TIMEZONE
               value: Kolkata
 
+            - name: GITLAB_SECRETS_DB_KEY_BASE
+              value: long-and-random-alpha-numeric-string
+
             - name: GITLAB_HOST
               value: git.example.com
             - name: GITLAB_PORT

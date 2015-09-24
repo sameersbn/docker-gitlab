@@ -4,7 +4,7 @@
 #
 ###########################  NOTE  #####################################
 # This file should not receive new settings. All configuration options #
-# that do not require application restart are being moved to           #
+# that do not require an application restart are being moved to        #
 # ApplicationSetting model!                                            #
 # If you change this file in a Merge Request, please also create       #
 # a MR on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests  #
@@ -94,16 +94,39 @@ production: &base
     # The default is 'tmp/repositories' relative to the root of the Rails app.
     # repository_downloads_path: tmp/repositories
 
+  ## Reply by email
+  # Allow users to comment on issues and merge requests by replying to notification emails.
+  # For documentation on how to set this up, see http://doc.gitlab.com/ce/incoming_email/README.html
+  incoming_email:
+    enabled: false
+    address: "incoming+%{key}@gitlab.example.com"
+
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
     enabled: {{GITLAB_GRAVATAR_ENABLED}}  # Use user avatar image from Gravatar.com (default: true)
-    # gravatar urls: possible placeholders: %{hash} %{size} %{email}
+    # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     plain_url: "{{GITLAB_GRAVATAR_HTTP_URL}}"     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     ssl_url:   "{{GITLAB_GRAVATAR_HTTPS_URL}}"    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
   #
-  # 2. Auth settings
+  # 2. GitLab CI settings
+  # ==========================
+
+  gitlab_ci:
+    # Default project notifications settings:
+    #
+    # Send emails only on broken builds (default: true)
+    all_broken_builds: true
+    #
+    # Add pusher to recipients list (default: false)
+    add_pusher: true
+
+    # The location where build traces are stored (default: builds/). Relative paths are relative to Rails.root
+    builds_path: "{{GITLAB_BUILDS_DIR}}"
+
+  #
+  # 3. Auth settings
   # ==========================
 
   ## LDAP settings
@@ -173,6 +196,26 @@ production: &base
         #
         user_filter: "{{LDAP_USER_FILTER}}"
 
+        # LDAP attributes that GitLab will use to create an account for the LDAP user.
+        # The specified attribute can either be the attribute name as a string (e.g. 'mail'),
+        # or an array of attribute names to try in order (e.g. ['mail', 'email']).
+        # Note that the user's LDAP login will always be the attribute specified as `uid` above.
+        attributes:
+          # The username will be used in paths for the user's own projects
+          # (like `gitlab.example.com/username/project`) and when mentioning
+          # them in issues, merge request and comments (like `@username`).
+          # If the attribute specified for `username` contains an email address, 
+          # the GitLab username will be the part of the email address before the '@'.
+          username: ['uid', 'userid', 'sAMAccountName']
+          email:    ['mail', 'email', 'userPrincipalName']
+
+          # If no full name could be found at the attribute specified for `name`,
+          # the full name is determined using the attributes specified for 
+          # `first_name` and `last_name`.
+          name:       'cn'
+          first_name: 'givenName'
+          last_name:  'sn'
+
       # GitLab EE only: add more LDAP servers
       # Choose an ID made of a-z and 0-9 . This ID will be stored in the database
       # so that GitLab can remember which LDAP server a user belongs to.
@@ -230,12 +273,17 @@ production: &base
                   idp_sso_target_url: '{{OAUTH_SAML_IDP_SSO_TARGET_URL}}',
                   issuer: '{{OAUTH_SAML_ISSUER}}',
                   name_identifier_format: '{{OAUTH_SAML_NAME_IDENTIFIER_FORMAT}}' } }
+      # - { name: 'crowd',
+      #     args: {
+      #       crowd_server_url: 'CROWD SERVER URL',
+      #       application_name: 'YOUR_APP_NAME',
+      #       application_password: 'YOUR_APP_PASSWORD' } }
 
 
 
 
   #
-  # 3. Advanced settings
+  # 4. Advanced settings
   # ==========================
 
   # GitLab Satellites
@@ -249,6 +297,7 @@ production: &base
     path: "{{GITLAB_BACKUP_DIR}}"   # Relative paths are relative to Rails.root (default: tmp/backups/)
     archive_permissions: {{GITLAB_BACKUP_ARCHIVE_PERMISSIONS}} # Permissions for the resulting backup.tar file (default: 0600)
     keep_time: {{GITLAB_BACKUP_EXPIRY}}   # default: 0 (forever) (in seconds)
+    # pg_schema: public     # default: nil, it means that all schemas will be backed up
     upload:
       # Fog storage connection settings, see http://fog.io/storage/ .
       connection:
@@ -294,7 +343,7 @@ production: &base
     timeout: {{GITLAB_TIMEOUT}}
 
   #
-  # 4. Extra customization
+  # 5. Extra customization
   # ==========================
 
   extra:
