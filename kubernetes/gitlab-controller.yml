@@ -38,7 +38,7 @@ spec:
               value: false
 
             - name: GITLAB_EMAIL
-              value: admin@example.com
+              value: notifications@example.com
             - name: GITLAB_EMAIL_REPLY_TO
               value: noreply@example.com
             - name: GITLAB_INCOMING_EMAIL_ADDRESS

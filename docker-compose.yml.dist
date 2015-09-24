@@ -34,7 +34,7 @@ gitlab:
     - GITLAB_HOST=localhost
     - GITLAB_PORT=10080
     - GITLAB_SSH_PORT=10022
-    - GITLAB_EMAIL=admin@example.com
+    - GITLAB_EMAIL=notifications@example.com
     - GITLAB_EMAIL_REPLY_TO=noreply@example.com
     - GITLAB_INCOMING_EMAIL_ADDRESS=reply@example.com
     - GITLAB_BACKUPS=daily
