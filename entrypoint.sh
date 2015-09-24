@@ -10,6 +10,7 @@ GITLAB_BACKUP_DIR="${GITLAB_BACKUP_DIR:-$GITLAB_DATA_DIR/backups}"
 GITLAB_REPOS_DIR="${GITLAB_REPOS_DIR:-$GITLAB_DATA_DIR/repositories}"
 GITLAB_BUILDS_DIR="${GITLAB_BUILDS_DIR:-$GITLAB_DATA_DIR/builds}"
 GITLAB_HOST=${GITLAB_HOST:-localhost}
+GITLAB_CI_HOST=${GITLAB_CI_HOST:-}
 GITLAB_PORT=${GITLAB_PORT:-}
 GITLAB_SSH_HOST=${GITLAB_SSH_HOST:-$GITLAB_HOST}
 GITLAB_SSH_PORT=${GITLAB_SSH_PORT:-$GITLAB_SHELL_SSH_PORT} # for backwards compatibility
@@ -346,6 +347,7 @@ case ${GITLAB_HTTPS} in
     ;;
   *) cp ${SYSCONF_TEMPLATES_DIR}/nginx/gitlab /etc/nginx/sites-enabled/gitlab ;;
 esac
+[[ -n $GITLAB_CI_HOST ]] && cp ${SYSCONF_TEMPLATES_DIR}/nginx/gitlab_ci /etc/nginx/sites-enabled/gitlab_ci
 
 sudo -HEu ${GITLAB_USER} cp ${SYSCONF_TEMPLATES_DIR}/gitlab-shell/config.yml    ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 sudo -HEu ${GITLAB_USER} cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/gitlab.yml        config/gitlab.yml
@@ -370,6 +372,7 @@ case ${GITLAB_HTTPS} in
     ;;
   *) [[ -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab ]] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab /etc/nginx/sites-enabled/gitlab ;;
 esac
+[[ -n $GITLAB_CI_HOST && -f ${USERCONF_TEMPLATES_DIR}/nginx/gitlab_ci ]] && cp ${USERCONF_TEMPLATES_DIR}/nginx/gitlab_ci /etc/nginx/sites-enabled/gitlab_ci
 
 [[ -f ${USERCONF_TEMPLATES_DIR}/gitlab-shell/config.yml ]]   && sudo -HEu ${GITLAB_USER} cp ${USERCONF_TEMPLATES_DIR}/gitlab-shell/config.yml   ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 [[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/gitlab.yml ]]       && sudo -HEu ${GITLAB_USER} cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/gitlab.yml       config/gitlab.yml
@@ -748,6 +751,16 @@ if [[ -f ${CA_CERTIFICATES_PATH} ]]; then
   sed 's,{{CA_CERTIFICATES_PATH}},'"${CA_CERTIFICATES_PATH}"',' -i /etc/nginx/sites-enabled/gitlab
 else
   sed '/{{CA_CERTIFICATES_PATH}}/d' -i /etc/nginx/sites-enabled/gitlab
+fi
+
+# configure ci redirection
+if [[ -f /etc/nginx/sites-enabled/gitlab_ci ]]; then
+  sed 's,{{GITLAB_LOG_DIR}},'"${GITLAB_LOG_DIR}"',g' -i /etc/nginx/sites-enabled/gitlab_ci
+  sed 's/{{GITLAB_HOST}}/'"${GITLAB_HOST}"'/g' -i /etc/nginx/sites-enabled/gitlab_ci
+  sed 's/{{GITLAB_CI_HOST}}/'"${GITLAB_CI_HOST}"'/' -i /etc/nginx/sites-enabled/gitlab_ci
+
+  DNS_RESOLVERS=$(cat /etc/resolv.conf  | grep nameserver | awk '{print $2}' ORS=' ')
+  sed 's/{{DNS_RESOLVERS}}/'"${DNS_RESOLVERS}"'/' -i /etc/nginx/sites-enabled/gitlab_ci
 fi
 
 sed 's/worker_processes .*/worker_processes '"${NGINX_WORKERS}"';/' -i /etc/nginx/nginx.conf

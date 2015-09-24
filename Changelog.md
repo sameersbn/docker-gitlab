@@ -12,6 +12,7 @@ This file only reflects the changes that are made in the the docker image. Pleas
 - added options to email IMAP and reply by email feature
 - set value of `GITLAB_EMAIL` to `SMTP_USER` if defined, else default to `example@example.com`
 - removed `GITLAB_ROBOTS_OVERRIDE` parameter. Override default `robots.txt` if `GITLAB_ROBOTS_PATH` exists.
+- added CI redirection using `GITLAB_CI_HOST` parameter
 
 **7.14.3**
 - gitlab: upgrade to CE v.7.14.3
