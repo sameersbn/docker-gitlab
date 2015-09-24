@@ -41,6 +41,8 @@ spec:
               value: admin@example.com
             - name: GITLAB_EMAIL_REPLY_TO
               value: noreply@example.com
+            - name: GITLAB_INCOMING_EMAIL_ADDRESS
+              value: reply@example.com
 
             - name: GITLAB_BACKUPS
               value: daily
@@ -81,6 +83,19 @@ spec:
               value: "true"
             - name: SMTP_AUTHENTICATION
               value: login
+
+            - name: IMAP_ENABLED
+              value: false
+            - name: IMAP_HOST
+              value: imap.gmail.com
+            - name: IMAP_PORT
+              value: 993
+            - name: IMAP_USER
+              value: mailer@example.com
+            - name: IMAP_PASS
+              value: password
+            - name: IMAP_SSL
+              value: true
           ports:
             - name: http
               containerPort: 80

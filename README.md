@@ -26,6 +26,7 @@
         - [External Redis Server](#external-redis-server)
         - [Linking to Redis Container](#linking-to-redis-container)
     - [Mail](#mail)
+        - [Reply by email](#reply-by-email)
     - [SSL](#ssl)
         - [Generation of Self Signed Certificates](#generation-of-self-signed-certificates)
         - [Strengthening the server security](#strengthening-the-server-security)
@@ -441,7 +442,7 @@ docker run --name gitlab -d --link gitlab-redis:redisio \
 
 The mail configuration should be specified using environment variables while starting the GitLab image. The configuration defaults to using gmail to send emails and requires the specification of a valid username and password to login to the gmail servers.
 
-Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of SMTP parameters that can be specified.
+If you are using Gmail then all you need to do is:
 
 ```bash
 docker run --name gitlab -d \
@@ -449,6 +450,25 @@ docker run --name gitlab -d \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
     sameersbn/gitlab:7.14.3
 ```
+
+Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of SMTP parameters that can be specified.
+
+#### Reply by email
+
+Since version `8.0.0` GitLab adds support for commenting on issues by replying to emails. Please read the [documentation on reply by email](http://doc.gitlab.com/ce/incoming_email/README.html) to understand the requirements of this feature.
+
+To enable this feature you need to provide IMAP configuration parameters that will allow GitLab to connect to your mail server and read mails. Additionally, you may need to specify `GITLAB_INCOMING_EMAIL_ADDRESS` if your incoming email address is not the same as the `IMAP_USER`.
+
+If you are using Gmail then all you need to do is:
+
+```bash
+docker run --name gitlab -d \
+    --env 'IMAP_USER=USER@gmail.com' --env 'IMAP_PASS=PASSWORD' \
+    --volume /srv/docker/gitlab/gitlab:/home/git/data \
+    sameersbn/gitlab:7.14.3
+```
+
+Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of SMTP parameters that can be specified.
 
 ### SSL
 
@@ -723,6 +743,8 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_EMAIL_DISPLAY_NAME**: The name displayed in emails sent out by the GitLab mailer. Defaults to `GitLab`.
 - **GITLAB_EMAIL_REPLY_TO**: The reply to address of emails sent out by GitLab. Defaults to the `noreply@example.com`.
 - **GITLAB_EMAIL_ENABLED**: Enable or disable gitlab mailer. Defaults to the `SMTP_ENABLED` configuration.
+- **GITLAB_INCOMING_EMAIL_ADDRESS**: The incoming email address for reply by email. Defaults to the value of `IMAP_USER`, else defaults to `reply@example.com`.
+- **GITLAB_INCOMING_EMAIL_ENABLED**: Enable or disable gitlab reply by email feature. Defaults to the value of `IMAP_ENABLED`.
 - **GITLAB_USERNAME_CHANGE**: Enable or disable ability for users to change their username. Defaults is `true`.
 - **GITLAB_CREATE_GROUP**: Enable or disable ability for users to create groups. Defaults is `true`.
 - **GITLAB_PROJECTS_ISSUES**: Set if *issues* feature should be enabled by default for new projects. Defaults is `true`.
@@ -785,6 +807,13 @@ Below is the complete list of available options that can be used to customize yo
 - **SMTP_CA_ENABLED**: Enable custom CA certificates for SMTP email configuration. Defaults to `false`.
 - **SMTP_CA_PATH**: Specify the `ca_path` parameter for SMTP email configuration. Defaults to `/home/git/data/certs`.
 - **SMTP_CA_FILE**: Specify the `ca_file` parameter for SMTP email configuration. Defaults to `/home/git/data/certs/ca.crt`.
+- **IMAP_ENABLED**: Enable mail delivery via IMAP. Defaults to `true` if `IMAP_USER` is defined, else defaults to `false`.
+- **IMAP_HOST**: IMAP server host. Defaults to `imap.gmail.com`.
+- **IMAP_PORT**: IMAP server port. Defaults to `993`.
+- **IMAP_USER**: IMAP username.
+- **IMAP_PASS**: IMAP password.
+- **IMAP_SSL**: Enable SSL. Defaults to `true`.
+- **IMAP_MAILBOX**: The name of the mailbox where incoming mail will end up. Defaults to `inbox`.
 - **LDAP_ENABLED**: Enable LDAP. Defaults to `false`
 - **LDAP_LABEL**: Label to show on login tab for LDAP server. Defaults to 'LDAP'
 - **LDAP_HOST**: LDAP Host

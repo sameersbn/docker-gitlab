@@ -98,8 +98,8 @@ production: &base
   # Allow users to comment on issues and merge requests by replying to notification emails.
   # For documentation on how to set this up, see http://doc.gitlab.com/ce/incoming_email/README.html
   incoming_email:
-    enabled: false
-    address: "incoming+%{key}@gitlab.example.com"
+    enabled: {{GITLAB_INCOMING_EMAIL_ENABLED}}
+    address: "{{GITLAB_INCOMING_EMAIL_ADDRESS}}"
 
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html

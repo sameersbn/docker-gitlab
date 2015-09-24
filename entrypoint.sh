@@ -100,6 +100,23 @@ fi
 SMTP_ENABLED=${SMTP_ENABLED:-false}
 GITLAB_EMAIL_ENABLED=${GITLAB_EMAIL_ENABLED:-$SMTP_ENABLED}
 
+IMAP_HOST=${IMAP_HOST:-imap.gmail.com}
+IMAP_PORT=${IMAP_PORT:-993}
+IMAP_USER=${IMAP_USER:-}
+IMAP_PASS=${IMAP_PASS:-}
+IMAP_SSL=${IMAP_SSL:-true}
+IMAP_MAILBOX=${IMAP_MAILBOX:-inbox}
+if [[ -n ${IMAP_USER} ]]; then
+  IMAP_ENABLED=${IMAP_ENABLED:-true}
+fi
+IMAP_ENABLED=${IMAP_ENABLED:-false}
+GITLAB_INCOMING_EMAIL_ENABLED=${GITLAB_INCOMING_EMAIL_ENABLED:-${IMAP_ENABLED}}
+GITLAB_INCOMING_EMAIL_ADDRESS=${GITLAB_INCOMING_EMAIL_ADDRESS:-${IMAP_USER}}
+GITLAB_INCOMING_EMAIL_ADDRESS=${GITLAB_INCOMING_EMAIL_ADDRESS:-reply@example.com}
+if ! grep -q '+%{key}@' <<< $GITLAB_INCOMING_EMAIL_ADDRESS; then
+  GITLAB_INCOMING_EMAIL_ADDRESS=$(sed 's/@/+%{key}@/' <<< $GITLAB_INCOMING_EMAIL_ADDRESS)
+fi
+
 LDAP_ENABLED=${LDAP_ENABLED:-false}
 LDAP_HOST=${LDAP_HOST:-}
 LDAP_PORT=${LDAP_PORT:-389}
@@ -343,6 +360,9 @@ sudo -HEu ${GITLAB_USER} cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb  
 [[ ${GITLAB_ROBOTS_OVERRIDE} == true ]] && \
 sudo -HEu ${GITLAB_USER} cp ${GITLAB_ROBOTS_PATH} public/robots.txt
 
+[[ ${IMAP_ENABLED} == true ]] && \
+sudo -HEu ${GITLAB_USER} cp ${SYSCONF_TEMPLATES_DIR}/gitlabhq/mail_room.yml     config/mail_room.yml
+
 # override default configuration templates with user templates
 case ${GITLAB_HTTPS} in
   true)
@@ -364,6 +384,8 @@ esac
 [[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/rack_attack.rb ]]   && sudo -HEu ${GITLAB_USER} cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/rack_attack.rb   config/initializers/rack_attack.rb
 [[ ${SMTP_ENABLED} == true ]] && \
 [[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb ]] && sudo -HEu ${GITLAB_USER} cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb config/initializers/smtp_settings.rb
+[[ ${IMAP_ENABLED} == true ]] && \
+[[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/mail_room.yml ]]    && sudo -HEu ${GITLAB_USER} cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/mail_room.yml    config/mail_room.yml
 
 if [[ -f ${SSL_CERTIFICATE_PATH} || -f ${CA_CERTIFICATES_PATH} ]]; then
   echo "Updating CA certificates..."
@@ -532,6 +554,30 @@ if [[ ${SMTP_ENABLED} == true ]]; then
     sudo -HEu ${GITLAB_USER} sed '/{{SMTP_CA_PATH}}/d' -i config/initializers/smtp_settings.rb
     sudo -HEu ${GITLAB_USER} sed '/{{SMTP_CA_FILE}}/d' -i config/initializers/smtp_settings.rb
   fi
+fi
+
+# configure mail_room IMAP settings
+sed 's/{{GITLAB_INCOMING_EMAIL_ENABLED}}/'"${GITLAB_INCOMING_EMAIL_ENABLED}"'/' -i /etc/supervisor/conf.d/mail_room.conf
+sudo -HEu ${GITLAB_USER} sed 's/{{GITLAB_INCOMING_EMAIL_ENABLED}}/'"${GITLAB_INCOMING_EMAIL_ENABLED}"'/' -i config/gitlab.yml
+sudo -HEu ${GITLAB_USER} sed 's/{{GITLAB_INCOMING_EMAIL_ADDRESS}}/'"${GITLAB_INCOMING_EMAIL_ADDRESS}"'/' -i config/gitlab.yml
+if [[ ${IMAP_ENABLED} == true ]]; then
+  sudo -HEu ${GITLAB_USER} sed 's/{{IMAP_HOST}}/'"${IMAP_HOST}"'/' -i config/mail_room.yml
+  sudo -HEu ${GITLAB_USER} sed 's/{{IMAP_PORT}}/'"${IMAP_PORT}"'/' -i config/mail_room.yml
+
+  case ${IMAP_USER} in
+    "") sudo -HEu ${GITLAB_USER} sed '/{{IMAP_USER}}/d' -i config/mail_room.yml ;;
+    *) sudo -HEu ${GITLAB_USER} sed 's/{{IMAP_USER}}/'"${IMAP_USER}"'/' -i config/mail_room.yml ;;
+  esac
+
+  case ${IMAP_PASS} in
+    "") sudo -HEu ${GITLAB_USER} sed '/{{IMAP_PASS}}/d' -i config/mail_room.yml ;;
+    *) sudo -HEu ${GITLAB_USER} sed 's/{{IMAP_PASS}}/'"${IMAP_PASS}"'/' -i config/mail_room.yml ;;
+  esac
+
+  sudo -HEu ${GITLAB_USER} sed 's/{{IMAP_SSL}}/'"${IMAP_SSL}"'/' -i config/mail_room.yml
+  sudo -HEu ${GITLAB_USER} sed 's/{{IMAP_MAILBOX}}/'"${IMAP_MAILBOX}"'/' -i config/mail_room.yml
+  sudo -HEu ${GITLAB_USER} sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/' -i config/mail_room.yml
+  sudo -HEu ${GITLAB_USER} sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/' -i config/mail_room.yml
 fi
 
 # apply LDAP configuration
