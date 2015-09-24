@@ -739,7 +739,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_SECRETS_DB_KEY_BASE**: Used to encrypt build variables. Ensure that you don't lose it. You can generate one using `pwgen -Bsv1 64`. If you are migrating from GitLab CI, you need to set this value to the value of `GITLAB_CI_SECRETS_DB_KEY_BASE`. No defaults.
 - **GITLAB_TIMEZONE**: Configure the timezone for the gitlab application. This configuration does not effect cron jobs. Defaults to `UTC`. See the list of [acceptable values](http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html).
 - **GITLAB_ROOT_PASSWORD**: The password for the root user. Defaults to `5iveL!fe`.
-- **GITLAB_EMAIL**: The email address for the GitLab server. Defaults to `example@example.com`.
+- **GITLAB_EMAIL**: The email address for the GitLab server. Defaults to value of `SMTP_USER`, else defaults to `example@example.com`.
 - **GITLAB_EMAIL_DISPLAY_NAME**: The name displayed in emails sent out by the GitLab mailer. Defaults to `GitLab`.
 - **GITLAB_EMAIL_REPLY_TO**: The reply to address of emails sent out by GitLab. Defaults to the `noreply@example.com`.
 - **GITLAB_EMAIL_ENABLED**: Enable or disable gitlab mailer. Defaults to the `SMTP_ENABLED` configuration.
