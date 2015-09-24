@@ -16,6 +16,24 @@ gitlab:
     - "10022:22"
   environment:
     - TZ=Asia/Kolkata
+    - GITLAB_TIMEZONE=Kolkata
+
+    - GITLAB_SECRETS_DB_KEY_BASE=
+
+    - GITLAB_HOST=localhost
+    - GITLAB_PORT=10080
+    - GITLAB_SSH_PORT=10022
+
+    - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
+    - GITLAB_NOTIFY_PUSHER=false
+
+    - GITLAB_EMAIL=notifications@example.com
+    - GITLAB_EMAIL_REPLY_TO=noreply@example.com
+    - GITLAB_INCOMING_EMAIL_ADDRESS=reply@example.com
+
+    - GITLAB_BACKUPS=daily
+    - GITLAB_BACKUP_TIME=01:00
+
     - SMTP_ENABLED=false
     - SMTP_DOMAIN=www.example.com
     - SMTP_HOST=smtp.gmail.com
@@ -24,14 +42,13 @@ gitlab:
     - SMTP_PASS=password
     - SMTP_STARTTLS=true
     - SMTP_AUTHENTICATION=login
-    - GITLAB_TIMEZONE=Kolkata
-    - GITLAB_HOST=localhost
-    - GITLAB_PORT=10080
-    - GITLAB_SSH_PORT=10022
-    - GITLAB_EMAIL=admin@example.com
-    - GITLAB_EMAIL_REPLY_TO=noreply@example.com
-    - GITLAB_BACKUPS=daily
-    - GITLAB_BACKUP_TIME=01:00
+
+    - IMAP_ENABLED=false
+    - IMAP_HOST=imap.gmail.com
+    - IMAP_PORT=993
+    - IMAP_USER=mailer@example.com
+    - IMAP_PASS=password
+    - IMAP_SSL=true
   volumes:
     - /srv/docker/gitlab/gitlab:/home/git/data
 redis:

@@ -6,6 +6,13 @@ This file only reflects the changes that are made in the the docker image. Pleas
 - set default value of `DB_TYPE` to `postgres`
 - added sample Kubernetes rc and service description files
 - expose `GITLAB_BACKUP_ARCHIVE_PERMISSIONS` parameter
+- gitlab: upgrade to CE v.8.0.0
+- added `GITLAB_SECRETS_DB_KEY_BASE` parameter
+- added `GITLAB_NOTIFY_ON_BROKEN_BUILDS` and `GITLAB_NOTIFY_PUSHER` parameters
+- added options to email IMAP and reply by email feature
+- set value of `GITLAB_EMAIL` to `SMTP_USER` if defined, else default to `example@example.com`
+- removed `GITLAB_ROBOTS_OVERRIDE` parameter. Override default `robots.txt` if `GITLAB_ROBOTS_PATH` exists.
+- added CI redirection using `GITLAB_CI_HOST` parameter
 
 **7.14.3**
 - gitlab: upgrade to CE v.7.14.3

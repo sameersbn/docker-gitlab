@@ -26,6 +26,7 @@
         - [External Redis Server](#external-redis-server)
         - [Linking to Redis Container](#linking-to-redis-container)
     - [Mail](#mail)
+        - [Reply by email](#reply-by-email)
     - [SSL](#ssl)
         - [Generation of Self Signed Certificates](#generation-of-self-signed-certificates)
         - [Strengthening the server security](#strengthening-the-server-security)
@@ -135,6 +136,13 @@ The quickest way to get started is using [docker-compose](https://docs.docker.co
 
 ```bash
 wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml.dist -O docker-compose.yml
+```
+
+Generate a random string and assign to `GITLAB_SECRETS_DB_KEY_BASE` environment variable. Once set you should not change this value and ensure you keep a backup of this value.
+
+> **Tip**: You can generate a random string using `pwgen -Bsv1 64` and assign it as the value of `GITLAB_SECRETS_DB_KEY_BASE`.
+
+```bash
 docker-compose up
 ```
 
@@ -165,6 +173,7 @@ docker run --name gitlab -d \
     --link gitlab-postgresql:postgresql --link gitlab-redis:redisio \
     --publish 10022:22 --publish 10080:80 \
     --env 'GITLAB_PORT=10080' --env 'GITLAB_SSH_PORT=10022' \
+    --env 'GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alpha-numeric-string' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
 sameersbn/gitlab:7.14.3
 ```
@@ -433,7 +442,7 @@ docker run --name gitlab -d --link gitlab-redis:redisio \
 
 The mail configuration should be specified using environment variables while starting the GitLab image. The configuration defaults to using gmail to send emails and requires the specification of a valid username and password to login to the gmail servers.
 
-Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of SMTP parameters that can be specified.
+If you are using Gmail then all you need to do is:
 
 ```bash
 docker run --name gitlab -d \
@@ -441,6 +450,25 @@ docker run --name gitlab -d \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
     sameersbn/gitlab:7.14.3
 ```
+
+Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of SMTP parameters that can be specified.
+
+#### Reply by email
+
+Since version `8.0.0` GitLab adds support for commenting on issues by replying to emails. Please read the [documentation on reply by email](http://doc.gitlab.com/ce/incoming_email/README.html) to understand the requirements of this feature.
+
+To enable this feature you need to provide IMAP configuration parameters that will allow GitLab to connect to your mail server and read mails. Additionally, you may need to specify `GITLAB_INCOMING_EMAIL_ADDRESS` if your incoming email address is not the same as the `IMAP_USER`.
+
+If you are using Gmail then all you need to do is:
+
+```bash
+docker run --name gitlab -d \
+    --env 'IMAP_USER=USER@gmail.com' --env 'IMAP_PASS=PASSWORD' \
+    --volume /srv/docker/gitlab/gitlab:/home/git/data \
+    sameersbn/gitlab:7.14.3
+```
+
+Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of SMTP parameters that can be specified.
 
 ### SSL
 
@@ -707,13 +735,17 @@ Below is the complete list of available options that can be used to customize yo
 
 - **DEBUG_ENTRYPOINT**: Set this to `true` to enable entrypoint debugging.
 - **GITLAB_HOST**: The hostname of the GitLab server. Defaults to `localhost`
+- **GITLAB_CI_HOST**: If you are migrating from GitLab CI use this parameter to configure the redirection to the GitLab service so that your existing runners continue to work without any changes. No defaults.
 - **GITLAB_PORT**: The port of the GitLab server. This value indicates the public port on which the GitLab application will be accessible on the network and appropriately configures GitLab to generate the correct urls. It does not affect the port on which the internal nginx server will be listening on. Defaults to `443` if `GITLAB_HTTPS=true`, else defaults to `80`.
+- **GITLAB_SECRETS_DB_KEY_BASE**: Used to encrypt build variables. Ensure that you don't lose it. You can generate one using `pwgen -Bsv1 64`. If you are migrating from GitLab CI, you need to set this value to the value of `GITLAB_CI_SECRETS_DB_KEY_BASE`. No defaults.
 - **GITLAB_TIMEZONE**: Configure the timezone for the gitlab application. This configuration does not effect cron jobs. Defaults to `UTC`. See the list of [acceptable values](http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html).
 - **GITLAB_ROOT_PASSWORD**: The password for the root user. Defaults to `5iveL!fe`.
-- **GITLAB_EMAIL**: The email address for the GitLab server. Defaults to `example@example.com`.
+- **GITLAB_EMAIL**: The email address for the GitLab server. Defaults to value of `SMTP_USER`, else defaults to `example@example.com`.
 - **GITLAB_EMAIL_DISPLAY_NAME**: The name displayed in emails sent out by the GitLab mailer. Defaults to `GitLab`.
-- **GITLAB_EMAIL_REPLY_TO**: The reply to address of emails sent out by GitLab. Defaults to the `noreply@example.com`.
+- **GITLAB_EMAIL_REPLY_TO**: The reply-to address of emails sent out by GitLab. Defaults to value of `GITLAB_EMAIL`, else defaults to `noreply@example.com`.
 - **GITLAB_EMAIL_ENABLED**: Enable or disable gitlab mailer. Defaults to the `SMTP_ENABLED` configuration.
+- **GITLAB_INCOMING_EMAIL_ADDRESS**: The incoming email address for reply by email. Defaults to the value of `IMAP_USER`, else defaults to `reply@example.com`.
+- **GITLAB_INCOMING_EMAIL_ENABLED**: Enable or disable gitlab reply by email feature. Defaults to the value of `IMAP_ENABLED`.
 - **GITLAB_USERNAME_CHANGE**: Enable or disable ability for users to change their username. Defaults is `true`.
 - **GITLAB_CREATE_GROUP**: Enable or disable ability for users to create groups. Defaults is `true`.
 - **GITLAB_PROJECTS_ISSUES**: Set if *issues* feature should be enabled by default for new projects. Defaults is `true`.
@@ -723,8 +755,11 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_WEBHOOK_TIMEOUT**: Sets the timeout for webhooks. Defaults to `10` seconds.
 - **GITLAB_SATELLITES_TIMEOUT**: Sets the timeout for satellites. Defaults to `30` seconds.
 - **GITLAB_TIMEOUT**: Sets the timeout for git commands. Defaults to `10` seconds.
+- **GITLAB_NOTIFY_ON_BROKEN_BUILDS**: Enable or disable broken build notification emails. Defaults to `true`
+- **GITLAB_NOTIFY_PUSHER**: Add pusher to recipients list of broken build notification emails. Defaults to `false`
 - **GITLAB_REPOS_DIR**: The git repositories folder in the container. Defaults to `/home/git/data/repositories`
 - **GITLAB_BACKUP_DIR**: The backup folder in the container. Defaults to `/home/git/data/backups`
+- **GITLAB_BUILDS_DIR**: The build traces directory. Defaults to `/home/git/data/builds`
 - **GITLAB_BACKUPS**: Setup cron job to automatic backups. Possible values `disable`, `daily`, `weekly` or `monthly`. Disabled by default
 - **GITLAB_BACKUP_EXPIRY**: Configure how long (in seconds) to keep backups before they are deleted. By default when automated backups are disabled backups are kept forever (0 seconds), else the backups expire in 7 days (604800 seconds).
 - **GITLAB_BACKUP_ARCHIVE_PERMISSIONS**: Sets the permissions of the backup archives. Defaults to `0600`. [See](http://doc.gitlab.com/ce/raketasks/backup_restore.html#backup-archive-permissions)
@@ -773,6 +808,13 @@ Below is the complete list of available options that can be used to customize yo
 - **SMTP_CA_ENABLED**: Enable custom CA certificates for SMTP email configuration. Defaults to `false`.
 - **SMTP_CA_PATH**: Specify the `ca_path` parameter for SMTP email configuration. Defaults to `/home/git/data/certs`.
 - **SMTP_CA_FILE**: Specify the `ca_file` parameter for SMTP email configuration. Defaults to `/home/git/data/certs/ca.crt`.
+- **IMAP_ENABLED**: Enable mail delivery via IMAP. Defaults to `true` if `IMAP_USER` is defined, else defaults to `false`.
+- **IMAP_HOST**: IMAP server host. Defaults to `imap.gmail.com`.
+- **IMAP_PORT**: IMAP server port. Defaults to `993`.
+- **IMAP_USER**: IMAP username.
+- **IMAP_PASS**: IMAP password.
+- **IMAP_SSL**: Enable SSL. Defaults to `true`.
+- **IMAP_MAILBOX**: The name of the mailbox where incoming mail will end up. Defaults to `inbox`.
 - **LDAP_ENABLED**: Enable LDAP. Defaults to `false`
 - **LDAP_LABEL**: Label to show on login tab for LDAP server. Defaults to 'LDAP'
 - **LDAP_HOST**: LDAP Host
@@ -820,8 +862,7 @@ Below is the complete list of available options that can be used to customize yo
 - **AWS_BACKUP_ACCESS_KEY_ID**: AWS access key id. No defaults.
 - **AWS_BACKUP_SECRET_ACCESS_KEY**: AWS secret access key. No defaults.
 - **AWS_BACKUP_BUCKET**: AWS bucket for backup uploads. No defaults.
-- **GITLAB_ROBOTS_OVERRIDE**: Override `robots.txt`. Defaults to `false`.
-- **GITLAB_ROBOTS_PATH**: Location of `robots.txt`. See [www.robotstxt.org](http://www.robotstxt.org) for examples. Defaults to `robots.txt` which [prevents robots scanning gitlab](http://www.robotstxt.org/faq/prevent.html).
+- **GITLAB_ROBOTS_PATH**: Location of custom `robots.txt`. Uses GitLab's default `robots.txt` configuration by default. See [www.robotstxt.org](http://www.robotstxt.org) for examples.
 
 # Maintenance
 

@@ -1,3 +1,6 @@
+#
+# PRODUCTION
+#
 production:
   adapter: "{{DB_ADAPTER}}"
   encoding: "{{DB_ENCODING}}"
