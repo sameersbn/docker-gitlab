@@ -8,6 +8,7 @@ This file only reflects the changes that are made in the the docker image. Pleas
 - expose `GITLAB_BACKUP_ARCHIVE_PERMISSIONS` parameter
 - gitlab: upgrade to CE v.8.0.0
 - added `GITLAB_SECRETS_DB_KEY_BASE` parameter
+- added `GITLAB_NOTIFY_ON_BROKEN_BUILDS` and `GITLAB_NOTIFY_PUSHER` parameters
 
 **7.14.3**
 - gitlab: upgrade to CE v.7.14.3

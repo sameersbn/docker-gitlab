@@ -33,6 +33,8 @@ gitlab:
     - GITLAB_BACKUPS=daily
     - GITLAB_BACKUP_TIME=01:00
     - GITLAB_SECRETS_DB_KEY_BASE=
+    - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
+    - GITLAB_NOTIFY_PUSHER=false
   volumes:
     - /srv/docker/gitlab/gitlab:/home/git/data
 redis:

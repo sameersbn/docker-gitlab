@@ -32,6 +32,11 @@ spec:
             - name: GITLAB_SSH_PORT
               value: "22"
 
+            - name: GITLAB_NOTIFY_ON_BROKEN_BUILDS
+              value: true
+            - name: GITLAB_NOTIFY_PUSHER
+              value: false
+
             - name: GITLAB_EMAIL
               value: admin@example.com
             - name: GITLAB_EMAIL_REPLY_TO
