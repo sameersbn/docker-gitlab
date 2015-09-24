@@ -741,7 +741,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_ROOT_PASSWORD**: The password for the root user. Defaults to `5iveL!fe`.
 - **GITLAB_EMAIL**: The email address for the GitLab server. Defaults to value of `SMTP_USER`, else defaults to `example@example.com`.
 - **GITLAB_EMAIL_DISPLAY_NAME**: The name displayed in emails sent out by the GitLab mailer. Defaults to `GitLab`.
-- **GITLAB_EMAIL_REPLY_TO**: The reply to address of emails sent out by GitLab. Defaults to the `noreply@example.com`.
+- **GITLAB_EMAIL_REPLY_TO**: The reply-to address of emails sent out by GitLab. Defaults to value of `GITLAB_EMAIL`, else defaults to `noreply@example.com`.
 - **GITLAB_EMAIL_ENABLED**: Enable or disable gitlab mailer. Defaults to the `SMTP_ENABLED` configuration.
 - **GITLAB_INCOMING_EMAIL_ADDRESS**: The incoming email address for reply by email. Defaults to the value of `IMAP_USER`, else defaults to `reply@example.com`.
 - **GITLAB_INCOMING_EMAIL_ENABLED**: Enable or disable gitlab reply by email feature. Defaults to the value of `IMAP_ENABLED`.
