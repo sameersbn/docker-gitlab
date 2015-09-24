@@ -2,7 +2,7 @@
 
 This file only reflects the changes that are made in the the docker image. Please refer to the upstream GitLab [CHANGELOG](https://github.com/gitlabhq/gitlabhq/blob/master/CHANGELOG) for the list of changes in GitLab.
 
-**latest**
+**8.0.0**
 - set default value of `DB_TYPE` to `postgres`
 - added sample Kubernetes rc and service description files
 - expose `GITLAB_BACKUP_ARCHIVE_PERMISSIONS` parameter
