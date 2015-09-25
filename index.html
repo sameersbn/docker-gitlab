@@ -6,7 +6,7 @@
     <title>Docker GitLab by sameersbn</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
     <script src="javascripts/scale.fix.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
@@ -32,33 +32,37 @@
 
 <p>The quickest way to get started is using <a href="https://docs.docker.com/compose/">docker-compose</a>.</p>
 
-<div class="highlight highlight-bash"><pre>wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml
-docker-compose up</pre></div>
+<div class="highlight highlight-source-shell"><pre>wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml.dist -O docker-compose.yml</pre></div>
+
+<p>Generate a random string and assign to <code>GITLAB_SECRETS_DB_KEY_BASE</code> environment variable. Once set you should not change this value and ensure you keep a backup of this value.</p>
+
+<div class="highlight highlight-source-shell"><pre>docker-compose up</pre></div>
 
 <p>Alternately, you can manually launch the <code>gitlab</code> container and the supporting <code>postgresql</code> and <code>redis</code> containers by following this three step guide.</p>
 
 <p>Step 1. Launch a postgresql container</p>
 
-<div class="highlight highlight-bash"><pre>docker run --name=postgresql-gitlab -d \
-  --env=<span class="pl-s"><span class="pl-pds">'</span>DB_NAME=gitlabhq_production<span class="pl-pds">'</span></span> \
-  --env=<span class="pl-s"><span class="pl-pds">'</span>DB_USER=gitlab<span class="pl-pds">'</span></span> --env=<span class="pl-s"><span class="pl-pds">'</span>DB_PASS=password<span class="pl-pds">'</span></span> \
-  --volume=/srv/docker/gitlab/postgresql:/var/lib/postgresql \
-  sameersbn/postgresql:9.4</pre></div>
+<div class="highlight highlight-source-shell"><pre>docker run --name gitlab-postgresql -d \
+    --env <span class="pl-s"><span class="pl-pds">'</span>DB_NAME=gitlabhq_production<span class="pl-pds">'</span></span> \
+    --env <span class="pl-s"><span class="pl-pds">'</span>DB_USER=gitlab<span class="pl-pds">'</span></span> --env <span class="pl-s"><span class="pl-pds">'</span>DB_PASS=password<span class="pl-pds">'</span></span> \
+    --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
+    sameersbn/postgresql:9.4-3</pre></div>
 
 <p>Step 2. Launch a redis container</p>
 
-<div class="highlight highlight-bash"><pre>docker run --name=redis-gitlab -d \
-  --volume=/srv/docker/gitlab/redis:/var/lib/redis \
-  sameersbn/redis:latest</pre></div>
+<div class="highlight highlight-source-shell"><pre>docker run --name gitlab-redis -d \
+    --volume /srv/docker/gitlab/redis:/var/lib/redis \
+    sameersbn/redis:latest</pre></div>
 
 <p>Step 3. Launch the gitlab container</p>
 
-<div class="highlight highlight-bash"><pre>docker run --name=<span class="pl-s"><span class="pl-pds">'</span>gitlab<span class="pl-pds">'</span></span> -d \
-  --link=postgresql-gitlab:postgresql --link=redis-gitlab:redisio \
-  --publish=10022:22 --publish=10080:80 \
-  --env=<span class="pl-s"><span class="pl-pds">'</span>GITLAB_PORT=10080<span class="pl-pds">'</span></span> --env=<span class="pl-s"><span class="pl-pds">'</span>GITLAB_SSH_PORT=10022<span class="pl-pds">'</span></span> \
-  --volume=/srv/docker/gitlab/gitlab:/home/git/data \
-sameersbn/gitlab:7.10.4</pre></div>
+<div class="highlight highlight-source-shell"><pre>docker run --name gitlab -d \
+    --link gitlab-postgresql:postgresql --link gitlab-redis:redisio \
+    --publish 10022:22 --publish 10080:80 \
+    --env <span class="pl-s"><span class="pl-pds">'</span>GITLAB_PORT=10080<span class="pl-pds">'</span></span> --env <span class="pl-s"><span class="pl-pds">'</span>GITLAB_SSH_PORT=10022<span class="pl-pds">'</span></span> \
+    --env <span class="pl-s"><span class="pl-pds">'</span>GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alpha-numeric-string<span class="pl-pds">'</span></span> \
+    --volume /srv/docker/gitlab/gitlab:/home/git/data \
+    sameersbn/gitlab:8.0.2</pre></div>
 
 <p><strong>NOTE</strong>: Please allow a couple of minutes for the GitLab application to start.</p>
 
