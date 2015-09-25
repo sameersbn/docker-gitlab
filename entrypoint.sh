@@ -108,6 +108,7 @@ IMAP_PORT=${IMAP_PORT:-993}
 IMAP_USER=${IMAP_USER:-}
 IMAP_PASS=${IMAP_PASS:-}
 IMAP_SSL=${IMAP_SSL:-true}
+IMAP_STARTTLS=${IMAP_STARTTLS:-false}
 IMAP_MAILBOX=${IMAP_MAILBOX:-inbox}
 if [[ -n ${IMAP_USER} ]]; then
   IMAP_ENABLED=${IMAP_ENABLED:-true}
@@ -577,6 +578,7 @@ if [[ ${IMAP_ENABLED} == true ]]; then
   esac
 
   sudo -HEu ${GITLAB_USER} sed 's/{{IMAP_SSL}}/'"${IMAP_SSL}"'/' -i config/mail_room.yml
+  sudo -HEu ${GITLAB_USER} sed 's/{{IMAP_STARTTLS}}/'"${IMAP_STARTTLS}"'/' -i config/mail_room.yml
   sudo -HEu ${GITLAB_USER} sed 's/{{IMAP_MAILBOX}}/'"${IMAP_MAILBOX}"'/' -i config/mail_room.yml
   sudo -HEu ${GITLAB_USER} sed 's/{{REDIS_HOST}}/'"${REDIS_HOST}"'/' -i config/mail_room.yml
   sudo -HEu ${GITLAB_USER} sed 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/' -i config/mail_room.yml

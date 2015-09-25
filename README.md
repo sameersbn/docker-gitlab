@@ -814,6 +814,7 @@ Below is the complete list of available options that can be used to customize yo
 - **IMAP_USER**: IMAP username.
 - **IMAP_PASS**: IMAP password.
 - **IMAP_SSL**: Enable SSL. Defaults to `true`.
+- **IMAP_STARTTLS**: Enable STARTSSL. Defaults to `false`.
 - **IMAP_MAILBOX**: The name of the mailbox where incoming mail will end up. Defaults to `inbox`.
 - **LDAP_ENABLED**: Enable LDAP. Defaults to `false`
 - **LDAP_LABEL**: Label to show on login tab for LDAP server. Defaults to 'LDAP'

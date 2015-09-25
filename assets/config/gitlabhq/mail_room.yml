@@ -6,6 +6,8 @@
     :port: {{IMAP_PORT}}
     # # Whether the IMAP server uses SSL
     :ssl: {{IMAP_SSL}}
+    # # Whether the IMAP server uses StartTLS
+    :start_tls: {{IMAP_STARTTLS}}
     # # Email account username. Usually the full email address.
     :email: "{{IMAP_USER}}"
     # # Email account password

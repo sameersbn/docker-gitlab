@@ -49,6 +49,7 @@ gitlab:
     - IMAP_USER=mailer@example.com
     - IMAP_PASS=password
     - IMAP_SSL=true
+    - IMAP_STARTTLS: false
   volumes:
     - /srv/docker/gitlab/gitlab:/home/git/data
 redis:

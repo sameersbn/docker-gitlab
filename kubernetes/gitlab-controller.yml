@@ -96,6 +96,8 @@ spec:
               value: password
             - name: IMAP_SSL
               value: true
+            - name: IMAP_STARTTLS
+              value: false
           ports:
             - name: http
               containerPort: 80
