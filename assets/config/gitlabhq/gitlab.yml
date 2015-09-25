@@ -252,18 +252,23 @@ production: &base
     # arguments, followed by optional 'args' which can be either a hash or an array.
     # Documentation for this is available at http://doc.gitlab.com/ce/integration/omniauth.html
     providers:
-      - { name: 'google_oauth2', label: 'Google', app_id: '{{OAUTH_GOOGLE_API_KEY}}',
+      - { name: 'google_oauth2',
+          label: 'Google', app_id: '{{OAUTH_GOOGLE_API_KEY}}',
           app_secret: '{{OAUTH_GOOGLE_APP_SECRET}}',
           args: { access_type: 'offline', approval_prompt: '{{OAUTH_GOOGLE_APPROVAL_PROMPT}}', hd: '{{OAUTH_GOOGLE_RESTRICT_DOMAIN}}' } }
-      - { name: 'twitter', app_id: '{{OAUTH_TWITTER_API_KEY}}',
+      - { name: 'twitter',
+          app_id: '{{OAUTH_TWITTER_API_KEY}}',
           app_secret: '{{OAUTH_TWITTER_APP_SECRET}}'}
-      - { name: 'github', label: 'GitHub', app_id: '{{OAUTH_GITHUB_API_KEY}}',
+      - { name: 'github',
+          label: 'GitHub', app_id: '{{OAUTH_GITHUB_API_KEY}}',
           app_secret: '{{OAUTH_GITHUB_APP_SECRET}}',
           args: { scope: '{{OAUTH_GITHUB_SCOPE}}' } }
-      - { name: 'gitlab', label: 'GitLab.com', app_id: '{{OAUTH_GITLAB_API_KEY}}',
+      - { name: 'gitlab',
+          label: 'GitLab.com', app_id: '{{OAUTH_GITLAB_API_KEY}}',
           app_secret: '{{OAUTH_GITLAB_APP_SECRET}}',
           args: { scope: '{{OAUTH_GITLAB_SCOPE}}' } }
-      - { name: 'bitbucket', app_id: '{{OAUTH_BITBUCKET_API_KEY}}',
+      - { name: 'bitbucket',
+          app_id: '{{OAUTH_BITBUCKET_API_KEY}}',
           app_secret: '{{OAUTH_BITBUCKET_APP_SECRET}}'}
       - { name: 'saml',
           label: 'Our SAML Provider',
