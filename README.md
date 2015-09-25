@@ -44,6 +44,7 @@
         - [GitLab](#gitlab)
         - [BitBucket](#bitbucket)
         - [SAML](#saml)
+        - [Crowd](#crowd)
     - [External Issue Trackers](#external-issue-trackers)
     - [Mapping host user and group](#mapping-host-user-and-group)
     - [Piwik](#piwik)
