@@ -15,7 +15,7 @@ docker rm gitlab-ci gitlab
 
 ## Step 2 - Upgrade to most recent `7.14.x` releases
 
-Migration to GitLab `8.0.0` can only be done from version `7.14.3`. As a result we need to first migrate to the most recent versions of these images.
+Migration to GitLab `8.x.x` can only be done from version `7.14.3`. As a result we need to first migrate to the most recent versions of these images.
 
 ### Upgrade to `sameersbn/gitlab:7.14.3`
 
@@ -53,24 +53,24 @@ docker run -it --rm [OPTIONS] \
 
 Make a note of the backup archive `xxxxxxxxxx_gitlab_ci_backup.tar.gz` as it is the backup you will have to rollback to in case of errors.
 
-> **Note**: From this point only `8.0.0` version images are used.
+> **Note**: From this point only `8.0.2` version images are used.
 
 ## Step 4 - Upgrade GitLab CI
 
-GitLab CI `8.0.0` is only meant for the purpose of migrating to GitLab `8.0.0`. Here we need to upgrade to versio `8.0.0` and generate a backup that will be imported into GitLab.
+GitLab CI `8.x.x` is only meant for the purpose of migrating to GitLab `8.0`. Here we need to upgrade to version `8.x.x` and generate a backup that will be imported into GitLab.
 
-### Upgrade to `sameersbn/gitlab-ci:8.0.0`
+### Upgrade to `sameersbn/gitlab-ci:8.0.2`
 
 ```bash
 docker run -it --rm [OPTIONS] \
-  sameersbn/gitlab-ci:8.0.0 app:init
+  sameersbn/gitlab-ci:8.0.2 app:init
 ```
 
 ### Create GitLab CI backup
 
 ```bash
 docker run -it --rm [OPTIONS] \
-  sameersbn/gitlab-ci:8.0.0 app:rake backup:create
+  sameersbn/gitlab-ci:8.0.2 app:rake backup:create
 ```
 
 Copy the generated backup archive `xxxxxxxxxx_gitlab_ci_backup.tar` into the `backups/` directory of the GitLab CE server.
@@ -83,16 +83,16 @@ We are done with GitLab CI. If the rest of the migration goes was planned you wi
 
 ## Step 5 - Upgrade GitLab
 
-Before we can upgrade to `sameersbn/gitlab:8.0.0`, we need to assign the value of `GITLAB_CI_SECRETS_DB_KEY_BASE` (from GitLab CI) to `GITLAB_SECRETS_DB_KEY_BASE` in GitLab's environment.
+Before we can upgrade to `sameersbn/gitlab:8.0.2`, we need to assign the value of `GITLAB_CI_SECRETS_DB_KEY_BASE` (from GitLab CI) to `GITLAB_SECRETS_DB_KEY_BASE` in GitLab's environment.
 
 Next you also need to set the environment variable `GITLAB_CI_HOST` to the address of your CI server, eg. `ci.example.com`. This will make sure that your existing runners will be able to communicate to GitLab with the old url.
 
-### Upgrade to `sameersbn/gitlab-ci:8.0.0`
+### Upgrade to `sameersbn/gitlab-ci:8.0.2`
 
 ```bash
 docker run -it --rm [OPTIONS] \
   --env GITLAB_CI_HOST=ci.example.com --env GITLAB_SECRETS_DB_KEY_BASE=xxxxxx \
-  sameersbn/gitlab:8.0.0 app:init
+  sameersbn/gitlab:8.0.2 app:init
 ```
 
 ### Migrate CI data
@@ -100,7 +100,7 @@ docker run -it --rm [OPTIONS] \
 ```bash
 docker run -it --rm [OPTIONS] \
   --env GITLAB_CI_HOST=ci.example.com --env GITLAB_SECRETS_DB_KEY_BASE=xxxxxx \
-  sameersbn/gitlab:8.0.0 app:rake ci:migrate
+  sameersbn/gitlab:8.0.2 app:rake ci:migrate
 ```
 
 ## Step 6 - Fix DNS and reverse proxy configurations

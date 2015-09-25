@@ -2,7 +2,7 @@
 
 This file only reflects the changes that are made in the the docker image. Please refer to the upstream GitLab [CHANGELOG](https://github.com/gitlabhq/gitlabhq/blob/master/CHANGELOG) for the list of changes in GitLab.
 
-**latest**
+**8.0.2**
 - gitlab: upgrade to CE v.8.0.2
 - added `IMAP_STARTTLS` parameter, defaults to `false`
 - expose oauth parameters for crowd server
