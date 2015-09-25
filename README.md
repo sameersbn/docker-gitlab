@@ -123,7 +123,7 @@ You can also pull the `latest` tag which is built from the repository *HEAD*
 docker pull sameersbn/gitlab:latest
 ```
 
-Alternately you can build the image locally.
+Alternatively you can build the image locally.
 
 ```bash
 git clone https://github.com/sameersbn/docker-gitlab.git
@@ -139,15 +139,17 @@ The quickest way to get started is using [docker-compose](https://docs.docker.co
 wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml.dist -O docker-compose.yml
 ```
 
-Generate a random string and assign to `GITLAB_SECRETS_DB_KEY_BASE` environment variable. Once set you should not change this value and ensure you keep a backup of this value.
+Generate a random string and assign to `GITLAB_SECRETS_DB_KEY_BASE` environment variable. Once set you should not change this value and ensure you backup this value.
 
 > **Tip**: You can generate a random string using `pwgen -Bsv1 64` and assign it as the value of `GITLAB_SECRETS_DB_KEY_BASE`.
+
+Start GitLab using:
 
 ```bash
 docker-compose up
 ```
 
-Alternately, you can manually launch the `gitlab` container and the supporting `postgresql` and `redis` containers by following this three step guide.
+Alternatively, you can manually launch the `gitlab` container and the supporting `postgresql` and `redis` containers by following this three step guide.
 
 Step 1. Launch a postgresql container
 
@@ -176,7 +178,7 @@ docker run --name gitlab -d \
     --env 'GITLAB_PORT=10080' --env 'GITLAB_SSH_PORT=10022' \
     --env 'GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alpha-numeric-string' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-sameersbn/gitlab:8.0.2
+    sameersbn/gitlab:8.0.2
 ```
 
 *Please refer to [Available Configuration Parameters](#available-configuration-parameters) to understand `GITLAB_PORT` and other configuration options*
@@ -736,7 +738,7 @@ These options should contain something like:
 
 ### Available Configuration Parameters
 
-*Please refer the docker run command options for the `--env-file` flag where you can specify all required environment variables in a single file. This will save you from writing a potentially long docker run command. Alternately you can use docker-compose.*
+*Please refer the docker run command options for the `--env-file` flag where you can specify all required environment variables in a single file. This will save you from writing a potentially long docker run command. Alternatively you can use docker-compose.*
 
 Below is the complete list of available options that can be used to customize your gitlab installation.
 
