@@ -89,7 +89,7 @@ spec:
             - name: IMAP_HOST
               value: imap.gmail.com
             - name: IMAP_PORT
-              value: 993
+              value: "993"
             - name: IMAP_USER
               value: mailer@example.com
             - name: IMAP_PASS
