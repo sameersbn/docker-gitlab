@@ -33,9 +33,9 @@ spec:
               value: "22"
 
             - name: GITLAB_NOTIFY_ON_BROKEN_BUILDS
-              value: true
+              value: "true"
             - name: GITLAB_NOTIFY_PUSHER
-              value: false
+              value: "false"
 
             - name: GITLAB_EMAIL
               value: notifications@example.com
@@ -85,7 +85,7 @@ spec:
               value: login
 
             - name: IMAP_ENABLED
-              value: false
+              value: "false"
             - name: IMAP_HOST
               value: imap.gmail.com
             - name: IMAP_PORT
@@ -95,9 +95,9 @@ spec:
             - name: IMAP_PASS
               value: password
             - name: IMAP_SSL
-              value: true
+              value: "true"
             - name: IMAP_STARTTLS
-              value: false
+              value: "false"
           ports:
             - name: http
               containerPort: 80
