@@ -109,6 +109,10 @@ Since GitLab and GitLab CI are now one, update your DNS configuration to make su
 
 If you are using a reverse proxy, update the configuration such that `ci.example.com` interfaces with the GitLab server.
 
+>**Note**: The above changes results in connections from your runners redirect multiple times before ending up at the right location. If you want to avoid this redirection you can update the url in your runners configuration file to point to `http://git.example.com/ci` when using plain http, or `https://git.example.com/ci` if you are using SSL.
+>
+> If you change the url on the runners you can also do away with the `ci.example.com` domain name altogether.
+
 ## Step 7 - Done!
 
 You can now start the GitLab server normally. Make sure that `GITLAB_CI_HOST` and `GITLAB_SECRETS_DB_KEY_BASE` are defined in your containers environment.
