@@ -34,11 +34,13 @@
 
 <div class="highlight highlight-source-shell"><pre>wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml.dist -O docker-compose.yml</pre></div>
 
-<p>Generate a random string and assign to <code>GITLAB_SECRETS_DB_KEY_BASE</code> environment variable. Once set you should not change this value and ensure you keep a backup of this value.</p>
+<p>Generate a random string and assign to <code>GITLAB_SECRETS_DB_KEY_BASE</code> environment variable in <code>docker-compose.yml</code>. Once set, you should not change this value and ensure you backup this value.</p>
+
+<p>Start GitLab using:</p>
 
 <div class="highlight highlight-source-shell"><pre>docker-compose up</pre></div>
 
-<p>Alternately, you can manually launch the <code>gitlab</code> container and the supporting <code>postgresql</code> and <code>redis</code> containers by following this three step guide.</p>
+<p>Alternatively, you can manually launch the <code>gitlab</code> container and the supporting <code>postgresql</code> and <code>redis</code> containers by following this three step guide.</p>
 
 <p>Step 1. Launch a postgresql container</p>
 
