@@ -163,6 +163,10 @@ OAUTH_GITLAB_APP_SECRET=${OAUTH_GITLAB_APP_SECRET:-}
 OAUTH_BITBUCKET_API_KEY=${OAUTH_BITBUCKET_API_KEY:-}
 OAUTH_BITBUCKET_APP_SECRET=${OAUTH_BITBUCKET_APP_SECRET:-}
 
+OAUTH_CROWD_SERVER_URL=${OAUTH_CROWD_SERVER_URL:-}
+OAUTH_CROWD_APP_NAME=${OAUTH_CROWD_APP_NAME:-}
+OAUTH_CROWD_APP_PASSWORD=${OAUTH_CROWD_APP_PASSWORD:-}
+
 case $GITLAB_HTTPS in
   true)
     OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL=${OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL:-https://${GITLAB_HOST}/users/auth/saml/callback}
@@ -706,6 +710,18 @@ if [[ -n ${OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL} && \
   sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_SAML_NAME_IDENTIFIER_FORMAT}}/'"${OAUTH_SAML_NAME_IDENTIFIER_FORMAT}"'/' -i config/gitlab.yml
 else
   sudo -HEu ${GITLAB_USER} sed "/name: 'saml'/,/name_identifier_format:/d" -i config/gitlab.yml
+fi
+
+# crowd
+if [[ -n ${OAUTH_CROWD_SERVER_URL} && \
+      -n ${OAUTH_CROWD_APP_NAME} && \
+      -n ${OAUTH_CROWD_APP_PASSWORD} ]]; then
+  OAUTH_ENABLED=true
+  sudo -HEu ${GITLAB_USER} sed 's,{{OAUTH_CROWD_SERVER_URL}},'"${OAUTH_CROWD_SERVER_URL}"',' -i config/gitlab.yml
+  sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_CROWD_APP_NAME}}/'"${OAUTH_CROWD_APP_NAME}"'/' -i config/gitlab.yml
+  sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_CROWD_APP_PASSWORD}}/'"${OAUTH_CROWD_APP_PASSWORD}"'/' -i config/gitlab.yml
+else
+  sudo -HEu ${GITLAB_USER} sed "/name: 'crowd'/,/application_password:/d" -i config/gitlab.yml
 fi
 
 # google analytics

@@ -5,6 +5,7 @@ This file only reflects the changes that are made in the the docker image. Pleas
 **latest**
 - gitlab: upgrade to CE v.8.0.2
 - added `IMAP_STARTTLS` parameter, defaults to `false`
+- expose oauth parameters for crowd server
 
 **8.0.0**
 - set default value of `DB_TYPE` to `postgres`

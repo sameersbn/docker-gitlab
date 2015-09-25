@@ -692,6 +692,12 @@ The following parameters have to be configured to enable SAML OAuth support in t
 
 Please refer to [Available Configuration Parameters](#available-configuration-parameters) for the default configurations of these parameters.
 
+#### Crowd
+
+To enable the Crowd server OAuth2 OmniAuth provider you must register your application with Crowd server.
+
+Configure GitLab to enable access the Crowd server by specifying the `OAUTH_CROWD_SERVER_URL`, `OAUTH_CROWD_APP_NAME` and `OAUTH_CROWD_APP_PASSWORD` environment variables.
+
 ### External Issue Trackers
 
 Since version `7.10.0` support for external issue trackers can be enabled in the "Service Templates" section of the settings panel.
@@ -850,6 +856,9 @@ Below is the complete list of available options that can be used to customize yo
 - **OAUTH_SAML_IDP_SSO_TARGET_URL**: The URL to which the authentication request should be sent. No defaults.
 - **OAUTH_SAML_ISSUER**: The name of your application. When `GITLAB_HTTPS=true`, defaults to `https://${GITLAB_HOST}` else defaults to `http://${GITLAB_HOST}`.
 - **OAUTH_SAML_NAME_IDENTIFIER_FORMAT**: Describes the format of the username required by GitLab, Defaults to `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`
+- **OAUTH_CROWD_SERVER_URL**: Crowd server url. No defaults.
+- **OAUTH_CROWD_APP_NAME**: Crowd server application name. No defaults.
+- **OAUTH_CROWD_APP_PASSWORD**: Crowd server application password. No defaults.
 - **GITLAB_GRAVATAR_ENABLED**: Enables gravatar integration. Defaults to `true`.
 - **GITLAB_GRAVATAR_HTTP_URL**: Sets a custom gravatar url. Defaults to `http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`. This can be used for [Libravatar integration](http://doc.gitlab.com/ce/customization/libravatar.html).
 - **GITLAB_GRAVATAR_HTTPS_URL**: Same as above, but for https. Defaults to `https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`.
