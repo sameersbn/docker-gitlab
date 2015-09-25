@@ -18,7 +18,7 @@ gitlab:
     - TZ=Asia/Kolkata
     - GITLAB_TIMEZONE=Kolkata
 
-    - GITLAB_SECRETS_DB_KEY_BASE=
+    - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
 
     - GITLAB_HOST=localhost
     - GITLAB_PORT=10080
