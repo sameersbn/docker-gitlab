@@ -105,6 +105,8 @@ spec:
             - name: ssh
               containerPort: 22
               protocol: TCP
+            - name: DEBIAN_FRONTEND
+              value: noninteractive
           livenessProbe:
             httpGet:
               path: /
