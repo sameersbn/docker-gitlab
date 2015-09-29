@@ -1004,6 +1004,8 @@ Replace `x.x.x` with the version you are upgrading from. For example, if you are
 
 - **Step 4**: Start the image
 
+> **Note**: Since GitLab `8.0.0` you need to provide the `GITLAB_SECRETS_DB_KEY_BASE` parameter while starting the image.
+
 ```bash
 docker run --name gitlab -d [OPTIONS] sameersbn/gitlab:8.0.2
 ```
