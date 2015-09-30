@@ -4,6 +4,10 @@ Since version `8.0.0`, GitLab CI is now a part of GitLab CE. You no longer need 
 
 This guide assumes that you are currently using `sameersbn/gitlab` and `sameersbn/gitlab-ci` for setting up your GitLab CE and GitLab CI requirements.
 
+> **Note:**
+>
+> If your CI server and your GitLab server use the same database adapter no special care is needed. If your CI server uses MySQL and your GitLab server uses PostgreSQL you need to pass a special option in **Step 4 - Upgrade CI > Create CI backup**. **If your CI server uses PostgreSQL and your GitLab server uses MySQL you cannot migrate your CI data to GitLab `8.0`**.
+
 ## Step 1 - Get Ready
 
 Stop your Gitlab CE and CI servers
@@ -67,6 +71,8 @@ docker run -it --rm [OPTIONS] \
 ```
 
 ### Create GitLab CI backup
+
+*If you are converting from MySQL to PostgreSQL, add `MYSQL_TO_POSTGRESQL=1` to the end of the below command.*
 
 ```bash
 docker run -it --rm [OPTIONS] \
