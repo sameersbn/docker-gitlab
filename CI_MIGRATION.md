@@ -1,8 +1,8 @@
-# GitLab CI Migration Guide
+# CI Migration Guide
 
-Since version `8.0.0`, GitLab CI is now a part of GitLab CE. You no longer need to run a separate instance of the GitLab CI server. This guide walks you through the procedure of migrating your existing GitLab CI data into GitLab CE.
+Since version `8.0.0`, CI is now a part of GitLab. You no longer need to run a separate instance of the CI server. This guide walks you through the procedure of migrating your existing CI data into GitLab.
 
-This guide assumes that you are currently using `sameersbn/gitlab` and `sameersbn/gitlab-ci` for setting up your GitLab CE and GitLab CI requirements.
+This guide assumes that you are currently using `sameersbn/gitlab` and `sameersbn/gitlab-ci` for setting up your GitLab and CI requirements.
 
 > **Note:**
 >
@@ -10,7 +10,7 @@ This guide assumes that you are currently using `sameersbn/gitlab` and `sameersb
 
 ## Step 1 - Get Ready
 
-Stop your Gitlab CE and CI servers
+Stop your GitLab and CI servers
 
 ```bash
 docker stop gitlab-ci gitlab
@@ -59,9 +59,9 @@ Make a note of the backup archive `xxxxxxxxxx_gitlab_ci_backup.tar.gz` as it is 
 
 > **Note**: From this point only `8.0.2` version images are used.
 
-## Step 4 - Upgrade GitLab CI
+## Step 4 - Upgrade CI
 
-GitLab CI `8.x.x` is only meant for the purpose of migrating to GitLab `8.0`. Here we need to upgrade to version `8.x.x` and generate a backup that will be imported into GitLab.
+CI `8.x.x` is only meant for the purpose of migrating to GitLab `8.0`. Here we need to upgrade to version `8.x.x` and generate a backup that will be imported into GitLab.
 
 ### Upgrade to `sameersbn/gitlab-ci:8.0.2`
 
@@ -70,7 +70,7 @@ docker run -it --rm [OPTIONS] \
   sameersbn/gitlab-ci:8.0.2 app:init
 ```
 
-### Create GitLab CI backup
+### Create CI backup
 
 *If you are converting from MySQL to PostgreSQL, add `MYSQL_TO_POSTGRESQL=1` to the end of the below command.*
 
@@ -79,17 +79,17 @@ docker run -it --rm [OPTIONS] \
   sameersbn/gitlab-ci:8.0.2 app:rake backup:create
 ```
 
-Copy the generated backup archive `xxxxxxxxxx_gitlab_ci_backup.tar` into the `backups/` directory of the GitLab CE server.
+Copy the generated backup archive `xxxxxxxxxx_gitlab_ci_backup.tar` into the `backups/` directory of the GitLab server.
 
 ```bash
 cp <gitlab-ci-host-volume-path>/backups/xxxxxxxxxx_gitlab_ci_backup.tar <gitlab-ce-host-volume-path>/backups/
 ```
 
-We are done with GitLab CI. If the rest of the migration goes was planned you will not need to start `sameersbn/gitlab-ci` ever again.
+We are done with CI. If the rest of the migration goes was planned you will not need to start `sameersbn/gitlab-ci` ever again.
 
 ## Step 5 - Upgrade GitLab
 
-Before we can upgrade to `sameersbn/gitlab:8.0.2`, we need to assign the value of `GITLAB_CI_SECRETS_DB_KEY_BASE` (from GitLab CI) to `GITLAB_SECRETS_DB_KEY_BASE` in GitLab's environment.
+Before we can upgrade to `sameersbn/gitlab:8.0.2`, we need to assign the value of `GITLAB_CI_SECRETS_DB_KEY_BASE` (from CI) to `GITLAB_SECRETS_DB_KEY_BASE` in GitLab's environment.
 
 Next you also need to set the environment variable `GITLAB_CI_HOST` to the address of your CI server, eg. `ci.example.com`. This will make sure that your existing runners will be able to communicate to GitLab with the old url.
 
@@ -111,7 +111,7 @@ docker run -it --rm [OPTIONS] \
 
 ## Step 6 - Fix DNS and reverse proxy configurations
 
-Since GitLab and GitLab CI are now one, update your DNS configuration to make sure `ci.example.com` points to your GitLab instance.
+Since GitLab and CI are now one, update your DNS configuration to make sure `ci.example.com` points to your GitLab instance.
 
 If you are using a reverse proxy, update the configuration such that `ci.example.com` interfaces with the GitLab server.
 
