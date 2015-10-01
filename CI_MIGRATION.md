@@ -93,7 +93,7 @@ Before we can upgrade to `sameersbn/gitlab:8.0.3`, we need to assign the value o
 
 Next you also need to set the environment variable `GITLAB_CI_HOST` to the address of your CI server, eg. `ci.example.com`. This will make sure that your existing runners will be able to communicate to GitLab with the old url.
 
-### Upgrade to `sameersbn/gitlab-ci:8.0.3`
+### Upgrade to `sameersbn/gitlab:8.0.3`
 
 ```bash
 docker run -it --rm [OPTIONS] \
