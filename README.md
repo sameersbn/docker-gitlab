@@ -136,7 +136,7 @@ docker build --tag=$USER/gitlab .
 The quickest way to get started is using [docker-compose](https://docs.docker.com/compose/).
 
 ```bash
-wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml.dist -O docker-compose.yml
+wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml
 ```
 
 Generate a random string and assign to `GITLAB_SECRETS_DB_KEY_BASE` environment variable. Once set you should not change this value and ensure you backup this value.
