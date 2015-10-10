@@ -11,7 +11,7 @@ echo "deb http://ppa.launchpad.net/evarlast/golang1.5/ubuntu trusty main" >> /et
 apt-get update
 
 # install build dependencies for gem installation
-apt-get install -y gcc g++ make patch pkg-config cmake paxctl \
+DEBIAN_FRONTEND=noninteractive apt-get install -y gcc g++ make patch pkg-config cmake paxctl \
   libc6-dev ruby2.1-dev golang-go \
   libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
