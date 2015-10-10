@@ -982,6 +982,9 @@ appSanitize () {
   echo "Checking tmp directory permissions..."
   chmod -R u+rwX ${GITLAB_DATA_DIR}/tmp/
   chown ${GITLAB_USER}:${GITLAB_USER} -R ${GITLAB_DATA_DIR}/tmp/
+
+  echo "Creating gitlab-shell hooks..."
+  sudo -HEu ${GITLAB_USER} ${GITLAB_SHELL_INSTALL_DIR}/bin/create-hooks
 }
 
 appRake () {
