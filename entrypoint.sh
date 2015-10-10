@@ -985,6 +985,9 @@ appSanitize () {
 
   echo "Creating gitlab-shell hooks..."
   sudo -HEu ${GITLAB_USER} ${GITLAB_SHELL_INSTALL_DIR}/bin/create-hooks
+
+  echo "Executing gitlab:env:info raketask..."
+  sudo -HEu ${GITLAB_USER} bundle exec rake gitlab:env:info
 }
 
 appRake () {
