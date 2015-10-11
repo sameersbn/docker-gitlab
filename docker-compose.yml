@@ -1,5 +1,5 @@
 postgresql:
-  image: quay.io/sameersbn/postgresql:9.4-4
+  image: quay.io/sameersbn/postgresql:9.4-5
   environment:
     - DB_USER=gitlab
     - DB_PASS=password
