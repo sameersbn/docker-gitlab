@@ -11,7 +11,7 @@ help:
 	@echo "   5. make purge        - stop and remove the container"
 
 build:
-	@docker build --tag=$quay.io/sameersbn/gitlab .
+	@docker build --tag=quay.io/sameersbn/gitlab .
 
 release: build
 	@docker build --tag=quay.io/sameersbn/gitlab:$(shell cat VERSION) .
