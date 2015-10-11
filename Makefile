@@ -14,17 +14,17 @@ build:
 	@docker build --tag=${USER}/gitlab .
 
 release: build
-	@docker build --tag=${USER}/gitlab:$(shell cat VERSION) .
+	@docker build --tag=quay.io/${USER}/gitlab:$(shell cat VERSION) .
 
 quickstart:
 	@echo "Starting postgresql container..."
 	@docker run --name=gitlab-postgresql -d \
 		--env='DB_NAME=gitlabhq_production' \
 		--env='DB_USER=gitlab' --env='DB_PASS=password' \
-		sameersbn/postgresql:latest
+		quay.io/sameersbn/postgresql:latest
 	@echo "Starting redis container..."
 	@docker run --name=gitlab-redis -d \
-		sameersbn/redis:latest
+		quay.io/sameersbn/redis:latest
 	@echo "Starting gitlab container..."
 	@docker run --name='gitlab-demo' -d \
 		--link=gitlab-postgresql:postgresql --link=gitlab-redis:redisio \
