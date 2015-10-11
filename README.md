@@ -311,7 +311,7 @@ Assuming that your mysql data is available at `/srv/docker/gitlab/mysql`
 ```bash
 docker run --name gitlab-mysql -d \
     --volume /srv/docker/gitlab/mysql:/var/lib/mysql \
-    sameersbn/mysql:latest
+    quay.io/sameersbn/mysql:latest
 ```
 
 This will start a mysql container with your existing mysql data. Now login to the mysql container and create a user for the existing `gitlabhq_production` database.
@@ -355,7 +355,7 @@ To illustrate linking with a mysql container, we will use the [sameersbn/mysql](
 First, lets pull the mysql image from the docker index.
 
 ```bash
-docker pull sameersbn/mysql:latest
+docker pull quay.io/sameersbn/mysql:latest
 ```
 
 For data persistence lets create a store for the mysql and start the container.
@@ -374,7 +374,7 @@ docker run --name gitlab-mysql -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --volume /srv/docker/gitlab/mysql:/var/lib/mysql \
-    sameersbn/mysql:latest
+    quay.io/sameersbn/mysql:latest
 ```
 
 The above command will create a database named `gitlabhq_production` and also create a user named `gitlab` with the password `password` with full/remote access to the `gitlabhq_production` database.
@@ -390,7 +390,7 @@ docker run --name gitlab -d --link gitlab-mysql:mysql \
 Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the mysql container as they are specified in the `docker run` command for the mysql container. This is made possible using the magic of docker links and works with the following images:
 
  - [mysql](https://hub.docker.com/_/mysql/)
- - [sameersbn/mysql](https://hub.docker.com/r/sameersbn/mysql/)
+ - [sameersbn/mysql](https://quay.io/repository/sameersbn/mysql/)
  - [centurylink/mysql](https://hub.docker.com/r/centurylink/mysql/)
  - [orchardup/mysql](https://hub.docker.com/r/orchardup/mysql/)
 
