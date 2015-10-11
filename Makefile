@@ -11,10 +11,10 @@ help:
 	@echo "   5. make purge        - stop and remove the container"
 
 build:
-	@docker build --tag=${USER}/gitlab .
+	@docker build --tag=$quay.io/sameersbn/gitlab .
 
 release: build
-	@docker build --tag=quay.io/${USER}/gitlab:$(shell cat VERSION) .
+	@docker build --tag=quay.io/sameersbn/gitlab:$(shell cat VERSION) .
 
 quickstart:
 	@echo "Starting postgresql container..."
@@ -30,7 +30,7 @@ quickstart:
 		--link=gitlab-postgresql:postgresql --link=gitlab-redis:redisio \
 		--publish=10022:22 --publish=10080:80 \
 		--env='GITLAB_PORT=10080' --env='GITLAB_SSH_PORT=10022' \
-		${USER}/gitlab:latest
+		quay.io/sameersbn/gitlab:latest
 	@echo "Please be patient. This could take a while..."
 	@echo "GitLab will be available at http://localhost:10080"
 	@echo "Type 'make logs' for the logs"
