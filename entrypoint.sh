@@ -641,7 +641,7 @@ fi
 
 # google
 if [[ -n ${OAUTH_GOOGLE_API_KEY} && -n ${OAUTH_GOOGLE_APP_SECRET} ]]; then
-  OAUTH_ENABLED=true
+  OAUTH_ENABLED=${OAUTH_ENABLED:-true}
   sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_GOOGLE_API_KEY}}/'"${OAUTH_GOOGLE_API_KEY}"'/' -i config/gitlab.yml
   sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_GOOGLE_APP_SECRET}}/'"${OAUTH_GOOGLE_APP_SECRET}"'/' -i config/gitlab.yml
   sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_GOOGLE_RESTRICT_DOMAIN}}/'"${OAUTH_GOOGLE_RESTRICT_DOMAIN}"'/' -i config/gitlab.yml
@@ -652,7 +652,7 @@ fi
 
 # twitter
 if [[ -n ${OAUTH_TWITTER_API_KEY} && -n ${OAUTH_TWITTER_APP_SECRET} ]]; then
-  OAUTH_ENABLED=true
+  OAUTH_ENABLED=${OAUTH_ENABLED:-true}
   sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_TWITTER_API_KEY}}/'"${OAUTH_TWITTER_API_KEY}"'/' -i config/gitlab.yml
   sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_TWITTER_APP_SECRET}}/'"${OAUTH_TWITTER_APP_SECRET}"'/' -i config/gitlab.yml
 else
@@ -661,7 +661,7 @@ fi
 
 # github
 if [[ -n ${OAUTH_GITHUB_API_KEY} && -n ${OAUTH_GITHUB_APP_SECRET} ]]; then
-  OAUTH_ENABLED=true
+  OAUTH_ENABLED=${OAUTH_ENABLED:-true}
   sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_GITHUB_API_KEY}}/'"${OAUTH_GITHUB_API_KEY}"'/' -i config/gitlab.yml
   sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_GITHUB_APP_SECRET}}/'"${OAUTH_GITHUB_APP_SECRET}"'/' -i config/gitlab.yml
   sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_GITHUB_SCOPE}}/user:email/' -i config/gitlab.yml
@@ -671,7 +671,7 @@ fi
 
 # gitlab
 if [[ -n ${OAUTH_GITLAB_API_KEY} && -n ${OAUTH_GITLAB_APP_SECRET} ]]; then
-  OAUTH_ENABLED=true
+  OAUTH_ENABLED=${OAUTH_ENABLED:-true}
   sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_GITLAB_API_KEY}}/'"${OAUTH_GITLAB_API_KEY}"'/' -i config/gitlab.yml
   sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_GITLAB_APP_SECRET}}/'"${OAUTH_GITLAB_APP_SECRET}"'/' -i config/gitlab.yml
   sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_GITLAB_SCOPE}}/api/' -i config/gitlab.yml
@@ -681,7 +681,7 @@ fi
 
 # bitbucket
 if [[ -n ${OAUTH_BITBUCKET_API_KEY} && -n ${OAUTH_BITBUCKET_APP_SECRET} ]]; then
-  OAUTH_ENABLED=true
+  OAUTH_ENABLED=${OAUTH_ENABLED:-true}
   sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_BITBUCKET_API_KEY}}/'"${OAUTH_BITBUCKET_API_KEY}"'/' -i config/gitlab.yml
   sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_BITBUCKET_APP_SECRET}}/'"${OAUTH_BITBUCKET_APP_SECRET}"'/' -i config/gitlab.yml
 else
@@ -694,7 +694,7 @@ if [[ -n ${OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL} && \
       -n ${OAUTH_SAML_IDP_SSO_TARGET_URL} && \
       -n ${OAUTH_SAML_ISSUER} && \
       -n ${OAUTH_SAML_NAME_IDENTIFIER_FORMAT} ]]; then
-  OAUTH_ENABLED=true
+  OAUTH_ENABLED=${OAUTH_ENABLED:-true}
   sudo -HEu ${GITLAB_USER} sed 's,{{OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL}},'"${OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL}"',' -i config/gitlab.yml
   sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_SAML_IDP_CERT_FINGERPRINT}}/'"${OAUTH_SAML_IDP_CERT_FINGERPRINT}"'/' -i config/gitlab.yml
   sudo -HEu ${GITLAB_USER} sed 's,{{OAUTH_SAML_IDP_SSO_TARGET_URL}},'"${OAUTH_SAML_IDP_SSO_TARGET_URL}"',' -i config/gitlab.yml
@@ -708,7 +708,7 @@ fi
 if [[ -n ${OAUTH_CROWD_SERVER_URL} && \
       -n ${OAUTH_CROWD_APP_NAME} && \
       -n ${OAUTH_CROWD_APP_PASSWORD} ]]; then
-  OAUTH_ENABLED=true
+  OAUTH_ENABLED=${OAUTH_ENABLED:-true}
   sudo -HEu ${GITLAB_USER} sed 's,{{OAUTH_CROWD_SERVER_URL}},'"${OAUTH_CROWD_SERVER_URL}"',' -i config/gitlab.yml
   sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_CROWD_APP_NAME}}/'"${OAUTH_CROWD_APP_NAME}"'/' -i config/gitlab.yml
   sudo -HEu ${GITLAB_USER} sed 's/{{OAUTH_CROWD_APP_PASSWORD}}/'"${OAUTH_CROWD_APP_PASSWORD}"'/' -i config/gitlab.yml

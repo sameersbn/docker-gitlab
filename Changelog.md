@@ -4,6 +4,7 @@ This file only reflects the changes that are made in the the docker image. Pleas
 
 **latest**
 - fix http/https cloning when `GITLAB_RELATIVE_URL_ROOT` is used
+- allow user to override `OAUTH_ENABLED` setting
 
 **8.0.4-1**
 - update baseimage to `sameersbn/ubuntu:14.04.20151011`
