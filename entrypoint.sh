@@ -845,8 +845,8 @@ chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_BACKUP_DIR}
 
 # create the uploads directory
 mkdir -p ${GITLAB_DATA_DIR}/uploads/
-chmod 0750 ${GITLAB_DATA_DIR}/uploads/
-chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/uploads/
+chmod -R u=rwX,g=rX,o= ${GITLAB_DATA_DIR}/uploads/
+chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/uploads/
 
 # create the .ssh directory
 mkdir -p ${GITLAB_DATA_DIR}/.ssh/
@@ -978,10 +978,8 @@ appSanitize () {
   chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_BUILDS_DIR}
 
   echo "Checking uploads directory permissions..."
-  chmod -R 0750 ${GITLAB_DATA_DIR}/uploads/
-  find ${GITLAB_DATA_DIR}/uploads -type f -exec chmod 0644 {} \;
-  find ${GITLAB_DATA_DIR}/uploads -type d -not -path ${GITLAB_DATA_DIR}/uploads -exec chmod 0755 {} \;
-  chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/uploads/
+  chmod -R u=rwX,g=rX,o= ${GITLAB_DATA_DIR}/uploads/
+  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/uploads/
 
   echo "Checking tmp directory permissions..."
   chmod -R u+rwX ${GITLAB_DATA_DIR}/tmp/
