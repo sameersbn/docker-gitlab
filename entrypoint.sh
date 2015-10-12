@@ -786,10 +786,14 @@ else
 fi
 
 # configure relative_url_root
+sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'"${GITLAB_RELATIVE_URL_ROOT}"',' -i /etc/supervisor/conf.d/gitlab-git-http-server.conf
 if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
-  sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'"${GITLAB_RELATIVE_URL_ROOT}"',' -i /etc/nginx/sites-enabled/gitlab
   sed 's,{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}},'"${GITLAB_RELATIVE_URL_ROOT}/"',' -i /etc/nginx/sites-enabled/gitlab
-  sed 's,# alias '"${GITLAB_INSTALL_DIR}"'/public,alias '"${GITLAB_INSTALL_DIR}"'/public,' -i /etc/nginx/sites-enabled/gitlab
+  sed 's,# alias'"${GITLAB_INSTALL_DIR}"'/public,alias '"${GITLAB_INSTALL_DIR}"'/public,' -i /etc/nginx/sites-enabled/gitlab
+
+  # fixes cloning when GITLAB_RELATIVE_URL_ROOT is used
+  sed 's,# rewrite ^{{GITLAB_RELATIVE_URL_ROOT}}/(.*)$ /$1 last;,rewrite ^{{GITLAB_RELATIVE_URL_ROOT}}/(.*)$ /$1 last;,' -i /etc/nginx/sites-enabled/gitlab
+  sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'"${GITLAB_RELATIVE_URL_ROOT}"',g' -i /etc/nginx/sites-enabled/gitlab
 
   sudo -HEu ${GITLAB_USER} sed 's,# config.relative_url_root = "/gitlab",config.relative_url_root = "'${GITLAB_RELATIVE_URL_ROOT}'",' -i config/application.rb
   sudo -HEu ${GITLAB_USER} sed 's,# relative_url_root: {{GITLAB_RELATIVE_URL_ROOT}},relative_url_root: '${GITLAB_RELATIVE_URL_ROOT}',' -i config/gitlab.yml

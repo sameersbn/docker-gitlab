@@ -242,7 +242,7 @@ command=${GITLAB_GIT_HTTP_SERVER_INSTALL_DIR}/gitlab-git-http-server
   -listenUmask 0
   -listenNetwork unix
   -listenAddr ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab-git-http-server.socket
-  -authBackend http://127.0.0.1:8080
+  -authBackend http://127.0.0.1:8080{{GITLAB_RELATIVE_URL_ROOT}}
   {{GITLAB_REPOS_DIR}}
 user=git
 autostart=true

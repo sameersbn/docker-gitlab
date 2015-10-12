@@ -170,6 +170,7 @@ server {
     ## If you use HTTPS make sure you disable gzip compression
     ## to be safe against BREACH attack.
     gzip off;
+    # rewrite ^{{GITLAB_RELATIVE_URL_ROOT}}/(.*)$ /$1 last;
     add_header X-Accel-Buffering {{NGINX_ACCEL_BUFFERING}};
 
     ## https://github.com/gitlabhq/gitlabhq/issues/694
