@@ -63,11 +63,11 @@ Make a note of the backup archive `xxxxxxxxxx_gitlab_ci_backup.tar.gz` as it is 
 
 CI `8.x.x` is only meant for the purpose of migrating to GitLab `8.0`. Here we need to upgrade to version `8.x.x` and generate a backup that will be imported into GitLab.
 
-### Upgrade to `quay.io/sameersbn/gitlab-ci:8.0.4-1`
+### Upgrade to `quay.io/sameersbn/gitlab-ci:8.0.5`
 
 ```bash
 docker run -it --rm [OPTIONS] \
-  quay.io/sameersbn/gitlab-ci:8.0.4-1 app:init
+  quay.io/sameersbn/gitlab-ci:8.0.5 app:init
 ```
 
 ### Create CI backup
@@ -76,7 +76,7 @@ docker run -it --rm [OPTIONS] \
 
 ```bash
 docker run -it --rm [OPTIONS] \
-  quay.io/sameersbn/gitlab-ci:8.0.4-1 app:rake backup:create
+  quay.io/sameersbn/gitlab-ci:8.0.5 app:rake backup:create
 ```
 
 Copy the generated backup archive `xxxxxxxxxx_gitlab_ci_backup.tar` into the `backups/` directory of the GitLab server.
@@ -89,16 +89,16 @@ We are done with CI. If the rest of the migration goes was planned you will not 
 
 ## Step 5 - Upgrade GitLab
 
-Before we can upgrade to `quay.io/sameersbn/gitlab:8.0.4-3`, we need to assign the value of `GITLAB_CI_SECRETS_DB_KEY_BASE` (from CI) to `GITLAB_SECRETS_DB_KEY_BASE` in GitLab's environment.
+Before we can upgrade to `quay.io/sameersbn/gitlab:8.0.5`, we need to assign the value of `GITLAB_CI_SECRETS_DB_KEY_BASE` (from CI) to `GITLAB_SECRETS_DB_KEY_BASE` in GitLab's environment.
 
 Next you also need to set the environment variable `GITLAB_CI_HOST` to the address of your CI server, eg. `ci.example.com`. This will make sure that your existing runners will be able to communicate to GitLab with the old url.
 
-### Upgrade to `quay.io/sameersbn/gitlab:8.0.4-3`
+### Upgrade to `quay.io/sameersbn/gitlab:8.0.5`
 
 ```bash
 docker run -it --rm [OPTIONS] \
   --env GITLAB_CI_HOST=ci.example.com --env GITLAB_SECRETS_DB_KEY_BASE=xxxxxx \
-  quay.io/sameersbn/gitlab:8.0.4-3 app:init
+  quay.io/sameersbn/gitlab:8.0.5 app:init
 ```
 
 ### Migrate CI data
@@ -106,7 +106,7 @@ docker run -it --rm [OPTIONS] \
 ```bash
 docker run -it --rm [OPTIONS] \
   --env GITLAB_CI_HOST=ci.example.com --env GITLAB_SECRETS_DB_KEY_BASE=xxxxxx \
-  quay.io/sameersbn/gitlab:8.0.4-3 app:rake ci:migrate
+  quay.io/sameersbn/gitlab:8.0.5 app:rake ci:migrate
 ```
 
 ## Step 6 - Fix DNS and reverse proxy configurations
