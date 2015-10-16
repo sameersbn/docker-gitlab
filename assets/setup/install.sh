@@ -51,8 +51,9 @@ cd ${GITLAB_SHELL_INSTALL_DIR}
 sudo -u git -H cp -a config.yml.example config.yml
 sudo -u git -H ./bin/install
 
-echo "Cloning gitlab-git-http-server..."
-sudo -u git -H git clone -q https://gitlab.com/gitlab-org/gitlab-git-http-server.git --depth 1 ${GITLAB_GIT_HTTP_SERVER_INSTALL_DIR}
+echo "Cloning gitlab-git-http-server v.${GITLAB_GIT_HTTP_SERVER_VERSION}..."
+sudo -u git -H git clone -q -b ${GITLAB_GIT_HTTP_SERVER_VERSION} --depth 1 \
+  https://gitlab.com/gitlab-org/gitlab-git-http-server.git ${GITLAB_GIT_HTTP_SERVER_INSTALL_DIR}
 cd ${GITLAB_GIT_HTTP_SERVER_INSTALL_DIR}
 sudo -u git -H make
 
