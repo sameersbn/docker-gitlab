@@ -75,30 +75,6 @@ sudo -HEu ${GITLAB_USER} cp config/unicorn.rb.example config/unicorn.rb
 sudo -HEu ${GITLAB_USER} cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
 sudo -HEu ${GITLAB_USER} cp config/initializers/smtp_settings.rb.sample config/initializers/smtp_settings.rb
 
-# symlink log -> ${GITLAB_LOG_DIR}/gitlab
-rm -rf log
-ln -sf ${GITLAB_LOG_DIR}/gitlab log
-
-# create required tmp directories
-sudo -HEu ${GITLAB_USER} mkdir -p tmp/pids/ tmp/sockets/
-chmod -R u+rwX tmp
-
-# create symlink to assets in tmp/cache
-rm -rf tmp/cache
-sudo -HEu ${GITLAB_USER} ln -s ${GITLAB_DATA_DIR}/tmp/cache tmp/cache
-
-# create symlink to assets in public/assets
-rm -rf public/assets
-sudo -HEu ${GITLAB_USER} ln -s ${GITLAB_DATA_DIR}/tmp/public/assets public/assets
-
-# create symlink to uploads directory
-rm -rf public/uploads
-sudo -HEu ${GITLAB_USER} ln -s ${GITLAB_DATA_DIR}/uploads public/uploads
-
-# create symlink to .secret in GITLAB_DATA_DIR
-rm -rf .secret
-sudo -HEu ${GITLAB_USER} ln -sf ${GITLAB_DATA_DIR}/.secret
-
 # install gems required by gitlab, use local cache if available
 if [[ -d ${GEM_CACHE_DIR} ]]; then
   mv ${GEM_CACHE_DIR} vendor/
@@ -109,8 +85,31 @@ sudo -HEu ${GITLAB_USER} bundle install -j$(nproc) --deployment --without develo
 # make sure everything in ${GITLAB_HOME} is owned by the git user
 chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_HOME}/
 
+# compile assets
+echo "Compiling assets. Please be patient, this could take a while..."
+sudo -HEu ${GITLAB_USER} bundle exec rake assets:clean assets:precompile >/dev/null 2>&1
+
 # install schedules cronjob
 sudo -HEu ${GITLAB_USER} bundle exec whenever -w
+
+# symlink log -> ${GITLAB_LOG_DIR}/gitlab
+rm -rf log
+ln -sf ${GITLAB_LOG_DIR}/gitlab log
+
+# create required tmp directories
+sudo -HEu ${GITLAB_USER} mkdir -p tmp/pids/ tmp/sockets/
+chmod -R u+rwX tmp
+
+# create symlink to uploads directory
+rm -rf public/uploads
+sudo -HEu ${GITLAB_USER} ln -s ${GITLAB_DATA_DIR}/uploads public/uploads
+
+# create symlink to .secret in GITLAB_DATA_DIR
+rm -rf .secret
+sudo -HEu ${GITLAB_USER} ln -sf ${GITLAB_DATA_DIR}/.secret
+
+# remove auto generated config/secrets.yml
+rm -rf config/secrets.yml
 
 # install gitlab bootscript
 cp lib/support/init.d/gitlab /etc/init.d/gitlab
