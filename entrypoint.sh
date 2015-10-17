@@ -865,15 +865,16 @@ appInit () {
       ;;
   esac
   timeout=60
-  printf "Waiting for database server to accept connections"
+  echo -n "Waiting for database server to accept connections"
   while ! ${prog} >/dev/null 2>&1
   do
     timeout=$(expr $timeout - 1)
     if [[ $timeout -eq 0 ]]; then
-      printf "\nCould not connect to database server. Aborting...\n"
+      echo
+      echo "Could not connect to database server. Aborting..."
       exit 1
     fi
-    printf "."
+    echo -n "."
     sleep 1
   done
   echo
