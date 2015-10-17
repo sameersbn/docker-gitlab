@@ -4,6 +4,7 @@ This file only reflects the changes that are made in the the docker image. Pleas
 
 **latest**
 - speed up container startup by compiling assets at image build time
+- test connection to redis-server
 
 **8.0.5**
 - gitlab: upgrade to CE v.8.0.5

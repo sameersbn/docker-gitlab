@@ -878,6 +878,21 @@ appInit () {
   done
   echo
 
+  timeout=60
+  echo -n "Waiting for redis server to accept connections"
+  while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} ping >/dev/null 2>&1
+  do
+    timeout=$(expr $timeout - 1)
+    if [[ $timeout -eq 0 ]]; then
+      echo ""
+      echo "Could not connect to redis server. Aborting..."
+      exit 1
+    fi
+    echo -n "."
+    sleep 1
+  done
+  echo
+
   # run the `gitlab:setup` rake task if required
   case ${DB_TYPE} in
     mysql)
