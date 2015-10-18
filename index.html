@@ -32,7 +32,7 @@
 
 <p>The quickest way to get started is using <a href="https://docs.docker.com/compose/">docker-compose</a>.</p>
 
-<div class="highlight highlight-source-shell"><pre>wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml.dist -O docker-compose.yml</pre></div>
+<div class="highlight highlight-source-shell"><pre>wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml</pre></div>
 
 <p>Generate a random string and assign to <code>GITLAB_SECRETS_DB_KEY_BASE</code> environment variable in <code>docker-compose.yml</code>. Once set, you should not change this value and ensure you backup this value.</p>
 
@@ -48,13 +48,13 @@
     --env <span class="pl-s"><span class="pl-pds">'</span>DB_NAME=gitlabhq_production<span class="pl-pds">'</span></span> \
     --env <span class="pl-s"><span class="pl-pds">'</span>DB_USER=gitlab<span class="pl-pds">'</span></span> --env <span class="pl-s"><span class="pl-pds">'</span>DB_PASS=password<span class="pl-pds">'</span></span> \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
-    sameersbn/postgresql:9.4-3</pre></div>
+    quay.io/sameersbn/postgresql:9.4-5</pre></div>
 
 <p>Step 2. Launch a redis container</p>
 
 <div class="highlight highlight-source-shell"><pre>docker run --name gitlab-redis -d \
     --volume /srv/docker/gitlab/redis:/var/lib/redis \
-    sameersbn/redis:latest</pre></div>
+    quay.io/sameersbn/redis:latest</pre></div>
 
 <p>Step 3. Launch the gitlab container</p>
 
@@ -64,7 +64,7 @@
     --env <span class="pl-s"><span class="pl-pds">'</span>GITLAB_PORT=10080<span class="pl-pds">'</span></span> --env <span class="pl-s"><span class="pl-pds">'</span>GITLAB_SSH_PORT=10022<span class="pl-pds">'</span></span> \
     --env <span class="pl-s"><span class="pl-pds">'</span>GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alpha-numeric-string<span class="pl-pds">'</span></span> \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:8.0.2</pre></div>
+    quay.io/sameersbn/gitlab:8.0.5</pre></div>
 
 <p><strong>NOTE</strong>: Please allow a couple of minutes for the GitLab application to start.</p>
 
