@@ -2,6 +2,10 @@
 
 This file only reflects the changes that are made in the the docker image. Please refer to the upstream GitLab [CHANGELOG](https://github.com/gitlabhq/gitlabhq/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**8.1.0**
+- gitlab: upgrade to CE v8.1.0
+- gitlab-git-http-server: upgrade to v0.3.0
+
 **8.0.5-1**
 - speed up container startup by compiling assets at image build time
 - test connection to redis-server
