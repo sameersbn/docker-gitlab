@@ -90,9 +90,6 @@ chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_HOME}/
 echo "Compiling assets. Please be patient, this could take a while..."
 sudo -HEu ${GITLAB_USER} bundle exec rake assets:clean assets:precompile >/dev/null 2>&1
 
-# install schedules cronjob
-sudo -HEu ${GITLAB_USER} bundle exec whenever -w
-
 # symlink log -> ${GITLAB_LOG_DIR}/gitlab
 rm -rf log
 ln -sf ${GITLAB_LOG_DIR}/gitlab log
