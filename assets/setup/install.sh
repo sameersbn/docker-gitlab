@@ -83,19 +83,12 @@ if [[ -d ${GEM_CACHE_DIR} ]]; then
 fi
 sudo -HEu ${GITLAB_USER} bundle install -j$(nproc) --deployment --without development test aws
 
-# GitLab 8.1.0 dropped whenever from their Gemfile
-# https://github.com/gitlabhq/gitlabhq/commit/6f79b5336fb9ac011dd19d5720b8bfda8b6fa53a
-gem install whenever
-
 # make sure everything in ${GITLAB_HOME} is owned by the git user
 chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_HOME}/
 
 # compile assets
 echo "Compiling assets. Please be patient, this could take a while..."
 sudo -HEu ${GITLAB_USER} bundle exec rake assets:clean assets:precompile >/dev/null 2>&1
-
-# install schedules cronjob
-sudo -HEu ${GITLAB_USER} whenever -w
 
 # symlink log -> ${GITLAB_LOG_DIR}/gitlab
 rm -rf log

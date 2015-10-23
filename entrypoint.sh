@@ -941,7 +941,6 @@ appInit () {
   case ${GITLAB_BACKUPS} in
     daily|weekly|monthly)
       read hour min <<< ${GITLAB_BACKUP_TIME//[:]/ }
-      crontab -u ${GITLAB_USER} -l > /tmp/cron.${GITLAB_USER}
       case ${GITLAB_BACKUPS} in
         daily)
           sudo -HEu ${GITLAB_USER} cat >> /tmp/cron.${GITLAB_USER} <<EOF
