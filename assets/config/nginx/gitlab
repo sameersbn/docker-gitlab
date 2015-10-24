@@ -116,19 +116,18 @@ server {
     proxy_pass http://gitlab;
   }
 
-  location ~ ^/[\w\.-]+/[\w\.-]+/(info/refs|git-upload-pack|git-receive-pack)$ {
+  location ~ /[\w\.-]+/[\w\.-]+/(info/refs|git-upload-pack|git-receive-pack)$ {
+    # 'Error' 418 is a hack to re-use the @gitlab-git-http-server block
+    try_files /nonexisting-file @gitlab-git-http-server;
+  }
+
+  location ~ /[\w\.-]+/[\w\.-]+/repository/archive {
     # 'Error' 418 is a hack to re-use the @gitlab-git-http-server block
     error_page 418 = @gitlab-git-http-server;
     return 418;
   }
 
-  location ~ ^/[\w\.-]+/[\w\.-]+/repository/archive {
-    # 'Error' 418 is a hack to re-use the @gitlab-git-http-server block
-    error_page 418 = @gitlab-git-http-server;
-    return 418;
-  }
-
-  location ~ ^/api/v3/projects/.*/repository/archive {
+  location ~ /api/v3/projects/.*/repository/archive {
     # 'Error' 418 is a hack to re-use the @gitlab-git-http-server block
     error_page 418 = @gitlab-git-http-server;
     return 418;
