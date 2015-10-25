@@ -789,6 +789,14 @@ fi
 # configure relative_url_root
 sed 's,{{GITLAB_RELATIVE_URL_ROOT}},'"${GITLAB_RELATIVE_URL_ROOT}"',' -i /etc/supervisor/conf.d/gitlab-git-http-server.conf
 if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
+  # create symlink to assets in tmp/cache
+  rm -rf tmp/cache
+  sudo -HEu ${GITLAB_USER} ln -s ${GITLAB_DATA_DIR}/tmp/cache tmp/cache
+
+  # create symlink to assets in public/assets
+  rm -rf public/assets
+  sudo -HEu ${GITLAB_USER} ln -s ${GITLAB_DATA_DIR}/tmp/public/assets public/assets
+
   sed 's,{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}},'"${GITLAB_RELATIVE_URL_ROOT}/"',' -i /etc/nginx/sites-enabled/gitlab
   sed 's,# alias'"${GITLAB_INSTALL_DIR}"'/public,alias '"${GITLAB_INSTALL_DIR}"'/public,' -i /etc/nginx/sites-enabled/gitlab
 
@@ -923,8 +931,18 @@ appInit () {
     rm -rf ${GITLAB_DATA_DIR}/tmp
     sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_DATA_DIR}/tmp/
 
-    # clear the cache
-    sudo -HEu ${GITLAB_USER} bundle exec rake cache:clear >/dev/null 2>&1
+    # assets need to be recompiled when GITLAB_RELATIVE_URL_ROOT is used
+    if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
+      # create the tmp/cache and tmp/public/assets directory
+      sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_DATA_DIR}/tmp/cache/
+      sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_DATA_DIR}/tmp/public/assets/
+
+      echo "GITLAB_RELATIVE_URL_ROOT in use, recompiling assets, this could take a while..."
+      sudo -HEu ${GITLAB_USER} bundle exec rake assets:clean assets:precompile cache:clear >/dev/null 2>&1
+    else
+      # clear the cache
+      sudo -HEu ${GITLAB_USER} bundle exec rake cache:clear >/dev/null 2>&1
+    fi
 
     # update VERSION information
     sudo -HEu ${GITLAB_USER} echo "${GITLAB_VERSION}" > ${GITLAB_DATA_DIR}/tmp/VERSION
