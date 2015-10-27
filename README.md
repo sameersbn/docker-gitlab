@@ -764,7 +764,6 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_PROJECTS_WIKI**: Set if *wiki* feature should be enabled by default for new projects. Defaults is `true`.
 - **GITLAB_PROJECTS_SNIPPETS**: Set if *snippets* feature should be enabled by default for new projects. Defaults is `false`.
 - **GITLAB_WEBHOOK_TIMEOUT**: Sets the timeout for webhooks. Defaults to `10` seconds.
-- **GITLAB_SATELLITES_TIMEOUT**: Sets the timeout for satellites. Defaults to `30` seconds.
 - **GITLAB_TIMEOUT**: Sets the timeout for git commands. Defaults to `10` seconds.
 - **GITLAB_NOTIFY_ON_BROKEN_BUILDS**: Enable or disable broken build notification emails. Defaults to `true`
 - **GITLAB_NOTIFY_PUSHER**: Add pusher to recipients list of broken build notification emails. Defaults to `false`

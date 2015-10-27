@@ -4,6 +4,7 @@ This file only reflects the changes that are made in the the docker image. Pleas
 
 **latest**
 - gitlab: upgrade to CE v8.1.2
+- removed `GITLAB_SATELLITES_TIMEOUT` configuration parameter
 
 **8.1.0-2**
 - Recompile assets when `GITLAB_RELATIVE_URL_ROOT` is used Fixes #481

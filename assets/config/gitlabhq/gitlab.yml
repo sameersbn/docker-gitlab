@@ -323,7 +323,6 @@ production: &base
   # db/migrate/20151023144219_remove_satellites.rb
   satellites:
     path: {{GITLAB_DATA_DIR}}/gitlab-satellites/
-    timeout: {{GITLAB_SATELLITES_TIMEOUT}}
 
   ## Backup settings
   backup:
