@@ -2,6 +2,9 @@
 
 This file only reflects the changes that are made in the the docker image. Please refer to the upstream GitLab [CHANGELOG](https://github.com/gitlabhq/gitlabhq/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**latest**
+- gitlab: upgrade to CE v8.1.2
+
 **8.1.0-2**
 - Recompile assets when `GITLAB_RELATIVE_URL_ROOT` is used Fixes #481
 
