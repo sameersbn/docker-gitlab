@@ -2,6 +2,9 @@
 
 This file only reflects the changes that are made in the the docker image. Please refer to the upstream GitLab [CHANGELOG](https://github.com/gitlabhq/gitlabhq/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**latest**
+- proper long-term fix for http/https cloning when `GITLAB_RELATIVE_URL_ROOT` is used
+
 **8.1.2**
 - gitlab: upgrade to CE v8.1.2
 - removed `GITLAB_SATELLITES_TIMEOUT` configuration parameter

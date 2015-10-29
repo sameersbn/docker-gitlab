@@ -166,18 +166,18 @@ server {
     proxy_pass http://gitlab;
   }
 
-  location ~ /[\w\.-]+/[\w\.-]+/(info/refs|git-upload-pack|git-receive-pack)$ {
+  location ~ ^{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}[\w\.-]+/[\w\.-]+/(info/refs|git-upload-pack|git-receive-pack)$ {
     # 'Error' 418 is a hack to re-use the @gitlab-git-http-server block
     try_files /nonexisting-file @gitlab-git-http-server;
   }
 
-  location ~ /[\w\.-]+/[\w\.-]+/repository/archive {
+  location ~ ^{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}[\w\.-]+/[\w\.-]+/repository/archive {
     # 'Error' 418 is a hack to re-use the @gitlab-git-http-server block
     error_page 418 = @gitlab-git-http-server;
     return 418;
   }
 
-  location ~ /api/v3/projects/.*/repository/archive {
+  location ~ ^{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}api/v3/projects/.*/repository/archive {
     # 'Error' 418 is a hack to re-use the @gitlab-git-http-server block
     error_page 418 = @gitlab-git-http-server;
     return 418;
@@ -187,7 +187,6 @@ server {
     ## If you use HTTPS make sure you disable gzip compression
     ## to be safe against BREACH attack.
     gzip off;
-    # rewrite ^{{GITLAB_RELATIVE_URL_ROOT}}/(.*)$ /$1 last;
     add_header X-Accel-Buffering {{NGINX_ACCEL_BUFFERING}};
 
     ## https://github.com/gitlabhq/gitlabhq/issues/694
