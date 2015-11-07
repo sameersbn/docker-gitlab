@@ -115,6 +115,8 @@ Your docker host needs to have 1GB or more of available RAM to run GitLab. Pleas
 
 Automated builds of the image are available on [Quay.io](https://quay.io/repository/sameersbn/gitlab) and is the recommended method of installation.
 
+> **Note**: Builds are also available on [Dockerhub](https://hub.docker.com/r/sameersbn/gitlab)
+
 ```bash
 docker pull quay.io/sameersbn/gitlab:8.1.3
 ```
