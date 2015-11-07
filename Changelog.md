@@ -4,6 +4,7 @@ This file only reflects the changes that are made in the the docker image. Pleas
 
 **latest**
 - proper long-term fix for http/https cloning when `GITLAB_RELATIVE_URL_ROOT` is used
+- gitlab: upgrade to CE v8.1.3
 
 **8.1.2**
 - gitlab: upgrade to CE v8.1.2

@@ -1,7 +1,7 @@
 FROM quay.io/sameersbn/ubuntu:14.04.20151023
 MAINTAINER sameer@damagehead.com
 
-ENV GITLAB_VERSION=8.1.2 \
+ENV GITLAB_VERSION=8.1.3 \
     GITLAB_SHELL_VERSION=2.6.5 \
     GITLAB_GIT_HTTP_SERVER_VERSION=0.3.0 \
     GITLAB_USER="git" \
