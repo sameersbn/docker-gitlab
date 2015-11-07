@@ -1,5 +1,5 @@
 postgresql:
-  image: quay.io/sameersbn/postgresql:9.4-5
+  image: sameersbn/postgresql:9.4-7
   environment:
     - DB_USER=gitlab
     - DB_PASS=password
@@ -7,7 +7,7 @@ postgresql:
   volumes:
     - /srv/docker/gitlab/postgresql:/var/lib/postgresql
 gitlab:
-  image: quay.io/sameersbn/gitlab:8.1.3
+  image: sameersbn/gitlab:8.1.3
   links:
     - redis:redisio
     - postgresql:postgresql
@@ -54,6 +54,6 @@ gitlab:
   volumes:
     - /srv/docker/gitlab/gitlab:/home/git/data
 redis:
-  image: quay.io/sameersbn/redis:latest
+  image: sameersbn/redis:latest
   volumes:
     - /srv/docker/gitlab/redis:/var/lib/redis
