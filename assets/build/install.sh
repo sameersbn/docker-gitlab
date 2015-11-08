@@ -1,21 +1,26 @@
 #!/bin/bash
 set -e
 
-GEM_CACHE_DIR="${SETUP_DIR}/cache.${GITLAB_VERSION}"
+GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache.${GITLAB_VERSION%.*}"
 
-# add golang1.5 ppa
-apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv B0B8B106A0CA2F79FBB616DBA65E2E5D742A38EE
-echo "deb http://ppa.launchpad.net/evarlast/golang1.5/ubuntu trusty main" >> /etc/apt/sources.list
-
-# rebuild apt cache
-apt-get update
-
-# install build dependencies for gem installation
-DEBIAN_FRONTEND=noninteractive apt-get install -y gcc g++ make patch pkg-config cmake paxctl \
+BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
   libc6-dev ruby2.1-dev golang-go \
   libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
-  libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
+  libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev"
+
+## Execute a command as GITLAB_USER
+exec_as_git() {
+  sudo -HEu ${GITLAB_USER} "$@"
+}
+
+# ppa for golang1.5
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv B0B8B106A0CA2F79FBB616DBA65E2E5D742A38EE
+echo "deb http://ppa.launchpad.net/evarlast/golang1.5/ubuntu trusty main" >> /etc/apt/sources.list
+
+# install build dependencies for gem installation
+apt-get update
+DEBIAN_FRONTEND=noninteractive apt-get install -y ${BUILD_DEPENDENCIES}
 
 # https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
 paxctl -Cm `which nodejs`
@@ -32,107 +37,95 @@ cat >> ${GITLAB_HOME}/.profile <<EOF
 PATH=/usr/local/sbin:/usr/local/bin:\$PATH
 EOF
 
-rm -rf ${GITLAB_HOME}/.ssh
-sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_DATA_DIR}/.ssh
-sudo -HEu ${GITLAB_USER} ln -s ${GITLAB_DATA_DIR}/.ssh ${GITLAB_HOME}/.ssh
-
-# create the data store
-sudo -HEu ${GITLAB_USER} mkdir -p ${GITLAB_DATA_DIR}
-
-# configure git for the 'git' user
-sudo -HEu ${GITLAB_USER} git config --global core.autocrlf input
+# configure git for ${GITLAB_USER}
+exec_as_git git config --global core.autocrlf input
 
 # install gitlab-shell
 echo "Cloning gitlab-shell v.${GITLAB_SHELL_VERSION}..."
-sudo -u git -H git clone -q -b v${GITLAB_SHELL_VERSION} --depth 1 \
+exec_as_git git clone -q -b v${GITLAB_SHELL_VERSION} --depth 1 \
   https://github.com/gitlabhq/gitlab-shell.git ${GITLAB_SHELL_INSTALL_DIR}
 
 cd ${GITLAB_SHELL_INSTALL_DIR}
-sudo -u git -H cp -a config.yml.example config.yml
-sudo -u git -H ./bin/install
+exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+exec_as_git ./bin/install
 
 echo "Cloning gitlab-git-http-server v.${GITLAB_GIT_HTTP_SERVER_VERSION}..."
-sudo -u git -H git clone -q -b ${GITLAB_GIT_HTTP_SERVER_VERSION} --depth 1 \
+exec_as_git git clone -q -b ${GITLAB_GIT_HTTP_SERVER_VERSION} --depth 1 \
   https://gitlab.com/gitlab-org/gitlab-git-http-server.git ${GITLAB_GIT_HTTP_SERVER_INSTALL_DIR}
+
 cd ${GITLAB_GIT_HTTP_SERVER_INSTALL_DIR}
-sudo -u git -H make
+exec_as_git make
 
 # shallow clone gitlab-ce
 echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
-sudo -HEu ${GITLAB_USER} git clone -q -b v${GITLAB_VERSION} --depth 1 \
+exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 \
   https://github.com/gitlabhq/gitlabhq.git ${GITLAB_INSTALL_DIR}
+
+# remove HSTS config from the default headers, we configure it in nginx
+exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
 
 cd ${GITLAB_INSTALL_DIR}
 
-# remove HSTS config from the default headers, we configure it in nginx
-sed "/headers\['Strict-Transport-Security'\]/d" -i app/controllers/application_controller.rb
-
-# copy default configurations
-cp lib/support/nginx/gitlab /etc/nginx/sites-enabled/gitlab
-sudo -HEu ${GITLAB_USER} cp config/gitlab.yml.example config/gitlab.yml
-sudo -HEu ${GITLAB_USER} cp config/resque.yml.example config/resque.yml
-sudo -HEu ${GITLAB_USER} cp config/database.yml.mysql config/database.yml
-sudo -HEu ${GITLAB_USER} cp config/unicorn.rb.example config/unicorn.rb
-sudo -HEu ${GITLAB_USER} cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
-sudo -HEu ${GITLAB_USER} cp config/initializers/smtp_settings.rb.sample config/initializers/smtp_settings.rb
-
-# install gems required by gitlab, use local cache if available
+# install gems, use local cache if available
 if [[ -d ${GEM_CACHE_DIR} ]]; then
-  mv ${GEM_CACHE_DIR} vendor/cache
-  chown -R ${GITLAB_USER}:${GITLAB_USER} vendor/cache
+  mv ${GEM_CACHE_DIR} ${GITLAB_INSTALL_DIR}/vendor/cache
+  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_INSTALL_DIR}/vendor/cache
 fi
-sudo -HEu ${GITLAB_USER} bundle install -j$(nproc) --deployment --without development test aws
+exec_as_git bundle install -j$(nproc) --deployment --without development test aws
 
-# make sure everything in ${GITLAB_HOME} is owned by the git user
+# make sure everything in ${GITLAB_HOME} is owned by ${GITLAB_USER} user
 chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_HOME}/
 
-# compile assets
+# gitlab.yml and database.yml are required for `assets:precompile`
+exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.mysql ${GITLAB_INSTALL_DIR}/config/database.yml
+
 echo "Compiling assets. Please be patient, this could take a while..."
-sudo -HEu ${GITLAB_USER} bundle exec rake assets:clean assets:precompile >/dev/null 2>&1
+exec_as_git bundle exec rake assets:clean assets:precompile >/dev/null 2>&1
 
-# symlink log -> ${GITLAB_LOG_DIR}/gitlab
-rm -rf log
-ln -sf ${GITLAB_LOG_DIR}/gitlab log
+# remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
+rm -rf ${GITLAB_DATA_DIR}/config/secrets.yml
 
-# create required tmp directories
-sudo -HEu ${GITLAB_USER} mkdir -p tmp/pids/ tmp/sockets/
-chmod -R u+rwX tmp
+exec_as_git mkdir -p ${GITLAB_INSTALL_DIR}/tmp/pids/ ${GITLAB_INSTALL_DIR}/tmp/sockets/
+chmod -R u+rwX ${GITLAB_INSTALL_DIR}/tmp
 
-# create symlink to uploads directory
-rm -rf public/uploads
-sudo -HEu ${GITLAB_USER} ln -s ${GITLAB_DATA_DIR}/uploads public/uploads
+# symlink ${GITLAB_HOME}/.ssh -> ${GITLAB_LOG_DIR}/gitlab
+rm -rf ${GITLAB_HOME}/.ssh
+exec_as_git ln -sf ${GITLAB_DATA_DIR}/.ssh ${GITLAB_HOME}/.ssh
 
-# create symlink to .secret in GITLAB_DATA_DIR
-rm -rf .secret
-sudo -HEu ${GITLAB_USER} ln -sf ${GITLAB_DATA_DIR}/.secret
+# symlink ${GITLAB_INSTALL_DIR}/log -> ${GITLAB_LOG_DIR}/gitlab
+rm -rf ${GITLAB_INSTALL_DIR}/log
+ln -sf ${GITLAB_LOG_DIR}/gitlab ${GITLAB_INSTALL_DIR}/log
 
-# remove auto generated config/secrets.yml
-rm -rf config/secrets.yml
+# symlink ${GITLAB_INSTALL_DIR}/public/uploads -> ${GITLAB_DATA_DIR}/uploads
+rm -rf ${GITLAB_INSTALL_DIR}/public/uploads
+exec_as_git ln -sf ${GITLAB_DATA_DIR}/uploads ${GITLAB_INSTALL_DIR}/public/uploads
 
-# install gitlab bootscript
-cp lib/support/init.d/gitlab /etc/init.d/gitlab
+# symlink ${GITLAB_INSTALL_DIR}/.secret -> ${GITLAB_DATA_DIR}/.secret
+rm -rf ${GITLAB_INSTALL_DIR}/.secret
+exec_as_git ln -sf ${GITLAB_DATA_DIR}/.secret ${GITLAB_INSTALL_DIR}/.secret
+
+
+# install gitlab bootscript, to silence gitlab:check warnings
+cp ${GITLAB_INSTALL_DIR}/lib/support/init.d/gitlab /etc/init.d/gitlab
 chmod +x /etc/init.d/gitlab
 
 # disable default nginx configuration and enable gitlab's nginx configuration
-rm -f /etc/nginx/sites-enabled/default
+rm -rf /etc/nginx/sites-enabled/default
 
-# disable pam authentication for sshd
-sed 's/UsePAM yes/UsePAM no/' -i /etc/ssh/sshd_config
-sed 's/UsePrivilegeSeparation yes/UsePrivilegeSeparation no/' -i /etc/ssh/sshd_config
+# configure sshd
+sed -i 's/^[#]*UsePAM yes/UsePAM no/' /etc/ssh/sshd_config
+sed -i 's/^[#]*UsePrivilegeSeparation yes/UsePrivilegeSeparation no/' /etc/ssh/sshd_config
+sed -i 's/^[#]*PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+sed -i 's/^[#]*LogLevel INFO/LogLevel VERBOSE/' /etc/ssh/sshd_config
 echo "UseDNS no" >> /etc/ssh/sshd_config
 
-# permit password login
-sed 's/#PasswordAuthentication yes/PasswordAuthentication no/' -i /etc/ssh/sshd_config
-
-# configure verbose logging for sshd
-sed 's/LogLevel INFO/LogLevel VERBOSE/' -i /etc/ssh/sshd_config
-
 # move supervisord.log file to ${GITLAB_LOG_DIR}/supervisor/
-sed 's|^logfile=.*|logfile='"${GITLAB_LOG_DIR}"'/supervisor/supervisord.log ;|' -i /etc/supervisor/supervisord.conf
+sed -i 's|^[#]*logfile=.*|logfile='"${GITLAB_LOG_DIR}"'/supervisor/supervisord.log ;|' /etc/supervisor/supervisord.conf
 
 # move nginx logs to ${GITLAB_LOG_DIR}/nginx
-sed 's|access_log /var/log/nginx/access.log;|access_log '"${GITLAB_LOG_DIR}"'/nginx/access.log;|' -i /etc/nginx/nginx.conf
-sed 's|error_log /var/log/nginx/error.log;|error_log '"${GITLAB_LOG_DIR}"'/nginx/error.log;|' -i /etc/nginx/nginx.conf
+sed -i 's|access_log /var/log/nginx/access.log;|access_log '"${GITLAB_LOG_DIR}"'/nginx/access.log;|' /etc/nginx/nginx.conf
+sed -i 's|error_log /var/log/nginx/error.log;|error_log '"${GITLAB_LOG_DIR}"'/nginx/error.log;|' /etc/nginx/nginx.conf
 
 # configure supervisord log rotation
 cat > /etc/logrotate.d/supervisord <<EOF
@@ -301,12 +294,6 @@ stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 EOF
 
-# purge build dependencies
-apt-get purge -y --auto-remove gcc g++ make patch pkg-config cmake paxctl \
-  libc6-dev ruby2.1-dev golang-go \
-  libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
-  libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
-  libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
-
-# cleanup
+# purge build dependencies and cleanup apt
+apt-get purge -y --auto-remove ${BUILD_DEPENDENCIES}
 rm -rf /var/lib/apt/lists/*
