@@ -388,7 +388,6 @@ esac
 [[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/rack_attack.rb ]]   && sudo -HEu ${GITLAB_USER} cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/rack_attack.rb   config/initializers/rack_attack.rb
 [[ ${SMTP_ENABLED} == true ]] && \
 [[ -f ${USERCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb ]] && sudo -HEu ${GITLAB_USER} cp ${USERCONF_TEMPLATES_DIR}/gitlabhq/smtp_settings.rb config/initializers/smtp_settings.rb
-[[ ${IMAP_ENABLED} == true ]] && \
 
 # override robots.txt if a user configuration exists
 [[ -f ${GITLAB_ROBOTS_PATH} ]]                               && sudo -HEu ${GITLAB_USER} cp ${GITLAB_ROBOTS_PATH}                               public/robots.txt
