@@ -6,7 +6,7 @@ This guide assumes that you are currently using `sameersbn/gitlab` and `sameersb
 
 > **Note:**
 >
-> If your CI server and your GitLab server use the same database adapter no special care is needed. If your CI server uses MySQL and your GitLab server uses PostgreSQL you need to pass a special option in **Step 4 - Upgrade CI > Create CI backup**. **If your CI server uses PostgreSQL and your GitLab server uses MySQL you cannot migrate your CI data to GitLab `8.0`, Please refer to https://github.com/sameersbn/docker-gitlab/issues/429#issuecomment-152799995 for instructions to migrate from MySQL to PostgreSQL**.
+> If your CI server and your GitLab server use the same database adapter no special care is needed. If your CI server uses MySQL and your GitLab server uses PostgreSQL you need to pass a special option in **Step 4 - Upgrade CI > Create CI backup**. If your CI server uses PostgreSQL and your GitLab server uses MySQL you cannot migrate your CI data to GitLab `8.0`, Please refer to https://github.com/sameersbn/docker-gitlab/issues/429#issuecomment-152799995 for instructions to migrate from MySQL to PostgreSQL first.
 
 ## Step 1 - Get Ready
 
