@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis
+  labels:
+    name: redis
+spec:
+  containers:
+    - name: redis
+      image: sameersbn/redis
+      ports:
+        - containerPort: 6379
+          protocol: TCP
+      volumeMounts:
+        - mountPath: /var/lib/redis
+          name: data
+      livenessProbe:
+        TCPSocket:
+          port: 6379
+        initialDelaySeconds: 30
+        timeoutSeconds: 1
+  volumes:
+    - name: data
+      emptyDir: {}
