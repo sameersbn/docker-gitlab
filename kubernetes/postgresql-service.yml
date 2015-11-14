@@ -5,7 +5,6 @@ metadata:
   labels:
     name: postgresql
 spec:
-  type: LoadBalancer
   ports:
     - port: 5432
       targetPort: 5432
