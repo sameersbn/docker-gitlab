@@ -19,8 +19,14 @@ spec:
           ports:
             - containerPort: 6379
               protocol: TCP
+          volumeMounts:
+            - mountPath: /var/lib/redis
+              name: data
           livenessProbe:
             TCPSocket:
               port: 6379
             initialDelaySeconds: 30
             timeoutSeconds: 1
+      volumes:
+        - name: data
+          emptyDir: {}

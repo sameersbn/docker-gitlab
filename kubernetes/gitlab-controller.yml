@@ -105,9 +105,15 @@ spec:
             - name: ssh
               containerPort: 22
               protocol: TCP
+          volumeMounts:
+            - mountPath: /home/git/data
+              name: data
           livenessProbe:
             httpGet:
               path: /
               port: 80
             initialDelaySeconds: 300
             timeoutSeconds: 1
+      volumes:
+        - name: data
+          emptyDir: {}
