@@ -7,26 +7,26 @@ source ${GITLAB_RUNTIME_DIR}/functions
 case ${1} in
   app:init|app:start|app:sanitize|app:rake)
 
-    system_initialize
-    system_configure_gitlab
-    system_configure_gitlab_shell
-    system_configure_gitlab_git_http_server
-    system_configure_nginx
+    initialize_system
+    configure_gitlab
+    configure_gitlab_shell
+    configure_gitlab_git_http_server
+    configure_nginx
 
     case ${1} in
       app:start)
-        system_gitlab_migrate_database
+        migrate_database
         exec /usr/bin/supervisord -nc /etc/supervisor/supervisord.conf
         ;;
       app:init)
-        system_gitlab_migrate_database
+        migrate_database
         ;;
       app:sanitize)
-        system_sanitize_datadir
+        sanitize_datadir
         ;;
       app:rake)
         shift 1
-        system_gitlab_execute_raketask $@
+        execute_raketask $@
         ;;
     esac
     ;;

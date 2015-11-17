@@ -672,7 +672,7 @@ nginx_configure_gitlab_ci() {
 #   _|        _|    _|  _|    _|  _|  _|  _|
 #   _|          _|_|_|  _|_|_|    _|  _|    _|_|_|
 
-system_map_uidgid() {
+map_uidgid() {
   USERMAP_ORIG_UID=$(id -u ${GITLAB_USER})
   USERMAP_ORIG_GID=$(id -g ${GITLAB_USER})
   USERMAP_GID=${USERMAP_GID:-${USERMAP_UID:-$USERMAP_ORIG_GID}}
@@ -685,7 +685,7 @@ system_map_uidgid() {
   fi
 }
 
-system_update_ca_certificates() {
+update_ca_certificates() {
   if [[ -f ${SSL_CERTIFICATE_PATH} || -f ${CA_CERTIFICATES_PATH} ]]; then
     echo "Updating CA certificates..."
     [[ -f ${SSL_CERTIFICATE_PATH} ]] && cp "${SSL_CERTIFICATE_PATH}" /usr/local/share/ca-certificates/gitlab.crt
@@ -694,7 +694,7 @@ system_update_ca_certificates() {
   fi
 }
 
-system_initialize_logdir() {
+initialize_logdir() {
   echo "Initializing logdir..."
   mkdir -p ${GITLAB_LOG_DIR}/supervisor
   chmod -R 0755 ${GITLAB_LOG_DIR}/supervisor
@@ -713,7 +713,7 @@ system_initialize_logdir() {
   chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_LOG_DIR}/gitlab-shell
 }
 
-system_initialize_datadir() {
+initialize_datadir() {
   echo "Initializing datadir..."
   chmod 755 ${GITLAB_DATA_DIR}
   chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}
@@ -767,7 +767,7 @@ system_initialize_datadir() {
   fi
 }
 
-system_sanitize_datadir() {
+sanitize_datadir() {
   echo "Sanitizing datadir. Please be patient..."
   chmod -R ug+rwX,o-rwx ${GITLAB_REPOS_DIR}/
   chmod -R ug-s ${GITLAB_REPOS_DIR}/
@@ -787,7 +787,7 @@ system_sanitize_datadir() {
   exec_as_git ${GITLAB_SHELL_INSTALL_DIR}/bin/create-hooks
 }
 
-system_generate_ssh_server_keys() {
+generate_ssh_server_keys() {
   if [[ ! -e ${GITLAB_DATA_DIR}/ssh/ssh_host_rsa_key ]]; then
     # generate server keys and move them to ${GITLAB_DATA_DIR}/ssh/ for persistence
     echo "Generating SSH server keys..."
@@ -802,17 +802,17 @@ system_generate_ssh_server_keys() {
   chmod 0644 ${GITLAB_DATA_DIR}/ssh/*.pub
 }
 
-system_initialize() {
-  system_map_uidgid
-  system_initialize_logdir
-  system_initialize_datadir
-  system_update_ca_certificates
-  system_generate_ssh_server_keys
-  system_install_configuration_templates
+initialize_system() {
+  map_uidgid
+  initialize_logdir
+  initialize_datadir
+  update_ca_certificates
+  generate_ssh_server_keys
+  install_configuration_templates
   rm -rf /var/run/supervisor.sock
 }
 
-system_install_configuration_templates() {
+install_configuration_templates() {
   echo "Installing configuration templates..."
   install_template ${GITLAB_USER} gitlabhq/gitlab.yml ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   install_template ${GITLAB_USER} gitlabhq/database.yml ${GITLAB_INSTALL_DIR}/config/database.yml
@@ -849,7 +849,7 @@ system_install_configuration_templates() {
   fi
 }
 
-system_configure_gitlab() {
+configure_gitlab() {
   echo "Configuring gitlab..."
   exec_as_git sed -i 's,{{GITLAB_INSTALL_DIR}},'"${GITLAB_INSTALL_DIR}"',g' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   exec_as_git sed -i 's,{{GITLAB_SHELL_INSTALL_DIR}},'"${GITLAB_SHELL_INSTALL_DIR}"',g' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
@@ -883,7 +883,7 @@ system_configure_gitlab() {
   gitlab_configure_backups
 }
 
-system_configure_gitlab_shell() {
+configure_gitlab_shell() {
   echo "Configuring gitlab-shell..."
   exec_as_git sed -i 's,{{GITLAB_RELATIVE_URL_ROOT}},'"${GITLAB_RELATIVE_URL_ROOT}"',' ${GITLAB_SHELL_INSTALL_DIR}/config.yml
   exec_as_git sed -i 's,{{GITLAB_HOME}},'"${GITLAB_HOME}"',g' ${GITLAB_SHELL_INSTALL_DIR}/config.yml
@@ -898,19 +898,19 @@ system_configure_gitlab_shell() {
   exec_as_git sed -i 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/' ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 }
 
-system_configure_gitlab_git_http_server() {
+configure_gitlab_git_http_server() {
   echo "Configuring gitlab-git-http-server..."
   sed -i 's,{{GITLAB_REPOS_DIR}},'"${GITLAB_REPOS_DIR}"',' /etc/supervisor/conf.d/gitlab-git-http-server.conf
 }
 
-system_configure_nginx() {
+configure_nginx() {
   echo "Configuring nginx..."
   sed -i 's/worker_processes .*/worker_processes '"${NGINX_WORKERS}"';/' /etc/nginx/nginx.conf
   nginx_configure_gitlab
   nginx_configure_gitlab_ci
 }
 
-system_gitlab_migrate_database() {
+migrate_database() {
   # run the `gitlab:setup` rake task if required
   case ${DB_TYPE} in
     mysql)
@@ -958,7 +958,7 @@ system_gitlab_migrate_database() {
   fi
 }
 
-system_gitlab_execute_raketask() {
+execute_raketask() {
   if [[ -z ${1} ]]; then
     echo "Please specify the rake task to execute. See https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks"
     return 1
@@ -997,8 +997,8 @@ system_gitlab_execute_raketask() {
       BACKUP=$(echo $file | cut -d'_' -f1)
     fi
   elif [[ ${1} == gitlab:import:repos ]]; then
-    # sanitize the data volume to ensure there are no permission issues
-    system_sanitize_datadir
+    # sanitize the datadir to avoid permission issues
+    sanitize_datadir
   fi
   echo "Running raketask ${1}..."
   exec_as_git bundle exec rake $@ ${BACKUP:+BACKUP=$BACKUP}
