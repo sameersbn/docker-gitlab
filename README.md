@@ -91,7 +91,7 @@ wget -qO- https://get.docker.com/ | sh
 
 Fedora and RHEL/CentOS users should try disabling selinux with `setenforce 0` and check if resolves the issue. If it does than there is not much that I can help you with. You can either stick with selinux disabled (not recommended by redhat) or switch to using ubuntu.
 
-You may also set `DEBUG_ENTRYPOINT=true` to enable debugging of the entrypoint script, which could help you pin point any configuration issues.
+You may also set `DEBUG=true` to enable debugging of the entrypoint script, which could help you pin point any configuration issues.
 
 If using the latest docker version and/or disabling selinux does not fix the issue then please file a issue request on the [issues](https://github.com/sameersbn/docker-gitlab/issues) page.
 
@@ -749,7 +749,7 @@ These options should contain something like:
 
 Below is the complete list of available options that can be used to customize your gitlab installation.
 
-- **DEBUG_ENTRYPOINT**: Set this to `true` to enable entrypoint debugging.
+- **DEBUG**: Set this to `true` to enable entrypoint debugging.
 - **GITLAB_HOST**: The hostname of the GitLab server. Defaults to `localhost`
 - **GITLAB_CI_HOST**: If you are migrating from GitLab CI use this parameter to configure the redirection to the GitLab service so that your existing runners continue to work without any changes. No defaults.
 - **GITLAB_PORT**: The port of the GitLab server. This value indicates the public port on which the GitLab application will be accessible on the network and appropriately configures GitLab to generate the correct urls. It does not affect the port on which the internal nginx server will be listening on. Defaults to `443` if `GITLAB_HTTPS=true`, else defaults to `80`.
