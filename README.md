@@ -125,9 +125,7 @@ docker pull sameersbn/gitlab:latest
 Alternatively you can build the image locally.
 
 ```bash
-git clone https://github.com/sameersbn/docker-gitlab.git
-cd docker-gitlab
-docker build --tag=$USER/gitlab .
+docker build -t sameersbn/gitlab github.com/sameersbn/docker-gitlab
 ```
 
 # Quick Start
