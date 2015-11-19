@@ -911,11 +911,6 @@ configure_gitlab_shell() {
   exec_as_git sed -i 's/{{REDIS_PORT}}/'"${REDIS_PORT}"'/' ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 }
 
-configure_gitlab_git_http_server() {
-  echo "Configuring gitlab-git-http-server..."
-  sed -i 's,{{GITLAB_REPOS_DIR}},'"${GITLAB_REPOS_DIR}"',' /etc/supervisor/conf.d/gitlab-git-http-server.conf
-}
-
 configure_nginx() {
   echo "Configuring nginx..."
   sed -i 's/worker_processes .*/worker_processes '"${NGINX_WORKERS}"';/' /etc/nginx/nginx.conf
