@@ -801,15 +801,12 @@ sanitize_datadir() {
   find ${GITLAB_REPOS_DIR}/ -type d -print0 | xargs -0 chmod g+s
   chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_REPOS_DIR}
 
-  mkdir -p ${GITLAB_BUILDS_DIR}
   chmod -R u+rwX ${GITLAB_BUILDS_DIR}
   chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_BUILDS_DIR}
 
-  mkdir -p ${GITLAB_SHARED_DIR}/artifacts/tmp/{cache,uploads}
   chmod -R u+rwX ${GITLAB_SHARED_DIR}
   chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_SHARED_DIR}
 
-  mkdir -p ${GITLAB_LFS_OBJECTS_DIR}
   chmod -R u+rwX ${GITLAB_LFS_OBJECTS_DIR}
   chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_LFS_OBJECTS_DIR}
 
