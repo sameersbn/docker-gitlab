@@ -774,7 +774,7 @@ sanitize_datadir() {
   find ${GITLAB_REPOS_DIR}/ -type d -print0 | xargs -0 chmod g+s
   chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_REPOS_DIR}
 
-  exec_as_git mkdir -p ${GITLAB_BUILDS_DIR}
+  mkdir -p ${GITLAB_BUILDS_DIR}
   chmod -R u+rwX ${GITLAB_BUILDS_DIR}
   chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_BUILDS_DIR}
 
