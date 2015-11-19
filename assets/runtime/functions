@@ -590,6 +590,11 @@ gitlab_configure_ci() {
   exec_as_git sed -i 's,{{GITLAB_BUILDS_DIR}},'"${GITLAB_BUILDS_DIR}"',g' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
 }
 
+gitlab_configure_lfs() {
+  echo "Configuring gitlab::lfs..."
+  exec_as_git sed -i 's,{{GITLAB_LFS_OBJECTS_DIR}},'"${GITLAB_LFS_OBJECTS_DIR}"',g' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+}
+
 gitlab_configure_project_features() {
   echo "Configuring gitlab::project_features..."
   exec_as_git sed -i 's/{{GITLAB_PROJECTS_ISSUES}}/'"${GITLAB_PROJECTS_ISSUES}"'/' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
@@ -754,9 +759,9 @@ initialize_datadir() {
   ln -sf ${GITLAB_SHARED_DIR} ${GITLAB_INSTALL_DIR}/shared
 
   # create lfs-objects directory
-  mkdir -p ${GITLAB_SHARED_DIR}/lfs-objects
-  chmod u+rwX ${GITLAB_SHARED_DIR}/lfs-objects
-  chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_SHARED_DIR}/lfs-objects
+  mkdir -p ${GITLAB_LFS_OBJECTS_DIR}
+  chmod u+rwX ${GITLAB_LFS_OBJECTS_DIR}
+  chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_LFS_OBJECTS_DIR}
 
   # create the backups directory
   mkdir -p ${GITLAB_BACKUP_DIR}
@@ -802,9 +807,9 @@ sanitize_datadir() {
   chmod -R u+rwX ${GITLAB_SHARED_DIR}
   chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_SHARED_DIR}
 
-  mkdir -p ${GITLAB_SHARED_DIR}/lfs-objects
-  chmod -R u+rwX ${GITLAB_SHARED_DIR}/lfs-objects
-  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_SHARED_DIR}/lfs-objects
+  mkdir -p ${GITLAB_LFS_OBJECTS_DIR}
+  chmod -R u+rwX ${GITLAB_LFS_OBJECTS_DIR}
+  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_LFS_OBJECTS_DIR}
 
   find ${GITLAB_DATA_DIR}/uploads -type f -exec chmod 0644 {} \;
   find ${GITLAB_DATA_DIR}/uploads -type d -not -path ${GITLAB_DATA_DIR}/uploads -exec chmod 0755 {} \;
@@ -909,6 +914,7 @@ configure_gitlab() {
   gitlab_configure_unicorn
   gitlab_configure_timezone
   gitlab_configure_ci
+  gitlab_configure_lfs
   gitlab_configure_project_features
   gitlab_configure_mail_delivery
   gitlab_configure_mailroom
