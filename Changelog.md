@@ -2,6 +2,9 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**latest**
+- gitlab-shell: upgrade to v.2.6.7
+
 **8.1.4**
 - gitlab: upgrade to CE v8.1.4
 
