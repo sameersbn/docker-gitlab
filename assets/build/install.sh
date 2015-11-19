@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache.${GITLAB_VERSION%.*}"
+GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
 BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
   libc6-dev ruby2.1-dev golang-go \
