@@ -6,6 +6,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - gitlab-shell: upgrade to v.2.6.7
 - gitlab-workhorse: upgrade to v.0.4.2
 - gitlab: upgrade to CE v8.2.0
+- added `GITLAB_SHARED_DIR` configuration parameter
 
 **8.1.4**
 - gitlab: upgrade to CE v8.1.4
