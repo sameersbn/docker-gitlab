@@ -744,6 +744,20 @@ initialize_datadir() {
   rm -rf ${GITLAB_INSTALL_DIR}/builds
   ln -sf ${GITLAB_BUILDS_DIR} ${GITLAB_INSTALL_DIR}/builds
 
+  # create shared directory
+  mkdir -p ${GITLAB_DATA_DIR}/shared/artifacts/tmp/{cache,uploads}
+  chmod u+rwX ${GITLAB_DATA_DIR}/shared
+  chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/shared
+
+  # symlink ${GITLAB_INSTALL_DIR}/shared -> ${GITLAB_DATA_DIR}/shared
+  rm -rf ${GITLAB_INSTALL_DIR}/shared
+  ln -sf ${GITLAB_DATA_DIR}/shared ${GITLAB_INSTALL_DIR}/shared
+
+  # create lfs-objects directory
+  mkdir -p ${GITLAB_DATA_DIR}/shared/lfs-objects
+  chmod u+rwX ${GITLAB_DATA_DIR}/shared/lfs-objects
+  chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/shared/lfs-objects
+
   # create the backups directory
   mkdir -p ${GITLAB_BACKUP_DIR}
   chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_BACKUP_DIR}
@@ -783,6 +797,14 @@ sanitize_datadir() {
   mkdir -p ${GITLAB_BUILDS_DIR}
   chmod -R u+rwX ${GITLAB_BUILDS_DIR}
   chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_BUILDS_DIR}
+
+  mkdir -p ${GITLAB_DATA_DIR}/shared/artifacts/tmp/{cache,uploads}
+  chmod -R u+rwX ${GITLAB_DATA_DIR}/shared
+  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/shared
+
+  mkdir -p ${GITLAB_DATA_DIR}/shared/lfs-objects
+  chmod -R u+rwX ${GITLAB_DATA_DIR}/shared/lfs-objects
+  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/shared/lfs-objects
 
   find ${GITLAB_DATA_DIR}/uploads -type f -exec chmod 0644 {} \;
   find ${GITLAB_DATA_DIR}/uploads -type d -not -path ${GITLAB_DATA_DIR}/uploads -exec chmod 0755 {} \;
