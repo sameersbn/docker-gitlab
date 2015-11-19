@@ -84,7 +84,7 @@ production: &base
       merge_requests: {{GITLAB_PROJECTS_MERGE_REQUESTS}}
       wiki: {{GITLAB_PROJECTS_WIKI}}
       snippets: {{GITLAB_PROJECTS_SNIPPETS}}
-      builds: true
+      builds: {{GITLAB_PROJECTS_BUILDS}}
 
     ## Webhook settings
     # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
