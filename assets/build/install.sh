@@ -43,7 +43,7 @@ exec_as_git git config --global core.autocrlf input
 # install gitlab-shell
 echo "Cloning gitlab-shell v.${GITLAB_SHELL_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_SHELL_VERSION} --depth 1 \
-  https://github.com/gitlabhq/gitlab-shell.git ${GITLAB_SHELL_INSTALL_DIR}
+  https://gitlab.com/gitlab-org/gitlab-shell.git ${GITLAB_SHELL_INSTALL_DIR}
 
 cd ${GITLAB_SHELL_INSTALL_DIR}
 exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
@@ -59,7 +59,7 @@ exec_as_git make
 # shallow clone gitlab-ce
 echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 \
-  https://github.com/gitlabhq/gitlabhq.git ${GITLAB_INSTALL_DIR}
+  https://gitlab.com/gitlab-org/gitlab-ce.git ${GITLAB_INSTALL_DIR}
 
 # remove HSTS config from the default headers, we configure it in nginx
 exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
