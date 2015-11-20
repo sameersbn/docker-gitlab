@@ -787,17 +787,24 @@ sanitize_datadir() {
   exec_as_git ${GITLAB_SHELL_INSTALL_DIR}/bin/create-hooks
 }
 
-generate_ssh_server_keys() {
-  if [[ ! -e ${GITLAB_DATA_DIR}/ssh/ssh_host_rsa_key ]]; then
-    # generate server keys and move them to ${GITLAB_DATA_DIR}/ssh/ for persistence
-    echo "Generating SSH server keys..."
-    DEBIAN_FRONTEND=noninteractive dpkg-reconfigure openssh-server
-    mv /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub ${GITLAB_DATA_DIR}/ssh/
-  fi
-  # configure sshd to pick up the host keys from ${GITLAB_DATA_DIR}/ssh/
-  sed -i 's,HostKey /etc/ssh/,HostKey '"${GITLAB_DATA_DIR}"'/ssh/,g' /etc/ssh/sshd_config
+generate_ssh_key() {
+  echo -n "${1^^} "
+  ssh-keygen -qt ${1} -N '' -f ${2}
+}
 
-  # ensure ssh server keys have the correct permissions
+generate_ssh_host_keys() {
+  sed -i 's,HostKey /etc/ssh/,HostKey '"${GITLAB_DATA_DIR}"'/ssh/,g' /etc/ssh/sshd_config
+  if [[ ! -e ${GITLAB_DATA_DIR}/ssh/ssh_host_rsa_key ]]; then
+    echo -n "Generating OpenSSH host keys... "
+    generate_ssh_key rsa1     ${GITLAB_DATA_DIR}/ssh/ssh_host_key
+    generate_ssh_key rsa      ${GITLAB_DATA_DIR}/ssh/ssh_host_rsa_key
+    generate_ssh_key dsa      ${GITLAB_DATA_DIR}/ssh/ssh_host_dsa_key
+    generate_ssh_key ecdsa    ${GITLAB_DATA_DIR}/ssh/ssh_host_ecdsa_key
+    generate_ssh_key ed25519  ${GITLAB_DATA_DIR}/ssh/ssh_host_ed25519_key
+    echo
+  fi
+
+  # ensure existing host keys have the right permissions
   chmod 0600 ${GITLAB_DATA_DIR}/ssh/*_key
   chmod 0644 ${GITLAB_DATA_DIR}/ssh/*.pub
 }
@@ -807,7 +814,7 @@ initialize_system() {
   initialize_logdir
   initialize_datadir
   update_ca_certificates
-  generate_ssh_server_keys
+  generate_ssh_host_keys
   install_configuration_templates
   rm -rf /var/run/supervisor.sock
 }
