@@ -632,8 +632,8 @@ nginx_configure_gitlab_relative_url() {
 nginx_configure_gitlab_ipv6() {
   if [[ ! -f /proc/net/if_inet6 ]]; then
     # disable ipv6 support
-    sed -ie '/listen \[::\]:80/ s/^#*/#/' /etc/nginx/sites-enabled/gitlab
-    sed -ie '/listen \[::\]:443/ s/^#*/#/' /etc/nginx/sites-enabled/gitlab
+    sed -i -e '/listen \[::\]:80/ s/^#*/#/' /etc/nginx/sites-enabled/gitlab
+    sed -i -e '/listen \[::\]:443/ s/^#*/#/' /etc/nginx/sites-enabled/gitlab
   fi
 }
 
@@ -680,7 +680,7 @@ map_uidgid() {
   if [[ ${USERMAP_UID} != ${USERMAP_ORIG_UID} ]] || [[ ${USERMAP_GID} != ${USERMAP_ORIG_GID} ]]; then
     echo "Mapping UID and GID for ${GITLAB_USER}:${GITLAB_USER} to $USERMAP_UID:$USERMAP_GID"
     groupmod -g ${USERMAP_GID} ${GITLAB_USER}
-    sed -ie "s/:${USERMAP_ORIG_UID}:${USERMAP_GID}:/:${USERMAP_UID}:${USERMAP_GID}:/" /etc/passwd
+    sed -i -e "s/:${USERMAP_ORIG_UID}:${USERMAP_GID}:/:${USERMAP_UID}:${USERMAP_GID}:/" /etc/passwd
     find ${GITLAB_HOME} -path ${GITLAB_DATA_DIR}/\* -prune -o -print0 | xargs -0 chown -h ${GITLAB_USER}:${GITLAB_USER}
   fi
 }
