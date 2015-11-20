@@ -105,7 +105,7 @@ spec:
           path: /
           port: 80
         initialDelaySeconds: 90
-        timeoutSeconds: 1
+        timeoutSeconds: 5
   volumes:
     - name: data
       emptyDir: {}
