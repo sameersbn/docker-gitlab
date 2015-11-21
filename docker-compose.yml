@@ -1,4 +1,5 @@
 postgresql:
+  restart: always
   image: sameersbn/postgresql:9.4-8
   environment:
     - DB_USER=gitlab
@@ -7,6 +8,7 @@ postgresql:
   volumes:
     - /srv/docker/gitlab/postgresql:/var/lib/postgresql
 gitlab:
+  restart: always
   image: sameersbn/gitlab:8.1.4
   links:
     - redis:redisio
@@ -54,6 +56,7 @@ gitlab:
   volumes:
     - /srv/docker/gitlab/gitlab:/home/git/data
 redis:
+  restart: always
   image: sameersbn/redis:latest
   volumes:
     - /srv/docker/gitlab/redis:/var/lib/redis
