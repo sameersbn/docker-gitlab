@@ -867,7 +867,7 @@ install_configuration_templates() {
 
   # custom user specified robots.txt
   if [[ -f ${GITLAB_ROBOTS_PATH} ]]; then
-    exec_as_git ${GITLAB_ROBOTS_PATH} ${GITLAB_INSTALL_DIR}/public/robots.txt
+    exec_as_git cp ${GITLAB_ROBOTS_PATH} ${GITLAB_INSTALL_DIR}/public/robots.txt
   fi
 
   ## /etc/nginx/sites-enabled/gitlab
