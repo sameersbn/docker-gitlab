@@ -114,10 +114,10 @@ chmod +x /etc/init.d/gitlab
 rm -rf /etc/nginx/sites-enabled/default
 
 # configure sshd
-sed -i 's/^[#]*UsePAM yes/UsePAM no/' /etc/ssh/sshd_config
-sed -i 's/^[#]*UsePrivilegeSeparation yes/UsePrivilegeSeparation no/' /etc/ssh/sshd_config
-sed -i 's/^[#]*PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
-sed -i 's/^[#]*LogLevel INFO/LogLevel VERBOSE/' /etc/ssh/sshd_config
+sed -i 's|^[#]*UsePAM yes|UsePAM no|' /etc/ssh/sshd_config
+sed -i 's|^[#]*UsePrivilegeSeparation yes|UsePrivilegeSeparation no|' /etc/ssh/sshd_config
+sed -i 's|^[#]*PasswordAuthentication yes|PasswordAuthentication no|' /etc/ssh/sshd_config
+sed -i 's|^[#]*LogLevel INFO|LogLevel VERBOSE|' /etc/ssh/sshd_config
 echo "UseDNS no" >> /etc/ssh/sshd_config
 
 # move supervisord.log file to ${GITLAB_LOG_DIR}/supervisor/
