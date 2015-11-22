@@ -49,11 +49,11 @@ cd ${GITLAB_SHELL_INSTALL_DIR}
 exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 exec_as_git ./bin/install
 
-echo "Cloning gitlab-git-http-server v.${GITLAB_GIT_HTTP_SERVER_VERSION}..."
-exec_as_git git clone -q -b ${GITLAB_GIT_HTTP_SERVER_VERSION} --depth 1 \
-  https://gitlab.com/gitlab-org/gitlab-git-http-server.git ${GITLAB_GIT_HTTP_SERVER_INSTALL_DIR}
+echo "Cloning gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
+exec_as_git git clone -q -b ${GITLAB_WORKHORSE_VERSION} --depth 1 \
+  https://gitlab.com/gitlab-org/gitlab-workhorse.git ${GITLAB_WORKHORSE_INSTALL_DIR}
 
-cd ${GITLAB_GIT_HTTP_SERVER_INSTALL_DIR}
+cd ${GITLAB_WORKHORSE_INSTALL_DIR}
 exec_as_git make
 
 # shallow clone gitlab-ce
@@ -222,18 +222,17 @@ stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 EOF
 
-# configure supervisord to start gitlab-git-http-server
-cat > /etc/supervisor/conf.d/gitlab-git-http-server.conf <<EOF
-[program:gitlab-git-http-server]
+# configure supervisord to start gitlab-workhorse
+cat > /etc/supervisor/conf.d/gitlab-workhorse.conf <<EOF
+[program:gitlab-workhorse]
 priority=20
 directory=${GITLAB_INSTALL_DIR}
 environment=HOME=${GITLAB_HOME}
-command=${GITLAB_GIT_HTTP_SERVER_INSTALL_DIR}/gitlab-git-http-server
+command=${GITLAB_WORKHORSE_INSTALL_DIR}/gitlab-workhorse
   -listenUmask 0
   -listenNetwork unix
-  -listenAddr ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab-git-http-server.socket
+  -listenAddr ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab-workhorse.socket
   -authBackend http://127.0.0.1:8080
-  {{GITLAB_REPOS_DIR}}
 user=git
 autostart=true
 autorestart=true
