@@ -696,7 +696,9 @@ For example, if your Client ID is `xxx` and the Client secret is `yyy`, then add
 
 GitLab can be configured to act as a SAML 2.0 Service Provider (SP). This allows GitLab to consume assertions from a SAML 2.0 Identity Provider (IdP) such as Microsoft ADFS to authenticate users. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/saml.html).
 
-The following parameters have to be configured to enable SAML OAuth support in this image: `OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL`, `OAUTH_SAML_IDP_CERT_FINGERPRINT`, `OAUTH_SAML_IDP_SSO_TARGET_URL`, `OAUTH_SAML_ISSUER` and `OAUTH_SAML_NAME_IDENTIFIER_FORMAT`
+The following parameters have to be configured to enable SAML OAuth support in this image: `OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL`, `OAUTH_SAML_IDP_CERT_FINGERPRINT`, `OAUTH_SAML_IDP_SSO_TARGET_URL`, `OAUTH_SAML_ISSUER` and `OAUTH_SAML_NAME_IDENTIFIER_FORMAT`.
+
+You can also override the default "Sign in with" button label with `OAUTH_SAML_LABEL`.
 
 Please refer to [Available Configuration Parameters](#available-configuration-parameters) for the default configurations of these parameters.
 
@@ -868,6 +870,7 @@ Below is the complete list of available options that can be used to customize yo
 - **OAUTH_SAML_IDP_CERT_FINGERPRINT**: The SHA1 fingerprint of the certificate. No Defaults.
 - **OAUTH_SAML_IDP_SSO_TARGET_URL**: The URL to which the authentication request should be sent. No defaults.
 - **OAUTH_SAML_ISSUER**: The name of your application. When `GITLAB_HTTPS=true`, defaults to `https://${GITLAB_HOST}` else defaults to `http://${GITLAB_HOST}`.
+- **OAUTH_SAML_LABEL**: The "Sign in with" button label. Defaults to "Our SAML Provider".
 - **OAUTH_SAML_NAME_IDENTIFIER_FORMAT**: Describes the format of the username required by GitLab, Defaults to `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`
 - **OAUTH_CROWD_SERVER_URL**: Crowd server url. No defaults.
 - **OAUTH_CROWD_APP_NAME**: Crowd server application name. No defaults.
