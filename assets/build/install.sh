@@ -105,6 +105,9 @@ exec_as_git ln -sf ${GITLAB_DATA_DIR}/uploads ${GITLAB_INSTALL_DIR}/public/uploa
 rm -rf ${GITLAB_INSTALL_DIR}/.secret
 exec_as_git ln -sf ${GITLAB_DATA_DIR}/.secret ${GITLAB_INSTALL_DIR}/.secret
 
+# WORKAROUND for https://github.com/sameersbn/docker-gitlab/issues/509
+rm -rf ${GITLAB_INSTALL_DIR}/builds
+rm -rf ${GITLAB_INSTALL_DIR}/shared
 
 # install gitlab bootscript, to silence gitlab:check warnings
 cp ${GITLAB_INSTALL_DIR}/lib/support/init.d/gitlab /etc/init.d/gitlab
