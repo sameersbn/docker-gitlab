@@ -755,7 +755,7 @@ initialize_datadir() {
   # create shared directory
   mkdir -p ${GITLAB_SHARED_DIR}/artifacts/tmp/{cache,uploads}
   chmod u+rwX ${GITLAB_SHARED_DIR}
-  chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_SHARED_DIR}
+  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_SHARED_DIR}
 
   # symlink ${GITLAB_INSTALL_DIR}/shared -> ${GITLAB_DATA_DIR}/shared
   rm -rf ${GITLAB_INSTALL_DIR}/shared
