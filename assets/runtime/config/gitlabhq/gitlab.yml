@@ -404,19 +404,19 @@ production: &base
   rack_attack:
     git_basic_auth:
       # Rack Attack IP banning enabled
-      # enabled: true
+      enabled: {{RACK_ATTACK_ENABLED}}
       #
       # Whitelist requests from 127.0.0.1 for web proxies (NGINX/Apache) with incorrect headers
-      # ip_whitelist: ["127.0.0.1"]
+      ip_whitelist: [{{RACK_ATTACK_WHITELIST}}]
       #
       # Limit the number of Git HTTP authentication attempts per IP
-      # maxretry: 10
+      maxretry: {{RACK_ATTACK_MAXRETRY}}
       #
       # Reset the auth attempt counter per IP after 60 seconds
-      # findtime: 60
+      findtime: {{RACK_ATTACK_FINDTIME}}
       #
       # Ban an IP for one hour (3600s) after too many auth attempts
-      # bantime: 3600
+      bantime: {{RACK_ATTACK_BANTIME}}
 
 development:
   <<: *base
