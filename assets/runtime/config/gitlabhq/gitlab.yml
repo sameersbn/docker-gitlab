@@ -128,7 +128,7 @@ production: &base
   artifacts:
     enabled: {{GITLAB_ARTIFACTS_ENABLED}}
     # The location where build artifacts are stored (default: shared/artifacts).
-    # path: shared/artifacts
+    path: {{GITLAB_ARTIFACTS_DIR}}
 
   ## Git LFS
   lfs:

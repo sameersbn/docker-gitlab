@@ -7,6 +7,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - gitlab-shell: upgrade to v.2.6.8
 - gitlab: upgrade to CE v8.2.1
 - added `GITLAB_ARTIFACTS_ENABLED` configuration parameter
+- added `GITLAB_ARTIFACTS_DIR` configuration parameter
 
 **8.2.0**
 - gitlab-shell: upgrade to v.2.6.7

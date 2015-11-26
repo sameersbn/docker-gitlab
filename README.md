@@ -778,6 +778,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_BUILDS_DIR**: The build traces directory. Defaults to `/home/git/data/builds`
 - **GITLAB_SHARED_DIR**: The directory to store the build artifacts. Defaults to `/home/git/data/shared`
 - **GITLAB_ARTIFACTS_ENABLED**: Enable/Disable GitLab artifacts support. Defaults to `true`.
+- **GITLAB_ARTIFACTS_DIR**: Directory to store the artifacts. Defaults to `$GITLAB_SHARED_DIR/artifacts`
 - **GITLAB_LFS_ENABLED**: Enable/Disable Git LFS support. Defaults to `true`.
 - **GITLAB_LFS_OBJECTS_DIR**: Directory to store the lfs-objects. Defaults to `$GITLAB_SHARED_DIR/lfs-objects`
 - **GITLAB_BACKUPS**: Setup cron job to automatic backups. Possible values `disable`, `daily`, `weekly` or `monthly`. Disabled by default
