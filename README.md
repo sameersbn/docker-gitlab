@@ -889,6 +889,11 @@ Below is the complete list of available options that can be used to customize yo
 - **AWS_BACKUP_SECRET_ACCESS_KEY**: AWS secret access key. No defaults.
 - **AWS_BACKUP_BUCKET**: AWS bucket for backup uploads. No defaults.
 - **GITLAB_ROBOTS_PATH**: Location of custom `robots.txt`. Uses GitLab's default `robots.txt` configuration by default. See [www.robotstxt.org](http://www.robotstxt.org) for examples.
+- **RACK_ATTACK_ENABLED**: Enable/disable rack middleware for blocking & throttling abusive requests Defaults to `true`.
+- **RACK_ATTACK_WHITELIST**: Always allow requests from whitelisted host. Defaults to `127.0.0.1`
+- **RACK_ATTACK_MAXRETRY**: Number of failed auth attempts before which an IP should be banned. Defaults to `10`
+- **RACK_ATTACK_FINDTIME**: Number of seconds before resetting the per IP auth attempt counter. Defaults to `60`.
+- **RACK_ATTACK_BANTIME**: Number of seconds an IP should be banned after too many auth attempts. Defaults to `3600`.
 
 # Maintenance
 

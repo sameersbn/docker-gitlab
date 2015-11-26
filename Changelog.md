@@ -2,6 +2,9 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**latest**
+- expose rack_attack configuration options
+
 **8.2.0**
 - gitlab-shell: upgrade to v.2.6.7
 - gitlab-workhorse: upgrade to v.0.4.2
