@@ -2,7 +2,7 @@ FROM sameersbn/ubuntu:14.04.20151117
 MAINTAINER sameer@damagehead.com
 
 ENV GITLAB_VERSION=8.2.0 \
-    GITLAB_SHELL_VERSION=2.6.7 \
+    GITLAB_SHELL_VERSION=2.6.8 \
     GITLAB_WORKHORSE_VERSION=0.4.2 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
