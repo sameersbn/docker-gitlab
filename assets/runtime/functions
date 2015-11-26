@@ -921,6 +921,7 @@ configure_gitlab() {
   gitlab_configure_sidekiq
   gitlab_configure_unicorn
   gitlab_configure_timezone
+  gitlab_configure_rack_attack
   gitlab_configure_ci
   gitlab_configure_lfs
   gitlab_configure_project_features
@@ -930,7 +931,6 @@ configure_gitlab() {
   gitlab_configure_ldap
   gitlab_configure_gravatar
   gitlab_configure_analytics
-  gitlab_configure_rack_attack
   gitlab_configure_backups
 }
 
