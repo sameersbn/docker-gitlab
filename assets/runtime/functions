@@ -868,7 +868,6 @@ install_configuration_templates() {
   install_template ${GITLAB_USER} gitlabhq/unicorn.rb ${GITLAB_INSTALL_DIR}/config/unicorn.rb
   install_template ${GITLAB_USER} gitlabhq/resque.yml ${GITLAB_INSTALL_DIR}/config/resque.yml
   install_template ${GITLAB_USER} gitlabhq/secrets.yml ${GITLAB_INSTALL_DIR}/config/secrets.yml
-  install_template ${GITLAB_USER} gitlabhq/rack_attack.rb ${GITLAB_INSTALL_DIR}/config/initializers/rack_attack.rb
   install_template ${GITLAB_USER} gitlab-shell/config.yml ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 
   if [[ ${SMTP_ENABLED} == true  ]]; then
