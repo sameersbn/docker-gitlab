@@ -584,6 +584,15 @@ gitlab_configure_analytics() {
   gitlab_configure_analytics_piwik
 }
 
+gitlab_configure_rack_attack() {
+  echo "Configuring gitlab::rack_attack..."
+  exec_as_git sed -i 's|{{RACK_ATTACK_ENABLED}}|'"${RACK_ATTACK_ENABLED}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+  exec_as_git sed -i 's|{{RACK_ATTACK_WHITELIST}}|'"${RACK_ATTACK_WHITELIST}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+  exec_as_git sed -i 's|{{RACK_ATTACK_MAXRETRY}}|'"${RACK_ATTACK_MAXRETRY}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+  exec_as_git sed -i 's|{{RACK_ATTACK_FINDTIME}}|'"${RACK_ATTACK_FINDTIME}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+  exec_as_git sed -i 's|{{RACK_ATTACK_BANTIME}}|'"${RACK_ATTACK_BANTIME}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+}
+
 gitlab_configure_ci() {
   echo "Configuring gitlab::ci..."
   exec_as_git sed -i 's|{{GITLAB_NOTIFY_ON_BROKEN_BUILDS}}|'"${GITLAB_NOTIFY_ON_BROKEN_BUILDS}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
@@ -859,7 +868,6 @@ install_configuration_templates() {
   install_template ${GITLAB_USER} gitlabhq/unicorn.rb ${GITLAB_INSTALL_DIR}/config/unicorn.rb
   install_template ${GITLAB_USER} gitlabhq/resque.yml ${GITLAB_INSTALL_DIR}/config/resque.yml
   install_template ${GITLAB_USER} gitlabhq/secrets.yml ${GITLAB_INSTALL_DIR}/config/secrets.yml
-  install_template ${GITLAB_USER} gitlabhq/rack_attack.rb ${GITLAB_INSTALL_DIR}/config/initializers/rack_attack.rb
   install_template ${GITLAB_USER} gitlab-shell/config.yml ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 
   if [[ ${SMTP_ENABLED} == true  ]]; then
@@ -913,6 +921,7 @@ configure_gitlab() {
   gitlab_configure_sidekiq
   gitlab_configure_unicorn
   gitlab_configure_timezone
+  gitlab_configure_rack_attack
   gitlab_configure_ci
   gitlab_configure_lfs
   gitlab_configure_project_features
