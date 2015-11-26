@@ -17,6 +17,7 @@ gitlab:
     - "10080:80"
     - "10022:22"
   environment:
+    - DEBUG=false
     - TZ=Asia/Kolkata
     - GITLAB_TIMEZONE=Kolkata
 

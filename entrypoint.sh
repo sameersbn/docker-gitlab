@@ -2,7 +2,7 @@
 set -e
 source ${GITLAB_RUNTIME_DIR}/functions
 
-[[ -n $DEBUG ]] && set -x
+[[ $DEBUG == true ]] && set -x
 
 case ${1} in
   app:init|app:start|app:sanitize|app:rake)
