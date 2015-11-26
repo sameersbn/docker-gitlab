@@ -5,6 +5,7 @@ This file only reflects the changes that are made in this image. Please refer to
 **latest**
 - expose rack_attack configuration options
 - gitlab-shell: upgrade to v.2.6.8
+- gitlab: upgrade to CE v8.2.1
 
 **8.2.0**
 - gitlab-shell: upgrade to v.2.6.7
