@@ -585,11 +585,11 @@ gitlab_configure_analytics() {
 }
 
 gitlab_configure_rack_attack() {
-  exec_as_git sid -i 's|{{RACK_ATTACK_ENABLED}}|'"${RACK_ATTACK_ENABLED}}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sid -i 's|{{RACK_ATTACK_WHITELIST}}|'"${RACK_ATTACK_WHITELIST}}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sid -i 's|{{RACK_ATTACK_MAXRETRY}}|'"${RACK_ATTACK_MAXRETRY}}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sid -i 's|{{RACK_ATTACK_FINDTIME}}|'"${RACK_ATTACK_FINDTIME}}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sid -i 's|{{RACK_ATTACK_BANTIME}}|'"${RACK_ATTACK_BANTIME}}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+  exec_as_git sed -i 's|{{RACK_ATTACK_ENABLED}}|'"${RACK_ATTACK_ENABLED}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+  exec_as_git sed -i 's|{{RACK_ATTACK_WHITELIST}}|'"${RACK_ATTACK_WHITELIST}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+  exec_as_git sed -i 's|{{RACK_ATTACK_MAXRETRY}}|'"${RACK_ATTACK_MAXRETRY}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+  exec_as_git sed -i 's|{{RACK_ATTACK_FINDTIME}}|'"${RACK_ATTACK_FINDTIME}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+  exec_as_git sed -i 's|{{RACK_ATTACK_BANTIME}}|'"${RACK_ATTACK_BANTIME}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
 }
 
 gitlab_configure_ci() {
