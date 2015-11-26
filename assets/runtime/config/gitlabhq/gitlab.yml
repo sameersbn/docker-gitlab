@@ -306,7 +306,7 @@ production: &base
           app_id: '{{OAUTH_TWITTER_API_KEY}}',
           app_secret: '{{OAUTH_TWITTER_APP_SECRET}}' }
       - { name: 'saml',
-          label: label: '{{OAUTH_SAML_LABEL}}',
+          label: '{{OAUTH_SAML_LABEL}}',
           args: {
                   assertion_consumer_service_url: '{{OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL}}',
                   idp_cert_fingerprint: '{{OAUTH_SAML_IDP_CERT_FINGERPRINT}}',
