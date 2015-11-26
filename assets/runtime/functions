@@ -600,6 +600,11 @@ gitlab_configure_ci() {
   exec_as_git sed -i 's|{{GITLAB_BUILDS_DIR}}|'"${GITLAB_BUILDS_DIR}"'|g' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
 }
 
+gitlab_configure_artifacts() {
+  echo "Configuring gitlab::artifacts..."
+  exec_as_git sed -i 's|{{GITLAB_ARTIFACTS_ENABLED}}|'"${GITLAB_ARTIFACTS_ENABLED}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+}
+
 gitlab_configure_lfs() {
   echo "Configuring gitlab::lfs..."
   exec_as_git sed -i 's|{{GITLAB_LFS_ENABLED}}|'"${GITLAB_LFS_ENABLED}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
@@ -923,6 +928,7 @@ configure_gitlab() {
   gitlab_configure_timezone
   gitlab_configure_rack_attack
   gitlab_configure_ci
+  gitlab_configure_artifacts
   gitlab_configure_lfs
   gitlab_configure_project_features
   gitlab_configure_mail_delivery

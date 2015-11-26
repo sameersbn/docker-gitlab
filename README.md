@@ -771,13 +771,14 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_PROJECTS_BUILDS**: Set if *builds* feature should be enabled by default for new projects. Defaults is `true`.
 - **GITLAB_WEBHOOK_TIMEOUT**: Sets the timeout for webhooks. Defaults to `10` seconds.
 - **GITLAB_TIMEOUT**: Sets the timeout for git commands. Defaults to `10` seconds.
-- **GITLAB_LFS_ENABLED**: Enable/Disable Git LFS support. Defaults to `true`.
 - **GITLAB_NOTIFY_ON_BROKEN_BUILDS**: Enable or disable broken build notification emails. Defaults to `true`
 - **GITLAB_NOTIFY_PUSHER**: Add pusher to recipients list of broken build notification emails. Defaults to `false`
 - **GITLAB_REPOS_DIR**: The git repositories folder in the container. Defaults to `/home/git/data/repositories`
 - **GITLAB_BACKUP_DIR**: The backup folder in the container. Defaults to `/home/git/data/backups`
 - **GITLAB_BUILDS_DIR**: The build traces directory. Defaults to `/home/git/data/builds`
 - **GITLAB_SHARED_DIR**: The directory to store the build artifacts. Defaults to `/home/git/data/shared`
+- **GITLAB_ARTIFACTS_ENABLED**: Enable/Disable GitLab artifacts support. Defaults to `true`.
+- **GITLAB_LFS_ENABLED**: Enable/Disable Git LFS support. Defaults to `true`.
 - **GITLAB_LFS_OBJECTS_DIR**: Directory to store the lfs-objects. Defaults to `$GITLAB_SHARED_DIR/lfs-objects`
 - **GITLAB_BACKUPS**: Setup cron job to automatic backups. Possible values `disable`, `daily`, `weekly` or `monthly`. Disabled by default
 - **GITLAB_BACKUP_EXPIRY**: Configure how long (in seconds) to keep backups before they are deleted. By default when automated backups are disabled backups are kept forever (0 seconds), else the backups expire in 7 days (604800 seconds).
