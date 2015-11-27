@@ -2,6 +2,9 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**8.2.1-1**
+- fixed typo while setting the value of `GITLAB_ARTIFACTS_DIR`
+
 **8.2.1**
 - expose rack_attack configuration options
 - gitlab-shell: upgrade to v.2.6.8
