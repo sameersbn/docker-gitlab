@@ -5,6 +5,7 @@ This file only reflects the changes that are made in this image. Please refer to
 **latest**
 - added `GITLAB_DOWNLOADS_DIR` configuration parameter
 - `DB_TYPE` parameter renamed to `DB_ADAPTER` with `mysql2` and `postgresql` as accepted values
+- exposed `DB_ENCODING` parameter
 
 **8.2.1-1**
 - fixed typo while setting the value of `GITLAB_ARTIFACTS_DIR`
