@@ -238,7 +238,7 @@ We are now ready to start the GitLab application.
 
 ```bash
 docker run --name gitlab -d \
-    --env 'DB_TYPE=postgres' --env 'DB_HOST=192.168.1.100' \
+    --env 'DB_ADAPTER=postgresql' --env 'DB_HOST=192.168.1.100' \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
@@ -249,7 +249,7 @@ docker run --name gitlab -d \
 
 You can link this image with a postgresql container for the database requirements. The alias of the postgresql server container should be set to **postgresql** while linking with the gitlab image.
 
-If a postgresql container is linked, only the `DB_TYPE`, `DB_HOST` and `DB_PORT` settings are automatically retrieved using the linkage. You may still need to set other database connection parameters such as the `DB_NAME`, `DB_USER`, `DB_PASS` and so on.
+If a postgresql container is linked, only the `DB_ADAPTER`, `DB_HOST` and `DB_PORT` settings are automatically retrieved using the linkage. You may still need to set other database connection parameters such as the `DB_NAME`, `DB_USER`, `DB_PASS` and so on.
 
 To illustrate linking with a postgresql container, we will use the [sameersbn/postgresql](https://github.com/sameersbn/docker-postgresql) image. When using postgresql image in production you should mount a volume for the postgresql data store. Please refer the [README](https://github.com/sameersbn/docker-postgresql/blob/master/README.md) of docker-postgresql for details.
 
@@ -335,7 +335,8 @@ We are now ready to start the GitLab application.
 
 ```bash
 docker run --name gitlab -d \
-    --env 'DB_HOST=192.168.1.100' --env 'DB_NAME=gitlabhq_production' \
+    --env 'DB_ADAPTER=mysql2' --env 'DB_HOST=192.168.1.100' \
+    --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
     sameersbn/gitlab:8.2.1-1
@@ -345,7 +346,7 @@ docker run --name gitlab -d \
 
 You can link this image with a mysql container for the database requirements. The alias of the mysql server container should be set to **mysql** while linking with the gitlab image.
 
-If a mysql container is linked, only the `DB_TYPE`, `DB_HOST` and `DB_PORT` settings are automatically retrieved using the linkage. You may still need to set other database connection parameters such as the `DB_NAME`, `DB_USER`, `DB_PASS` and so on.
+If a mysql container is linked, only the `DB_ADAPTER`, `DB_HOST` and `DB_PORT` settings are automatically retrieved using the linkage. You may still need to set other database connection parameters such as the `DB_NAME`, `DB_USER`, `DB_PASS` and so on.
 
 To illustrate linking with a mysql container, we will use the [sameersbn/mysql](https://github.com/sameersbn/docker-mysql) image. When using docker-mysql in production you should mount a volume for the mysql data store. Please refer the [README](https://github.com/sameersbn/docker-mysql/blob/master/README.md) of docker-mysql for details.
 
@@ -810,7 +811,7 @@ Below is the complete list of available options that can be used to customize yo
 - **SIDEKIQ_CONCURRENCY**: The number of concurrent sidekiq jobs to run. Defaults to `25`
 - **SIDEKIQ_SHUTDOWN_TIMEOUT**: Timeout for sidekiq shutdown. Defaults to `4`
 - **SIDEKIQ_MEMORY_KILLER_MAX_RSS**: Non-zero value enables the SidekiqMemoryKiller. Defaults to `1000000`. For additional options refer [Configuring the MemoryKiller](http://doc.gitlab.com/ce/operations/sidekiq_memory_killer.html)
-- **DB_TYPE**: The database type. Possible values: `mysql`, `postgres`. Defaults to `postgres`.
+- **DB_ADAPTER**: The database type. Possible values: `mysql2`, `postgresql`. Defaults to `postgresql`.
 - **DB_HOST**: The database server hostname. Defaults to `localhost`.
 - **DB_PORT**: The database server port. Defaults to `3306` for mysql and `5432` for postgresql.
 - **DB_NAME**: The database database name. Defaults to `gitlabhq_production`

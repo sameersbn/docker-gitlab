@@ -31,7 +31,7 @@ gitlab_finalize_database_parameters() {
   # requires that the mysql or postgresql containers have exposed
   # port 3306 and 5432 respectively.
   if [[ -n ${MYSQL_PORT_3306_TCP_ADDR} ]]; then
-    DB_TYPE=${DB_TYPE:-mysql}
+    DB_ADAPTER=${DB_ADAPTER:-mysql2}
     DB_HOST=${DB_HOST:-${MYSQL_PORT_3306_TCP_ADDR}}
     DB_PORT=${DB_PORT:-${MYSQL_PORT_3306_TCP_PORT}}
 
@@ -46,7 +46,7 @@ gitlab_finalize_database_parameters() {
     DB_PASS=${DB_PASS:-${MYSQL_ENV_MYSQL_PASSWORD}}
     DB_NAME=${DB_NAME:-${MYSQL_ENV_MYSQL_DATABASE}}
   elif [[ -n ${POSTGRESQL_PORT_5432_TCP_ADDR} ]]; then
-    DB_TYPE=${DB_TYPE:-postgres}
+    DB_ADAPTER=${DB_ADAPTER:-postgresql}
     DB_HOST=${DB_HOST:-${POSTGRESQL_PORT_5432_TCP_ADDR}}
     DB_PORT=${DB_PORT:-${POSTGRESQL_PORT_5432_TCP_PORT}}
 
@@ -82,23 +82,21 @@ gitlab_finalize_database_parameters() {
   fi
 
   # set default port number if not specified
-  DB_TYPE=${DB_TYPE:-postgres}
-  case ${DB_TYPE} in
-    mysql)
-      DB_ADAPTER=${DB_ADAPTER:-mysql2}
+  DB_ADAPTER=${DB_ADAPTER:-postgresql}
+  case ${DB_ADAPTER} in
+    mysql2)
       DB_ENCODING=${DB_ENCODING:-utf8}
       DB_PORT=${DB_PORT:-3306}
       ;;
-    postgres)
-      DB_ADAPTER=${DB_ADAPTER:-postgresql}
+    postgresql)
       DB_ENCODING=${DB_ENCODING:-unicode}
       DB_PORT=${DB_PORT:-5432}
       ;;
     *)
       echo
       echo "ERROR: "
-      echo "  Please specify the database type in use via the DB_TYPE configuration option."
-      echo "  Accepted values are \"postgres\" or \"mysql\". Aborting..."
+      echo "  Please specify the database type in use via the DB_ADAPTER configuration option."
+      echo "  Accepted values are \"postgresql\" or \"mysql2\". Aborting..."
       echo
       return 1
       ;;
@@ -110,11 +108,11 @@ gitlab_finalize_database_parameters() {
 }
 
 gitlab_check_database_connection() {
-  case ${DB_TYPE} in
-    mysql)
+  case ${DB_ADAPTER} in
+    mysql2)
       prog="mysqladmin -h ${DB_HOST} -P ${DB_PORT} -u ${DB_USER} ${DB_PASS:+-p$DB_PASS} status"
       ;;
-    postgres)
+    postgresql)
       prog=$(find /usr/lib/postgresql/ -name pg_isready)
       prog="${prog} -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -t 1"
       ;;
@@ -149,7 +147,7 @@ gitlab_configure_database() {
   exec_as_git sed -i 's|{{DB_PASS}}|'"${DB_PASS}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
   exec_as_git sed -i 's|{{DB_POOL}}|'"${DB_POOL}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
 
-  if [[ ${DB_TYPE} == postgres ]]; then
+  if [[ ${DB_ADAPTER} == postgresql ]]; then
     exec_as_git sed -i '/reconnect: /d' ${GITLAB_INSTALL_DIR}/config/database.yml
     exec_as_git sed -i '/collation: /d' ${GITLAB_INSTALL_DIR}/config/database.yml
   fi
@@ -982,12 +980,12 @@ configure_nginx() {
 
 migrate_database() {
   # run the `gitlab:setup` rake task if required
-  case ${DB_TYPE} in
-    mysql)
+  case ${DB_ADAPTER} in
+    mysql2)
       QUERY="SELECT count(*) FROM information_schema.tables WHERE table_schema = '${DB_NAME}';"
       COUNT=$(mysql -h ${DB_HOST} -P ${DB_PORT} -u ${DB_USER} ${DB_PASS:+-p$DB_PASS} -ss -e "${QUERY}")
       ;;
-    postgres)
+    postgresql)
       QUERY="SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public';"
       COUNT=$(PGPASSWORD="${DB_PASS}" psql -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -Atw -c "${QUERY}")
       ;;
