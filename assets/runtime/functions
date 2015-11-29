@@ -84,8 +84,16 @@ gitlab_finalize_database_parameters() {
   # set default port number if not specified
   DB_TYPE=${DB_TYPE:-postgres}
   case ${DB_TYPE} in
-    mysql) DB_PORT=${DB_PORT:-3306} ;;
-    postgres) DB_PORT=${DB_PORT:-5432} ;;
+    mysql)
+      DB_ADAPTER=${DB_ADAPTER:-mysql2}
+      DB_ENCODING=${DB_ENCODING:-utf8}
+      DB_PORT=${DB_PORT:-3306}
+      ;;
+    postgres)
+      DB_ADAPTER=${DB_ADAPTER:-postgresql}
+      DB_ENCODING=${DB_ENCODING:-unicode}
+      DB_PORT=${DB_PORT:-5432}
+      ;;
     *)
       echo
       echo "ERROR: "
@@ -132,24 +140,19 @@ gitlab_configure_database() {
   gitlab_finalize_database_parameters
   gitlab_check_database_connection
 
+  exec_as_git sed -i 's|{{DB_ADAPTER}}|'"${DB_ADAPTER}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
+  exec_as_git sed -i 's|{{DB_ENCODING}}|'"${DB_ENCODING}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
   exec_as_git sed -i 's|{{DB_HOST}}|'"${DB_HOST}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
   exec_as_git sed -i 's|{{DB_PORT}}|'"${DB_PORT}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
   exec_as_git sed -i 's|{{DB_NAME}}|'"${DB_NAME}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
   exec_as_git sed -i 's|{{DB_USER}}|'"${DB_USER}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
   exec_as_git sed -i 's|{{DB_PASS}}|'"${DB_PASS}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
   exec_as_git sed -i 's|{{DB_POOL}}|'"${DB_POOL}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
-  case ${DB_TYPE} in
-    postgres)
-      exec_as_git sed -i 's|{{DB_ADAPTER}}|postgresql|' ${GITLAB_INSTALL_DIR}/config/database.yml
-      exec_as_git sed -i 's|{{DB_ENCODING}}|unicode|' ${GITLAB_INSTALL_DIR}/config/database.yml
-      exec_as_git sed -i '/reconnect: /d' ${GITLAB_INSTALL_DIR}/config/database.yml
-      exec_as_git sed -i '/collation: /d' ${GITLAB_INSTALL_DIR}/config/database.yml
-      ;;
-    mysql)
-      exec_as_git sed -i 's|{{DB_ADAPTER}}|mysql2|' ${GITLAB_INSTALL_DIR}/config/database.yml
-      exec_as_git sed -i 's|{{DB_ENCODING}}|utf8|' ${GITLAB_INSTALL_DIR}/config/database.yml
-      ;;
-  esac
+
+  if [[ ${DB_TYPE} == postgres ]]; then
+    exec_as_git sed -i '/reconnect: /d' ${GITLAB_INSTALL_DIR}/config/database.yml
+    exec_as_git sed -i '/collation: /d' ${GITLAB_INSTALL_DIR}/config/database.yml
+  fi
 }
 
 gitlab_finalize_redis_parameters() {
