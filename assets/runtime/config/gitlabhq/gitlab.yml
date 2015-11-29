@@ -40,7 +40,7 @@ production: &base
 
     # WARNING: See config/application.rb under "Relative url support" for the list of
     # other files that need to be changed for relative url support
-    # relative_url_root: {{GITLAB_RELATIVE_URL_ROOT}}
+    relative_url_root: {{GITLAB_RELATIVE_URL_ROOT}}
 
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
     # user: git

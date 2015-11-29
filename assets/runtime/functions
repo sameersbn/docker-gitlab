@@ -920,6 +920,7 @@ configure_gitlab() {
 
   exec_as_git sed -i 's|{{GITLAB_HOST}}|'"${GITLAB_HOST}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   exec_as_git sed -i 's|{{GITLAB_PORT}}|'"${GITLAB_PORT}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+  exec_as_git sed -i 's|{{GITLAB_RELATIVE_URL_ROOT}}|'"${GITLAB_RELATIVE_URL_ROOT}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   exec_as_git sed -i 's|{{GITLAB_HTTPS}}|'"${GITLAB_HTTPS}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   exec_as_git sed -i 's|{{GITLAB_MAX_SIZE}}|'"${GITLAB_MAX_SIZE}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   exec_as_git sed -i 's|{{GITLAB_SSH_HOST}}|'"${GITLAB_SSH_HOST}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
