@@ -2,6 +2,9 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**latest**
+- added `GITLAB_DOWNLOADS_DIR` configuration parameter
+
 **8.2.1-1**
 - fixed typo while setting the value of `GITLAB_ARTIFACTS_DIR`
 
