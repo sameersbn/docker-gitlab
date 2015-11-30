@@ -45,6 +45,10 @@ COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
 
+RUN rm /usr/bin/supervisord
+COPY supervisord /usr/bin/supervisord
+RUN chmod 755 /usr/bin/supervisord
+
 EXPOSE 22/tcp 80/tcp 443/tcp
 
 VOLUME ["${GITLAB_DATA_DIR}", "${GITLAB_LOG_DIR}"]
