@@ -650,7 +650,6 @@ nginx_configure_gitlab_relative_url() {
     sed -i 's|{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}|'"${GITLAB_RELATIVE_URL_ROOT}/"'|g' /etc/nginx/sites-enabled/gitlab
     sed -i 's|# alias '"${GITLAB_INSTALL_DIR}"'/public|alias '"${GITLAB_INSTALL_DIR}"'/public|' /etc/nginx/sites-enabled/gitlab
 
-    exec_as_git sed -i 's|# config.relative_url_root = "/gitlab"|config.relative_url_root = "'${GITLAB_RELATIVE_URL_ROOT}'"|' ${GITLAB_INSTALL_DIR}/config/application.rb
     exec_as_git sed -i 's|# relative_url_root: {{GITLAB_RELATIVE_URL_ROOT}}|relative_url_root: '${GITLAB_RELATIVE_URL_ROOT}'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   else
     sed -i 's|{{GITLAB_RELATIVE_URL_ROOT}}|/|' /etc/nginx/sites-enabled/gitlab
