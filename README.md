@@ -5,7 +5,6 @@
 # sameersbn/gitlab:8.2.1-1
 
 - [Introduction](#introduction)
-    - [Version](#version)
     - [Changelog](Changelog.md)
 - [Contributing](#contributing)
 - [Issues](#issues)
@@ -64,10 +63,6 @@
 # Introduction
 
 Dockerfile to build a [GitLab](https://about.gitlab.com/) container image.
-
-## Version
-
-Current Version: `8.1.4`
 
 # Contributing
 
