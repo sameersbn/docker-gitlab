@@ -26,6 +26,33 @@ install_template() {
   fi
 }
 
+## Replace placeholders with values
+# $1: file with placeholders to replace
+# $x: placeholders to replace
+replace_placeholders() {
+  local FILE=${1?missing argument}
+  shift
+
+  [[ ! -f "$FILE" ]] && return
+
+  local VARIABLES=($@)
+  local tmp_file=$(mktemp)
+  cp "$FILE" $tmp_file
+
+  local variable
+  for variable in ${VARIABLES[@]}; do
+    # Keep the compatibilty: {{VAR}} => ${VAR}
+    sed -ri "s/[{]{2}$variable[}]{2}/\${$variable}/g" $tmp_file
+  done
+
+  # Replace placeholders
+  (
+     export ${VARIABLES[@]}
+     exec_as_git envsubst < $tmp_file > $FILE
+  )
+  rm -f $tmp_file
+}
+
 gitlab_finalize_database_parameters() {
   # is a mysql or postgresql database linked?
   # requires that the mysql or postgresql containers have exposed
@@ -138,14 +165,9 @@ gitlab_configure_database() {
   gitlab_finalize_database_parameters
   gitlab_check_database_connection
 
-  exec_as_git sed -i 's|{{DB_ADAPTER}}|'"${DB_ADAPTER}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
-  exec_as_git sed -i 's|{{DB_ENCODING}}|'"${DB_ENCODING}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
-  exec_as_git sed -i 's|{{DB_HOST}}|'"${DB_HOST}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
-  exec_as_git sed -i 's|{{DB_PORT}}|'"${DB_PORT}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
-  exec_as_git sed -i 's|{{DB_NAME}}|'"${DB_NAME}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
-  exec_as_git sed -i 's|{{DB_USER}}|'"${DB_USER}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
-  exec_as_git sed -i 's|{{DB_PASS}}|'"${DB_PASS}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
-  exec_as_git sed -i 's|{{DB_POOL}}|'"${DB_POOL}"'|' ${GITLAB_INSTALL_DIR}/config/database.yml
+  replace_placeholders \
+   ${GITLAB_INSTALL_DIR}/config/database.yml \
+   DB_ADAPTER DB_ENCODING DB_HOST DB_PORT DB_NAME DB_USER DB_PASS DB_POOL
 
   if [[ ${DB_ADAPTER} == postgresql ]]; then
     exec_as_git sed -i '/reconnect: /d' ${GITLAB_INSTALL_DIR}/config/database.yml
@@ -226,24 +248,17 @@ gitlab_configure_mail_delivery() {
   if [[ ${SMTP_ENABLED} == true ]]; then
     echo "Configuring gitlab::smtp_settings..."
 
-    if [[ -n  ${SMTP_USER} ]]; then
-      exec_as_git sed -i 's|{{SMTP_USER}}|'"${SMTP_USER}"'|' ${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb
-      if [[ -n  ${SMTP_PASS} ]]; then
-        exec_as_git sed -i 's|{{SMTP_PASS}}|'"${SMTP_PASS}"'|' ${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb
-      else
-        exec_as_git sed -i '/{{SMTP_PASS}}/d' ${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb
-      fi
-    else
+    if [[ -z "${SMTP_USER}" ]]; then
       exec_as_git sed -i '/{{SMTP_USER}}/d' ${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb
       exec_as_git sed -i '/{{SMTP_PASS}}/d' ${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb
+      if [[ -z "${SMTP_PASS}" ]]; then
+        exec_as_git sed -i '/{{SMTP_PASS}}/d' ${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb
+      fi
     fi
 
-    exec_as_git sed -i 's|{{SMTP_HOST}}|'"${SMTP_HOST}"'|' ${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb
-    exec_as_git sed -i 's|{{SMTP_PORT}}|'"${SMTP_PORT}"'|' ${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb
-    exec_as_git sed -i 's|{{SMTP_DOMAIN}}|'"${SMTP_DOMAIN}"'|' ${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb
-    exec_as_git sed -i 's|{{SMTP_STARTTLS}}|'"${SMTP_STARTTLS}"'|' ${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb
-    exec_as_git sed -i 's|{{SMTP_TLS}}|'"${SMTP_TLS}"'|' ${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb
-    exec_as_git sed -i 's|{{SMTP_OPENSSL_VERIFY_MODE}}|'"${SMTP_OPENSSL_VERIFY_MODE}"'|' ${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb
+    replace_placeholders \
+     ${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb \
+     SMTP_USER SMTP_PASS SMTP_HOST SMTP_PORT SMTP_DOMAIN SMTP_STARTTLS SMTP_TLS SMTP_OPENSSL_VERIFY_MODE
 
     case ${SMTP_AUTHENTICATION} in
       "") exec_as_git sed -i '/{{SMTP_AUTHENTICATION}}/d' ${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb ;;
@@ -263,34 +278,23 @@ gitlab_configure_mail_delivery() {
     fi
   fi
 
-  exec_as_git sed -i 's|{{GITLAB_EMAIL_ENABLED}}|'"${GITLAB_EMAIL_ENABLED}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{GITLAB_EMAIL}}|'"${GITLAB_EMAIL}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{GITLAB_EMAIL_DISPLAY_NAME}}|'"${GITLAB_EMAIL_DISPLAY_NAME}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{GITLAB_EMAIL_REPLY_TO}}|'"${GITLAB_EMAIL_REPLY_TO}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+  replace_placeholders \
+   ${GITLAB_INSTALL_DIR}/config/gitlab.yml \
+   GITLAB_EMAIL_ENABLED GITLAB_EMAIL GITLAB_EMAIL_DISPLAY_NAME GITLAB_EMAIL_REPLY_TO
 }
 
 gitlab_configure_mailroom() {
   if [[ ${IMAP_ENABLED} == true ]]; then
     echo "Configuring gitlab::incoming_email..."
-    exec_as_git sed -i 's|{{GITLAB_INCOMING_EMAIL_ADDRESS}}|'"${GITLAB_INCOMING_EMAIL_ADDRESS}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
 
-    if [[ -n ${IMAP_USER} ]]; then
-      exec_as_git sed -i 's|{{IMAP_USER}}|'"${IMAP_USER}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-      if [[ -n ${IMAP_PASS} ]]; then
-        exec_as_git sed -i 's|{{IMAP_PASS}}|'"${IMAP_PASS}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-      else
-        exec_as_git sed -i '/{{IMAP_PASS}}/d' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-      fi
-    else
+    if [[ -z "${IMAP_USER}" ]]; then
       exec_as_git sed -i '/{{IMAP_USER}}/d' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
       exec_as_git sed -i '/{{IMAP_PASS}}/d' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+    else
+      if [[ -z "${IMAP_PASS}" ]]; then
+        exec_as_git sed -i '/{{IMAP_PASS}}/d' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+      fi
     fi
-
-    exec_as_git sed -i 's|{{IMAP_HOST}}|'"${IMAP_HOST}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{IMAP_PORT}}|'"${IMAP_PORT}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{IMAP_SSL}}|'"${IMAP_SSL}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{IMAP_STARTTLS}}|'"${IMAP_STARTTLS}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{IMAP_MAILBOX}}|'"${IMAP_MAILBOX}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   else
     exec_as_git sed -i '/{{IMAP_USER}}/d' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
     exec_as_git sed -i '/{{IMAP_PASS}}/d' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
@@ -300,7 +304,10 @@ gitlab_configure_mailroom() {
     exec_as_git sed -i '/{{IMAP_STARTTLS}}/d' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
     exec_as_git sed -i '/{{IMAP_MAILBOX}}/d' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   fi
-  exec_as_git sed -i 's|{{GITLAB_INCOMING_EMAIL_ENABLED}}|'"${GITLAB_INCOMING_EMAIL_ENABLED}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+
+  replace_placeholders \
+   ${GITLAB_INSTALL_DIR}/config/gitlab.yml \
+   GITLAB_INCOMING_EMAIL_ADDRESS GITLAB_INCOMING_EMAIL_ENABLED IMAP_USER IMAP_PASS IMAP_HOST IMAP_PORT IMAP_SSL IMAP_STARTTLS IMAP_MAILBOX
 
   # enable/disable startup of mailroom
   echo "mail_room_enabled=${GITLAB_INCOMING_EMAIL_ENABLED}" >> /etc/default/gitlab
@@ -309,28 +316,19 @@ gitlab_configure_mailroom() {
 
 gitlab_configure_ldap() {
   echo "Configuring gitlab::ldap..."
-  exec_as_git sed -i 's|{{LDAP_ENABLED}}|'"${LDAP_ENABLED}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{LDAP_HOST}}|'"${LDAP_HOST}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{LDAP_PORT}}|'"${LDAP_PORT}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{LDAP_UID}}|'"${LDAP_UID}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{LDAP_METHOD}}|'"${LDAP_METHOD}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{LDAP_BIND_DN}}|'"${LDAP_BIND_DN}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{LDAP_PASS}}|'"${LDAP_PASS}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{LDAP_ACTIVE_DIRECTORY}}|'"${LDAP_ACTIVE_DIRECTORY}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}}|'"${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{LDAP_BLOCK_AUTO_CREATED_USERS}}|'"${LDAP_BLOCK_AUTO_CREATED_USERS}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{LDAP_BASE}}|'"${LDAP_BASE}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's/{{LDAP_USER_FILTER}}/'"${LDAP_USER_FILTER}"'/' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{LDAP_LABEL}}|'"${LDAP_LABEL}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+  replace_placeholders \
+   ${GITLAB_INSTALL_DIR}/config/gitlab.yml \
+   LDAP_ENABLED LDAP_HOST LDAP_PORT LDAP_UID LDAP_METHOD LDAP_BIND_DN LDAP_PASS LDAP_ACTIVE_DIRECTORY \
+   LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN LDAP_BLOCK_AUTO_CREATED_USERS LDAP_BASE LDAP_USER_FILTER LDAP_LABEL
 }
 
 gitlab_configure_oauth_google() {
   if [[ -n ${OAUTH_GOOGLE_API_KEY} && -n ${OAUTH_GOOGLE_APP_SECRET} ]]; then
     echo "Configuring gitlab::oauth::google..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
-    exec_as_git sed -i 's|{{OAUTH_GOOGLE_API_KEY}}|'"${OAUTH_GOOGLE_API_KEY}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{OAUTH_GOOGLE_APP_SECRET}}|'"${OAUTH_GOOGLE_APP_SECRET}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{OAUTH_GOOGLE_RESTRICT_DOMAIN}}|'"${OAUTH_GOOGLE_RESTRICT_DOMAIN}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+    replace_placeholders \
+     ${GITLAB_INSTALL_DIR}/config/gitlab.yml \
+     OAUTH_GOOGLE_API_KEY OAUTH_GOOGLE_APP_SECRET OAUTH_GOOGLE_RESTRICT_DOMAIN
     exec_as_git sed -i 's|{{OAUTH_GOOGLE_APPROVAL_PROMPT}}||' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   else
     exec_as_git sed -i "/name: 'google_oauth2'/,/{{OAUTH_GOOGLE_RESTRICT_DOMAIN}}/d" ${GITLAB_INSTALL_DIR}/config/gitlab.yml
@@ -341,8 +339,9 @@ gitlab_configure_oauth_facebook() {
   if [[ -n ${OAUTH_FACEBOOK_API_KEY} && -n ${OAUTH_FACEBOOK_APP_SECRET} ]]; then
     echo "Configuring gitlab::oauth::facebook..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
-    exec_as_git sed -i 's|{{OAUTH_FACEBOOK_API_KEY}}|'"${OAUTH_FACEBOOK_API_KEY}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{OAUTH_FACEBOOK_APP_SECRET}}|'"${OAUTH_FACEBOOK_APP_SECRET}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+    replace_placeholders \
+     ${GITLAB_INSTALL_DIR}/config/gitlab.yml \
+     OAUTH_FACEBOOK_API_KEY OAUTH_FACEBOOK_APP_SECRET
   else
     exec_as_git sed -i "/name: 'facebook'/,/{{OAUTH_FACEBOOK_APP_SECRET}}/d" ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   fi
@@ -352,8 +351,9 @@ gitlab_configure_oauth_twitter() {
   if [[ -n ${OAUTH_TWITTER_API_KEY} && -n ${OAUTH_TWITTER_APP_SECRET} ]]; then
     echo "Configuring gitlab::oauth::twitter..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
-    exec_as_git sed -i 's|{{OAUTH_TWITTER_API_KEY}}|'"${OAUTH_TWITTER_API_KEY}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{OAUTH_TWITTER_APP_SECRET}}|'"${OAUTH_TWITTER_APP_SECRET}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+    replace_placeholders \
+     ${GITLAB_INSTALL_DIR}/config/gitlab.yml \
+     OAUTH_TWITTER_API_KEY OAUTH_TWITTER_APP_SECRET
   else
     exec_as_git sed -i "/name: 'twitter'/,/{{OAUTH_TWITTER_APP_SECRET}}/d" ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   fi
@@ -363,8 +363,9 @@ gitlab_configure_oauth_github() {
   if [[ -n ${OAUTH_GITHUB_API_KEY} && -n ${OAUTH_GITHUB_APP_SECRET} ]]; then
     echo "Configuring gitlab::oauth::github..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
-    exec_as_git sed -i 's|{{OAUTH_GITHUB_API_KEY}}|'"${OAUTH_GITHUB_API_KEY}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{OAUTH_GITHUB_APP_SECRET}}|'"${OAUTH_GITHUB_APP_SECRET}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+    replace_placeholders \
+     ${GITLAB_INSTALL_DIR}/config/gitlab.yml \
+     OAUTH_GITHUB_API_KEY OAUTH_GITHUB_APP_SECRET
     exec_as_git sed -i 's|{{OAUTH_GITHUB_SCOPE}}|user:email|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   else
     exec_as_git sed -i "/name: 'github'/,/{{OAUTH_GITHUB_SCOPE}}/d" ${GITLAB_INSTALL_DIR}/config/gitlab.yml
@@ -375,8 +376,9 @@ gitlab_configure_oauth_gitlab() {
   if [[ -n ${OAUTH_GITLAB_API_KEY} && -n ${OAUTH_GITLAB_APP_SECRET} ]]; then
     echo "Configuring gitlab::oauth::gitlab..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
-    exec_as_git sed -i 's|{{OAUTH_GITLAB_API_KEY}}|'"${OAUTH_GITLAB_API_KEY}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{OAUTH_GITLAB_APP_SECRET}}|'"${OAUTH_GITLAB_APP_SECRET}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+    replace_placeholders \
+     ${GITLAB_INSTALL_DIR}/config/gitlab.yml \
+     OAUTH_GITLAB_API_KEY OAUTH_GITLAB_APP_SECRET
     exec_as_git sed -i 's|{{OAUTH_GITLAB_SCOPE}}|api|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   else
     exec_as_git sed -i "/name: 'gitlab'/,/{{OAUTH_GITLAB_SCOPE}}/d" ${GITLAB_INSTALL_DIR}/config/gitlab.yml
@@ -387,8 +389,9 @@ gitlab_configure_oauth_bitbucket() {
   if [[ -n ${OAUTH_BITBUCKET_API_KEY} && -n ${OAUTH_BITBUCKET_APP_SECRET} ]]; then
     echo "Configuring gitlab::oauth::bitbucket..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
-    exec_as_git sed -i 's|{{OAUTH_BITBUCKET_API_KEY}}|'"${OAUTH_BITBUCKET_API_KEY}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{OAUTH_BITBUCKET_APP_SECRET}}|'"${OAUTH_BITBUCKET_APP_SECRET}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+    replace_placeholders \
+     ${GITLAB_INSTALL_DIR}/config/gitlab.yml \
+     OAUTH_BITBUCKET_API_KEY OAUTH_BITBUCKET_APP_SECRET
   else
     exec_as_git sed -i "/name: 'bitbucket'/,/{{OAUTH_BITBUCKET_APP_SECRET}}/d" ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   fi
@@ -402,12 +405,10 @@ gitlab_configure_oauth_saml() {
         -n ${OAUTH_SAML_NAME_IDENTIFIER_FORMAT} ]]; then
     echo "Configuring gitlab::oauth::saml..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
-    exec_as_git sed -i 's|{{OAUTH_SAML_LABEL}}|'"${OAUTH_SAML_LABEL}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL}}|'"${OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{OAUTH_SAML_IDP_CERT_FINGERPRINT}}|'"${OAUTH_SAML_IDP_CERT_FINGERPRINT}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{OAUTH_SAML_IDP_SSO_TARGET_URL}}|'"${OAUTH_SAML_IDP_SSO_TARGET_URL}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{OAUTH_SAML_ISSUER}}|'"${OAUTH_SAML_ISSUER}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{OAUTH_SAML_NAME_IDENTIFIER_FORMAT}}|'"${OAUTH_SAML_NAME_IDENTIFIER_FORMAT}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+    replace_placeholders \
+     ${GITLAB_INSTALL_DIR}/config/gitlab.yml \
+     OAUTH_SAML_LABEL OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL OAUTH_SAML_IDP_CERT_FINGERPRINT \
+     OAUTH_SAML_IDP_SSO_TARGET_URL OAUTH_SAML_ISSUER OAUTH_SAML_NAME_IDENTIFIER_FORMAT
   else
     exec_as_git sed -i "/name: 'saml'/,/{{OAUTH_SAML_NAME_IDENTIFIER_FORMAT}}/d" ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   fi
@@ -419,9 +420,9 @@ gitlab_configure_oauth_crowd() {
         -n ${OAUTH_CROWD_APP_PASSWORD} ]]; then
     echo "Configuring gitlab::oauth::crowd..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
-    exec_as_git sed -i 's|{{OAUTH_CROWD_SERVER_URL}}|'"${OAUTH_CROWD_SERVER_URL}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{OAUTH_CROWD_APP_NAME}}|'"${OAUTH_CROWD_APP_NAME}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-    exec_as_git sed -i 's|{{OAUTH_CROWD_APP_PASSWORD}}|'"${OAUTH_CROWD_APP_PASSWORD}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+    replace_placeholders \
+     ${GITLAB_INSTALL_DIR}/config/gitlab.yml \
+     OAUTH_CROWD_SERVER_URL OAUTH_CROWD_APP_NAME OAUTH_CROWD_APP_PASSWORD
   else
     exec_as_git sed -i "/name: 'crowd'/,/{{OAUTH_CROWD_APP_PASSWORD}}/d" ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   fi
@@ -440,11 +441,9 @@ gitlab_configure_oauth() {
   gitlab_configure_oauth_crowd
 
   OAUTH_ENABLED=${OAUTH_ENABLED:-false}
-  exec_as_git sed -i 's|{{OAUTH_ENABLED}}|'"${OAUTH_ENABLED}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-
-  exec_as_git sed -i 's|{{OAUTH_ALLOW_SSO}}|'"${OAUTH_ALLOW_SSO}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{OAUTH_BLOCK_AUTO_CREATED_USERS}}|'"${OAUTH_BLOCK_AUTO_CREATED_USERS}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{OAUTH_AUTO_LINK_LDAP_USER}}|'"${OAUTH_AUTO_LINK_LDAP_USER}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+  replace_placeholders \
+   ${GITLAB_INSTALL_DIR}/config/gitlab.yml \
+   OAUTH_ENABLED OAUTH_ALLOW_SSO OAUTH_BLOCK_AUTO_CREATED_USERS OAUTH_AUTO_LINK_LDAP_USER
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
     google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd)
@@ -465,7 +464,9 @@ gitlab_configure_secrets() {
     return 1
   fi
 
-  exec_as_git sed -i 's|{{GITLAB_SECRETS_DB_KEY_BASE}}|'"${GITLAB_SECRETS_DB_KEY_BASE}"'|' ${GITLAB_INSTALL_DIR}/config/secrets.yml
+  replace_placeholders \
+   ${GITLAB_INSTALL_DIR}/config/secrets.yml \
+   GITLAB_SECRETS_DB_KEY_BASE
 }
 
 gitlab_configure_sidekiq() {
@@ -519,10 +520,9 @@ gitlab_configure_backups_aws() {
         printf "\nMissing AWS options. Aborting...\n"
         return 1
       fi
-      exec_as_git sed -i 's|{{AWS_BACKUP_REGION}}|'"${AWS_BACKUP_REGION}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-      exec_as_git sed -i 's|{{AWS_BACKUP_ACCESS_KEY_ID}}|'"${AWS_BACKUP_ACCESS_KEY_ID}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-      exec_as_git sed -i 's|{{AWS_BACKUP_SECRET_ACCESS_KEY}}|'"${AWS_BACKUP_SECRET_ACCESS_KEY}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-      exec_as_git sed -i 's|{{AWS_BACKUP_BUCKET}}|'"${AWS_BACKUP_BUCKET}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+      replace_placeholders \
+       ${GITLAB_INSTALL_DIR}/config/gitlab.yml \
+       AWS_BACKUP_REGION AWS_BACKUP_ACCESS_KEY_ID AWS_BACKUP_SECRET_ACCESS_KEY AWS_BACKUP_BUCKET
       ;;
     *)
       exec_as_git sed -i '/upload:/,/remote_directory:/d' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
@@ -532,9 +532,9 @@ gitlab_configure_backups_aws() {
 
 gitlab_configure_backups() {
   echo "Configuring gitlab::backups..."
-  exec_as_git sed -i 's|{{GITLAB_BACKUP_DIR}}|'"${GITLAB_BACKUP_DIR}"'|g' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{GITLAB_BACKUP_EXPIRY}}|'"${GITLAB_BACKUP_EXPIRY}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{GITLAB_BACKUP_ARCHIVE_PERMISSIONS}}|'"${GITLAB_BACKUP_ARCHIVE_PERMISSIONS}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+  replace_placeholders \
+   ${GITLAB_INSTALL_DIR}/config/gitlab.yml \
+   GITLAB_BACKUP_DIR GITLAB_BACKUP_EXPIRY GITLAB_BACKUP_ARCHIVE_PERMISSIONS
 
   gitlab_configure_backups_cron
   gitlab_configure_backups_aws
