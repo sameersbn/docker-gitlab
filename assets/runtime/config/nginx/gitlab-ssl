@@ -167,24 +167,28 @@ server {
   }
 
   location ~ ^{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}[\w\.-]+/[\w\.-]+/gitlab-lfs/objects {
+    client_max_body_size 0;
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
     error_page 418 = @gitlab-workhorse;
     return 418;
   }
 
   location ~ ^{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}[\w\.-]+/[\w\.-]+/(info/refs|git-upload-pack|git-receive-pack)$ {
+    client_max_body_size 0;
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
     error_page 418 = @gitlab-workhorse;
     return 418;
   }
 
   location ~ ^{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}[\w\.-]+/[\w\.-]+/repository/archive {
+    client_max_body_size 0;
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
     error_page 418 = @gitlab-workhorse;
     return 418;
   }
 
   location ~ ^{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}api/v3/projects/.*/repository/archive {
+    client_max_body_size 0;
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
     error_page 418 = @gitlab-workhorse;
     return 418;
@@ -192,16 +196,18 @@ server {
 
   # Build artifacts should be submitted to this location
   location ~ ^{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}[\w\.-]+/[\w\.-]+/builds/download {
-      # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
-      error_page 418 = @gitlab-workhorse;
-      return 418;
+    client_max_body_size 0;
+    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+    error_page 418 = @gitlab-workhorse;
+    return 418;
   }
 
   # Build artifacts should be submitted to this location
   location ~ {{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}ci/api/v1/builds/[0-9]+/artifacts {
-      # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
-      error_page 418 = @gitlab-workhorse;
-      return 418;
+    client_max_body_size 0;
+    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+    error_page 418 = @gitlab-workhorse;
+    return 418;
   }
 
   location @gitlab-workhorse {
