@@ -2,7 +2,7 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG) for the list of changes in GitLab.
 
-**latest**
+**8.2.2**
 - added `GITLAB_DOWNLOADS_DIR` configuration parameter
 - `DB_TYPE` parameter renamed to `DB_ADAPTER` with `mysql2` and `postgresql` as accepted values
 - exposed `DB_ENCODING` parameter
