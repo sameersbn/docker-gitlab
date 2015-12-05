@@ -320,7 +320,7 @@ gitlab_configure_ldap() {
   exec_as_git sed -i 's|{{LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}}|'"${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   exec_as_git sed -i 's|{{LDAP_BLOCK_AUTO_CREATED_USERS}}|'"${LDAP_BLOCK_AUTO_CREATED_USERS}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   exec_as_git sed -i 's|{{LDAP_BASE}}|'"${LDAP_BASE}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-  exec_as_git sed -i 's|{{LDAP_USER_FILTER}}|'"${LDAP_USER_FILTER}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+  exec_as_git sed -i 's/{{LDAP_USER_FILTER}}/'"${LDAP_USER_FILTER}"'/' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
   exec_as_git sed -i 's|{{LDAP_LABEL}}|'"${LDAP_LABEL}"'|' ${GITLAB_INSTALL_DIR}/config/gitlab.yml
 }
 
