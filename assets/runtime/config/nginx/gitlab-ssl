@@ -113,7 +113,6 @@ server {
   error_log   {{GITLAB_LOG_DIR}}/nginx/gitlab_error.log;
 
   location {{GITLAB_RELATIVE_URL_ROOT}} {
-    # alias {{GITLAB_INSTALL_DIR}}/public;
     ## Serve static files from defined root folder.
     ## @gitlab is a named location for the upstream fallback, see below.
     try_files $uri /index.html $uri.html @gitlab;
@@ -245,8 +244,8 @@ server {
   ## WARNING: If you are using relative urls remove the block below
   ## See config/application.rb under "Relative url support" for the list of
   ## other files that need to be changed for relative url support
-  location ~ ^{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}assets/(.*) {
-    alias {{GITLAB_INSTALL_DIR}}/public/assets/$1;
+  location ~ ^/(assets)/ {
+    root {{GITLAB_INSTALL_DIR}};
     gzip_static on; # to serve pre-gzipped version
     expires max;
     add_header Cache-Control public;
