@@ -780,6 +780,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_LFS_OBJECTS_DIR**: Directory to store the lfs-objects. Defaults to `$GITLAB_SHARED_DIR/lfs-objects`
 - **GITLAB_BACKUPS**: Setup cron job to automatic backups. Possible values `disable`, `daily`, `weekly` or `monthly`. Disabled by default
 - **GITLAB_BACKUP_EXPIRY**: Configure how long (in seconds) to keep backups before they are deleted. By default when automated backups are disabled backups are kept forever (0 seconds), else the backups expire in 7 days (604800 seconds).
+- **GITLAB_BACKUP_PG_SCHEMA**: Specify the PostgreSQL schema for the backups. No defaults, which means that all schemas will be backed up. see #524
 - **GITLAB_BACKUP_ARCHIVE_PERMISSIONS**: Sets the permissions of the backup archives. Defaults to `0600`. [See](http://doc.gitlab.com/ce/raketasks/backup_restore.html#backup-archive-permissions)
 - **GITLAB_BACKUP_TIME**: Set a time for the automatic backups in `HH:MM` format. Defaults to `04:00`.
 - **GITLAB_SSH_HOST**: The ssh host. Defaults to **GITLAB_HOST**.
