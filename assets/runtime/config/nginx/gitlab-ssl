@@ -245,7 +245,7 @@ server {
   ## See config/application.rb under "Relative url support" for the list of
   ## other files that need to be changed for relative url support
   location ~ ^/(assets)/ {
-    root {{GITLAB_INSTALL_DIR}};
+    root {{GITLAB_INSTALL_DIR}}/public;
     gzip_static on; # to serve pre-gzipped version
     expires max;
     add_header Cache-Control public;
