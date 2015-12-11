@@ -1,6 +1,6 @@
 postgresql:
   restart: always
-  image: sameersbn/postgresql:9.4-9
+  image: sameersbn/postgresql:9.4-10
   environment:
     - DB_USER=gitlab
     - DB_PASS=password
@@ -9,7 +9,7 @@ postgresql:
     - /srv/docker/gitlab/postgresql:/var/lib/postgresql
 gitlab:
   restart: always
-  image: sameersbn/gitlab:8.2.2
+  image: sameersbn/gitlab:8.2.3
   links:
     - redis:redisio
     - postgresql:postgresql

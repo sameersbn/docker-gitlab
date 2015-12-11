@@ -348,7 +348,7 @@ production: &base
     path: "{{GITLAB_BACKUP_DIR}}"   # Relative paths are relative to Rails.root (default: tmp/backups/)
     archive_permissions: {{GITLAB_BACKUP_ARCHIVE_PERMISSIONS}} # Permissions for the resulting backup.tar file (default: 0600)
     keep_time: {{GITLAB_BACKUP_EXPIRY}}   # default: 0 (forever) (in seconds)
-    # pg_schema: public     # default: nil, it means that all schemas will be backed up
+    pg_schema: {{GITLAB_BACKUP_PG_SCHEMA}}     # default: nil, it means that all schemas will be backed up
     upload:
       # Fog storage connection settings, see http://fog.io/storage/ .
       connection:

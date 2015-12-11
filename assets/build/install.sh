@@ -117,18 +117,18 @@ chmod +x /etc/init.d/gitlab
 rm -rf /etc/nginx/sites-enabled/default
 
 # configure sshd
-sed -i 's|^[#]*UsePAM yes|UsePAM no|' /etc/ssh/sshd_config
-sed -i 's|^[#]*UsePrivilegeSeparation yes|UsePrivilegeSeparation no|' /etc/ssh/sshd_config
-sed -i 's|^[#]*PasswordAuthentication yes|PasswordAuthentication no|' /etc/ssh/sshd_config
-sed -i 's|^[#]*LogLevel INFO|LogLevel VERBOSE|' /etc/ssh/sshd_config
+sed -i "s|^[#]*UsePAM yes|UsePAM no|" /etc/ssh/sshd_config
+sed -i "s|^[#]*UsePrivilegeSeparation yes|UsePrivilegeSeparation no|" /etc/ssh/sshd_config
+sed -i "s|^[#]*PasswordAuthentication yes|PasswordAuthentication no|" /etc/ssh/sshd_config
+sed -i "s|^[#]*LogLevel INFO|LogLevel VERBOSE|" /etc/ssh/sshd_config
 echo "UseDNS no" >> /etc/ssh/sshd_config
 
 # move supervisord.log file to ${GITLAB_LOG_DIR}/supervisor/
-sed -i 's|^[#]*logfile=.*|logfile='"${GITLAB_LOG_DIR}"'/supervisor/supervisord.log ;|' /etc/supervisor/supervisord.conf
+sed -i "s|^[#]*logfile=.*|logfile=${GITLAB_LOG_DIR}/supervisor/supervisord.log ;|" /etc/supervisor/supervisord.conf
 
 # move nginx logs to ${GITLAB_LOG_DIR}/nginx
-sed -i 's|access_log /var/log/nginx/access.log;|access_log '"${GITLAB_LOG_DIR}"'/nginx/access.log;|' /etc/nginx/nginx.conf
-sed -i 's|error_log /var/log/nginx/error.log;|error_log '"${GITLAB_LOG_DIR}"'/nginx/error.log;|' /etc/nginx/nginx.conf
+sed -i "s|access_log /var/log/nginx/access.log;|access_log ${GITLAB_LOG_DIR}/nginx/access.log;|" /etc/nginx/nginx.conf
+sed -i "s|error_log /var/log/nginx/error.log;|error_log ${GITLAB_LOG_DIR}/nginx/error.log;|" /etc/nginx/nginx.conf
 
 # configure supervisord log rotation
 cat > /etc/logrotate.d/supervisord <<EOF
