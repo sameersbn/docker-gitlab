@@ -177,7 +177,14 @@ gitlab_configure_database() {
   gitlab_check_database_connection
 
   update_template ${GITLAB_DATABASE_CONFIG} \
-    DB_ADAPTER DB_ENCODING DB_HOST DB_PORT DB_NAME DB_USER DB_PASS DB_POOL
+    DB_ADAPTER \
+    DB_ENCODING \
+    DB_HOST \
+    DB_PORT \
+    DB_NAME \
+    DB_USER \
+    DB_PASS \
+    DB_POOL
 
   if [[ ${DB_ADAPTER} == postgresql ]]; then
     exec_as_git sed -i "/reconnect: /d" ${GITLAB_DATABASE_CONFIG}
@@ -236,8 +243,7 @@ gitlab_configure_redis() {
 gitlab_configure_unicorn() {
   echo "Configuring gitlab::unicorn..."
   if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
-    update_template ${GITLAB_UNICORN_CONFIG} \
-      GITLAB_RELATIVE_URL_ROOT
+    update_template ${GITLAB_UNICORN_CONFIG} GITLAB_RELATIVE_URL_ROOT
   else
     exec_as_git sed -i "/{{GITLAB_RELATIVE_URL_ROOT}}/d" ${GITLAB_UNICORN_CONFIG}
   fi
@@ -250,8 +256,7 @@ gitlab_configure_unicorn() {
 
 gitlab_configure_timezone() {
   echo "Configuring gitlab::timezone..."
-  update_template ${GITLAB_CONFIG} \
-    GITLAB_TIMEZONE
+  update_template ${GITLAB_CONFIG} GITLAB_TIMEZONE
 }
 
 gitlab_configure_mail_delivery() {
@@ -268,7 +273,14 @@ gitlab_configure_mail_delivery() {
     fi
 
     update_template ${GITLAB_SMTP_CONFIG} \
-      SMTP_USER SMTP_PASS SMTP_HOST SMTP_PORT SMTP_DOMAIN SMTP_STARTTLS SMTP_TLS SMTP_OPENSSL_VERIFY_MODE
+      SMTP_USER \
+      SMTP_PASS \
+      SMTP_HOST \
+      SMTP_PORT \
+      SMTP_DOMAIN \
+      SMTP_STARTTLS \
+      SMTP_TLS \
+      SMTP_OPENSSL_VERIFY_MODE
 
     case ${SMTP_AUTHENTICATION} in
       "") exec_as_git sed -i "/{{SMTP_AUTHENTICATION}}/d" ${GITLAB_SMTP_CONFIG} ;;
@@ -289,7 +301,10 @@ gitlab_configure_mail_delivery() {
   fi
 
   update_template ${GITLAB_CONFIG} \
-    GITLAB_EMAIL_ENABLED GITLAB_EMAIL GITLAB_EMAIL_DISPLAY_NAME GITLAB_EMAIL_REPLY_TO
+    GITLAB_EMAIL_ENABLED \
+    GITLAB_EMAIL \
+    GITLAB_EMAIL_DISPLAY_NAME \
+    GITLAB_EMAIL_REPLY_TO
 }
 
 gitlab_configure_mailroom() {
@@ -315,8 +330,15 @@ gitlab_configure_mailroom() {
   fi
 
   update_template ${GITLAB_CONFIG} \
-    GITLAB_INCOMING_EMAIL_ADDRESS GITLAB_INCOMING_EMAIL_ENABLED \
-    IMAP_USER IMAP_PASS IMAP_HOST IMAP_PORT IMAP_SSL IMAP_STARTTLS IMAP_MAILBOX
+    GITLAB_INCOMING_EMAIL_ADDRESS \
+    GITLAB_INCOMING_EMAIL_ENABLED \
+    IMAP_USER \
+    IMAP_PASS \
+    IMAP_HOST \
+    IMAP_PORT \
+    IMAP_SSL \
+    IMAP_STARTTLS \
+    IMAP_MAILBOX
 
   # enable/disable startup of mailroom
   echo "mail_room_enabled=${GITLAB_INCOMING_EMAIL_ENABLED}" >> /etc/default/gitlab
@@ -326,8 +348,19 @@ gitlab_configure_mailroom() {
 gitlab_configure_ldap() {
   echo "Configuring gitlab::ldap..."
   update_template ${GITLAB_CONFIG} \
-    LDAP_ENABLED LDAP_HOST LDAP_PORT LDAP_UID LDAP_METHOD LDAP_BIND_DN LDAP_PASS LDAP_ACTIVE_DIRECTORY \
-    LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN LDAP_BLOCK_AUTO_CREATED_USERS LDAP_BASE LDAP_USER_FILTER LDAP_LABEL
+    LDAP_ENABLED \
+    LDAP_HOST \
+    LDAP_PORT \
+    LDAP_UID \
+    LDAP_METHOD \
+    LDAP_BIND_DN \
+    LDAP_PASS \
+    LDAP_ACTIVE_DIRECTORY \
+    LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN \
+    LDAP_BLOCK_AUTO_CREATED_USERS \
+    LDAP_BASE \
+    LDAP_USER_FILTER \
+    LDAP_LABEL
 }
 
 gitlab_configure_oauth_google() {
@@ -335,7 +368,10 @@ gitlab_configure_oauth_google() {
     echo "Configuring gitlab::oauth::google..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
     update_template ${GITLAB_CONFIG} \
-      OAUTH_GOOGLE_API_KEY OAUTH_GOOGLE_APP_SECRET OAUTH_GOOGLE_RESTRICT_DOMAIN OAUTH_GOOGLE_APPROVAL_PROMPT
+      OAUTH_GOOGLE_API_KEY \
+      OAUTH_GOOGLE_APP_SECRET \
+      OAUTH_GOOGLE_RESTRICT_DOMAIN \
+      OAUTH_GOOGLE_APPROVAL_PROMPT
   else
     exec_as_git sed -i "/name: 'google_oauth2'/,/{{OAUTH_GOOGLE_RESTRICT_DOMAIN}}/d" ${GITLAB_CONFIG}
   fi
@@ -346,7 +382,8 @@ gitlab_configure_oauth_facebook() {
     echo "Configuring gitlab::oauth::facebook..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
     update_template ${GITLAB_CONFIG} \
-      OAUTH_FACEBOOK_API_KEY OAUTH_FACEBOOK_APP_SECRET
+      OAUTH_FACEBOOK_API_KEY \
+      OAUTH_FACEBOOK_APP_SECRET
   else
     exec_as_git sed -i "/name: 'facebook'/,/{{OAUTH_FACEBOOK_APP_SECRET}}/d" ${GITLAB_CONFIG}
   fi
@@ -357,7 +394,8 @@ gitlab_configure_oauth_twitter() {
     echo "Configuring gitlab::oauth::twitter..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
     update_template ${GITLAB_CONFIG} \
-      OAUTH_TWITTER_API_KEY OAUTH_TWITTER_APP_SECRET
+      OAUTH_TWITTER_API_KEY \
+      OAUTH_TWITTER_APP_SECRET
   else
     exec_as_git sed -i "/name: 'twitter'/,/{{OAUTH_TWITTER_APP_SECRET}}/d" ${GITLAB_CONFIG}
   fi
@@ -368,7 +406,9 @@ gitlab_configure_oauth_github() {
     echo "Configuring gitlab::oauth::github..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
     update_template ${GITLAB_CONFIG} \
-      OAUTH_GITHUB_API_KEY OAUTH_GITHUB_APP_SECRET OAUTH_GITHUB_SCOPE
+      OAUTH_GITHUB_API_KEY \
+      OAUTH_GITHUB_APP_SECRET \
+      OAUTH_GITHUB_SCOPE
   else
     exec_as_git sed -i "/name: 'github'/,/{{OAUTH_GITHUB_SCOPE}}/d" ${GITLAB_CONFIG}
   fi
@@ -379,7 +419,9 @@ gitlab_configure_oauth_gitlab() {
     echo "Configuring gitlab::oauth::gitlab..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
     update_template ${GITLAB_CONFIG} \
-      OAUTH_GITLAB_API_KEY OAUTH_GITLAB_APP_SECRET OAUTH_GITLAB_SCOPE
+      OAUTH_GITLAB_API_KEY \
+      OAUTH_GITLAB_APP_SECRET \
+      OAUTH_GITLAB_SCOPE
   else
     exec_as_git sed -i "/name: 'gitlab'/,/{{OAUTH_GITLAB_SCOPE}}/d" ${GITLAB_CONFIG}
   fi
@@ -390,7 +432,8 @@ gitlab_configure_oauth_bitbucket() {
     echo "Configuring gitlab::oauth::bitbucket..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
     update_template ${GITLAB_CONFIG} \
-      OAUTH_BITBUCKET_API_KEY OAUTH_BITBUCKET_APP_SECRET
+      OAUTH_BITBUCKET_API_KEY \
+      OAUTH_BITBUCKET_APP_SECRET
   else
     exec_as_git sed -i "/name: 'bitbucket'/,/{{OAUTH_BITBUCKET_APP_SECRET}}/d" ${GITLAB_CONFIG}
   fi
@@ -405,8 +448,12 @@ gitlab_configure_oauth_saml() {
     echo "Configuring gitlab::oauth::saml..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
     update_template ${GITLAB_CONFIG} \
-      OAUTH_SAML_LABEL OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL OAUTH_SAML_IDP_CERT_FINGERPRINT \
-      OAUTH_SAML_IDP_SSO_TARGET_URL OAUTH_SAML_ISSUER OAUTH_SAML_NAME_IDENTIFIER_FORMAT
+      OAUTH_SAML_LABEL \
+      OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL \
+      OAUTH_SAML_IDP_CERT_FINGERPRINT \
+      OAUTH_SAML_IDP_SSO_TARGET_URL \
+      OAUTH_SAML_ISSUER \
+      OAUTH_SAML_NAME_IDENTIFIER_FORMAT
   else
     exec_as_git sed -i "/name: 'saml'/,/{{OAUTH_SAML_NAME_IDENTIFIER_FORMAT}}/d" ${GITLAB_CONFIG}
   fi
@@ -419,7 +466,9 @@ gitlab_configure_oauth_crowd() {
     echo "Configuring gitlab::oauth::crowd..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
     update_template ${GITLAB_CONFIG} \
-      OAUTH_CROWD_SERVER_URL OAUTH_CROWD_APP_NAME OAUTH_CROWD_APP_PASSWORD
+      OAUTH_CROWD_SERVER_URL \
+      OAUTH_CROWD_APP_NAME \
+      OAUTH_CROWD_APP_PASSWORD
   else
     exec_as_git sed -i "/name: 'crowd'/,/{{OAUTH_CROWD_APP_PASSWORD}}/d" ${GITLAB_CONFIG}
   fi
@@ -439,12 +488,14 @@ gitlab_configure_oauth() {
 
   OAUTH_ENABLED=${OAUTH_ENABLED:-false}
   update_template ${GITLAB_CONFIG} \
-    OAUTH_ENABLED OAUTH_ALLOW_SSO OAUTH_BLOCK_AUTO_CREATED_USERS OAUTH_AUTO_LINK_LDAP_USER
+    OAUTH_ENABLED \
+    OAUTH_ALLOW_SSO \
+    OAUTH_BLOCK_AUTO_CREATED_USERS \
+    OAUTH_AUTO_LINK_LDAP_USER
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
     google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd)
-      update_template ${GITLAB_CONFIG} \
-        OAUTH_AUTO_SIGN_IN_WITH_PROVIDER
+      update_template ${GITLAB_CONFIG} OAUTH_AUTO_SIGN_IN_WITH_PROVIDER
       ;;
     *)
       exec_as_git sed -i "/{{OAUTH_AUTO_SIGN_IN_WITH_PROVIDER}}/d" ${GITLAB_CONFIG}
@@ -516,7 +567,10 @@ gitlab_configure_backups_aws() {
         return 1
       fi
       update_template ${GITLAB_CONFIG} \
-        AWS_BACKUP_REGION AWS_BACKUP_ACCESS_KEY_ID AWS_BACKUP_SECRET_ACCESS_KEY AWS_BACKUP_BUCKET
+        AWS_BACKUP_REGION \
+        AWS_BACKUP_ACCESS_KEY_ID \
+        AWS_BACKUP_SECRET_ACCESS_KEY \
+        AWS_BACKUP_BUCKET
       ;;
     *)
       exec_as_git sed -i "/upload:/,/remote_directory:/d" ${GITLAB_CONFIG}
@@ -527,7 +581,10 @@ gitlab_configure_backups_aws() {
 gitlab_configure_backups() {
   echo "Configuring gitlab::backups..."
   update_template ${GITLAB_CONFIG} \
-    GITLAB_BACKUP_DIR GITLAB_BACKUP_EXPIRY GITLAB_BACKUP_PG_SCHEMA GITLAB_BACKUP_ARCHIVE_PERMISSIONS
+    GITLAB_BACKUP_DIR \
+    GITLAB_BACKUP_EXPIRY \
+    GITLAB_BACKUP_PG_SCHEMA \
+    GITLAB_BACKUP_ARCHIVE_PERMISSIONS
 
   gitlab_configure_backups_cron
   gitlab_configure_backups_aws
