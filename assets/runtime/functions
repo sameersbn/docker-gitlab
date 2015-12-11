@@ -261,6 +261,7 @@ gitlab_configure_mail_delivery() {
     if [[ -z "${SMTP_USER}" ]]; then
       exec_as_git sed -i '/{{SMTP_USER}}/d' ${GITLAB_SMTP_CONFIG}
       exec_as_git sed -i '/{{SMTP_PASS}}/d' ${GITLAB_SMTP_CONFIG}
+    else
       if [[ -z "${SMTP_PASS}" ]]; then
         exec_as_git sed -i '/{{SMTP_PASS}}/d' ${GITLAB_SMTP_CONFIG}
       fi
