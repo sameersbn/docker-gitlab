@@ -228,30 +228,30 @@ gitlab_configure_redis() {
   gitlab_finalize_redis_parameters
   gitlab_check_redis_connection
 
-  exec_as_git sed -i "s|{{REDIS_HOST}}|${REDIS_HOST}|g" ${GITLAB_RESQUE_CONFIG}
-  exec_as_git sed -i "s|{{REDIS_PORT}}|${REDIS_PORT}|g" ${GITLAB_RESQUE_CONFIG}
+  replace_placeholders ${GITLAB_RESQUE_CONFIG} \
+    REDIS_HOST \
+    REDIS_PORT
 }
 
 gitlab_configure_unicorn() {
   echo "Configuring gitlab::unicorn..."
   if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
-    exec_as_git sed -i "s|{{GITLAB_RELATIVE_URL_ROOT}}|${GITLAB_RELATIVE_URL_ROOT}|" ${GITLAB_UNICORN_CONFIG}
+    replace_placeholders ${GITLAB_UNICORN_CONFIG} \
+      GITLAB_RELATIVE_URL_ROOT
   else
     exec_as_git sed -i "/{{GITLAB_RELATIVE_URL_ROOT}}/d" ${GITLAB_UNICORN_CONFIG}
   fi
 
-  # configure workers
-  exec_as_git sed -i "s|{{GITLAB_INSTALL_DIR}}|${GITLAB_INSTALL_DIR}|g" ${GITLAB_UNICORN_CONFIG}
-  exec_as_git sed -i "s|{{UNICORN_WORKERS}}|${UNICORN_WORKERS}|" ${GITLAB_UNICORN_CONFIG}
-
-  # configure timeout
-  exec_as_git sed -i "s|{{UNICORN_TIMEOUT}}|${UNICORN_TIMEOUT}|" ${GITLAB_UNICORN_CONFIG}
+  replace_placeholders ${GITLAB_UNICORN_CONFIG} \
+    GITLAB_INSTALL_DIR \
+    UNICORN_WORKERS \
+    UNICORN_TIMEOUT
 }
 
 gitlab_configure_timezone() {
   echo "Configuring gitlab::timezone..."
-  GITLAB_TIMEZONE="$(echo "${GITLAB_TIMEZONE}" | sed 's|[&]|\\&|g')"
-  exec_as_git sed -i "s|{{GITLAB_TIMEZONE}}|${GITLAB_TIMEZONE}|" ${GITLAB_CONFIG}
+  replace_placeholders ${GITLAB_CONFIG} \
+    GITLAB_TIMEZONE
 }
 
 gitlab_configure_mail_delivery() {
@@ -272,15 +272,15 @@ gitlab_configure_mail_delivery() {
 
     case ${SMTP_AUTHENTICATION} in
       "") exec_as_git sed -i "/{{SMTP_AUTHENTICATION}}/d" ${GITLAB_SMTP_CONFIG} ;;
-      *) exec_as_git sed -i "s|{{SMTP_AUTHENTICATION}}|${SMTP_AUTHENTICATION}|" ${GITLAB_SMTP_CONFIG} ;;
+      *) replace_placeholders ${GITLAB_SMTP_CONFIG} SMTP_AUTHENTICATION ;;
     esac
 
     if [[ ${SMTP_CA_ENABLED} == true ]]; then
       if [[ -d ${SMTP_CA_PATH} ]]; then
-        exec_as_git sed -i "s|{{SMTP_CA_PATH}}|${SMTP_CA_PATH}|" ${GITLAB_SMTP_CONFIG}
+        replace_placeholders ${GITLAB_SMTP_CONFIG} SMTP_CA_PATH
       fi
       if [[ -f ${SMTP_CA_FILE} ]]; then
-        exec_as_git sed -i "s|{{SMTP_CA_FILE}}|${SMTP_CA_FILE}|" ${GITLAB_SMTP_CONFIG}
+        replace_placeholders ${GITLAB_SMTP_CONFIG} SMTP_CA_FILE
       fi
     else
       exec_as_git sed -i "/{{SMTP_CA_PATH}}/d" ${GITLAB_SMTP_CONFIG}
@@ -443,7 +443,8 @@ gitlab_configure_oauth() {
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
     google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd)
-      exec_as_git sed -i "s|{{OAUTH_AUTO_SIGN_IN_WITH_PROVIDER}}|${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER}|" ${GITLAB_CONFIG}
+      replace_placeholders ${GITLAB_CONFIG} \
+        OAUTH_AUTO_SIGN_IN_WITH_PROVIDER
       ;;
     *)
       exec_as_git sed -i "/{{OAUTH_AUTO_SIGN_IN_WITH_PROVIDER}}/d" ${GITLAB_CONFIG}
@@ -533,20 +534,18 @@ gitlab_configure_backups() {
 }
 
 gitlab_configure_gravatar() {
-  exec_as_git sed -i "s|{{GITLAB_GRAVATAR_ENABLED}}|${GITLAB_GRAVATAR_ENABLED}|" ${GITLAB_CONFIG}
+  replace_placeholders ${GITLAB_CONFIG} GITLAB_GRAVATAR_ENABLED
 
   if [[ -n ${GITLAB_GRAVATAR_HTTP_URL} ]]; then
     echo "Configuring gitlab::gravatar::http..."
-    GITLAB_GRAVATAR_HTTP_URL="$(echo "${GITLAB_GRAVATAR_HTTP_URL}" | sed 's|[&]|\\&|g')"
-    exec_as_git sed -i "s|{{GITLAB_GRAVATAR_HTTP_URL}}|${GITLAB_GRAVATAR_HTTP_URL}|g" ${GITLAB_CONFIG}
+    replace_placeholders ${GITLAB_CONFIG} GITLAB_GRAVATAR_HTTP_URL
   else
     exec_as_git sed -i "/{{GITLAB_GRAVATAR_HTTP_URL}}/d" ${GITLAB_CONFIG}
   fi
 
   if [[ -n ${GITLAB_GRAVATAR_HTTPS_URL} ]]; then
     echo "Configuring gitlab::gravatar::https..."
-    GITLAB_GRAVATAR_HTTPS_URL="$(echo "${GITLAB_GRAVATAR_HTTPS_URL}" | sed 's|[&]|\\&|g')"
-    exec_as_git sed -i "s|{{GITLAB_GRAVATAR_HTTPS_URL}}|${GITLAB_GRAVATAR_HTTPS_URL}|g" ${GITLAB_CONFIG}
+    replace_placeholders ${GITLAB_CONFIG} GITLAB_GRAVATAR_HTTPS_URL
   else
     exec_as_git sed -i "/{{GITLAB_GRAVATAR_HTTPS_URL}}/d" ${GITLAB_CONFIG}
   fi
@@ -555,7 +554,7 @@ gitlab_configure_gravatar() {
 gitlab_configure_analytics_google() {
   if [[ -n ${GOOGLE_ANALYTICS_ID} ]]; then
   echo "Configuring gitlab::analytics:google..."
-    exec_as_git sed -i "s|{{GOOGLE_ANALYTICS_ID}}|${GOOGLE_ANALYTICS_ID}|" ${GITLAB_CONFIG}
+    replace_placeholders ${GITLAB_CONFIG} GOOGLE_ANALYTICS_ID
   else
     exec_as_git sed -i "/{{GOOGLE_ANALYTICS_ID}}/d" ${GITLAB_CONFIG}
   fi
@@ -564,8 +563,9 @@ gitlab_configure_analytics_google() {
 gitlab_configure_analytics_piwik() {
   if [[ -n ${PIWIK_URL} && -n ${PIWIK_SITE_ID} ]]; then
     echo "Configuring gitlab::analytics:piwik..."
-    exec_as_git sed -i "s|{{PIWIK_URL}}|${PIWIK_URL}|" ${GITLAB_CONFIG}
-    exec_as_git sed -i "s|{{PIWIK_SITE_ID}}|${PIWIK_SITE_ID}|" ${GITLAB_CONFIG}
+    replace_placeholders ${GITLAB_CONFIG} \
+      PIWIK_URL \
+      PIWIK_SITE_ID
   else
     exec_as_git sed -i "/{{PIWIK_URL}}/d" ${GITLAB_CONFIG}
     exec_as_git sed -i "/{{PIWIK_SITE_ID}}/d" ${GITLAB_CONFIG}
@@ -579,40 +579,44 @@ gitlab_configure_analytics() {
 
 gitlab_configure_rack_attack() {
   echo "Configuring gitlab::rack_attack..."
-  exec_as_git sed -i "s|{{RACK_ATTACK_ENABLED}}|${RACK_ATTACK_ENABLED}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{RACK_ATTACK_WHITELIST}}|${RACK_ATTACK_WHITELIST}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{RACK_ATTACK_MAXRETRY}}|${RACK_ATTACK_MAXRETRY}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{RACK_ATTACK_FINDTIME}}|${RACK_ATTACK_FINDTIME}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{RACK_ATTACK_BANTIME}}|${RACK_ATTACK_BANTIME}|" ${GITLAB_CONFIG}
+  replace_placeholders ${GITLAB_CONFIG} \
+    RACK_ATTACK_ENABLED \
+    RACK_ATTACK_WHITELIST \
+    RACK_ATTACK_MAXRETRY \
+    RACK_ATTACK_FINDTIME \
+    RACK_ATTACK_BANTIME
 }
 
 gitlab_configure_ci() {
   echo "Configuring gitlab::ci..."
-  exec_as_git sed -i "s|{{GITLAB_NOTIFY_ON_BROKEN_BUILDS}}|${GITLAB_NOTIFY_ON_BROKEN_BUILDS}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_NOTIFY_PUSHER}}|${GITLAB_NOTIFY_PUSHER}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_BUILDS_DIR}}|${GITLAB_BUILDS_DIR}|g" ${GITLAB_CONFIG}
+  replace_placeholders ${GITLAB_CONFIG} \
+    GITLAB_NOTIFY_ON_BROKEN_BUILDS \
+    GITLAB_NOTIFY_PUSHER GITLAB_BUILDS_DIR
 }
 
 gitlab_configure_artifacts() {
   echo "Configuring gitlab::artifacts..."
-  exec_as_git sed -i "s|{{GITLAB_ARTIFACTS_ENABLED}}|${GITLAB_ARTIFACTS_ENABLED}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_ARTIFACTS_DIR}}|${GITLAB_ARTIFACTS_DIR}|g" ${GITLAB_CONFIG}
+  replace_placeholders ${GITLAB_CONFIG} \
+    GITLAB_ARTIFACTS_ENABLED \
+    GITLAB_ARTIFACTS_DIR
 }
 
 gitlab_configure_lfs() {
   echo "Configuring gitlab::lfs..."
-  exec_as_git sed -i "s|{{GITLAB_LFS_ENABLED}}|${GITLAB_LFS_ENABLED}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_LFS_OBJECTS_DIR}}|${GITLAB_LFS_OBJECTS_DIR}|g" ${GITLAB_CONFIG}
+  replace_placeholders ${GITLAB_CONFIG} \
+    GITLAB_LFS_ENABLED \
+    GITLAB_LFS_OBJECTS_DIR
 }
 
 gitlab_configure_project_features() {
   echo "Configuring gitlab::project_features..."
-  exec_as_git sed -i "s|{{GITLAB_PROJECTS_ISSUES}}|${GITLAB_PROJECTS_ISSUES}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_PROJECTS_MERGE_REQUESTS}}|${GITLAB_PROJECTS_MERGE_REQUESTS}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_PROJECTS_WIKI}}|${GITLAB_PROJECTS_WIKI}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_PROJECTS_SNIPPETS}}|${GITLAB_PROJECTS_SNIPPETS}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_PROJECTS_BUILDS}}|${GITLAB_PROJECTS_BUILDS}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_WEBHOOK_TIMEOUT}}|${GITLAB_WEBHOOK_TIMEOUT}|" ${GITLAB_CONFIG}
+  replace_placeholders ${GITLAB_CONFIG} \
+    GITLAB_PROJECTS_ISSUES \
+    GITLAB_PROJECTS_MERGE_REQUESTS \
+    GITLAB_PROJECTS_WIKI \
+    GITLAB_PROJECTS_SNIPPETS \
+    GITLAB_PROJECTS_BUILDS \
+    GITLAB_WEBHOOK_TIMEOUT
 }
 
 nginx_configure_gitlab_ssl() {
@@ -909,23 +913,23 @@ install_configuration_templates() {
 
 configure_gitlab() {
   echo "Configuring gitlab..."
-  exec_as_git sed -i "s|{{GITLAB_INSTALL_DIR}}|${GITLAB_INSTALL_DIR}|g" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_SHELL_INSTALL_DIR}}|${GITLAB_SHELL_INSTALL_DIR}|g" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_DATA_DIR}}|${GITLAB_DATA_DIR}|g" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_REPOS_DIR}}|${GITLAB_REPOS_DIR}|g" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_DOWNLOADS_DIR}}|${GITLAB_DOWNLOADS_DIR}|g" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_SHARED_DIR}}|${GITLAB_SHARED_DIR}|g" ${GITLAB_CONFIG}
-
-  exec_as_git sed -i "s|{{GITLAB_HOST}}|${GITLAB_HOST}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_PORT}}|${GITLAB_PORT}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_RELATIVE_URL_ROOT}}|${GITLAB_RELATIVE_URL_ROOT}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_HTTPS}}|${GITLAB_HTTPS}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_MAX_SIZE}}|${GITLAB_MAX_SIZE}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_SSH_HOST}}|${GITLAB_SSH_HOST}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_SSH_PORT}}|${GITLAB_SSH_PORT}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_USERNAME_CHANGE}}|${GITLAB_USERNAME_CHANGE}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_CREATE_GROUP}}|${GITLAB_CREATE_GROUP}|" ${GITLAB_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_TIMEOUT}}|${GITLAB_TIMEOUT}|" ${GITLAB_CONFIG}
+  replace_placeholders ${GITLAB_CONFIG} \
+    GITLAB_INSTALL_DIR \
+    GITLAB_SHELL_INSTALL_DIR \
+    GITLAB_DATA_DIR \
+    GITLAB_REPOS_DIR \
+    GITLAB_DOWNLOADS_DIR \
+    GITLAB_SHARED_DIR \
+    GITLAB_HOST \
+    GITLAB_PORT \
+    GITLAB_RELATIVE_URL_ROOT \
+    GITLAB_HTTPS \
+    GITLAB_MAX_SIZE \
+    GITLAB_SSH_HOST \
+    GITLAB_SSH_PORT \
+    GITLAB_USERNAME_CHANGE \
+    GITLAB_CREATE_GROUP \
+    GITLAB_TIMEOUT
 
   gitlab_configure_database
   gitlab_configure_redis
@@ -949,17 +953,17 @@ configure_gitlab() {
 
 configure_gitlab_shell() {
   echo "Configuring gitlab-shell..."
-  exec_as_git sed -i "s|{{GITLAB_RELATIVE_URL_ROOT}}|${GITLAB_RELATIVE_URL_ROOT}|" ${GITLAB_SHELL_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_HOME}}|${GITLAB_HOME}|g" ${GITLAB_SHELL_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_LOG_DIR}}|${GITLAB_LOG_DIR}|g" ${GITLAB_SHELL_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_DATA_DIR}}|${GITLAB_DATA_DIR}|g" ${GITLAB_SHELL_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_BACKUP_DIR}}|${GITLAB_BACKUP_DIR}|g" ${GITLAB_SHELL_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_REPOS_DIR}}|${GITLAB_REPOS_DIR}|g" ${GITLAB_SHELL_CONFIG}
-  exec_as_git sed -i "s|{{GITLAB_SHELL_INSTALL_DIR}}|${GITLAB_SHELL_INSTALL_DIR}|g" ${GITLAB_SHELL_CONFIG}
-  exec_as_git sed -i "s|{{SSL_SELF_SIGNED}}|${SSL_SELF_SIGNED}|" ${GITLAB_SHELL_CONFIG}
-
-  exec_as_git sed -i "s|{{REDIS_HOST}}|${REDIS_HOST}|" ${GITLAB_SHELL_CONFIG}
-  exec_as_git sed -i "s|{{REDIS_PORT}}|${REDIS_PORT}|" ${GITLAB_SHELL_CONFIG}
+  replace_placeholders ${GITLAB_SHELL_CONFIG} \
+    GITLAB_RELATIVE_URL_ROOT \
+    GITLAB_HOME \
+    GITLAB_LOG_DIR \
+    GITLAB_DATA_DIR \
+    GITLAB_BACKUP_DIR \
+    GITLAB_REPOS_DIR \
+    GITLAB_SHELL_INSTALL_DIR \
+    SSL_SELF_SIGNED \
+    REDIS_HOST \
+    REDIS_PORT
 }
 
 configure_nginx() {
