@@ -2,7 +2,7 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG) for the list of changes in GitLab.
 
-**latest**
+**8.2.3**
 - fixed static asset routing when `GITLAB_RELATIVE_URL_ROOT` is used.
 - added `GITLAB_BACKUP_PG_SCHEMA` configuration parameter
 - gitlab: upgrade to CE v8.2.3
