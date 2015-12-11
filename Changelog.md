@@ -5,6 +5,7 @@ This file only reflects the changes that are made in this image. Please refer to
 **latest**
 - fixed static asset routing when `GITLAB_RELATIVE_URL_ROOT` is used.
 - added `GITLAB_BACKUP_PG_SCHEMA` configuration parameter
+- gitlab: upgrade to CE v8.2.3
 
 **8.2.2**
 - added `GITLAB_DOWNLOADS_DIR` configuration parameter
