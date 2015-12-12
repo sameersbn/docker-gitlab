@@ -44,24 +44,24 @@ update_template() {
   local FILE=${1?missing argument}
   shift
 
-  [[ ! -f "$FILE" ]] && return
+  [[ ! -f ${FILE} ]] && return 1
 
   local VARIABLES=($@)
   local tmp_file=$(mktemp)
-  cp "$FILE" $tmp_file
+  cp -a "${FILE}" ${tmp_file}
 
   local variable
   for variable in ${VARIABLES[@]}; do
     # Keep the compatibilty: {{VAR}} => ${VAR}
-    sed -ri "s/[{]{2}$variable[}]{2}/\${$variable}/g" $tmp_file
+    sed -ri "s/[{]{2}$variable[}]{2}/\${$variable}/g" ${tmp_file}
   done
 
   # Replace placeholders
   (
     export ${VARIABLES[@]}
-    exec_as_git envsubst < $tmp_file > $FILE
+    exec_as_git envsubst < ${tmp_file} > ${FILE}
   )
-  rm -f $tmp_file
+  rm -f ${tmp_file}
 }
 
 gitlab_finalize_database_parameters() {
