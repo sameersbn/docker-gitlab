@@ -47,6 +47,7 @@ update_template() {
   [[ ! -f ${FILE} ]] && return 1
 
   local VARIABLES=($@)
+  local USR=$(stat -c %U ${FILE})
   local tmp_file=$(mktemp)
   cp -a "${FILE}" ${tmp_file}
 
@@ -59,7 +60,7 @@ update_template() {
   # Replace placeholders
   (
     export ${VARIABLES[@]}
-    exec_as_git envsubst < ${tmp_file} > ${FILE}
+    sudo -HEu ${USR} envsubst < ${tmp_file} > ${FILE}
   )
   rm -f ${tmp_file}
 }
