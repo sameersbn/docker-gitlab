@@ -699,14 +699,8 @@ nginx_configure_gitlab_ssl() {
 }
 
 nginx_configure_gitlab_relative_url() {
-  if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
-    echo "Configuring nginx::gitlab::relative_url..."
-    sed -i "s|{{GITLAB_RELATIVE_URL_ROOT}}|${GITLAB_RELATIVE_URL_ROOT}|g" ${GITLAB_NGINX_CONFIG}
-    sed -i "s|{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}|${GITLAB_RELATIVE_URL_ROOT}/|g" ${GITLAB_NGINX_CONFIG}
-  else
-    sed -i "s|{{GITLAB_RELATIVE_URL_ROOT}}|/|" ${GITLAB_NGINX_CONFIG}
-    sed -i "s|{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}|/|g" ${GITLAB_NGINX_CONFIG}
-  fi
+  [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]] && echo "Configuring nginx::gitlab::relative_url..."
+  sed -i "s|{{GITLAB_RELATIVE_URL_ROOT}}|${GITLAB_RELATIVE_URL_ROOT}|g" ${GITLAB_NGINX_CONFIG}
 }
 
 nginx_configure_gitlab_ipv6() {
