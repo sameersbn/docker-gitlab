@@ -343,7 +343,7 @@ gitlab_configure_mailroom() {
 
   # enable/disable startup of mailroom
   echo "mail_room_enabled=${GITLAB_INCOMING_EMAIL_ENABLED}" >> /etc/default/gitlab
-  sed -i "s|{{GITLAB_INCOMING_EMAIL_ENABLED}}|${GITLAB_INCOMING_EMAIL_ENABLED}|" /etc/supervisor/conf.d/mail_room.conf
+  update_template /etc/supervisor/conf.d/mail_room.conf GITLAB_INCOMING_EMAIL_ENABLED
 }
 
 gitlab_configure_ldap() {
@@ -518,11 +518,11 @@ gitlab_configure_secrets() {
 
 gitlab_configure_sidekiq() {
   echo "Configuring gitlab::sidekiq..."
-  # configure sidekiq concurrency
-  sed -i "s|{{SIDEKIQ_CONCURRENCY}}|${SIDEKIQ_CONCURRENCY}|" /etc/supervisor/conf.d/sidekiq.conf
 
-  # configure sidekiq shutdown timeout
-  sed -i "s|{{SIDEKIQ_SHUTDOWN_TIMEOUT}}|${SIDEKIQ_SHUTDOWN_TIMEOUT}|" /etc/supervisor/conf.d/sidekiq.conf
+  # configure sidekiq
+  update_template /etc/supervisor/conf.d/sidekiq.conf \
+    SIDEKIQ_CONCURRENCY \
+    SIDEKIQ_SHUTDOWN_TIMEOUT
 
   # enable SidekiqMemoryKiller
   ## The MemoryKiller is enabled by gitlab if the `SIDEKIQ_MEMORY_KILLER_MAX_RSS` is
@@ -680,27 +680,28 @@ gitlab_configure_project_features() {
 nginx_configure_gitlab_ssl() {
   if [[ ${GITLAB_HTTPS} == true && -f ${SSL_CERTIFICATE_PATH} && -f ${SSL_KEY_PATH} && -f ${SSL_DHPARAM_PATH} ]]; then
     echo "Configuring nginx::gitlab::ssl..."
-    sed -i "s|{{SSL_CERTIFICATE_PATH}}|${SSL_CERTIFICATE_PATH}|" ${GITLAB_NGINX_CONFIG}
-    sed -i "s|{{SSL_KEY_PATH}}|${SSL_KEY_PATH}|" ${GITLAB_NGINX_CONFIG}
-    sed -i "s|{{SSL_DHPARAM_PATH}}|${SSL_DHPARAM_PATH}|" ${GITLAB_NGINX_CONFIG}
-    sed -i "s|{{SSL_VERIFY_CLIENT}}|${SSL_VERIFY_CLIENT}|" ${GITLAB_NGINX_CONFIG}
-    if [[ -f ${CA_CERTIFICATES_PATH} ]]; then
-      sed -i "s|{{CA_CERTIFICATES_PATH}}|${CA_CERTIFICATES_PATH}|" ${GITLAB_NGINX_CONFIG}
-    else
+
+    if [[ ! -f ${CA_CERTIFICATES_PATH} ]]; then
       sed -i "/{{CA_CERTIFICATES_PATH}}/d" ${GITLAB_NGINX_CONFIG}
     fi
 
-    if [[ ${GITLAB_HTTPS_HSTS_ENABLED} == true ]]; then
-      sed -i "s|{{GITLAB_HTTPS_HSTS_MAXAGE}}|${GITLAB_HTTPS_HSTS_MAXAGE}|" ${GITLAB_NGINX_CONFIG}
-    else
+    if [[ ${GITLAB_HTTPS_HSTS_ENABLED} != true ]]; then
       sed -i "/{{GITLAB_HTTPS_HSTS_MAXAGE}}/d" ${GITLAB_NGINX_CONFIG}
     fi
+
+    update_template ${GITLAB_NGINX_CONFIG} \
+      SSL_CERTIFICATE_PATH \
+      SSL_KEY_PATH \
+      SSL_DHPARAM_PATH \
+      SSL_VERIFY_CLIENT \
+      CA_CERTIFICATES_PATH \
+      GITLAB_HTTPS_HSTS_MAXAGE
   fi
 }
 
 nginx_configure_gitlab_relative_url() {
   [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]] && echo "Configuring nginx::gitlab::relative_url..."
-  sed -i "s|{{GITLAB_RELATIVE_URL_ROOT}}|${GITLAB_RELATIVE_URL_ROOT}|g" ${GITLAB_NGINX_CONFIG}
+  update_template ${GITLAB_NGINX_CONFIG} GITLAB_RELATIVE_URL_ROOT
 }
 
 nginx_configure_gitlab_ipv6() {
@@ -713,15 +714,15 @@ nginx_configure_gitlab_ipv6() {
 
 nginx_configure_gitlab() {
   echo "Configuring nginx::gitlab..."
-  sed -i "s|{{GITLAB_INSTALL_DIR}}|${GITLAB_INSTALL_DIR}|g" ${GITLAB_NGINX_CONFIG}
-  sed -i "s|{{GITLAB_LOG_DIR}}|${GITLAB_LOG_DIR}|g" ${GITLAB_NGINX_CONFIG}
-  sed -i "s|{{GITLAB_HOST}}|${GITLAB_HOST}|" ${GITLAB_NGINX_CONFIG}
-  sed -i "s|{{GITLAB_PORT}}|${GITLAB_PORT}|" ${GITLAB_NGINX_CONFIG}
-
-  sed -i "s|{{NGINX_PROXY_BUFFERING}}|${NGINX_PROXY_BUFFERING}|g" ${GITLAB_NGINX_CONFIG}
-  sed -i "s|{{NGINX_ACCEL_BUFFERING}}|${NGINX_ACCEL_BUFFERING}|g" ${GITLAB_NGINX_CONFIG}
-  sed -i "s|{{NGINX_MAX_UPLOAD_SIZE}}|${NGINX_MAX_UPLOAD_SIZE}|" ${GITLAB_NGINX_CONFIG}
-  sed -i "s|{{NGINX_X_FORWARDED_PROTO}}|${NGINX_X_FORWARDED_PROTO}|g" ${GITLAB_NGINX_CONFIG}
+  update_template ${GITLAB_NGINX_CONFIG} \
+    GITLAB_INSTALL_DIR \
+    GITLAB_LOG_DIR \
+    GITLAB_HOST \
+    GITLAB_PORT \
+    NGINX_PROXY_BUFFERING \
+    NGINX_ACCEL_BUFFERING \
+    NGINX_MAX_UPLOAD_SIZE \
+    NGINX_X_FORWARDED_PROTO
 
   nginx_configure_gitlab_ssl
   nginx_configure_gitlab_relative_url
@@ -731,12 +732,12 @@ nginx_configure_gitlab() {
 nginx_configure_gitlab_ci() {
   if [[ -n $GITLAB_CI_HOST ]]; then
     echo "Configuring nginx::gitlab_ci..."
-    sed -i "s|{{GITLAB_LOG_DIR}}|${GITLAB_LOG_DIR}|g" ${GITLAB_CI_NGINX_CONFIG}
-    sed -i "s|{{GITLAB_HOST}}|${GITLAB_HOST}|g" ${GITLAB_CI_NGINX_CONFIG}
-    sed -i "s|{{GITLAB_CI_HOST}}|${GITLAB_CI_HOST}|" ${GITLAB_CI_NGINX_CONFIG}
-
     DNS_RESOLVERS=$(cat /etc/resolv.conf  | grep '^\s*nameserver' | awk '{print $2}' ORS=' ')
-    sed -i "s|{{DNS_RESOLVERS}}|${DNS_RESOLVERS}|" ${GITLAB_CI_NGINX_CONFIG}
+    update_template ${GITLAB_CI_NGINX_CONFIG} \
+      GITLAB_LOG_DIR \
+      GITLAB_HOST \
+      GITLAB_CI_HOST \
+      DNS_RESOLVERS
   fi
 }
 
@@ -1060,7 +1061,7 @@ migrate_database() {
       exec_as_git mkdir -p ${GITLAB_DATA_DIR}/tmp/cache/
       exec_as_git mkdir -p ${GITLAB_DATA_DIR}/tmp/public/assets/
 
-      echo "GITLAB_RELATIVE_URL_ROOT in use, recompiling assets, this could take a while..."
+      echo "Recompiling assets (relative_url in use), this could take a while..."
       exec_as_git bundle exec rake assets:clean assets:precompile cache:clear >/dev/null 2>&1
     else
       # clear the cache
