@@ -66,7 +66,7 @@ server {
 server {
   listen 0.0.0.0:443 ssl spdy;
   listen [::]:443 ssl spdy default_server;
-  server_name {{YOUR_SERVER_FQDN}}; ## Replace this with something like gitlab.example.com
+  server_name {{GITLAB_HOST}}; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
   root {{GITLAB_INSTALL_DIR}}/public;
 

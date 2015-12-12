@@ -715,7 +715,7 @@ nginx_configure_gitlab() {
   echo "Configuring nginx::gitlab..."
   sed -i "s|{{GITLAB_INSTALL_DIR}}|${GITLAB_INSTALL_DIR}|g" ${GITLAB_NGINX_CONFIG}
   sed -i "s|{{GITLAB_LOG_DIR}}|${GITLAB_LOG_DIR}|g" ${GITLAB_NGINX_CONFIG}
-  sed -i "s|{{YOUR_SERVER_FQDN}}|${GITLAB_HOST}|" ${GITLAB_NGINX_CONFIG}
+  sed -i "s|{{GITLAB_HOST}}|${GITLAB_HOST}|" ${GITLAB_NGINX_CONFIG}
   sed -i "s|{{GITLAB_PORT}}|${GITLAB_PORT}|" ${GITLAB_NGINX_CONFIG}
 
   sed -i "s|{{NGINX_PROXY_BUFFERING}}|${NGINX_PROXY_BUFFERING}|g" ${GITLAB_NGINX_CONFIG}
