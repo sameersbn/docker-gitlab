@@ -60,7 +60,7 @@ update_template() {
   # Replace placeholders
   (
     export ${VARIABLES[@]}
-    sudo -HEu ${USR} envsubst < ${tmp_file} > ${FILE}
+    local IFS=":"; sudo -HEu ${USR} envsubst "${VARIABLES[*]/#/$}" < ${tmp_file} > ${FILE}
   )
   rm -f ${tmp_file}
 }
