@@ -50,7 +50,7 @@ server {
   ## the ip address of the server (http://x.x.x.x/)n 0.0.0.0:80 default_server;
   listen 0.0.0.0:80 default_server;
   listen [::]:80 default_server;
-  server_name {{YOUR_SERVER_FQDN}}; ## Replace this with something like gitlab.example.com
+  server_name {{GITLAB_HOST}}; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
   root {{GITLAB_INSTALL_DIR}}/public;
 
@@ -64,14 +64,14 @@ server {
   access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_access.log;
   error_log   {{GITLAB_LOG_DIR}}/nginx/gitlab_error.log;
 
-  location {{GITLAB_RELATIVE_URL_ROOT}} {
+  location {{GITLAB_RELATIVE_URL_ROOT}}/ {
     ## Serve static files from defined root folder.
     ## @gitlab is a named location for the upstream fallback, see below.
     try_files $uri /index.html $uri.html @gitlab;
   }
 
   ## We route uploads through GitLab to prevent XSS and enforce access control.
-  location {{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}uploads/ {
+  location {{GITLAB_RELATIVE_URL_ROOT}}/uploads/ {
     ## If you use HTTPS make sure you disable gzip compression
     ## to be safe against BREACH attack.
     # gzip off;
@@ -115,28 +115,28 @@ server {
     proxy_pass http://gitlab;
   }
 
-  location ~ ^{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}[\w\.-]+/[\w\.-]+/gitlab-lfs/objects {
+  location ~ ^{{GITLAB_RELATIVE_URL_ROOT}}/[\w\.-]+/[\w\.-]+/gitlab-lfs/objects {
     client_max_body_size 0;
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
     error_page 418 = @gitlab-workhorse;
     return 418;
   }
 
-  location ~ ^{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}[\w\.-]+/[\w\.-]+/(info/refs|git-upload-pack|git-receive-pack)$ {
+  location ~ ^{{GITLAB_RELATIVE_URL_ROOT}}/[\w\.-]+/[\w\.-]+/(info/refs|git-upload-pack|git-receive-pack)$ {
     client_max_body_size 0;
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
     error_page 418 = @gitlab-workhorse;
     return 418;
   }
 
-  location ~ ^{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}[\w\.-]+/[\w\.-]+/repository/archive {
+  location ~ ^{{GITLAB_RELATIVE_URL_ROOT}}/[\w\.-]+/[\w\.-]+/repository/archive {
     client_max_body_size 0;
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
     error_page 418 = @gitlab-workhorse;
     return 418;
   }
 
-  location ~ ^{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}api/v3/projects/.*/repository/archive {
+  location ~ ^{{GITLAB_RELATIVE_URL_ROOT}}/api/v3/projects/.*/repository/archive {
     client_max_body_size 0;
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
     error_page 418 = @gitlab-workhorse;
@@ -144,7 +144,7 @@ server {
   }
 
   # Build artifacts should be submitted to this location
-  location ~ ^{{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}[\w\.-]+/[\w\.-]+/builds/download {
+  location ~ ^{{GITLAB_RELATIVE_URL_ROOT}}/[\w\.-]+/[\w\.-]+/builds/download {
     client_max_body_size 0;
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
     error_page 418 = @gitlab-workhorse;
