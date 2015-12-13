@@ -27,9 +27,9 @@ exec_as_git() {
 # $2: source file
 # $3: destination location
 install_template() {
-  USR=${1}
-  SRC=${2}
-  DEST=${3}
+  local USR=${1}
+  local SRC=${2}
+  local DEST=${3}
   if [[ -f ${USERCONF_TEMPLATES_DIR}/${SRC} ]]; then
     sudo -HEu ${USR} cp ${USERCONF_TEMPLATES_DIR}/${SRC} ${DEST}
   elif [[ -f ${SYSCONF_TEMPLATES_DIR}/${SRC} ]]; then
