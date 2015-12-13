@@ -712,6 +712,8 @@ nginx_configure_gitlab_hsts() {
       sed -i "/{{NGINX_HSTS_MAXAGE}}/d" ${GITLAB_NGINX_CONFIG}
     fi
     update_template ${GITLAB_NGINX_CONFIG} NGINX_HSTS_MAXAGE
+  else
+    sed -i "/{{NGINX_HSTS_MAXAGE}}/d" ${GITLAB_NGINX_CONFIG}
   fi
 }
 

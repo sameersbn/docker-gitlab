@@ -60,6 +60,7 @@ server {
 
   ## See app/controllers/application_controller.rb for headers set
   add_header X-Accel-Buffering {{NGINX_ACCEL_BUFFERING}};
+  add_header Strict-Transport-Security "max-age={{NGINX_HSTS_MAXAGE}};";
 
   ## Individual nginx logs for this GitLab vhost
   access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_access.log;
