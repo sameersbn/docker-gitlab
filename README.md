@@ -557,7 +557,7 @@ docker run --name gitlab -d \
  sameersbn/gitlab:8.2.3
 ```
 
-If you want to completely disable HSTS set `GITLAB_HTTPS_HSTS_ENABLED` to `false`.
+If you want to completely disable HSTS set `NGINX_HSTS_ENABLED` to `false`.
 
 #### Using HTTPS with a load balancer
 
@@ -787,7 +787,6 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_SSH_PORT**: The ssh port number. Defaults to `22`.
 - **GITLAB_RELATIVE_URL_ROOT**: The relative url of the GitLab server, e.g. `/git`. No default.
 - **GITLAB_HTTPS**: Set to `true` to enable https support, disabled by default.
-- **GITLAB_HTTPS_HSTS_ENABLED**: Advanced configuration option for turning off the HSTS configuration. Applicable only when SSL is in use. Defaults to `true`. See [#138](https://github.com/sameersbn/docker-gitlab/issues/138) for use case scenario.
 - **GITLAB_HTTPS_HSTS_MAXAGE**: Advanced configuration option for setting the HSTS max-age in the gitlab nginx vHost configuration. Applicable only when SSL is in use. Defaults to `31536000`.
 - **SSL_SELF_SIGNED**: Set to `true` when using self signed ssl certificates. `false` by default.
 - **SSL_CERTIFICATE_PATH**: Location of the ssl certificate. Defaults to `/home/git/data/certs/gitlab.crt`
@@ -796,6 +795,7 @@ Below is the complete list of available options that can be used to customize yo
 - **SSL_VERIFY_CLIENT**: Enable verification of client certificates using the `SSL_CA_CERTIFICATES_PATH` file. Defaults to `false`
 - **SSL_CA_CERTIFICATES_PATH**: List of SSL certificates to trust. Defaults to `/home/git/data/certs/ca.crt`.
 - **NGINX_WORKERS**: The number of nginx workers to start. Defaults to `1`.
+- **NGINX_HSTS_ENABLED**: Advanced configuration option for turning off the HSTS configuration. Applicable only when SSL is in use. Defaults to `true`. See [#138](https://github.com/sameersbn/docker-gitlab/issues/138) for use case scenario.
 - **NGINX_PROXY_BUFFERING**: Enable `proxy_buffering`. Defaults to `off`.
 - **NGINX_ACCEL_BUFFERING**: Enable `X-Accel-Buffering` header. Default to `no`
 - **NGINX_MAX_UPLOAD_SIZE**: Maximum acceptable upload size. Defaults to `20m`.
