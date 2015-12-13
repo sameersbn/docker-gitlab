@@ -681,8 +681,8 @@ nginx_configure_gitlab_ssl() {
   if [[ ${GITLAB_HTTPS} == true && -f ${SSL_CERTIFICATE_PATH} && -f ${SSL_KEY_PATH} && -f ${SSL_DHPARAM_PATH} ]]; then
     echo "Configuring nginx::gitlab::ssl..."
 
-    if [[ ! -f ${CA_CERTIFICATES_PATH} ]]; then
-      sed -i "/{{CA_CERTIFICATES_PATH}}/d" ${GITLAB_NGINX_CONFIG}
+    if [[ ! -f ${SSL_CA_CERTIFICATES_PATH} ]]; then
+      sed -i "/{{SSL_CA_CERTIFICATES_PATH}}/d" ${GITLAB_NGINX_CONFIG}
     fi
 
     if [[ ${GITLAB_HTTPS_HSTS_ENABLED} != true ]]; then
@@ -694,7 +694,7 @@ nginx_configure_gitlab_ssl() {
       SSL_KEY_PATH \
       SSL_DHPARAM_PATH \
       SSL_VERIFY_CLIENT \
-      CA_CERTIFICATES_PATH \
+      SSL_CA_CERTIFICATES_PATH \
       GITLAB_HTTPS_HSTS_MAXAGE
   fi
 }
@@ -761,10 +761,10 @@ map_uidgid() {
 }
 
 update_ca_certificates() {
-  if [[ -f ${SSL_CERTIFICATE_PATH} || -f ${CA_CERTIFICATES_PATH} ]]; then
+  if [[ -f ${SSL_CERTIFICATE_PATH} || -f ${SSL_CA_CERTIFICATES_PATH} ]]; then
     echo "Updating CA certificates..."
     [[ -f ${SSL_CERTIFICATE_PATH} ]] && cp "${SSL_CERTIFICATE_PATH}" /usr/local/share/ca-certificates/gitlab.crt
-    [[ -f ${CA_CERTIFICATES_PATH} ]] && cp "${CA_CERTIFICATES_PATH}" /usr/local/share/ca-certificates/ca.crt
+    [[ -f ${SSL_CA_CERTIFICATES_PATH} ]] && cp "${SSL_CA_CERTIFICATES_PATH}" /usr/local/share/ca-certificates/ca.crt
     update-ca-certificates --fresh >/dev/null
   fi
 }

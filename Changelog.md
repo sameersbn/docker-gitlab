@@ -4,6 +4,7 @@ This file only reflects the changes that are made in this image. Please refer to
 
 **latest**
 - `envsubst` is now used for updating the configurations
+- renamed config `CA_CERTIFICATES_PATH` to `SSL_CA_CERTIFICATES_PATH`
 
 **8.2.3**
 - fixed static asset routing when `GITLAB_RELATIVE_URL_ROOT` is used.
