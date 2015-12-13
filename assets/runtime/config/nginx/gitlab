@@ -59,6 +59,7 @@ server {
   client_max_body_size {{NGINX_MAX_UPLOAD_SIZE}};
 
   ## See app/controllers/application_controller.rb for headers set
+  add_header X-Accel-Buffering {{NGINX_ACCEL_BUFFERING}};
 
   ## Individual nginx logs for this GitLab vhost
   access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_access.log;
@@ -97,7 +98,6 @@ server {
     ## If you use HTTPS make sure you disable gzip compression
     ## to be safe against BREACH attack.
     # gzip off;
-    add_header X-Accel-Buffering {{NGINX_ACCEL_BUFFERING}};
 
     ## https://github.com/gitlabhq/gitlabhq/issues/694
     ## Some requests take more than 30 seconds.
@@ -164,7 +164,6 @@ server {
     ## If you use HTTPS make sure you disable gzip compression
     ## to be safe against BREACH attack.
     # gzip off;
-    add_header X-Accel-Buffering {{NGINX_ACCEL_BUFFERING}};
 
     ## https://github.com/gitlabhq/gitlabhq/issues/694
     ## Some requests take more than 30 seconds.

@@ -90,7 +90,8 @@ server {
   ssl_session_timeout 5m;
 
   ## See app/controllers/application_controller.rb for headers set
-  add_header Strict-Transport-Security max-age={{NGINX_HSTS_MAXAGE}};
+  add_header X-Accel-Buffering {{NGINX_ACCEL_BUFFERING}};
+  add_header Strict-Transport-Security "max-age={{NGINX_HSTS_MAXAGE}};";
 
   ## [Optional] If your certficate has OCSP, enable OCSP stapling to reduce the overhead and latency of running SSL.
   ## Replace with your ssl_trusted_certificate. For more info see:
@@ -146,7 +147,6 @@ server {
     ## If you use HTTPS make sure you disable gzip compression
     ## to be safe against BREACH attack.
     gzip off;
-    add_header X-Accel-Buffering {{NGINX_ACCEL_BUFFERING}};
 
     ## https://github.com/gitlabhq/gitlabhq/issues/694
     ## Some requests take more than 30 seconds.
@@ -214,7 +214,6 @@ server {
     ## If you use HTTPS make sure you disable gzip compression
     ## to be safe against BREACH attack.
     gzip off;
-    add_header X-Accel-Buffering {{NGINX_ACCEL_BUFFERING}};
 
     ## https://github.com/gitlabhq/gitlabhq/issues/694
     ## Some requests take more than 30 seconds.
