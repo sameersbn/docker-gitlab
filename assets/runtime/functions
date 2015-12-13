@@ -245,7 +245,7 @@ gitlab_configure_redis() {
 
 gitlab_configure_unicorn() {
   echo "Configuring gitlab::unicorn..."
-  if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
+  if [[ ${GITLAB_RELATIVE_URL_ROOT} != / ]]; then
     update_template ${GITLAB_UNICORN_CONFIG} GITLAB_RELATIVE_URL_ROOT
   else
     exec_as_git sed -i "/{{GITLAB_RELATIVE_URL_ROOT}}/d" ${GITLAB_UNICORN_CONFIG}
@@ -718,8 +718,14 @@ nginx_configure_gitlab_hsts() {
 }
 
 nginx_configure_gitlab_relative_url() {
-  [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]] && echo "Configuring nginx::gitlab::relative_url..."
+  if [[ ${GITLAB_RELATIVE_URL_ROOT} != / ]]; then
+    echo "Configuring nginx::gitlab::relative_url..."
+    GITLAB_RELATIVE_URL_ROOT__with_trailing_slash=${GITLAB_RELATIVE_URL_ROOT}/
+  else
+    GITLAB_RELATIVE_URL_ROOT__with_trailing_slash=/
+  fi
   update_template ${GITLAB_NGINX_CONFIG} GITLAB_RELATIVE_URL_ROOT
+  update_template ${GITLAB_NGINX_CONFIG} GITLAB_RELATIVE_URL_ROOT__with_trailing_slash
 }
 
 nginx_configure_gitlab_ipv6() {
@@ -875,7 +881,7 @@ initialize_datadir() {
 
   # if relative_url is used the assets are compiled at runtime and placed in the
   # data volume for persistence. We set up symbolic links here to achieve this.
-  if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
+  if [[ ${GITLAB_RELATIVE_URL_ROOT} != / ]]; then
     # symlink ${GITLAB_INSTALL_DIR}/tmp/cache -> ${GITLAB_DATA_DIR}/tmp/cache
     rm -rf ${GITLAB_INSTALL_DIR}/tmp/cache
     exec_as_git ln -s ${GITLAB_DATA_DIR}/tmp/cache ${GITLAB_INSTALL_DIR}/tmp/cache
@@ -1077,7 +1083,7 @@ migrate_database() {
     exec_as_git mkdir -p ${GITLAB_DATA_DIR}/tmp/
 
     # assets need to be recompiled when GITLAB_RELATIVE_URL_ROOT is used
-    if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
+    if [[ ${GITLAB_RELATIVE_URL_ROOT} != / ]]; then
       # create the tmp/cache and tmp/public/assets directory
       exec_as_git mkdir -p ${GITLAB_DATA_DIR}/tmp/cache/
       exec_as_git mkdir -p ${GITLAB_DATA_DIR}/tmp/public/assets/
