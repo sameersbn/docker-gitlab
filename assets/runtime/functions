@@ -188,8 +188,10 @@ gitlab_configure_database() {
     DB_POOL
 
   if [[ ${DB_ADAPTER} == postgresql ]]; then
-    exec_as_git sed -i "/reconnect: /d" ${GITLAB_DATABASE_CONFIG}
-    exec_as_git sed -i "/collation: /d" ${GITLAB_DATABASE_CONFIG}
+    exec_as_git sed -i \
+      -e "/reconnect: /d" \
+      -e "/collation: /d" \
+      ${GITLAB_DATABASE_CONFIG}
   fi
 }
 
@@ -265,8 +267,10 @@ gitlab_configure_mail_delivery() {
     echo "Configuring gitlab::smtp_settings..."
 
     if [[ -z "${SMTP_USER}" ]]; then
-      exec_as_git sed -i '/{{SMTP_USER}}/d' ${GITLAB_SMTP_CONFIG}
-      exec_as_git sed -i '/{{SMTP_PASS}}/d' ${GITLAB_SMTP_CONFIG}
+      exec_as_git sed -i \
+        -e '/{{SMTP_USER}}/d' \
+        -e '/{{SMTP_PASS}}/d' \
+        ${GITLAB_SMTP_CONFIG}
     else
       if [[ -z "${SMTP_PASS}" ]]; then
         exec_as_git sed -i '/{{SMTP_PASS}}/d' ${GITLAB_SMTP_CONFIG}
@@ -296,8 +300,10 @@ gitlab_configure_mail_delivery() {
         update_template ${GITLAB_SMTP_CONFIG} SMTP_CA_FILE
       fi
     else
-      exec_as_git sed -i "/{{SMTP_CA_PATH}}/d" ${GITLAB_SMTP_CONFIG}
-      exec_as_git sed -i "/{{SMTP_CA_FILE}}/d" ${GITLAB_SMTP_CONFIG}
+      exec_as_git sed -i \
+        -e "/{{SMTP_CA_PATH}}/d" \
+        -e "/{{SMTP_CA_FILE}}/d" \
+        ${GITLAB_SMTP_CONFIG}
     fi
   fi
 
@@ -313,21 +319,25 @@ gitlab_configure_mailroom() {
     echo "Configuring gitlab::incoming_email..."
 
     if [[ -z "${IMAP_USER}" ]]; then
-      exec_as_git sed -i '/{{IMAP_USER}}/d' ${GITLAB_CONFIG}
-      exec_as_git sed -i '/{{IMAP_PASS}}/d' ${GITLAB_CONFIG}
+      exec_as_git sed -i \
+        -e '/{{IMAP_USER}}/d' \
+        -e '/{{IMAP_PASS}}/d' \
+        ${GITLAB_CONFIG}
     else
       if [[ -z "${IMAP_PASS}" ]]; then
         exec_as_git sed -i '/{{IMAP_PASS}}/d' ${GITLAB_CONFIG}
       fi
     fi
   else
-    exec_as_git sed -i "/{{IMAP_USER}}/d" ${GITLAB_CONFIG}
-    exec_as_git sed -i "/{{IMAP_PASS}}/d" ${GITLAB_CONFIG}
-    exec_as_git sed -i "/{{IMAP_HOST}}/d" ${GITLAB_CONFIG}
-    exec_as_git sed -i "/{{IMAP_PORT}}/d" ${GITLAB_CONFIG}
-    exec_as_git sed -i "/{{IMAP_SSL}}/d" ${GITLAB_CONFIG}
-    exec_as_git sed -i "/{{IMAP_STARTTLS}}/d" ${GITLAB_CONFIG}
-    exec_as_git sed -i "/{{IMAP_MAILBOX}}/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i \
+      -e "/{{IMAP_USER}}/d" \
+      -e "/{{IMAP_PASS}}/d" \
+      -e "/{{IMAP_HOST}}/d" \
+      -e "/{{IMAP_PORT}}/d" \
+      -e "/{{IMAP_SSL}}/d" \
+      -e "/{{IMAP_STARTTLS}}/d" \
+      -e "/{{IMAP_MAILBOX}}/d" \
+      ${GITLAB_CONFIG}
   fi
 
   update_template ${GITLAB_CONFIG} \
@@ -625,8 +635,10 @@ gitlab_configure_analytics_piwik() {
       PIWIK_URL \
       PIWIK_SITE_ID
   else
-    exec_as_git sed -i "/{{PIWIK_URL}}/d" ${GITLAB_CONFIG}
-    exec_as_git sed -i "/{{PIWIK_SITE_ID}}/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i \
+      -e "/{{PIWIK_URL}}/d" \
+      -e "/{{PIWIK_SITE_ID}}/d" \
+      ${GITLAB_CONFIG}
   fi
 }
 
@@ -707,8 +719,10 @@ nginx_configure_gitlab_relative_url() {
 nginx_configure_gitlab_ipv6() {
   if [[ ! -f /proc/net/if_inet6 ]]; then
     # disable ipv6 support
-    sed -i "/listen \[::\]:80/d" ${GITLAB_NGINX_CONFIG}
-    sed -i "/listen \[::\]:443/d" ${GITLAB_NGINX_CONFIG}
+    sed -i \
+      -e "/listen \[::\]:80/d" \
+      -e "/listen \[::\]:443/d" \
+      ${GITLAB_NGINX_CONFIG}
   fi
 }
 
