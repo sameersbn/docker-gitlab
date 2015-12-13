@@ -6,6 +6,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - `envsubst` is now used for updating the configurations
 - renamed config `CA_CERTIFICATES_PATH` to `SSL_CA_CERTIFICATES_PATH`
 - renamed config `GITLAB_HTTPS_HSTS_ENABLED` to `NGINX_HSTS_ENABLED`
+- renamed config `GITLAB_HTTPS_HSTS_MAXAGE` to `NGINX_HSTS_MAXAGE`
 
 **8.2.3**
 - fixed static asset routing when `GITLAB_RELATIVE_URL_ROOT` is used.

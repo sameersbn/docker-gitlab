@@ -698,7 +698,7 @@ nginx_configure_gitlab_ssl() {
     fi
 
     if [[ ${NGINX_HSTS_ENABLED} != true ]]; then
-      sed -i "/{{GITLAB_HTTPS_HSTS_MAXAGE}}/d" ${GITLAB_NGINX_CONFIG}
+      sed -i "/{{NGINX_HSTS_MAXAGE}}/d" ${GITLAB_NGINX_CONFIG}
     fi
 
     update_template ${GITLAB_NGINX_CONFIG} \
@@ -707,7 +707,7 @@ nginx_configure_gitlab_ssl() {
       SSL_DHPARAM_PATH \
       SSL_VERIFY_CLIENT \
       SSL_CA_CERTIFICATES_PATH \
-      GITLAB_HTTPS_HSTS_MAXAGE
+      NGINX_HSTS_MAXAGE
   fi
 }
 

@@ -90,7 +90,7 @@ server {
   ssl_session_timeout 5m;
 
   ## See app/controllers/application_controller.rb for headers set
-  add_header Strict-Transport-Security max-age={{GITLAB_HTTPS_HSTS_MAXAGE}};
+  add_header Strict-Transport-Security max-age={{NGINX_HSTS_MAXAGE}};
 
   ## [Optional] If your certficate has OCSP, enable OCSP stapling to reduce the overhead and latency of running SSL.
   ## Replace with your ssl_trusted_certificate. For more info see:
