@@ -696,18 +696,22 @@ nginx_configure_gitlab_ssl() {
     if [[ ! -f ${SSL_CA_CERTIFICATES_PATH} ]]; then
       sed -i "/{{SSL_CA_CERTIFICATES_PATH}}/d" ${GITLAB_NGINX_CONFIG}
     fi
-
-    if [[ ${NGINX_HSTS_ENABLED} != true ]]; then
-      sed -i "/{{NGINX_HSTS_MAXAGE}}/d" ${GITLAB_NGINX_CONFIG}
-    fi
-
     update_template ${GITLAB_NGINX_CONFIG} \
       SSL_CERTIFICATE_PATH \
       SSL_KEY_PATH \
       SSL_DHPARAM_PATH \
       SSL_VERIFY_CLIENT \
-      SSL_CA_CERTIFICATES_PATH \
-      NGINX_HSTS_MAXAGE
+      SSL_CA_CERTIFICATES_PATH
+  fi
+}
+
+nginx_configure_gitlab_hsts() {
+  if [[ ${GITLAB_HTTPS} == true ]]; then
+    echo "Configuring nginx::gitlab::hsts..."
+    if [[ ${NGINX_HSTS_ENABLED} != true ]]; then
+      sed -i "/{{NGINX_HSTS_MAXAGE}}/d" ${GITLAB_NGINX_CONFIG}
+    fi
+    update_template ${GITLAB_NGINX_CONFIG} NGINX_HSTS_MAXAGE
   fi
 }
 
@@ -739,6 +743,7 @@ nginx_configure_gitlab() {
     NGINX_X_FORWARDED_PROTO
 
   nginx_configure_gitlab_ssl
+  nginx_configure_gitlab_hsts
   nginx_configure_gitlab_relative_url
   nginx_configure_gitlab_ipv6
 }
