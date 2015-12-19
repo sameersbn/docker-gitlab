@@ -546,12 +546,12 @@ gitlab_configure_sidekiq() {
   export SIDEKIQ_MEMORY_KILLER_MAX_RSS
 }
 
-gitlab_configure_backups_cron() {
+gitlab_configure_backups_schedule() {
   case ${GITLAB_BACKUP_SCHEDULE} in
     daily|weekly|monthly)
       if [[ ! $(crontab -u ${GITLAB_USER} -l >/tmp/cron.${GITLAB_USER} 2>/dev/null) || \
             ! $(grep -q 'bundle exec rake gitlab:backup:create' /tmp/cron.${GITLAB_USER}) ]]; then
-        echo "Configuring gitlab::backups::cron..."
+        echo "Configuring gitlab::backups::schedule..."
         read hour min <<< ${GITLAB_BACKUP_TIME//[:]/ }
         day_of_month=*
         month=*
@@ -597,7 +597,7 @@ gitlab_configure_backups() {
     GITLAB_BACKUP_PG_SCHEMA \
     GITLAB_BACKUP_ARCHIVE_PERMISSIONS
 
-  gitlab_configure_backups_cron
+  gitlab_configure_backups_schedule
   gitlab_configure_backups_aws
 }
 
