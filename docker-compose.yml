@@ -35,7 +35,7 @@ gitlab:
     - GITLAB_EMAIL_REPLY_TO=noreply@example.com
     - GITLAB_INCOMING_EMAIL_ADDRESS=reply@example.com
 
-    - GITLAB_BACKUPS=daily
+    - GITLAB_BACKUP_SCHEDULE=daily
     - GITLAB_BACKUP_TIME=01:00
 
     - SMTP_ENABLED=false
