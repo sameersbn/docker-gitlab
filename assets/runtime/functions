@@ -547,20 +547,20 @@ gitlab_configure_sidekiq() {
 }
 
 gitlab_configure_backups_cron() {
-  case ${GITLAB_BACKUPS} in
+  case ${GITLAB_BACKUP_SCHEDULE} in
     daily|weekly|monthly)
       echo "Configuring gitlab::backups::cron..."
       read hour min <<< ${GITLAB_BACKUP_TIME//[:]/ }
       day_of_month=*
       month=*
       day_of_week=*
-      case ${GITLAB_BACKUPS} in
+      case ${GITLAB_BACKUP_SCHEDULE} in
         daily) ;;
         weekly) day_of_week=0 ;;
         monthly) day_of_month=01 ;;
       esac
       exec_as_git cat >> /tmp/cron.${GITLAB_USER} <<EOF
-# Automatic Backups ($GITLAB_BACKUPS)
+# Automatic Backups ($GITLAB_BACKUP_SCHEDULE)
 $min $hour $day_of_month $month $day_of_week /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=${RAILS_ENV}'
 EOF
       crontab -u ${GITLAB_USER} /tmp/cron.${GITLAB_USER}
