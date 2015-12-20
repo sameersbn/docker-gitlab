@@ -239,7 +239,9 @@ command=${GITLAB_WORKHORSE_INSTALL_DIR}/gitlab-workhorse
   -listenUmask 0
   -listenNetwork unix
   -listenAddr ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab-workhorse.socket
-  -authBackend http://127.0.0.1:8080
+  -authBackend http://127.0.0.1:8080{{GITLAB_RELATIVE_URL_ROOT}}
+  -authSocket ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
+  -documentRoot ${GITLAB_INSTALL_DIR}/public
 user=git
 autostart=true
 autorestart=true
