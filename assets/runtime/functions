@@ -748,7 +748,6 @@ nginx_configure_gitlab() {
     GITLAB_PORT \
     NGINX_PROXY_BUFFERING \
     NGINX_ACCEL_BUFFERING \
-    NGINX_MAX_UPLOAD_SIZE \
     NGINX_X_FORWARDED_PROTO
 
   nginx_configure_gitlab_ssl
