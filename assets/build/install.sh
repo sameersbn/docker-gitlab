@@ -209,7 +209,7 @@ directory=${GITLAB_INSTALL_DIR}
 environment=HOME=${GITLAB_HOME}
 command=bundle exec sidekiq -c {{SIDEKIQ_CONCURRENCY}}
   -q post_receive
-  -q mailer
+  -q mailers
   -q archive_repo
   -q system_hook
   -q project_web_hook
