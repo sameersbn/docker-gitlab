@@ -7,9 +7,13 @@ postgresql:
     - DB_NAME=gitlabhq_production
   volumes:
     - /srv/docker/gitlab/postgresql:/var/lib/postgresql
+
+sockets:
+  build: sockets-dvc
+
 gitlab:
   restart: always
-  image: sameersbn/gitlab:8.2.3
+  image: sameersbn/gitlab
   links:
     - redis:redisio
     - postgresql:postgresql
@@ -17,7 +21,7 @@ gitlab:
     - "10080:80"
     - "10022:22"
   environment:
-    - DEBUG=false
+    - DEBUG=true
     - TZ=Asia/Kolkata
     - GITLAB_TIMEZONE=Kolkata
 
@@ -56,8 +60,13 @@ gitlab:
     - IMAP_STARTTLS=false
   volumes:
     - /srv/docker/gitlab/gitlab:/home/git/data
+  volumes_from:
+    - sockets
+
 redis:
   restart: always
   image: sameersbn/redis:latest
   volumes:
     - /srv/docker/gitlab/redis:/var/lib/redis
+  volumes_from:
+    - sockets
