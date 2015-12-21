@@ -216,9 +216,25 @@ gitlab_finalize_redis_parameters() {
   fi
 }
 
-gitlab_check_redis_connection() {
+gitlab_check_redis_connection_tcp() {
   timeout=60
   while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} ping >/dev/null 2>&1
+  do
+    timeout=$(expr $timeout - 1)
+    if [[ $timeout -eq 0 ]]; then
+      echo ""
+      echo "Could not connect to redis server. Aborting..."
+      return 1
+    fi
+    echo -n "."
+    sleep 1
+  done
+  echo
+}
+
+gitlab_check_redis_connection_unix() {
+  timeout=60
+  while ! redis-cli -s /var/run/redis/redis.sock ping >/dev/null 2>&1
   do
     timeout=$(expr $timeout - 1)
     if [[ $timeout -eq 0 ]]; then
@@ -235,12 +251,17 @@ gitlab_check_redis_connection() {
 gitlab_configure_redis() {
   echo -n "Configuring gitlab::redis"
 
-  gitlab_finalize_redis_parameters
-  gitlab_check_redis_connection
+  if [[ ${REDIS_CONNECTION} != "unix" ]]; then
+    gitlab_finalize_redis_parameters
+    gitlab_check_redis_connection_tcp
+    REDIS_URL="redis://${REDIS_HOST}:${REDIS_PORT}"
+  else
+    gitlab_check_redis_connection_unix
+    REDIS_URL="unix:///var/run/redis/redis.sock"
+  fi
 
   update_template ${GITLAB_RESQUE_CONFIG} \
-    REDIS_HOST \
-    REDIS_PORT
+    REDIS_URL
 }
 
 gitlab_configure_unicorn() {
