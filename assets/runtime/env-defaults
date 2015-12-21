@@ -47,7 +47,7 @@ case ${DB_TYPE} in
 esac
 
 ## REDIS
-REDIS_CONNETION=${REDIS_CONNECTION:-tcp}
+REDIS_SOCKET=${REDIS_SOCKET:-/var/run/redis/redis.sock}
 REDIS_HOST=${REDIS_HOST:-}
 REDIS_PORT=${REDIS_PORT:-}
 

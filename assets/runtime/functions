@@ -251,15 +251,16 @@ gitlab_check_redis_connection_unix() {
 gitlab_configure_redis() {
   echo -n "Configuring gitlab::redis"
 
-  if [[ ${REDIS_CONNECTION} != "unix" ]]; then
+  if [[ -n ${REDIS_HOST} ]] || [[ -n ${REDIS_PORT} ]] || [[ ! -S ${REDIS_SOCKET} ]]; then
+    # using a tcp connection to redis
     gitlab_finalize_redis_parameters
     gitlab_check_redis_connection_tcp
     REDIS_URL="redis://${REDIS_HOST}:${REDIS_PORT}"
   else
+    # using a socket connection to redis
     gitlab_check_redis_connection_unix
-    REDIS_URL="unix:///var/run/redis/redis.sock"
+    REDIS_URL="unix://${REDIS_SOCKET}"
   fi
-
   update_template ${GITLAB_RESQUE_CONFIG} \
     REDIS_URL
 }

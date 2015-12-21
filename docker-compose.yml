@@ -42,8 +42,6 @@ gitlab:
     - GITLAB_BACKUP_SCHEDULE=daily
     - GITLAB_BACKUP_TIME=01:00
 
-    - REDIS_CONNECTION=unix
-
     - SMTP_ENABLED=false
     - SMTP_DOMAIN=www.example.com
     - SMTP_HOST=smtp.gmail.com
@@ -62,8 +60,8 @@ gitlab:
     - IMAP_STARTTLS=false
   volumes:
     - /srv/docker/gitlab/gitlab:/home/git/data
-  volumes_from:
-    - sockets
+  #volumes_from:
+    #- sockets
 
 redis:
   restart: always
