@@ -12,6 +12,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - gitlab: upgrade to CE v8.3.0
 - expose `GITLAB_MAX_OBJECT_SIZE` configuration parameter
 - removed `NGINX_MAX_UPLOAD_SIZE` configuration parameter
+- gitlab-shell: upgrade to v.2.6.9
 
 **8.2.3**
 - fixed static asset routing when `GITLAB_RELATIVE_URL_ROOT` is used.

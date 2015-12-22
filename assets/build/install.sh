@@ -43,7 +43,7 @@ exec_as_git git config --global core.autocrlf input
 # install gitlab-shell
 echo "Cloning gitlab-shell v.${GITLAB_SHELL_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_SHELL_VERSION} --depth 1 \
-  https://github.com/gitlabhq/gitlab-shell.git ${GITLAB_SHELL_INSTALL_DIR}
+  https://gitlab.com/gitlab-org/gitlab-shell.git ${GITLAB_SHELL_INSTALL_DIR}
 
 cd ${GITLAB_SHELL_INSTALL_DIR}
 exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml

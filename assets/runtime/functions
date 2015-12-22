@@ -1025,7 +1025,7 @@ configure_gitlab() {
 configure_gitlab_shell() {
   echo "Configuring gitlab-shell..."
   update_template ${GITLAB_SHELL_CONFIG} \
-    GITLAB_RELATIVE_URL_ROOT__with_trailing_slash \
+    GITLAB_RELATIVE_URL_ROOT \
     GITLAB_HOME \
     GITLAB_LOG_DIR \
     GITLAB_DATA_DIR \
