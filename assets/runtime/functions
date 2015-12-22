@@ -94,6 +94,7 @@ gitlab_finalize_database_parameters() {
     DB_NAME=${DB_NAME:-${MYSQL_ENV_MYSQL_DATABASE}}
   elif [[ -n ${POSTGRESQL_PORT_5432_TCP_ADDR} ]]; then
     DB_ADAPTER=${DB_ADAPTER:-postgresql}
+    sleep 5
     if [[ -S /var/run/postgresql/.s.PGSQL.5432 ]]; then
       DB_HOST=/var/run/postgresql
       DB_PORT=5432
