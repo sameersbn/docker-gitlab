@@ -720,9 +720,6 @@ nginx_configure_gitlab_hsts() {
 nginx_configure_gitlab_relative_url() {
   if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
     echo "Configuring nginx::gitlab::relative_url..."
-    GITLAB_RELATIVE_URL_ROOT__with_trailing_slash=${GITLAB_RELATIVE_URL_ROOT}/
-  else
-    GITLAB_RELATIVE_URL_ROOT__with_trailing_slash=/
   fi
   update_template ${GITLAB_NGINX_CONFIG} GITLAB_RELATIVE_URL_ROOT__with_trailing_slash
 }
@@ -1033,7 +1030,7 @@ configure_gitlab() {
 configure_gitlab_shell() {
   echo "Configuring gitlab-shell..."
   update_template ${GITLAB_SHELL_CONFIG} \
-    GITLAB_RELATIVE_URL_ROOT \
+    GITLAB_RELATIVE_URL_ROOT__with_trailing_slash \
     GITLAB_HOME \
     GITLAB_LOG_DIR \
     GITLAB_DATA_DIR \
