@@ -36,7 +36,7 @@ spec:
         - name: GITLAB_INCOMING_EMAIL_ADDRESS
           value: reply@example.com
 
-        - name: GITLAB_BACKUPS
+        - name: GITLAB_BACKUP_SCHEDULE
           value: daily
         - name: GITLAB_BACKUP_TIME
           value: 01:00
