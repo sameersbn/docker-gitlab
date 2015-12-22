@@ -8,6 +8,7 @@ USERCONF_TEMPLATES_DIR="${GITLAB_DATA_DIR}/config"
 GITLAB_CONFIG="${GITLAB_INSTALL_DIR}/config/gitlab.yml"
 GITLAB_DATABASE_CONFIG="${GITLAB_INSTALL_DIR}/config/database.yml"
 GITLAB_UNICORN_CONFIG="${GITLAB_INSTALL_DIR}/config/unicorn.rb"
+GITLAB_RACK_ATTACK_CONFIG="${GITLAB_INSTALL_DIR}/config/rack_attack.rb"
 GITLAB_SMTP_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb"
 GITLAB_RESQUE_CONFIG="${GITLAB_INSTALL_DIR}/config/resque.yml"
 GITLAB_SECRETS_CONFIG="${GITLAB_INSTALL_DIR}/config/secrets.yml"
@@ -948,6 +949,7 @@ install_configuration_templates() {
   install_template ${GITLAB_USER} gitlabhq/gitlab.yml ${GITLAB_CONFIG}
   install_template ${GITLAB_USER} gitlabhq/database.yml ${GITLAB_DATABASE_CONFIG}
   install_template ${GITLAB_USER} gitlabhq/unicorn.rb ${GITLAB_UNICORN_CONFIG}
+  install_template ${GITLAB_USER} gitlabhq/rack_attack.rb ${GITLAB_RACK_ATTACK_CONFIG}
   install_template ${GITLAB_USER} gitlabhq/resque.yml ${GITLAB_RESQUE_CONFIG}
   install_template ${GITLAB_USER} gitlabhq/secrets.yml ${GITLAB_SECRETS_CONFIG}
   install_template ${GITLAB_USER} gitlab-shell/config.yml ${GITLAB_SHELL_CONFIG}
