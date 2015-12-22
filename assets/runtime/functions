@@ -1064,15 +1064,21 @@ migrate_database() {
     exec_as_git force=yes bundle exec rake gitlab:setup ${GITLAB_ROOT_PASSWORD:+GITLAB_ROOT_PASSWORD=$GITLAB_ROOT_PASSWORD} >/dev/null
   fi
 
-  # migrate database and compile the assets if the gitlab version or relative_url has changed.
+  # migrate database if the gitlab version has changed.
   CACHE_VERSION=
   [[ -f ${GITLAB_DATA_DIR}/tmp/VERSION ]] && CACHE_VERSION=$(cat ${GITLAB_DATA_DIR}/tmp/VERSION)
-  [[ -f ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT ]] && CACHE_GITLAB_RELATIVE_URL_ROOT=$(cat ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT)
-  if [[ ${GITLAB_VERSION} != ${CACHE_VERSION} || ${GITLAB_RELATIVE_URL_ROOT} != ${CACHE_GITLAB_RELATIVE_URL_ROOT} ]]; then
+  if [[ ${GITLAB_VERSION} != ${CACHE_VERSION} ]]; then
     echo "Migrating database..."
     exec_as_git bundle exec rake db:migrate >/dev/null
-    exec_as_git bundle exec rake cache:clear >/dev/null 2>&1
     exec_as_git echo "${GITLAB_VERSION}" > ${GITLAB_DATA_DIR}/tmp/VERSION
+    exec_as_git rm -rf ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT # force cache cleanup
+  fi
+
+  # clear cache if relative_url has changed.
+  [[ -f ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT ]] && CACHE_GITLAB_RELATIVE_URL_ROOT=$(cat ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT)
+  if [[ ! -f ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT || ${GITLAB_RELATIVE_URL_ROOT} != ${CACHE_GITLAB_RELATIVE_URL_ROOT} ]]; then
+    echo "Clearing cache..."
+    exec_as_git bundle exec rake cache:clear >/dev/null 2>&1
     exec_as_git echo "${GITLAB_RELATIVE_URL_ROOT}" > ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT
   fi
 }
