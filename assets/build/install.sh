@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
+GITLAB_SHELL_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-shell.git
+GITLAB_WORKHORSE_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
+
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
 BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
@@ -42,24 +46,21 @@ exec_as_git git config --global core.autocrlf input
 
 # install gitlab-shell
 echo "Cloning gitlab-shell v.${GITLAB_SHELL_VERSION}..."
-exec_as_git git clone -q -b v${GITLAB_SHELL_VERSION} --depth 1 \
-  https://github.com/gitlabhq/gitlab-shell.git ${GITLAB_SHELL_INSTALL_DIR}
+exec_as_git git clone -q -b v${GITLAB_SHELL_VERSION} --depth 1 ${GITLAB_SHELL_CLONE_URL} ${GITLAB_SHELL_INSTALL_DIR}
 
 cd ${GITLAB_SHELL_INSTALL_DIR}
 exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 exec_as_git ./bin/install
 
 echo "Cloning gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
-exec_as_git git clone -q -b ${GITLAB_WORKHORSE_VERSION} --depth 1 \
-  https://gitlab.com/gitlab-org/gitlab-workhorse.git ${GITLAB_WORKHORSE_INSTALL_DIR}
+exec_as_git git clone -q -b ${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_CLONE_URL} ${GITLAB_WORKHORSE_INSTALL_DIR}
 
 cd ${GITLAB_WORKHORSE_INSTALL_DIR}
 exec_as_git make
 
 # shallow clone gitlab-ce
 echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
-exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 \
-  https://github.com/gitlabhq/gitlabhq.git ${GITLAB_INSTALL_DIR}
+exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
 
 # remove HSTS config from the default headers, we configure it in nginx
 exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
@@ -209,7 +210,7 @@ directory=${GITLAB_INSTALL_DIR}
 environment=HOME=${GITLAB_HOME}
 command=bundle exec sidekiq -c {{SIDEKIQ_CONCURRENCY}}
   -q post_receive
-  -q mailer
+  -q mailers
   -q archive_repo
   -q system_hook
   -q project_web_hook
@@ -239,7 +240,9 @@ command=${GITLAB_WORKHORSE_INSTALL_DIR}/gitlab-workhorse
   -listenUmask 0
   -listenNetwork unix
   -listenAddr ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab-workhorse.socket
-  -authBackend http://127.0.0.1:8080
+  -authBackend http://127.0.0.1:8080{{GITLAB_RELATIVE_URL_ROOT}}
+  -authSocket ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
+  -documentRoot ${GITLAB_INSTALL_DIR}/public
 user=git
 autostart=true
 autorestart=true

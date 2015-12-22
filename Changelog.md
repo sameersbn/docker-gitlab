@@ -8,6 +8,11 @@ This file only reflects the changes that are made in this image. Please refer to
 - renamed config `GITLAB_HTTPS_HSTS_ENABLED` to `NGINX_HSTS_ENABLED`
 - renamed config `GITLAB_HTTPS_HSTS_MAXAGE` to `NGINX_HSTS_MAXAGE`
 - renamed config `GITLAB_BACKUPS` to `GITLAB_BACKUPS_SCHEDULE`
+- gitlab-workhorse: upgrade to v0.5.1
+- gitlab: upgrade to CE v8.3.0
+- expose `GITLAB_MAX_OBJECT_SIZE` configuration parameter
+- removed `NGINX_MAX_UPLOAD_SIZE` configuration parameter
+- gitlab-shell: upgrade to v.2.6.9
 
 **8.2.3**
 - fixed static asset routing when `GITLAB_RELATIVE_URL_ROOT` is used.
