@@ -75,8 +75,16 @@ gitlab_finalize_database_parameters() {
   # port 3306 and 5432 respectively.
   if [[ -n ${MYSQL_PORT_3306_TCP_ADDR} ]]; then
     DB_ADAPTER=${DB_ADAPTER:-mysql2}
-    DB_HOST=${DB_HOST:-${MYSQL_PORT_3306_TCP_ADDR}}
-    DB_PORT=${DB_PORT:-${MYSQL_PORT_3306_TCP_PORT}}
+    sleep 5  # wait till MySQL creates a socket
+    if [[ -S /var/run/mysqld/mysqld.sock ]]; then
+      DB_HOST="localhost"
+      DB_PORT=3306
+      echo ${DB_HOST}
+    else
+      DB_HOST=${DB_HOST:-${MYSQL_PORT_3306_TCP_ADDR}}
+      DB_PORT=${DB_PORT:-${MYSQL_PORT_3306_TCP_PORT}}
+    fi
+    echo ${DB_HOST}
 
     # support for linked sameersbn/mysql image
     DB_USER=${DB_USER:-${MYSQL_ENV_DB_USER}}
@@ -90,8 +98,14 @@ gitlab_finalize_database_parameters() {
     DB_NAME=${DB_NAME:-${MYSQL_ENV_MYSQL_DATABASE}}
   elif [[ -n ${POSTGRESQL_PORT_5432_TCP_ADDR} ]]; then
     DB_ADAPTER=${DB_ADAPTER:-postgresql}
-    DB_HOST=${DB_HOST:-${POSTGRESQL_PORT_5432_TCP_ADDR}}
-    DB_PORT=${DB_PORT:-${POSTGRESQL_PORT_5432_TCP_PORT}}
+    sleep 5
+    if [[ -S /var/run/postgresql/.s.PGSQL.5432 ]]; then
+      DB_HOST=/var/run/postgresql
+      DB_PORT=5432
+    else
+      DB_HOST=${DB_HOST:-${POSTGRESQL_PORT_5432_TCP_ADDR}}
+      DB_PORT=${DB_PORT:-${POSTGRESQL_PORT_5432_TCP_PORT}}
+    fi
 
     # support for linked official postgres image
     DB_USER=${DB_USER:-${POSTGRESQL_ENV_POSTGRES_USER}}
@@ -220,9 +234,25 @@ gitlab_finalize_redis_parameters() {
   fi
 }
 
-gitlab_check_redis_connection() {
+gitlab_check_redis_connection_tcp() {
   timeout=60
   while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} ping >/dev/null 2>&1
+  do
+    timeout=$(expr $timeout - 1)
+    if [[ $timeout -eq 0 ]]; then
+      echo ""
+      echo "Could not connect to redis server. Aborting..."
+      return 1
+    fi
+    echo -n "."
+    sleep 1
+  done
+  echo
+}
+
+gitlab_check_redis_connection_unix() {
+  timeout=60
+  while ! redis-cli -s /var/run/redis/redis.sock ping >/dev/null 2>&1
   do
     timeout=$(expr $timeout - 1)
     if [[ $timeout -eq 0 ]]; then
@@ -239,12 +269,18 @@ gitlab_check_redis_connection() {
 gitlab_configure_redis() {
   echo -n "Configuring gitlab::redis"
 
-  gitlab_finalize_redis_parameters
-  gitlab_check_redis_connection
-
+  if [[ -n ${REDIS_HOST} ]] || [[ -n ${REDIS_PORT} ]] || [[ ! -S ${REDIS_SOCKET} ]]; then
+    # using a tcp connection to redis
+    gitlab_finalize_redis_parameters
+    gitlab_check_redis_connection_tcp
+    REDIS_URL="redis://${REDIS_HOST}:${REDIS_PORT}"
+  else
+    # using a socket connection to redis
+    gitlab_check_redis_connection_unix
+    REDIS_URL="unix://${REDIS_SOCKET}"
+  fi
   update_template ${GITLAB_RESQUE_CONFIG} \
-    REDIS_HOST \
-    REDIS_PORT
+    REDIS_URL
 }
 
 gitlab_configure_gitlab_workhorse() {
