@@ -202,14 +202,27 @@ gitlab_configure_database() {
 gitlab_finalize_redis_parameters() {
   # is a redis container linked?
   if [[ -n ${REDISIO_PORT_6379_TCP_ADDR} ]]; then
-    REDIS_HOST=${REDIS_HOST:-${REDISIO_PORT_6379_TCP_ADDR}}
-    REDIS_PORT=${REDIS_PORT:-${REDISIO_PORT_6379_TCP_PORT}}
+    if [[ -S ${REDIS_SOCKET} ]]; then
+      REDIS_CONNECTION="unix"
+    else
+      REDIS_HOST=${REDIS_HOST:-${REDISIO_PORT_6379_TCP_ADDR}}
+      REDIS_PORT=${REDIS_PORT:-${REDISIO_PORT_6379_TCP_PORT}}
+      REDIS_CONNECTION="redis"
+    fi
+  else
+      REDIS_CONNECTION="redis"
+      # set default redis port if not specified
+      REDIS_PORT=${REDIS_PORT:-6379}
   fi
 
-  # set default redis port if not specified
-  REDIS_PORT=${REDIS_PORT:-6379}
 
-  if [[ -z ${REDIS_HOST} ]]; then
+  if [[ ${REDIS_CONNECTION} == redis ]]; then
+    REDIS_URL="redis://${REDIS_HOST}:${REDIS_PORT}"
+  else
+    REDIS_URL="unix://${REDIS_SOCKET}"
+  fi
+
+  if [[ -z ${REDIS_URL} ]]; then
     echo
     echo "ERROR: "
     echo "  Please configure the redis connection."
@@ -221,8 +234,16 @@ gitlab_finalize_redis_parameters() {
 }
 
 gitlab_check_redis_connection() {
+  case ${REDIS_CONNECTION} in
+    unix)
+      prog="redis-cli -s ${REDIS_SOCKET} ping"
+      ;;
+    redis)
+      prog="redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} ping"
+      ;;
+  esac
   timeout=60
-  while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} ping >/dev/null 2>&1
+  while ! ${prog} >/dev/null 2>&1
   do
     timeout=$(expr $timeout - 1)
     if [[ $timeout -eq 0 ]]; then
@@ -238,13 +259,10 @@ gitlab_check_redis_connection() {
 
 gitlab_configure_redis() {
   echo -n "Configuring gitlab::redis"
-
   gitlab_finalize_redis_parameters
   gitlab_check_redis_connection
-
   update_template ${GITLAB_RESQUE_CONFIG} \
-    REDIS_HOST \
-    REDIS_PORT
+    REDIS_URL
 }
 
 gitlab_configure_gitlab_workhorse() {
