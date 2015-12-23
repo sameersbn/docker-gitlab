@@ -75,8 +75,16 @@ gitlab_finalize_database_parameters() {
   # port 3306 and 5432 respectively.
   if [[ -n ${MYSQL_PORT_3306_TCP_ADDR} ]]; then
     DB_ADAPTER=${DB_ADAPTER:-mysql2}
-    DB_HOST=${DB_HOST:-${MYSQL_PORT_3306_TCP_ADDR}}
-    DB_PORT=${DB_PORT:-${MYSQL_PORT_3306_TCP_PORT}}
+    sleep 5  # wait till MySQL creates a socket
+    if [[ -S /var/run/mysqld/mysqld.sock ]]; then
+      DB_HOST="localhost"
+      DB_PORT=3306
+      echo ${DB_HOST}
+    else
+      DB_HOST=${DB_HOST:-${MYSQL_PORT_3306_TCP_ADDR}}
+      DB_PORT=${DB_PORT:-${MYSQL_PORT_3306_TCP_PORT}}
+    fi
+    echo ${DB_HOST}
 
     # support for linked sameersbn/mysql image
     DB_USER=${DB_USER:-${MYSQL_ENV_DB_USER}}

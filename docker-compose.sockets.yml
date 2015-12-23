@@ -10,6 +10,17 @@ postgresql:
   volumes_from:
     - sockets
 
+#mysql:
+  #image: sameersbn/mysql:latest
+  #environment:
+    #- DB_USER=gitlab
+    #- DB_PASS=password
+    #- DB_NAME=gitlabhq_production
+  #volumes:
+    #- /srv/docker/gitlab/mysql:/var/lib/mysql
+  #volumes_from:
+    #- sockets
+
 sockets:
   build: sockets-dvc
 
@@ -19,6 +30,7 @@ gitlab:
   links:
     - redis:redisio
     - postgresql:postgresql
+    #- mysql:mysql
   ports:
     - "10080:80"
     - "10022:22"
