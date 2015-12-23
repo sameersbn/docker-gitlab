@@ -7,6 +7,8 @@ postgresql:
     - DB_NAME=gitlabhq_production
   volumes:
     - /srv/docker/gitlab/postgresql:/var/lib/postgresql
+  volumes_from:
+    - sockets
 
 sockets:
   build: sockets-dvc
