@@ -14,8 +14,8 @@ GITLAB_RESQUE_CONFIG="${GITLAB_INSTALL_DIR}/config/resque.yml"
 GITLAB_SECRETS_CONFIG="${GITLAB_INSTALL_DIR}/config/secrets.yml"
 GITLAB_ROBOTS_CONFIG="${GITLAB_INSTALL_DIR}/public/robots.txt"
 GITLAB_SHELL_CONFIG="${GITLAB_SHELL_INSTALL_DIR}/config.yml"
-GITLAB_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab"
-GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
+GITLAB_NGINX_CONFIG="/etc/nginx/conf.d/gitlab.conf"
+GITLAB_CI_NGINX_CONFIG="/etc/nginx/conf.d/gitlab_ci.conf"
 
 ## Execute a command as GITLAB_USER
 exec_as_git() {
@@ -1042,9 +1042,16 @@ configure_gitlab_shell() {
 
 configure_nginx() {
   echo "Configuring nginx..."
-  sed -i "s|worker_processes .*|worker_processes ${NGINX_WORKERS};|" /etc/nginx/nginx.conf
   nginx_configure_gitlab
   nginx_configure_gitlab_ci
+  if [[ -n ${NGINX_PORT_80_TCP_ADDR} ]] || [[ ${NGINX_USE_EXTERNAL} == true ]]; then
+    # we have a linked container or an external nginx, do not start an internal nginx
+    # a user must configure NGINX_WORKERS herself
+    rm /etc/supervisor/conf.d/nginx.conf
+  else
+    # we have internal nginx and configure it
+    sed -i "s|worker_processes .*|worker_processes ${NGINX_WORKERS};|" /etc/nginx/nginx.conf
+  fi
 }
 
 migrate_database() {
