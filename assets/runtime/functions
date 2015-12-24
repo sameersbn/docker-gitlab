@@ -19,7 +19,11 @@ GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
 
 ## Execute a command as GITLAB_USER
 exec_as_git() {
-  sudo -HEu ${GITLAB_USER} "$@"
+  if [[ $(whoami) == ${GITLAB_USER} ]]; then
+    $@
+  else
+    sudo -HEu ${GITLAB_USER} "$@"
+  fi
 }
 
 ## Copies configuration template to the destination as the specified USER
