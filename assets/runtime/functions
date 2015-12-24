@@ -1047,9 +1047,10 @@ configure_nginx() {
   if [[ -n ${NGINX_PORT_80_TCP_ADDR} ]] || [[ ${NGINX_USE_EXTERNAL} == true ]]; then
     # we have a linked container or an external nginx, do not start an internal nginx
     # a user must configure NGINX_WORKERS herself
-    rm /etc/supervisor/conf.d/nginx.conf
+    mv /etc/supervisor/conf.d/nginx.conf /etc/supervisor/conf.d/nginx.disabled || /bin/true
   else
     # we have internal nginx and configure it
+    mv /etc/supervisor/conf.d/nginx.disabled /etc/supervisor/conf.d/nginx.conf || /bin/true
     sed -i "s|worker_processes .*|worker_processes ${NGINX_WORKERS};|" /etc/nginx/nginx.conf
   fi
 }
