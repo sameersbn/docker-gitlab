@@ -40,7 +40,7 @@ server {
   access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_access.log;
   error_log   {{GITLAB_LOG_DIR}}/nginx/gitlab_error.log;
 
-  location {{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}} {
+  location {{GITLAB_RELATIVE_URL_ROOT__without_trailing_slash}} {
     client_max_body_size 0;
     gzip off;
 
