@@ -704,6 +704,14 @@ To enable the Crowd server OAuth2 OmniAuth provider you must register your appli
 
 Configure GitLab to enable access the Crowd server by specifying the `OAUTH_CROWD_SERVER_URL`, `OAUTH_CROWD_APP_NAME` and `OAUTH_CROWD_APP_PASSWORD` environment variables.
 
+#### Microsoft Azure
+
+To enable the Microsoft Azure OAuth2 OmniAuth provider you must register your application with Azure. Azure will generate a Client ID, Client secret and Tenant ID for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/azure.html) for the procedure.
+
+Once you have the Client ID, Client secret and Tenant ID generated, configure them using the `OAUTH_AZURE_API_KEY`, `OAUTH_AZURE_API_SECRET` and `OAUTH_AZURE_TENANT_ID` environment variables respectively.
+
+For example, if your Client ID is `xxx`, the Client secret is `yyy` and the Tenant ID is `zzz`, then adding `--env 'OAUTH_AZURE_API_KEY=xxx' --env 'OAUTH_AZURE_API_SECRET=yyy' --env 'OAUTH_AZURE_TENANT_ID=zzz'` to the docker run command enables support for Microsoft Azure OAuth.
+
 ### External Issue Trackers
 
 Since version `7.10.0` support for external issue trackers can be enabled in the "Service Templates" section of the settings panel.
@@ -876,6 +884,9 @@ Below is the complete list of available options that can be used to customize yo
 - **OAUTH_CROWD_SERVER_URL**: Crowd server url. No defaults.
 - **OAUTH_CROWD_APP_NAME**: Crowd server application name. No defaults.
 - **OAUTH_CROWD_APP_PASSWORD**: Crowd server application password. No defaults.
+- **OAUTH_AZURE_API_KEY**: Azure Client ID. No defaults.
+- **OAUTH_AZURE_API_SECRET**: Azure Client secret. No defaults.
+- **OAUTH_AZURE_TENANT_ID**: Azure Tenant ID. No defaults.
 - **GITLAB_GRAVATAR_ENABLED**: Enables gravatar integration. Defaults to `true`.
 - **GITLAB_GRAVATAR_HTTP_URL**: Sets a custom gravatar url. Defaults to `http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`. This can be used for [Libravatar integration](http://doc.gitlab.com/ce/customization/libravatar.html).
 - **GITLAB_GRAVATAR_HTTPS_URL**: Same as above, but for https. Defaults to `https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`.
