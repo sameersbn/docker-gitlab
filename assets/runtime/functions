@@ -1119,9 +1119,9 @@ execute_raketask() {
       fi
 
       echo
-      for b in $(ls ${GITLAB_BACKUP_DIR} | grep gitlab_backup | sort -r)
+      for b in $(ls ${GITLAB_BACKUP_DIR} | grep _gitlab_backup | sort -r)
       do
-        echo "‣ $b"
+        echo "‣ $b (created at $(date --date="@${b%%_gitlab_backup.tar}" +'%d %b, %G - %H:%M:%S %Z'))"
       done
       echo
 
