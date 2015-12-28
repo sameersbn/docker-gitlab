@@ -1136,7 +1136,8 @@ execute_raketask() {
         echo "Specified backup does not exist. Aborting..."
         return 1
       fi
-      BACKUP=$(echo $file | cut -d'_' -f1)
+
+      BACKUP=${file%%_gitlab_backup.tar}
     fi
   elif [[ ${1} == gitlab:import:repos ]]; then
     # sanitize the datadir to avoid permission issues
