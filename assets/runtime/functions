@@ -17,6 +17,18 @@ GITLAB_SHELL_CONFIG="${GITLAB_SHELL_INSTALL_DIR}/config.yml"
 GITLAB_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab"
 GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
 
+# Compares two version strings `a` and `b`
+# Returns
+#   - negative integer, if `a` is less than `b`
+#   - 0, if `a` and `b` are equal
+#   - non-negative integer, if `a` is greater than `b`
+vercmp() {
+  expr '(' "$1" : '\([^.]*\)' ')' '-' '(' "$2" : '\([^.]*\)' ')' '|' \
+       '(' "$1.0" : '[^.]*[.]\([^.]*\)' ')' '-' '(' "$2.0" : '[^.]*[.]\([^.]*\)' ')' '|' \
+       '(' "$1.0.0" : '[^.]*[.][^.]*[.]\([^.]*\)' ')' '-' '(' "$2.0.0" : '[^.]*[.][^.]*[.]\([^.]*\)' ')' '|' \
+       '(' "$1.0.0.0" : '[^.]*[.][^.]*[.][^.]*[.]\([^.]*\)' ')' '-' '(' "$2.0.0.0" : '[^.]*[.][^.]*[.][^.]*[.]\([^.]*\)' ')'
+}
+
 ## Execute a command as GITLAB_USER
 exec_as_git() {
   if [[ $(whoami) == ${GITLAB_USER} ]]; then
@@ -1079,6 +1091,17 @@ migrate_database() {
   CACHE_VERSION=
   [[ -f ${GITLAB_DATA_DIR}/tmp/VERSION ]] && CACHE_VERSION=$(cat ${GITLAB_DATA_DIR}/tmp/VERSION)
   if [[ ${GITLAB_VERSION} != ${CACHE_VERSION} ]]; then
+    ## version check, only upgrades are allowed
+    if [[ -n ${CACHE_VERSION} && $(vercmp ${GITLAB_VERSION} ${CACHE_VERSION}) -lt 0 ]]; then
+      echo
+      echo "ERROR: "
+      echo "  Cannot downgrade from GitLab version ${CACHE_VERSION} to ${GITLAB_VERSION}."
+      echo "  Only upgrades are allowed. Please use sameersbn/gitlab:${CACHE_VERSION} or higher."
+      echo "  Cannot continue. Aborting!"
+      echo
+      return 1
+    fi
+
     echo "Migrating database..."
     exec_as_git bundle exec rake db:migrate >/dev/null
     exec_as_git echo "${GITLAB_VERSION}" > ${GITLAB_DATA_DIR}/tmp/VERSION
