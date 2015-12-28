@@ -1126,6 +1126,12 @@ execute_raketask() {
       echo
 
       read -p "Select a backup to restore: " file
+
+      if [[ -z ${file} ]]; then
+        echo "Backup not specified. Exiting..."
+        return 1
+      fi
+
       if [[ ! -f ${GITLAB_BACKUP_DIR}/${file} ]]; then
         echo "Specified backup does not exist. Aborting..."
         return 1
