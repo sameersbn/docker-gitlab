@@ -2,6 +2,9 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**latest**
+- gitlab: upgrade to CE v8.3.1
+
 **8.3.0-1**
 - fixed static asset routing when `GITLAB_RELATIVE_URL_ROOT` is used.
 
