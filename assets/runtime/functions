@@ -811,7 +811,7 @@ map_uidgid() {
     echo "Mapping UID and GID for ${GITLAB_USER}:${GITLAB_USER} to $USERMAP_UID:$USERMAP_GID"
     groupmod -g ${USERMAP_GID} ${GITLAB_USER}
     sed -i -e "s|:${USERMAP_ORIG_UID}:${USERMAP_GID}:|:${USERMAP_UID}:${USERMAP_GID}:|" /etc/passwd
-    find ${GITLAB_HOME} -path ${GITLAB_DATA_DIR}/\* -prune -o -print0 | xargs -0 chown -h ${GITLAB_USER}:${GITLAB_USER}
+    find ${GITLAB_HOME} -path ${GITLAB_DATA_DIR}/\* -prune -o -print0 | xargs -0 chown -h ${GITLAB_USER}:
   fi
 }
 
@@ -828,40 +828,40 @@ initialize_logdir() {
   echo "Initializing logdir..."
   mkdir -p ${GITLAB_LOG_DIR}/supervisor
   chmod -R 0755 ${GITLAB_LOG_DIR}/supervisor
-  chown -R root:root ${GITLAB_LOG_DIR}/supervisor
+  chown -R root: ${GITLAB_LOG_DIR}/supervisor
 
   mkdir -p ${GITLAB_LOG_DIR}/nginx
   chmod -R 0755 ${GITLAB_LOG_DIR}/nginx
-  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_LOG_DIR}/nginx
+  chown -R ${GITLAB_USER}: ${GITLAB_LOG_DIR}/nginx
 
   mkdir -p ${GITLAB_LOG_DIR}/gitlab
   chmod -R 0755 ${GITLAB_LOG_DIR}/gitlab
-  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_LOG_DIR}/gitlab
+  chown -R ${GITLAB_USER}: ${GITLAB_LOG_DIR}/gitlab
 
   mkdir -p ${GITLAB_LOG_DIR}/gitlab-shell
   chmod -R 0755 ${GITLAB_LOG_DIR}/gitlab-shell
-  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_LOG_DIR}/gitlab-shell
+  chown -R ${GITLAB_USER}: ${GITLAB_LOG_DIR}/gitlab-shell
 }
 
 initialize_datadir() {
   echo "Initializing datadir..."
   chmod 755 ${GITLAB_DATA_DIR}
-  chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}
+  chown ${GITLAB_USER}: ${GITLAB_DATA_DIR}
 
   # create the ssh directory for server keys
   mkdir -p ${GITLAB_DATA_DIR}/ssh
-  chown -R root:root ${GITLAB_DATA_DIR}/ssh
+  chown -R root: ${GITLAB_DATA_DIR}/ssh
 
   # create the repositories directory and make sure it has the right permissions
   mkdir -p ${GITLAB_REPOS_DIR}
-  chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_REPOS_DIR}
+  chown ${GITLAB_USER}: ${GITLAB_REPOS_DIR}
   chmod ug+rwX,o-rwx ${GITLAB_REPOS_DIR}
   exec_as_git chmod g+s ${GITLAB_REPOS_DIR}
 
   # create build traces directory
   mkdir -p ${GITLAB_BUILDS_DIR}
   chmod u+rwX ${GITLAB_BUILDS_DIR}
-  chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_BUILDS_DIR}
+  chown ${GITLAB_USER}: ${GITLAB_BUILDS_DIR}
 
   # gitlab:backup:create does not respect the builds_path configuration, so we
   # symlink ${GITLAB_INSTALL_DIR}/builds -> ${GITLAB_BUILDS_DIR}
@@ -871,16 +871,16 @@ initialize_datadir() {
   # create downloads directory
   mkdir -p ${GITLAB_DOWNLOADS_DIR}
   chmod u+rwX ${GITLAB_DOWNLOADS_DIR}
-  chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DOWNLOADS_DIR}
+  chown ${GITLAB_USER}: ${GITLAB_DOWNLOADS_DIR}
 
   # create shared directory
   mkdir -p ${GITLAB_SHARED_DIR}
   chmod u+rwX ${GITLAB_SHARED_DIR}
-  chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_SHARED_DIR}
+  chown ${GITLAB_USER}: ${GITLAB_SHARED_DIR}
 
   mkdir -p ${GITLAB_ARTIFACTS_DIR}
   chmod u+rwX ${GITLAB_ARTIFACTS_DIR}
-  chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_ARTIFACTS_DIR}
+  chown ${GITLAB_USER}: ${GITLAB_ARTIFACTS_DIR}
 
   # symlink ${GITLAB_INSTALL_DIR}/shared -> ${GITLAB_DATA_DIR}/shared
   rm -rf ${GITLAB_INSTALL_DIR}/shared
@@ -889,23 +889,23 @@ initialize_datadir() {
   # create lfs-objects directory
   mkdir -p ${GITLAB_LFS_OBJECTS_DIR}
   chmod u+rwX ${GITLAB_LFS_OBJECTS_DIR}
-  chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_LFS_OBJECTS_DIR}
+  chown ${GITLAB_USER}: ${GITLAB_LFS_OBJECTS_DIR}
 
   # create the backups directory
   mkdir -p ${GITLAB_BACKUP_DIR}
-  chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_BACKUP_DIR}
+  chown ${GITLAB_USER}: ${GITLAB_BACKUP_DIR}
 
   # create the uploads directory
   mkdir -p ${GITLAB_DATA_DIR}/uploads
   chmod 0750 ${GITLAB_DATA_DIR}/uploads
-  chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/uploads
+  chown ${GITLAB_USER}: ${GITLAB_DATA_DIR}/uploads
 
   # create the .ssh directory
   mkdir -p ${GITLAB_DATA_DIR}/.ssh
   touch ${GITLAB_DATA_DIR}/.ssh/authorized_keys
   chmod 700 ${GITLAB_DATA_DIR}/.ssh
   chmod 600 ${GITLAB_DATA_DIR}/.ssh/authorized_keys
-  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/.ssh
+  chown -R ${GITLAB_USER}: ${GITLAB_DATA_DIR}/.ssh
 }
 
 sanitize_datadir() {
@@ -913,27 +913,27 @@ sanitize_datadir() {
   chmod -R ug+rwX,o-rwx ${GITLAB_REPOS_DIR}/
   chmod -R ug-s ${GITLAB_REPOS_DIR}/
   find ${GITLAB_REPOS_DIR}/ -type d -print0 | xargs -0 chmod g+s
-  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_REPOS_DIR}
+  chown -R ${GITLAB_USER}: ${GITLAB_REPOS_DIR}
 
   chmod -R u+rwX ${GITLAB_BUILDS_DIR}
-  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_BUILDS_DIR}
+  chown -R ${GITLAB_USER}: ${GITLAB_BUILDS_DIR}
 
   chmod -R u+rwX ${GITLAB_DOWNLOADS_DIR}
-  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DOWNLOADS_DIR}
+  chown -R ${GITLAB_USER}: ${GITLAB_DOWNLOADS_DIR}
 
   chmod -R u+rwX ${GITLAB_SHARED_DIR}
-  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_SHARED_DIR}
+  chown -R ${GITLAB_USER}: ${GITLAB_SHARED_DIR}
 
   chmod -R u+rwX ${GITLAB_ARTIFACTS_DIR}
-  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_ARTIFACTS_DIR}
+  chown -R ${GITLAB_USER}: ${GITLAB_ARTIFACTS_DIR}
 
   chmod -R u+rwX ${GITLAB_LFS_OBJECTS_DIR}
-  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_LFS_OBJECTS_DIR}
+  chown -R ${GITLAB_USER}: ${GITLAB_LFS_OBJECTS_DIR}
 
   find ${GITLAB_DATA_DIR}/uploads -type f -exec chmod 0644 {} \;
   find ${GITLAB_DATA_DIR}/uploads -type d -not -path ${GITLAB_DATA_DIR}/uploads -exec chmod 0755 {} \;
   chmod 0750 ${GITLAB_DATA_DIR}/uploads/
-  chown ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}/uploads/
+  chown ${GITLAB_USER}: ${GITLAB_DATA_DIR}/uploads/
 
   echo "Creating gitlab-shell hooks..."
   exec_as_git ${GITLAB_SHELL_INSTALL_DIR}/bin/create-hooks
