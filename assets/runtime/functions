@@ -45,16 +45,17 @@ exec_as_git() {
 # $3: destination location
 # $4: mode of destination
 install_template() {
-  local USR=${1}
+  local OWNERSHIP=${1}
   local SRC=${2}
   local DEST=${3}
   local MODE=${4:-0644}
   if [[ -f ${USERCONF_TEMPLATES_DIR}/${SRC} ]]; then
-    sudo -HEu ${USR} cp ${USERCONF_TEMPLATES_DIR}/${SRC} ${DEST}
+    cp ${USERCONF_TEMPLATES_DIR}/${SRC} ${DEST}
   elif [[ -f ${SYSCONF_TEMPLATES_DIR}/${SRC} ]]; then
-    sudo -HEu ${USR} cp ${SYSCONF_TEMPLATES_DIR}/${SRC} ${DEST}
+    cp ${SYSCONF_TEMPLATES_DIR}/${SRC} ${DEST}
   fi
   chmod ${MODE} ${DEST}
+  chown ${OWNERSHIP} ${DEST}
 }
 
 ## Replace placeholders with values
@@ -972,16 +973,16 @@ initialize_system() {
 
 install_configuration_templates() {
   echo "Installing configuration templates..."
-  install_template ${GITLAB_USER} gitlabhq/gitlab.yml ${GITLAB_CONFIG} 0640
-  install_template ${GITLAB_USER} gitlabhq/database.yml ${GITLAB_DATABASE_CONFIG} 0640
-  install_template ${GITLAB_USER} gitlabhq/unicorn.rb ${GITLAB_UNICORN_CONFIG} 0644
-  install_template ${GITLAB_USER} gitlabhq/rack_attack.rb ${GITLAB_RACK_ATTACK_CONFIG} 0644
-  install_template ${GITLAB_USER} gitlabhq/resque.yml ${GITLAB_RESQUE_CONFIG} 0640
-  install_template ${GITLAB_USER} gitlabhq/secrets.yml ${GITLAB_SECRETS_CONFIG} 0600
-  install_template ${GITLAB_USER} gitlab-shell/config.yml ${GITLAB_SHELL_CONFIG} 0640
+  install_template ${GITLAB_USER}: gitlabhq/gitlab.yml ${GITLAB_CONFIG} 0640
+  install_template ${GITLAB_USER}: gitlabhq/database.yml ${GITLAB_DATABASE_CONFIG} 0640
+  install_template ${GITLAB_USER}: gitlabhq/unicorn.rb ${GITLAB_UNICORN_CONFIG} 0644
+  install_template ${GITLAB_USER}: gitlabhq/rack_attack.rb ${GITLAB_RACK_ATTACK_CONFIG} 0644
+  install_template ${GITLAB_USER}: gitlabhq/resque.yml ${GITLAB_RESQUE_CONFIG} 0640
+  install_template ${GITLAB_USER}: gitlabhq/secrets.yml ${GITLAB_SECRETS_CONFIG} 0600
+  install_template ${GITLAB_USER}: gitlab-shell/config.yml ${GITLAB_SHELL_CONFIG} 0640
 
   if [[ ${SMTP_ENABLED} == true  ]]; then
-    install_template ${GITLAB_USER} gitlabhq/smtp_settings.rb ${GITLAB_SMTP_CONFIG}
+    install_template ${GITLAB_USER}: gitlabhq/smtp_settings.rb ${GITLAB_SMTP_CONFIG}
   fi
 
   # custom user specified robots.txt
@@ -992,18 +993,18 @@ install_configuration_templates() {
   ## ${GITLAB_NGINX_CONFIG}
   if [[ ${GITLAB_HTTPS} == true ]]; then
     if [[ -f ${SSL_CERTIFICATE_PATH} && -f ${SSL_KEY_PATH} && -f ${SSL_DHPARAM_PATH} ]]; then
-      install_template root nginx/gitlab-ssl ${GITLAB_NGINX_CONFIG}
+      install_template root: nginx/gitlab-ssl ${GITLAB_NGINX_CONFIG}
     else
       echo "SSL keys and certificates were not found."
       echo "Assuming that the container is running behind a HTTPS enabled load balancer."
-      install_template root nginx/gitlab ${GITLAB_NGINX_CONFIG}
+      install_template root: nginx/gitlab ${GITLAB_NGINX_CONFIG}
     fi
   else
-    install_template root nginx/gitlab ${GITLAB_NGINX_CONFIG}
+    install_template root: nginx/gitlab ${GITLAB_NGINX_CONFIG}
   fi
 
   if [[ -n $GITLAB_CI_HOST ]]; then
-    install_template root nginx/gitlab_ci ${GITLAB_CI_NGINX_CONFIG}
+    install_template root: nginx/gitlab_ci ${GITLAB_CI_NGINX_CONFIG}
   fi
 }
 
