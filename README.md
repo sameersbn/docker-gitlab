@@ -999,6 +999,10 @@ GitLabHQ releases new versions on the 22nd of every month, bugfix releases immed
 
 To upgrade to newer gitlab releases, simply follow this 4 step upgrade procedure.
 
+> **Note**
+>
+> Upgrading to `sameersbn/gitlab:8.3.2` from `sameersbn/gitlab:7.x.x` can cause issues. It is therefore required that you first upgrade to `sameersbn/gitlab:8.0.5-1` before upgrading to `sameersbn/gitlab:8.1.0` or higher.
+
 - **Step 1**: Update the docker image.
 
 ```bash

@@ -1103,6 +1103,19 @@ migrate_database() {
       return 1
     fi
 
+    if [[ $(vercmp ${GITLAB_VERSION} 8.0.0) -gt 0 ]]; then
+      if [[ $(vercmp ${CACHE_VERSION} 8.0.0) -lt 0 ]]; then
+        echo
+        echo "ABORT: "
+        echo "  Upgrading to GitLab ${GITLAB_VERSION} from ${CACHE_VERSION} is not recommended."
+        echo "  Please upgrade to version 8.0.5-1 before upgrading to 8.1.0 or higher."
+        echo "  Refer to https://git.io/vur4j for CI migration instructions."
+        echo "  Aborting for your own safety!"
+        echo
+        return 1
+      fi
+    fi
+
     echo "Migrating database..."
     exec_as_git bundle exec rake db:migrate >/dev/null
     exec_as_git echo "${GITLAB_VERSION}" > ${GITLAB_DATA_DIR}/tmp/VERSION
