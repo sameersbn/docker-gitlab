@@ -516,7 +516,7 @@ Out of the four files generated above, we need to install the `gitlab.key`, `git
 
 The default path that the gitlab application is configured to look for the SSL certificates is at `/home/git/data/certs`, this can however be changed using the `SSL_KEY_PATH`, `SSL_CERTIFICATE_PATH` and `SSL_DHPARAM_PATH` configuration options.
 
-If you remember from above, the `/home/git/data` path is the path of the [data store](#data-store), which means that we have to create a folder named certs inside `/srv/docker/gitlab/gitlab/` and copy the files into it and as a measure of security we will update the permission on the `gitlab.key` file to only be readable by the owner.
+If you remember from above, the `/home/git/data` path is the path of the [data store](#data-store), which means that we have to create a folder named `certs/` inside `/srv/docker/gitlab/gitlab/` and copy the files into it and as a measure of security we'll update the permission on the `gitlab.key` file to only be readable by the owner.
 
 ```bash
 mkdir -p /srv/docker/gitlab/gitlab/certs
