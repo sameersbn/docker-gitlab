@@ -464,7 +464,7 @@ docker run --name gitlab -d \
     sameersbn/gitlab:8.3.2
 ```
 
-Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of SMTP parameters that can be specified.
+Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of IMAP parameters that can be specified.
 
 ### SSL
 
