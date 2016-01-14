@@ -207,7 +207,7 @@ production: &base
         # Set a timeout, in seconds, for LDAP queries. This helps avoid blocking
         # a request if the LDAP server becomes unresponsive.
         # A value of 0 means there is no timeout.
-        timeout: 10
+        timeout: {{LDAP_TIMEOUT}}
 
         # This setting specifies if LDAP server is Active Directory LDAP server.
         # For non AD servers it skips the AD specific queries.
