@@ -114,6 +114,7 @@ gitlab_finalize_database_parameters() {
     DB_USER=${DB_USER:-${POSTGRESQL_ENV_POSTGRES_USER}}
     DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_POSTGRES_PASSWORD}}
     DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_POSTGRES_DB}}
+    DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_POSTGRES_USER}}
 
     # support for linked sameersbn/postgresql image
     DB_USER=${DB_USER:-${POSTGRESQL_ENV_DB_USER}}
