@@ -38,6 +38,8 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && gem install --no-document bundler \
  && rm -rf /var/lib/apt/lists/*
 
+RUN echo -e 'Host *\nUseRoaming no' >> /etc/ssh/ssh_config # Fix CVE-2016-0777 and CVE-2016-0778
+
 COPY assets/build/ ${GITLAB_BUILD_DIR}/
 RUN bash ${GITLAB_BUILD_DIR}/install.sh
 
