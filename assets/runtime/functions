@@ -1120,6 +1120,11 @@ migrate_database() {
 
     echo "Migrating database..."
     exec_as_git bundle exec rake db:migrate >/dev/null
+
+    if [[ ${DB_ADAPTER} == mysql2 ]]; then
+      exec_as_git bundle exec rake add_limits_mysql >/dev/null
+    fi
+
     echo "${GITLAB_VERSION}" > ${GITLAB_DATA_DIR}/tmp/VERSION
     rm -rf ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT # force cache cleanup
   fi
