@@ -56,6 +56,9 @@ cd ${GITLAB_SHELL_INSTALL_DIR}
 exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 exec_as_git ./bin/install
 
+# remove unused repositories directory created by gitlab-shell install
+exec_as_git rm -rf ${GITLAB_HOME}/repositories
+
 echo "Cloning gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
 exec_as_git git clone -q -b ${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_CLONE_URL} ${GITLAB_WORKHORSE_INSTALL_DIR}
 
