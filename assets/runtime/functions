@@ -1106,7 +1106,7 @@ migrate_database() {
     fi
 
     if [[ $(vercmp ${GITLAB_VERSION} 8.0.0) -gt 0 ]]; then
-      if [[ $(vercmp ${CACHE_VERSION} 8.0.0) -lt 0 ]]; then
+      if [[ -n ${CACHE_VERSION} && $(vercmp ${CACHE_VERSION} 8.0.0) -lt 0 ]]; then
         echo
         echo "ABORT: "
         echo "  Upgrading to GitLab ${GITLAB_VERSION} from ${CACHE_VERSION} is not recommended."
