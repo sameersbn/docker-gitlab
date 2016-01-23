@@ -956,6 +956,9 @@ sanitize_datadir() {
   chmod -R u+rwX ${GITLAB_DOWNLOADS_DIR}
   chown -R ${GITLAB_USER}: ${GITLAB_DOWNLOADS_DIR}
 
+  chmod -R u+rwX ${GITLAB_DATA_DIR}/tmp
+  chown -R ${GITLAB_USER}: ${GITLAB_DATA_DIR}/tmp
+
   chmod -R u+rwX ${GITLAB_SHARED_DIR}
   chown -R ${GITLAB_USER}: ${GITLAB_SHARED_DIR}
 
