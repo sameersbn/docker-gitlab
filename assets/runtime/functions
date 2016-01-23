@@ -540,7 +540,7 @@ gitlab_configure_oauth_azure() {
       OAUTH_AZURE_API_SECRET \
       OAUTH_AZURE_TENANT_ID
   else
-    exec_as_git sed -i "/name: 'azure_oauth2'/,/{{OAUTH_AZURE_API_SECRET}}/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/name: 'azure_oauth2'/,/{{OAUTH_AZURE_TENANT_ID}}/d" ${GITLAB_CONFIG}
   fi
 }
 
