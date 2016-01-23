@@ -7,6 +7,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - gitlab-workhorse: upgrade to v0.6.1
 - gitlab: upgrade to CE v8.4.0
 - oauth: expose cas3 oauth configuration options
+- oauth: expose azure oauth configuration options
 
 **8.3.4**
 - gitlab-workhorse: upgrade to v0.5.4

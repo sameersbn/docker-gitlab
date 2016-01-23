@@ -529,6 +529,21 @@ gitlab_configure_oauth_crowd() {
   fi
 }
 
+gitlab_configure_oauth_azure() {
+  if [[ -n ${OAUTH_AZURE_API_KEY} && \
+        -n ${OAUTH_AZURE_API_SECRET} && \
+        -n ${OAUTH_AZURE_TENANT_ID} ]]; then
+    echo "Configuring gitlab::oauth::azure..."
+    OAUTH_ENABLED=${OAUTH_ENABLED:-true}
+    update_template ${GITLAB_CONFIG} \
+      OAUTH_AZURE_API_KEY \
+      OAUTH_AZURE_API_SECRET \
+      OAUTH_AZURE_TENANT_ID
+  else
+    exec_as_git sed -i "/name: 'azure_oauth2'/,/{{OAUTH_AZURE_TENANT_ID}}/d" ${GITLAB_CONFIG}
+  fi
+}
+
 gitlab_configure_oauth() {
   echo "Configuring gitlab::oauth..."
 
@@ -541,6 +556,7 @@ gitlab_configure_oauth() {
   gitlab_configure_oauth_bitbucket
   gitlab_configure_oauth_saml
   gitlab_configure_oauth_crowd
+  gitlab_configure_oauth_azure
 
   OAUTH_ENABLED=${OAUTH_ENABLED:-false}
   update_template ${GITLAB_CONFIG} \
@@ -550,7 +566,7 @@ gitlab_configure_oauth() {
     OAUTH_AUTO_LINK_LDAP_USER
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
-    cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd)
+    cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2)
       update_template ${GITLAB_CONFIG} OAUTH_AUTO_SIGN_IN_WITH_PROVIDER
       ;;
     *)
