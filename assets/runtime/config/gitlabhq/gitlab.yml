@@ -347,6 +347,11 @@ production: &base
             crowd_server_url: '{{OAUTH_CROWD_SERVER_URL}}',
             application_name: '{{OAUTH_CROWD_APP_NAME}}',
             application_password: '{{OAUTH_CROWD_APP_PASSWORD}}' } }
+      - { name: 'azure_oauth2',
+          args: {
+            client_id: '{{OAUTH_AZURE_API_KEY}}',
+            client_secret: '{{OAUTH_AZURE_API_SECRET}}',
+            tenant_id: '{{OAUTH_AZURE_TENANT_ID}}' } }
 
     # SSO maximum session duration in seconds. Defaults to CAS default of 8 hours.
     # cas3:
