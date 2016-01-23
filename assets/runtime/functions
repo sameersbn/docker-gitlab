@@ -956,8 +956,8 @@ sanitize_datadir() {
   chmod -R u+rwX ${GITLAB_DOWNLOADS_DIR}
   chown -R ${GITLAB_USER}: ${GITLAB_DOWNLOADS_DIR}
 
-  chmod -R u+rwX ${GITLAB_DATA_DIR}/tmp
-  chown -R ${GITLAB_USER}: ${GITLAB_DATA_DIR}/tmp
+  chmod -R u+rwX ${GITLAB_TEMP_DIR}
+  chown -R ${GITLAB_USER}: ${GITLAB_TEMP_DIR}
 
   chmod -R u+rwX ${GITLAB_SHARED_DIR}
   chown -R ${GITLAB_USER}: ${GITLAB_SHARED_DIR}
@@ -1128,7 +1128,7 @@ migrate_database() {
 
   # migrate database if the gitlab version has changed.
   CACHE_VERSION=
-  [[ -f ${GITLAB_DATA_DIR}/tmp/VERSION ]] && CACHE_VERSION=$(cat ${GITLAB_DATA_DIR}/tmp/VERSION)
+  [[ -f ${GITLAB_TEMP_DIR}/VERSION ]] && CACHE_VERSION=$(cat ${GITLAB_TEMP_DIR}/VERSION)
   if [[ ${GITLAB_VERSION} != ${CACHE_VERSION} ]]; then
     ## version check, only upgrades are allowed
     if [[ -n ${CACHE_VERSION} && $(vercmp ${GITLAB_VERSION} ${CACHE_VERSION}) -lt 0 ]]; then
@@ -1161,24 +1161,24 @@ migrate_database() {
       exec_as_git bundle exec rake add_limits_mysql >/dev/null
     fi
 
-    echo "${GITLAB_VERSION}" > ${GITLAB_DATA_DIR}/tmp/VERSION
-    rm -rf ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT # force cache cleanup
+    echo "${GITLAB_VERSION}" > ${GITLAB_TEMP_DIR}/VERSION
+    rm -rf ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT # force cache cleanup
   fi
 
   # clear cache if relative_url has changed.
-  [[ -f ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT ]] && CACHE_GITLAB_RELATIVE_URL_ROOT=$(cat ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT)
-  if [[ ! -f ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT || ${GITLAB_RELATIVE_URL_ROOT} != ${CACHE_GITLAB_RELATIVE_URL_ROOT} ]]; then
+  [[ -f ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT ]] && CACHE_GITLAB_RELATIVE_URL_ROOT=$(cat ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT)
+  if [[ ! -f ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT || ${GITLAB_RELATIVE_URL_ROOT} != ${CACHE_GITLAB_RELATIVE_URL_ROOT} ]]; then
     # clear cached assets
-    rm -rf ${GITLAB_DATA_DIR}/tmp/cache ${GITLAB_DATA_DIR}/tmp/public/assets
-    mkdir -p ${GITLAB_DATA_DIR}/tmp/cache ${GITLAB_DATA_DIR}/tmp/public/assets
-    chown ${GITLAB_USER}: ${GITLAB_DATA_DIR}/tmp/cache ${GITLAB_DATA_DIR}/tmp/public/assets
+    rm -rf ${GITLAB_TEMP_DIR}/cache ${GITLAB_TEMP_DIR}/public/assets
+    mkdir -p ${GITLAB_TEMP_DIR}/cache ${GITLAB_TEMP_DIR}/public/assets
+    chown ${GITLAB_USER}: ${GITLAB_TEMP_DIR}/cache ${GITLAB_TEMP_DIR}/public/assets
 
     echo "Compiling assets. Please be patient, this could take a while..."
     exec_as_git bundle exec rake assets:clean assets:precompile >/dev/null 2>&1
 
     echo "Clearing cache..."
     exec_as_git bundle exec rake cache:clear >/dev/null 2>&1
-    echo "${GITLAB_RELATIVE_URL_ROOT}" > ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT
+    echo "${GITLAB_RELATIVE_URL_ROOT}" > ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT
   fi
 }
 
