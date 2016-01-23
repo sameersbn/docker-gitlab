@@ -638,6 +638,12 @@ GitLab leverages OmniAuth to allow users to sign in using Twitter, GitHub, and o
 
 Refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/omniauth.html) for additional information.
 
+#### CAS3
+
+To enable the CAS OmniAuth provider you must register your application with your CAS instance. This requires the service URL GitLab will supply to CAS. It should be something like: https://git.example.com:443/users/auth/cas3/callback?url. By default handling for SLO is enabled, you only need to configure CAS for backchannel logout.
+
+For example, if your cas server url is `https://sso.example.com`, then adding `--env 'OAUTH_CAS3_SERVER=https://sso.example.com'` to the docker run command enables support for CAS3 OAuth. Please refer to [Available Configuration Parameters](#available-configuration-parameters) for additional CAS3 configuration parameters.
+
 #### Google
 
 To enable the Google OAuth2 OmniAuth provider you must register your application with Google. Google will generate a client ID and secret key for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/google.html) for the procedure to generate the client ID and secret key with google.
@@ -855,6 +861,12 @@ Below is the complete list of available options that can be used to customize yo
 - **OAUTH_ALLOW_SSO**: This allows users to login without having a user account first. User accounts will be created automatically when authentication was successful. Defaults to `false`.
 - **OAUTH_BLOCK_AUTO_CREATED_USERS**: Locks down those users until they have been cleared by the admin. Defaults to `true`.
 - **OAUTH_AUTO_LINK_LDAP_USER**: Look up new users in LDAP servers. If a match is found (same uid), automatically link the omniauth identity with the LDAP account. Defaults to `false`.
+- **OAUTH_CAS3_LABEL**: The "Sign in with" button label. Defaults to "cas3".
+- **OAUTH_CAS3_SERVER**: CAS3 server URL. No defaults.
+- **OAUTH_CAS3_DISABLE_SSL_VERIFICATION**: Disable CAS3 SSL verification. Defaults to `false`.
+- **OAUTH_CAS3_LOGIN_URL**: CAS3 login URL. Defaults to `/cas/login`
+- **OAUTH_CAS3_VALIDATE_URL**: CAS3 validation URL. Defaults to `/cas/p3/serviceValidate`
+- **OAUTH_CAS3_LOGOUT_URL**: CAS3 logout URL. Defaults to `/cas/logout`
 - **OAUTH_GOOGLE_API_KEY**: Google App Client ID. No defaults.
 - **OAUTH_GOOGLE_APP_SECRET**: Google App Client Secret. No defaults.
 - **OAUTH_GOOGLE_RESTRICT_DOMAIN**: Google App restricted domain. No defaults.
