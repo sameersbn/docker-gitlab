@@ -302,14 +302,14 @@ production: &base
     # Documentation for this is available at http://doc.gitlab.com/ce/integration/omniauth.html
     providers:
       # See omniauth-cas3 for more configuration details
-      # - { name: 'cas3',
-      #     label: 'cas3',
-      #     args: {
-      #             url: 'https://sso.example.com',
-      #             disable_ssl_verification: false,
-      #             login_url: '/cas/login',
-      #             service_validate_url: '/cas/p3/serviceValidate',
-      #             logout_url: '/cas/logout'} }
+      - { name: 'cas3',
+          label: '{{OAUTH_CAS3_LABEL}}',
+          args: {
+                  url: '{{OAUTH_CAS3_SERVER}}',
+                  disable_ssl_verification: {{OAUTH_CAS3_DISABLE_SSL_VERIFICATION}},
+                  login_url: '{{OAUTH_CAS3_LOGIN_URL}}',
+                  service_validate_url: '{{OAUTH_CAS3_VALIDATE_URL}}',
+                  logout_url: '{{OAUTH_CAS3_LOGOUT_URL}}'} }
       - { name: 'github',
           label: 'GitHub',
           app_id: '{{OAUTH_GITHUB_API_KEY}}',

@@ -402,6 +402,22 @@ gitlab_configure_ldap() {
     LDAP_LABEL
 }
 
+gitlab_configure_oauth_cas3() {
+  if [[ -n ${OAUTH_CAS3_SERVER} ]]; then
+    echo "Configuring gitlab::oauth::cas3..."
+    OAUTH_ENABLED=${OAUTH_ENABLED:-true}
+    update_template ${GITLAB_CONFIG} \
+      OAUTH_CAS3_LABEL \
+      OAUTH_CAS3_SERVER \
+      OAUTH_CAS3_DISABLE_SSL_VERIFICATION \
+      OAUTH_CAS3_LOGIN_URL \
+      OAUTH_CAS3_VALIDATE_URL \
+      OAUTH_CAS3_LOGOUT_URL
+  else
+    exec_as_git sed -i "/name: 'cas3'/,/{{OAUTH_CAS3_LOGOUT_URL}}/d" ${GITLAB_CONFIG}
+  fi
+}
+
 gitlab_configure_oauth_google() {
   if [[ -n ${OAUTH_GOOGLE_API_KEY} && -n ${OAUTH_GOOGLE_APP_SECRET} ]]; then
     echo "Configuring gitlab::oauth::google..."
@@ -516,6 +532,7 @@ gitlab_configure_oauth_crowd() {
 gitlab_configure_oauth() {
   echo "Configuring gitlab::oauth..."
 
+  gitlab_configure_oauth_cas3
   gitlab_configure_oauth_google
   gitlab_configure_oauth_facebook
   gitlab_configure_oauth_twitter
@@ -533,7 +550,7 @@ gitlab_configure_oauth() {
     OAUTH_AUTO_LINK_LDAP_USER
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
-    google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd)
+    cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd)
       update_template ${GITLAB_CONFIG} OAUTH_AUTO_SIGN_IN_WITH_PROVIDER
       ;;
     *)
