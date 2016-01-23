@@ -1166,16 +1166,8 @@ migrate_database() {
   fi
 
   # clear cache if relative_url has changed.
-  [[ -f ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT ]] && CACHE_GITLAB_RELATIVE_URL_ROOT=$(cat ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT)
-  if [[ ! -f ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT || ${GITLAB_RELATIVE_URL_ROOT} != ${CACHE_GITLAB_RELATIVE_URL_ROOT} ]]; then
-    # clear cached assets
-    rm -rf ${GITLAB_TEMP_DIR}/cache ${GITLAB_TEMP_DIR}/public/assets
-    mkdir -p ${GITLAB_TEMP_DIR}/cache ${GITLAB_TEMP_DIR}/public/assets
-    chown ${GITLAB_USER}: ${GITLAB_TEMP_DIR}/cache ${GITLAB_TEMP_DIR}/public/assets
-
-    echo "Compiling assets. Please be patient, this could take a while..."
-    exec_as_git bundle exec rake assets:clean assets:precompile >/dev/null 2>&1
-
+  [[ -f ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT ]] && CACHE_GITLAB_RELATIVE_URL_ROOT=$(cat ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT)
+  if [[ ! -f ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT || ${GITLAB_RELATIVE_URL_ROOT} != ${CACHE_GITLAB_RELATIVE_URL_ROOT} ]]; then
     echo "Clearing cache..."
     exec_as_git bundle exec rake cache:clear >/dev/null 2>&1
     echo "${GITLAB_RELATIVE_URL_ROOT}" > ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT

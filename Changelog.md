@@ -2,6 +2,9 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**latest**
+- `assets:precompile` moved back to build time
+
 **8.4.0**
 - gitlab-shell: upgrade to v.2.6.10
 - gitlab-workhorse: upgrade to v0.6.1
