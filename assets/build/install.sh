@@ -63,7 +63,7 @@ echo "Cloning gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
 exec_as_git git clone -q -b ${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_CLONE_URL} ${GITLAB_WORKHORSE_INSTALL_DIR}
 
 cd ${GITLAB_WORKHORSE_INSTALL_DIR}
-exec_as_git make
+make install
 
 # shallow clone gitlab-ce
 echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
@@ -243,7 +243,7 @@ cat > /etc/supervisor/conf.d/gitlab-workhorse.conf <<EOF
 priority=20
 directory=${GITLAB_INSTALL_DIR}
 environment=HOME=${GITLAB_HOME}
-command=${GITLAB_WORKHORSE_INSTALL_DIR}/gitlab-workhorse
+command=/usr/local/bin/gitlab-workhorse
   -listenUmask 0
   -listenNetwork unix
   -listenAddr ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab-workhorse.socket
