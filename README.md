@@ -39,6 +39,7 @@
         - [Installing Trusted SSL Server Certificates](#installing-trusted-ssl-server-certificates)
     - [Deploy to a subdirectory (relative url root)](#deploy-to-a-subdirectory-relative-url-root)
     - [OmniAuth Integration](#omniauth-integration)
+        - [CAS3](#cas3)
         - [Google](#google)
         - [Twitter](#twitter)
         - [GitHub](#github)
