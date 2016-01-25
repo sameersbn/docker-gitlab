@@ -46,6 +46,7 @@
         - [BitBucket](#bitbucket)
         - [SAML](#saml)
         - [Crowd](#crowd)
+        - [Microsoft Azure](#microsoft-azure)
     - [External Issue Trackers](#external-issue-trackers)
     - [Mapping host user and group](#mapping-host-user-and-group)
     - [Piwik](#piwik)
