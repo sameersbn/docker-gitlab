@@ -1,4 +1,4 @@
-[![Docker Repository on Quay.io](https://quay.io/repository/leebing/docker-gitlab/status "Docker Repository on Quay.io")](https://quay.io/repository/leebing/docker-gitlab) [![](https://badge.imagelayers.io/sameersbn/gitlab.svg)](https://imagelayers.io/?images=sameersbn/gitlab:latest 'Get your own badge on imagelayers.io')
+[![在Quay上的docker仓库](https://quay.io/repository/leebing/docker-gitlab/status "在 Quay.io上的docker仓库")](https://quay.io/repository/leebing/docker-gitlab) [![](https://badge.imagelayers.io/sameersbn/gitlab.svg)](https://imagelayers.io/?images=sameersbn/gitlab:latest 'Get your own badge on imagelayers.io')
 
 [![Deploy to Tutum](https://s.tutum.co/deploy-to-tutum.svg)](https://dashboard.tutum.co/stack/deploy/)
 
