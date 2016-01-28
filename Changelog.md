@@ -2,6 +2,9 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**latest**
+- gitlab-workhorse: upgrade to v0.6.2
+
 **8.4.1**
 - gitlab: upgrade to CE v8.4.1
 
