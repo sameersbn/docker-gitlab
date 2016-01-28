@@ -4,6 +4,7 @@ This file only reflects the changes that are made in this image. Please refer to
 
 **latest**
 - gitlab-workhorse: upgrade to v0.6.2
+- gitlab: upgrade to CE v8.4.2
 
 **8.4.1**
 - gitlab: upgrade to CE v8.4.1
