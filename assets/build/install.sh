@@ -52,7 +52,7 @@ EOF
 exec_as_git git config --global core.autocrlf input
 
 # install gitlab-shell
-echo "Cloning gitlab-shell v.${GITLAB_SHELL_VERSION}..."
+echo "正在克隆 gitlab-shell v.${GITLAB_SHELL_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_SHELL_VERSION} --depth 1 ${GITLAB_SHELL_CLONE_URL} ${GITLAB_SHELL_INSTALL_DIR}
 
 cd ${GITLAB_SHELL_INSTALL_DIR}
@@ -62,14 +62,14 @@ exec_as_git ./bin/install
 # remove unused repositories directory created by gitlab-shell install
 exec_as_git rm -rf ${GITLAB_HOME}/repositories
 
-echo "Cloning gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
+echo "正在克隆 gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
 exec_as_git git clone -q -b ${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_CLONE_URL} ${GITLAB_WORKHORSE_INSTALL_DIR}
 
 cd ${GITLAB_WORKHORSE_INSTALL_DIR}
 make install
 
 # shallow clone gitlab-ce
-echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
+echo "正在克隆 gitlab-ce v.${GITLAB_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
 
 # remove HSTS config from the default headers, we configure it in nginx
@@ -91,7 +91,7 @@ chown -R ${GITLAB_USER}: ${GITLAB_HOME}
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.mysql ${GITLAB_INSTALL_DIR}/config/database.yml
 
-echo "Compiling assets. Please be patient, this could take a while..."
+echo "正在编译资源。请耐心等待,这个操作将执行一会儿..."
 exec_as_git bundle exec rake assets:clean assets:precompile USE_DB=false >/dev/null 2>&1
 
 # remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
