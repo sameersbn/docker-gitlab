@@ -2,49 +2,49 @@ all: build
 
 help:
 	@echo ""
-	@echo "-- Help Menu"
+	@echo "-- 帮助菜单"
 	@echo ""
-	@echo "   1. make build        - build the gitlab image"
-	@echo "   2. make quickstart   - start gitlab"
-	@echo "   3. make stop         - stop gitlab"
-	@echo "   4. make logs         - view logs"
-	@echo "   5. make purge        - stop and remove the container"
+	@echo "   1. make build        - 构建gitlab镜像"
+	@echo "   2. make quickstart   - 启动gitlab"
+	@echo "   3. make stop         - 停止gitlab"
+	@echo "   4. make logs         - 显示日志"
+	@echo "   5. make purge        - 停止并且移除容器"
 
 build:
-	@docker build --tag=sameersbn/gitlab .
+	@docker build --tag=leebing/gitlab .
 
 release: build
-	@docker build --tag=sameersbn/gitlab:$(shell cat VERSION) .
+	@docker build --tag=leebing/gitlab:$(shell cat VERSION) .
 
 quickstart:
-	@echo "Starting postgresql container..."
+	@echo "正在启动postgresql容器..."
 	@docker run --name=gitlab-postgresql -d \
 		--env='DB_NAME=gitlabhq_production' \
 		--env='DB_USER=gitlab' --env='DB_PASS=password' \
 		sameersbn/postgresql:latest
-	@echo "Starting redis container..."
+	@echo "正在启动redis容器..."
 	@docker run --name=gitlab-redis -d \
 		sameersbn/redis:latest
-	@echo "Starting gitlab container..."
+	@echo "正在启动gitlab容器..."
 	@docker run --name='gitlab-demo' -d \
 		--link=gitlab-postgresql:postgresql --link=gitlab-redis:redisio \
 		--publish=10022:22 --publish=10080:80 \
 		--env='GITLAB_PORT=10080' --env='GITLAB_SSH_PORT=10022' \
 		sameersbn/gitlab:latest
-	@echo "Please be patient. This could take a while..."
-	@echo "GitLab will be available at http://localhost:10080"
-	@echo "Type 'make logs' for the logs"
+	@echo "请耐心等待. 处理将会花一会儿时间..."
+	@echo "请通过http://localhost:10080访问gitlab"
+	@echo "需要获取日志请输入'make logs'"
 
 stop:
-	@echo "Stopping gitlab..."
+	@echo "正在停止gitlab..."
 	@docker stop gitlab-demo >/dev/null
-	@echo "Stopping redis..."
+	@echo "正在停止redis..."
 	@docker stop gitlab-redis >/dev/null
-	@echo "Stopping postgresql..."
+	@echo "正在停止postgresql..."
 	@docker stop gitlab-postgresql >/dev/null
 
 purge: stop
-	@echo "Removing stopped containers..."
+	@echo "正在移除已停止的容器..."
 	@docker rm -v gitlab-demo >/dev/null
 	@docker rm -v gitlab-redis >/dev/null
 	@docker rm -v gitlab-postgresql >/dev/null
