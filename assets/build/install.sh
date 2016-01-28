@@ -1,7 +1,10 @@
 #!/bin/bash
 set -e
 
-GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
+#modify by leebing 20160128 start 切换代码为中文版
+#GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
+GITLAB_CLONE_URL=https://gitlab.com/larryli/gitlab.git
+#modify by leebing 20160128 end
 GITLAB_SHELL_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-shell.git
 GITLAB_WORKHORSE_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
 
