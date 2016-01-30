@@ -28,13 +28,15 @@
       </header>
       <section>
         <h1>
-<a id="zero-to-gitlab-in-5-seconds-or-less" class="anchor" href="#zero-to-gitlab-in-5-seconds-or-less" aria-hidden="true"><span class="octicon octicon-link"></span></a>Zero to GitLab in 5 seconds or less*</h1>
+<a id="zero-to-gitlab-in-5-seconds-or-less" class="anchor" href="#zero-to-gitlab-in-5-seconds-or-less" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Zero to GitLab in 5 seconds or less*</h1>
+
+<p><em>P.S. Refer to the <a href="https://github.com/sameersbn/docker-gitlab#quick-start">Quickstart Guide</a> for the most up-to-date instructions</em></p>
 
 <p>The quickest way to get started is using <a href="https://docs.docker.com/compose/">docker-compose</a>.</p>
 
 <div class="highlight highlight-source-shell"><pre>wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml</pre></div>
 
-<p>Generate a random string and assign to <code>GITLAB_SECRETS_DB_KEY_BASE</code> environment variable in <code>docker-compose.yml</code>. Once set, you should not change this value and ensure you backup this value.</p>
+<p>Generate a random string and assign to GITLAB_SECRETS_DB_KEY_BASE environment variable. Once set you should not change this value and ensure you backup this value.</p>
 
 <p>Start GitLab using:</p>
 
@@ -48,7 +50,7 @@
     --env <span class="pl-s"><span class="pl-pds">'</span>DB_NAME=gitlabhq_production<span class="pl-pds">'</span></span> \
     --env <span class="pl-s"><span class="pl-pds">'</span>DB_USER=gitlab<span class="pl-pds">'</span></span> --env <span class="pl-s"><span class="pl-pds">'</span>DB_PASS=password<span class="pl-pds">'</span></span> \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
-    sameersbn/postgresql:9.4-7</pre></div>
+    sameersbn/postgresql:9.4-12</pre></div>
 
 <p>Step 2. Launch a redis container</p>
 
@@ -64,7 +66,7 @@
     --env <span class="pl-s"><span class="pl-pds">'</span>GITLAB_PORT=10080<span class="pl-pds">'</span></span> --env <span class="pl-s"><span class="pl-pds">'</span>GITLAB_SSH_PORT=10022<span class="pl-pds">'</span></span> \
     --env <span class="pl-s"><span class="pl-pds">'</span>GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alpha-numeric-string<span class="pl-pds">'</span></span> \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:8.1.3</pre></div>
+    sameersbn/gitlab:8.4.2</pre></div>
 
 <p><strong>NOTE</strong>: Please allow a couple of minutes for the GitLab application to start.</p>
 
