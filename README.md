@@ -1022,23 +1022,16 @@ For a complete list of available rake tasks please refer https://github.com/gitl
 
 ## Import Repositories
 
-By default the `docker-compose.yml` places GitLab repos in `/srv/docker/gitlab/gitlab/repositories` on the host, they are in `/home/git/data` inside the container.
-Copy all the **bare** repos (by rsync or scp, rsync is faster) to that folder on the host so that they are visible inside the container.
-Before you run the next command, make sure the DB container (`postgresql` by default) and the `redis` container are running. The easiest way is to start all the containers with `docker-compose up -d` and then stop the GitLab container.
+Copy all the **bare** git repositories to the `repositories/` directory of the [data store](#data-store) and execute the `gitlab:import:repos` rake task like so:
 
-To import all the repositories into GitLab execute this `rake` command in a terminal.
-```
-docker run --name gitlab -it --rm \
-    --link redis:NAME_OF_REDIS_CONTAINER \
-    --link postgresql:NAME_OF_POSTGRES_CONTAINER \
-    --e "GITLAB_SECRETS_DB_KEY_BASE=dslkjfskjdfwlekjflskdjflskdjfalskdhflaksdjagjdl"
-    -v "/srv/docker/gitlab/gitlab:/home/git/data"
-    [OTHER OPTIONS] \
+```bash
+docker run --name gitlab -it --rm [OPTIONS] \
     sameersbn/gitlab:8.4.3 app:rake gitlab:import:repos
 ```
-Watch the logs and your repos should be available into your new gitlab container.
-Most commands can be executed with `rake`.
-See [Rake Tasks](#rake-tasks)
+
+Watch the logs and your repositories should be available into your new gitlab container.
+
+See [Rake Tasks](#rake-tasks) for more information on executing rake tasks.
 
 ## Upgrading
 
