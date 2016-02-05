@@ -993,27 +993,27 @@ AWS uploads are performed alongside normal backups, both through the appropriate
 The `app:rake` command allows you to run gitlab rake tasks. To run a rake task simply specify the task to be executed to the `app:rake` command. For example, if you want to gather information about GitLab and the system it runs on.
 
 ```bash
-docker run --name gitlab -d [OPTIONS] \
+docker run --name gitlab -it --rm [OPTIONS] \
     sameersbn/gitlab:8.4.3 app:rake gitlab:env:info
 ```
 
 You can also use `docker exec` to run raketasks on running gitlab instance. For example,
 
 ```bash
-docker exec -it gitlab sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
+docker exec -it gitlab sudo -HEu git bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
 
 Similarly, to import bare repositories into GitLab project instance
 
 ```bash
-docker run --name gitlab -d [OPTIONS] \
+docker run --name gitlab -it --rm [OPTIONS] \
     sameersbn/gitlab:8.4.3 app:rake gitlab:import:repos
 ```
 
 Or
 
 ```bash
-docker exec -it gitlab sudo -u git -H bundle exec rake gitlab:import:repos RAILS_ENV=production
+docker exec -it gitlab sudo -HEu git bundle exec rake gitlab:import:repos RAILS_ENV=production
 ```
 
 For a complete list of available rake tasks please refer https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks or the help section of your gitlab installation.
