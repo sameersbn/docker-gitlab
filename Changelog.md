@@ -42,7 +42,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - renamed config `CA_CERTIFICATES_PATH` to `SSL_CA_CERTIFICATES_PATH`
 - renamed config `GITLAB_HTTPS_HSTS_ENABLED` to `NGINX_HSTS_ENABLED`
 - renamed config `GITLAB_HTTPS_HSTS_MAXAGE` to `NGINX_HSTS_MAXAGE`
-- renamed config `GITLAB_BACKUPS` to `GITLAB_BACKUPS_SCHEDULE`
+- renamed config `GITLAB_BACKUPS` to `GITLAB_BACKUP_SCHEDULE`
 - gitlab-workhorse: upgrade to v0.5.1
 - gitlab: upgrade to CE v8.3.0
 - expose `GITLAB_MAX_OBJECT_SIZE` configuration parameter
