@@ -801,6 +801,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_BACKUP_PG_SCHEMA**: Specify the PostgreSQL schema for the backups. No defaults, which means that all schemas will be backed up. see #524
 - **GITLAB_BACKUP_ARCHIVE_PERMISSIONS**: Sets the permissions of the backup archives. Defaults to `0600`. [See](http://doc.gitlab.com/ce/raketasks/backup_restore.html#backup-archive-permissions)
 - **GITLAB_BACKUP_TIME**: Set a time for the automatic backups in `HH:MM` format. Defaults to `04:00`.
+- **GITLAB_BACKUP_SKIP**: Specified sections are skipped by the backups. Defaults to empty, i.e. `lfs,uploads`. [See](http://doc.gitlab.com/ce/raketasks/backup_restore.html#create-a-backup-of-the-gitlab-system)
 - **GITLAB_SSH_HOST**: The ssh host. Defaults to **GITLAB_HOST**.
 - **GITLAB_SSH_PORT**: The ssh port number. Defaults to `22`.
 - **GITLAB_RELATIVE_URL_ROOT**: The relative url of the GitLab server, e.g. `/git`. No default.
