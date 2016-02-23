@@ -49,7 +49,7 @@
         - [Crowd](#crowd)
         - [Microsoft Azure](#microsoft-azure)
     - [External Issue Trackers](#external-issue-trackers)
-    - [Mapping host user and group](#mapping-host-user-and-group)
+    - [Host UID / GID Mapping](#host-uid--gid-mapping)
     - [Piwik](#piwik)
     - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
