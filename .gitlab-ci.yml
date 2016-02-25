@@ -1,0 +1,5 @@
+image: gitlab/dind
+
+deploy:
+  script:
+    - ci/gitlab
