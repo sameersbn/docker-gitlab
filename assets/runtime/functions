@@ -932,7 +932,7 @@ initialize_datadir() {
 
   # create the uploads directory
   mkdir -p ${GITLAB_DATA_DIR}/uploads
-  chmod 0750 ${GITLAB_DATA_DIR}/uploads
+  chmod 0700 ${GITLAB_DATA_DIR}/uploads
   chown ${GITLAB_USER}: ${GITLAB_DATA_DIR}/uploads
 
   # create the .ssh directory
@@ -970,7 +970,7 @@ sanitize_datadir() {
 
   find ${GITLAB_DATA_DIR}/uploads -type f -exec chmod 0644 {} \;
   find ${GITLAB_DATA_DIR}/uploads -type d -not -path ${GITLAB_DATA_DIR}/uploads -exec chmod 0755 {} \;
-  chmod 0750 ${GITLAB_DATA_DIR}/uploads/
+  chmod 0700 ${GITLAB_DATA_DIR}/uploads/
   chown ${GITLAB_USER}: ${GITLAB_DATA_DIR}/uploads/
 
   echo "Creating gitlab-shell hooks..."
