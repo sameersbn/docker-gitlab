@@ -38,8 +38,12 @@ production: &base
     # Otherwise, ssh host will be set to the `host:` value above
     ssh_host: {{GITLAB_SSH_HOST}}
 
-    # WARNING: See config/application.rb under "Relative url support" for the list of
-    # other files that need to be changed for relative url support
+    # Relative URL support
+    # WARNING: We recommend using an FQDN to host GitLab in a root path instead
+    # of using a relative URL.
+    # Documentation: http://doc.gitlab.com/ce/install/relative_url.html
+    # Uncomment and customize the following line to run in a non-root path
+    #
     relative_url_root: {{GITLAB_RELATIVE_URL_ROOT}}
 
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
@@ -284,7 +288,8 @@ production: &base
     auto_sign_in_with_provider: {{OAUTH_AUTO_SIGN_IN_WITH_PROVIDER}}
 
     # CAUTION!
-    # This allows users to login without having a user account first (default: false).
+    # This allows users to login without having a user account first. Define the allowed providers
+    # using an array, e.g. ["saml", "twitter"], or as true/false to allow all providers or none.
     # User accounts will be created automatically when authentication was successful.
     allow_single_sign_on: {{OAUTH_ALLOW_SSO}}
     # Locks down those users until they have been cleared by the admin (default: true).
@@ -292,6 +297,11 @@ production: &base
     # Look up new users in LDAP servers. If a match is found (same uid), automatically
     # link the omniauth identity with the LDAP account. (default: false)
     auto_link_ldap_user: {{OAUTH_AUTO_LINK_LDAP_USER}}
+
+    # Allow users with existing accounts to login and auto link their account via SAML
+    # login, without having to do a manual login first and manually add SAML
+    # (default: false)
+    auto_link_saml_user: {{OAUTH_AUTO_LINK_SAML_USER}}
 
     ## Auth providers
     # Uncomment the following lines and fill in the data of the auth provider you want to use

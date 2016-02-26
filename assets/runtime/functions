@@ -563,7 +563,8 @@ gitlab_configure_oauth() {
     OAUTH_ENABLED \
     OAUTH_ALLOW_SSO \
     OAUTH_BLOCK_AUTO_CREATED_USERS \
-    OAUTH_AUTO_LINK_LDAP_USER
+    OAUTH_AUTO_LINK_LDAP_USER \
+    OAUTH_AUTO_LINK_SAML_USER
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
     cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2)
@@ -932,7 +933,7 @@ initialize_datadir() {
 
   # create the uploads directory
   mkdir -p ${GITLAB_DATA_DIR}/uploads
-  chmod 0750 ${GITLAB_DATA_DIR}/uploads
+  chmod 0700 ${GITLAB_DATA_DIR}/uploads
   chown ${GITLAB_USER}: ${GITLAB_DATA_DIR}/uploads
 
   # create the .ssh directory
@@ -970,7 +971,7 @@ sanitize_datadir() {
 
   find ${GITLAB_DATA_DIR}/uploads -type f -exec chmod 0644 {} \;
   find ${GITLAB_DATA_DIR}/uploads -type d -not -path ${GITLAB_DATA_DIR}/uploads -exec chmod 0755 {} \;
-  chmod 0750 ${GITLAB_DATA_DIR}/uploads/
+  chmod 0700 ${GITLAB_DATA_DIR}/uploads/
   chown ${GITLAB_USER}: ${GITLAB_DATA_DIR}/uploads/
 
   echo "Creating gitlab-shell hooks..."
@@ -1123,7 +1124,9 @@ migrate_database() {
   esac
   if [[ -z ${COUNT} || ${COUNT} -eq 0 ]]; then
     echo "Setting up GitLab for firstrun. Please be patient, this could take a while..."
-    exec_as_git force=yes bundle exec rake gitlab:setup ${GITLAB_ROOT_PASSWORD:+GITLAB_ROOT_PASSWORD=$GITLAB_ROOT_PASSWORD} >/dev/null
+    exec_as_git force=yes bundle exec rake gitlab:setup \
+      ${GITLAB_ROOT_PASSWORD:+GITLAB_ROOT_PASSWORD=$GITLAB_ROOT_PASSWORD} \
+      ${GITLAB_ROOT_EMAIL:+GITLAB_ROOT_EMAIL=$GITLAB_ROOT_EMAIL} >/dev/null
   fi
 
   # migrate database if the gitlab version has changed.
