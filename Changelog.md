@@ -5,6 +5,7 @@ This file only reflects the changes that are made in this image. Please refer to
 **latest**
 - gitlab-workhorse: upgrade to v0.6.4
 - gitlab: upgrade to CE v8.5.0
+- firstrun: expose `GITLAB_ROOT_EMAIL` configuration option
 
 **8.4.4**
 - gitlab: upgrade to CE v8.4.4

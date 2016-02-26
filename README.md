@@ -768,7 +768,8 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_PORT**: The port of the GitLab server. This value indicates the public port on which the GitLab application will be accessible on the network and appropriately configures GitLab to generate the correct urls. It does not affect the port on which the internal nginx server will be listening on. Defaults to `443` if `GITLAB_HTTPS=true`, else defaults to `80`.
 - **GITLAB_SECRETS_DB_KEY_BASE**: Used to encrypt build variables. Ensure that you don't lose it. You can generate one using `pwgen -Bsv1 64`. If you are migrating from GitLab CI, you need to set this value to the value of `GITLAB_CI_SECRETS_DB_KEY_BASE`. No defaults.
 - **GITLAB_TIMEZONE**: Configure the timezone for the gitlab application. This configuration does not effect cron jobs. Defaults to `UTC`. See the list of [acceptable values](http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html).
-- **GITLAB_ROOT_PASSWORD**: The password for the root user. Defaults to `5iveL!fe`.
+- **GITLAB_ROOT_PASSWORD**: The password for the root user on firstrun. Defaults to `5iveL!fe`.
+- **GITLAB_ROOT_EMAIL**: The email for the root user on firstrun. Defaults to `admin@example.com`
 - **GITLAB_EMAIL**: The email address for the GitLab server. Defaults to value of `SMTP_USER`, else defaults to `example@example.com`.
 - **GITLAB_EMAIL_DISPLAY_NAME**: The name displayed in emails sent out by the GitLab mailer. Defaults to `GitLab`.
 - **GITLAB_EMAIL_REPLY_TO**: The reply-to address of emails sent out by GitLab. Defaults to value of `GITLAB_EMAIL`, else defaults to `noreply@example.com`.
