@@ -1086,6 +1086,9 @@ configure_gitlab() {
   gitlab_configure_gravatar
   gitlab_configure_analytics
   gitlab_configure_backups
+
+  # remove stale gitlab.socket
+  rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
 }
 
 configure_gitlab_shell() {
