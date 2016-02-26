@@ -873,6 +873,7 @@ Below is the complete list of available options that can be used to customize yo
 - **OAUTH_ALLOW_SSO**: This allows users to login without having a user account first. User accounts will be created automatically when authentication was successful. Defaults to `false`.
 - **OAUTH_BLOCK_AUTO_CREATED_USERS**: Locks down those users until they have been cleared by the admin. Defaults to `true`.
 - **OAUTH_AUTO_LINK_LDAP_USER**: Look up new users in LDAP servers. If a match is found (same uid), automatically link the omniauth identity with the LDAP account. Defaults to `false`.
+- **OAUTH_AUTO_LINK_SAML_USER**: Allow users with existing accounts to login and auto link their account via SAML login, without having to do a manual login first and manually add SAML. Defaults to `false`.
 - **OAUTH_CAS3_LABEL**: The "Sign in with" button label. Defaults to "cas3".
 - **OAUTH_CAS3_SERVER**: CAS3 server URL. No defaults.
 - **OAUTH_CAS3_DISABLE_SSL_VERIFICATION**: Disable CAS3 SSL verification. Defaults to `false`.

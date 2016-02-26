@@ -301,7 +301,7 @@ production: &base
     # Allow users with existing accounts to login and auto link their account via SAML
     # login, without having to do a manual login first and manually add SAML
     # (default: false)
-    auto_link_saml_user: false
+    auto_link_saml_user: {{OAUTH_AUTO_LINK_SAML_USER}}
 
     ## Auth providers
     # Uncomment the following lines and fill in the data of the auth provider you want to use
