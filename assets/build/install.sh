@@ -8,7 +8,7 @@ GITLAB_WORKHORSE_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
 BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
-  libc6-dev ruby2.1-dev golang-go \
+  libc6-dev ruby2.2-dev golang-go \
   libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
   libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev"
