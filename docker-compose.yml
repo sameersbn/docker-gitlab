@@ -2,7 +2,7 @@ version: '2'
 services:
   postgresql:
     restart: always
-    image: sameersbn/postgresql:9.4-13
+    image: sameersbn/postgresql:9.4-14
     environment:
       - DB_USER=gitlab
       - DB_PASS=password
@@ -11,19 +11,22 @@ services:
       - /srv/docker/gitlab/postgresql:/var/lib/postgresql
   gitlab:
     restart: always
-    image: sameersbn/gitlab:8.5.4
+    image: sameersbn/gitlab:8.5.5
     links:
-      - redis:redisio
-      - postgresql:postgresql
+      - redis
+      - postgresql
     ports:
       - "10080:80"
       - "10022:22"
     environment:
       - DB_HOST=postgresql
+      - DB_ADAPTER=postgresql
       - DB_POST=5432
       - DB_USER=gitlab
       - DB_PASS=password
-      - REDIS_HOST=redisio
+      - DB_NAME=gitlabhq_production
+
+      - REDIS_HOST=redis
       - REDIS_PORT=6379
 
       - DEBUG=false
