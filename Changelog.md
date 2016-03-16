@@ -5,6 +5,9 @@ This file only reflects the changes that are made in this image. Please refer to
 **8.5.7**
 - gitlab: upgrade to CE v8.5.7
 
+**8.5.5**
+- gitlab: upgrade to CE v8.5.5
+
 **8.5.4**
 - gitlab: upgrade to CE v8.5.4
 
