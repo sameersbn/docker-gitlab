@@ -153,7 +153,7 @@ docker run --name gitlab-postgresql -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
-    sameersbn/postgresql:9.4-14
+    sameersbn/postgresql:9.4-15
 ```
 
 Step 2. Launch a redis container
@@ -256,7 +256,7 @@ To illustrate linking with a postgresql container, we will use the [sameersbn/po
 First, lets pull the postgresql image from the docker index.
 
 ```bash
-docker pull sameersbn/postgresql:9.4-14
+docker pull sameersbn/postgresql:9.4-15
 ```
 
 For data persistence lets create a store for the postgresql and start the container.
@@ -275,7 +275,7 @@ docker run --name gitlab-postgresql -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
-    sameersbn/postgresql:9.4-14
+    sameersbn/postgresql:9.4-15
 ```
 
 The above command will create a database named `gitlabhq_production` and also create a user named `gitlab` with the password `password` with access to the `gitlabhq_production` database.
