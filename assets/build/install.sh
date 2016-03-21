@@ -253,6 +253,7 @@ command=/usr/local/bin/gitlab-workhorse
   -authBackend http://127.0.0.1:8080{{GITLAB_RELATIVE_URL_ROOT}}
   -authSocket ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
   -documentRoot ${GITLAB_INSTALL_DIR}/public
+  -proxyHeadersTimeout {{GITLAB_WORKHORSE_TIMEOUT}}
 user=git
 autostart=true
 autorestart=true

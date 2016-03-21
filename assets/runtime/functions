@@ -267,7 +267,9 @@ gitlab_configure_redis() {
 
 gitlab_configure_gitlab_workhorse() {
   echo "Configuring gitlab::gitlab-workhorse..."
-  update_template /etc/supervisor/conf.d/gitlab-workhorse.conf GITLAB_RELATIVE_URL_ROOT
+  update_template /etc/supervisor/conf.d/gitlab-workhorse.conf \
+    GITLAB_RELATIVE_URL_ROOT \
+    GITLAB_WORKHORSE_TIMEOUT
 }
 
 gitlab_configure_unicorn() {
