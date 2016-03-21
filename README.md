@@ -927,7 +927,7 @@ Below is the complete list of available options that can be used to customize yo
 - **RACK_ATTACK_MAXRETRY**: Number of failed auth attempts before which an IP should be banned. Defaults to `10`
 - **RACK_ATTACK_FINDTIME**: Number of seconds before resetting the per IP auth attempt counter. Defaults to `60`.
 - **RACK_ATTACK_BANTIME**: Number of seconds an IP should be banned after too many auth attempts. Defaults to `3600`.
-- **GITLAB_WORKHORSE_TIMEOUT**: Timeout for gitlab workhorse http proxy. Defaults to `1m0s`.
+- **GITLAB_WORKHORSE_TIMEOUT**: Timeout for gitlab workhorse http proxy. Defaults to `5m0s`.
 
 # Maintenance
 
