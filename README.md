@@ -152,6 +152,7 @@ Step 1. Launch a postgresql container
 docker run --name gitlab-postgresql -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
+    --env 'DB_EXTENSION=pg_trgm' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
     sameersbn/postgresql:9.4-17
 ```
@@ -180,10 +181,7 @@ docker run --name gitlab -d \
 
 __NOTE__: Please allow a couple of minutes for the GitLab application to start.
 
-Point your browser to `http://localhost:10080` and login using the default username and password:
-
-* username: **root**
-* password: **5iveL!fe**
+Point your browser to `http://localhost:10080` and set a password for the `root` user account.
 
 You should now have the GitLab application up and ready for testing. If you want to use this image in production the please read on.
 
@@ -232,6 +230,8 @@ CREATE DATABASE gitlabhq_production;
 GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
 ```
 
+Additionally since GitLab `8.6.0` the `pg_trgm` extension should also be loaded for the `gitlabhq_production` database.
+
 We are now ready to start the GitLab application.
 
 *Assuming that the PostgreSQL server host is 192.168.1.100*
@@ -274,6 +274,7 @@ The run command looks like this.
 docker run --name gitlab-postgresql -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
+    --env 'DB_EXTENSION=pg_trgm' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
     sameersbn/postgresql:9.4-17
 ```
