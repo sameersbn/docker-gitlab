@@ -152,6 +152,7 @@ Step 1. Launch a postgresql container
 docker run --name gitlab-postgresql -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
+    --env 'DB_EXTENSION=pg_trgm' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
     sameersbn/postgresql:9.4-17
 ```
@@ -180,10 +181,7 @@ docker run --name gitlab -d \
 
 __NOTE__: Please allow a couple of minutes for the GitLab application to start.
 
-Point your browser to `http://localhost:10080` and login using the default username and password:
-
-* username: **root**
-* password: **5iveL!fe**
+Point your browser to `http://localhost:10080` and set a password for the `root` user account.
 
 You should now have the GitLab application up and ready for testing. If you want to use this image in production the please read on.
 
@@ -232,6 +230,8 @@ CREATE DATABASE gitlabhq_production;
 GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
 ```
 
+Additionally since GitLab `8.6.0` the `pg_trgm` extension should also be loaded for the `gitlabhq_production` database.
+
 We are now ready to start the GitLab application.
 
 *Assuming that the PostgreSQL server host is 192.168.1.100*
@@ -274,6 +274,7 @@ The run command looks like this.
 docker run --name gitlab-postgresql -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
+    --env 'DB_EXTENSION=pg_trgm' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
     sameersbn/postgresql:9.4-17
 ```
@@ -715,6 +716,12 @@ To enable the Crowd server OAuth2 OmniAuth provider you must register your appli
 
 Configure GitLab to enable access the Crowd server by specifying the `OAUTH_CROWD_SERVER_URL`, `OAUTH_CROWD_APP_NAME` and `OAUTH_CROWD_APP_PASSWORD` environment variables.
 
+#### Auth0
+
+To enable the Auth0 OmniAuth provider you must register your application with [auth0](https://auth0.com/).
+
+Configure the following environment variables `OAUTH_AUTH0_CLIENT_ID`, `OAUTH_AUTH0_CLIENT_SECRET` and `OAUTH_AUTH0_DOMAIN` to complete the integration.
+
 #### Microsoft Azure
 
 To enable the Microsoft Azure OAuth2 OmniAuth provider you must register your application with Azure. Azure will generate a Client ID, Client secret and Tenant ID for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/azure.html) for the procedure.
@@ -905,6 +912,9 @@ Below is the complete list of available options that can be used to customize yo
 - **OAUTH_CROWD_SERVER_URL**: Crowd server url. No defaults.
 - **OAUTH_CROWD_APP_NAME**: Crowd server application name. No defaults.
 - **OAUTH_CROWD_APP_PASSWORD**: Crowd server application password. No defaults.
+- **OAUTH_AUTH0_CLIENT_ID**: Auth0 Client ID. No defaults.
+- **OAUTH_AUTH0_CLIENT_SECRET**: Auth0 Client secret. No defaults.
+- **OAUTH_AUTH0_DOMAIN**: Auth0 Domain. No defaults.
 - **OAUTH_AZURE_API_KEY**: Azure Client ID. No defaults.
 - **OAUTH_AZURE_API_SECRET**: Azure Client secret. No defaults.
 - **OAUTH_AZURE_TENANT_ID**: Azure Tenant ID. No defaults.

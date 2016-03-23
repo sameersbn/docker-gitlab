@@ -357,6 +357,11 @@ production: &base
             crowd_server_url: '{{OAUTH_CROWD_SERVER_URL}}',
             application_name: '{{OAUTH_CROWD_APP_NAME}}',
             application_password: '{{OAUTH_CROWD_APP_PASSWORD}}' } }
+      - { name: 'auth0',
+          args: {
+            client_id: '{{OAUTH_AUTH0_CLIENT_ID}}',
+            client_secret: '{{OAUTH_AUTH0_CLIENT_SECRET}}',
+            namespace: '{{OAUTH_AUTH0_DOMAIN}}' } }
       - { name: 'azure_oauth2',
           args: {
             client_id: '{{OAUTH_AZURE_API_KEY}}',
