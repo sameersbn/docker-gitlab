@@ -1,7 +1,7 @@
 FROM sameersbn/ubuntu:14.04.20160321
-MAINTAINER sameer@damagehead.com
+MAINTAINER emb@brickabode.com
 
-ENV GITLAB_VERSION=8.5.8 \
+ENV GITLAB_VERSION=master \
     GITLAB_SHELL_VERSION=2.6.10 \
     GITLAB_WORKHORSE_VERSION=0.6.4 \
     GOLANG_VERSION=1.5.3 \
