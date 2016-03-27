@@ -8,6 +8,7 @@ USERCONF_TEMPLATES_DIR="${GITLAB_DATA_DIR}/config"
 GITLAB_CONFIG="${GITLAB_INSTALL_DIR}/config/gitlab.yml"
 GITLAB_DATABASE_CONFIG="${GITLAB_INSTALL_DIR}/config/database.yml"
 GITLAB_UNICORN_CONFIG="${GITLAB_INSTALL_DIR}/config/unicorn.rb"
+GITLAB_RELATIVE_URL_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/relative_url.rb"
 GITLAB_RACK_ATTACK_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/rack_attack.rb"
 GITLAB_SMTP_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb"
 GITLAB_RESQUE_CONFIG="${GITLAB_INSTALL_DIR}/config/resque.yml"
@@ -284,6 +285,13 @@ gitlab_configure_unicorn() {
     GITLAB_INSTALL_DIR \
     UNICORN_WORKERS \
     UNICORN_TIMEOUT
+}
+
+gitlab_configure_relative_url() {
+  if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
+    echo "Configuring gitlab::relative_url..."
+    update_template ${GITLAB_RELATIVE_URL_CONFIG} GITLAB_RELATIVE_URL_ROOT
+  fi
 }
 
 gitlab_configure_timezone() {
@@ -797,20 +805,6 @@ nginx_configure_gitlab_hsts() {
   fi
 }
 
-nginx_configure_gitlab_relative_url() {
-  if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
-    echo "Configuring nginx::gitlab::relative_url..."
-    GITLAB_RELATIVE_URL_ROOT__with_trailing_slash=${GITLAB_RELATIVE_URL_ROOT}/
-    GITLAB_RELATIVE_URL_ROOT__without_trailing_slash=${GITLAB_RELATIVE_URL_ROOT}
-  else
-    GITLAB_RELATIVE_URL_ROOT__with_trailing_slash=/
-    GITLAB_RELATIVE_URL_ROOT__without_trailing_slash=/
-  fi
-  update_template ${GITLAB_NGINX_CONFIG} \
-    GITLAB_RELATIVE_URL_ROOT__with_trailing_slash \
-    GITLAB_RELATIVE_URL_ROOT__without_trailing_slash
-}
-
 nginx_configure_gitlab_ipv6() {
   if [[ ! -f /proc/net/if_inet6 ]]; then
     # disable ipv6 support
@@ -834,7 +828,6 @@ nginx_configure_gitlab() {
 
   nginx_configure_gitlab_ssl
   nginx_configure_gitlab_hsts
-  nginx_configure_gitlab_relative_url
   nginx_configure_gitlab_ipv6
 }
 
@@ -960,6 +953,25 @@ initialize_datadir() {
   chmod 700 ${GITLAB_DATA_DIR}/.ssh
   chmod 600 ${GITLAB_DATA_DIR}/.ssh/authorized_keys
   chown -R ${GITLAB_USER}: ${GITLAB_DATA_DIR}/.ssh
+
+  # recompile and persist assets when relative_url is in use
+  if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
+    mkdir -p ${GITLAB_TEMP_DIR}/cache
+    chmod 755 ${GITLAB_TEMP_DIR}/cache
+    chown ${GITLAB_USER}: ${GITLAB_TEMP_DIR}/cache
+
+    mkdir -p ${GITLAB_TEMP_DIR}/assets
+    chmod 755 ${GITLAB_TEMP_DIR}/assets
+    chown ${GITLAB_USER}: ${GITLAB_TEMP_DIR}/assets
+
+    # symlink ${GITLAB_INSTALL_DIR}/tmp/cache -> ${GITLAB_TEMP_DIR}/cache
+    rm -rf ${GITLAB_INSTALL_DIR}/tmp/cache
+    exec_as_git ln -s ${GITLAB_TEMP_DIR}/cache ${GITLAB_INSTALL_DIR}/tmp/cache
+
+    # symlink ${GITLAB_INSTALL_DIR}/public/assets -> ${GITLAB_TEMP_DIR}/assets
+    rm -rf ${GITLAB_INSTALL_DIR}/public/assets
+    exec_as_git ln -s ${GITLAB_TEMP_DIR}/assets ${GITLAB_INSTALL_DIR}/public/assets
+  fi
 }
 
 sanitize_datadir() {
@@ -1038,6 +1050,10 @@ install_configuration_templates() {
   install_template ${GITLAB_USER}: gitlabhq/secrets.yml ${GITLAB_SECRETS_CONFIG} 0600
   install_template ${GITLAB_USER}: gitlab-shell/config.yml ${GITLAB_SHELL_CONFIG} 0640
 
+  if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
+    install_template ${GITLAB_USER}: gitlabhq/relative_url.rb ${GITLAB_RELATIVE_URL_CONFIG} 0644
+  fi
+
   if [[ ${SMTP_ENABLED} == true  ]]; then
     install_template ${GITLAB_USER}: gitlabhq/smtp_settings.rb ${GITLAB_SMTP_CONFIG}
   fi
@@ -1090,6 +1106,7 @@ configure_gitlab() {
   gitlab_configure_secrets
   gitlab_configure_sidekiq
   gitlab_configure_gitlab_workhorse
+  gitlab_configure_relative_url
   gitlab_configure_unicorn
   gitlab_configure_timezone
   gitlab_configure_rack_attack
@@ -1190,8 +1207,14 @@ migrate_database() {
   fi
 
   # clear cache if relative_url has changed.
-  [[ -f ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT ]] && CACHE_GITLAB_RELATIVE_URL_ROOT=$(cat ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT)
-  if [[ ! -f ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT || ${GITLAB_RELATIVE_URL_ROOT} != ${CACHE_GITLAB_RELATIVE_URL_ROOT} ]]; then
+  [[ -f ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT ]] && CACHE_GITLAB_RELATIVE_URL_ROOT=$(cat ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT)
+  if [[ ! -f ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT || ${GITLAB_RELATIVE_URL_ROOT} != ${CACHE_GITLAB_RELATIVE_URL_ROOT} ]]; then
+    # assets need to be recompiled when GITLAB_RELATIVE_URL_ROOT is used
+    if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
+      echo "Recompiling assets (relative_url in use), this could take a while..."
+      exec_as_git bundle exec rake assets:clean assets:precompile >/dev/null 2>&1
+    fi
+
     echo "Clearing cache..."
     exec_as_git bundle exec rake cache:clear >/dev/null 2>&1
     echo "${GITLAB_RELATIVE_URL_ROOT}" > ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT
