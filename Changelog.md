@@ -7,6 +7,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - gitlab-workhorse: upgrade to v0.7.1
 - gitlab: upgrade to CE v8.6.0
 - exposed configuration parameters for auth0 OAUTH support
+- fixed relative_url support
 
 **8.5.8**
 - gitlab: upgrade to CE v8.5.8
