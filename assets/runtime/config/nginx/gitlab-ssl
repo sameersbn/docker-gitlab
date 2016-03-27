@@ -20,10 +20,6 @@
 ##
 ## See installation.md#using-https for additional HTTPS configuration details.
 
-upstream gitlab {
-  server unix:{{GITLAB_INSTALL_DIR}}/tmp/sockets/gitlab.socket fail_timeout=0;
-}
-
 upstream gitlab-workhorse {
   server unix:{{GITLAB_INSTALL_DIR}}/tmp/sockets/gitlab-workhorse.socket fail_timeout=0;
 }
@@ -49,7 +45,6 @@ server {
   listen [::]:443 ssl spdy default_server;
   server_name {{GITLAB_HOST}}; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
-  root {{GITLAB_INSTALL_DIR}}/public;
 
   ## Strong SSL Security
   ## https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html & https://cipherli.st/
@@ -90,7 +85,7 @@ server {
   access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_access.log;
   error_log   {{GITLAB_LOG_DIR}}/nginx/gitlab_error.log;
 
-  location {{GITLAB_RELATIVE_URL_ROOT__without_trailing_slash}} {
+  location / {
     client_max_body_size 0;
     gzip off;
 
@@ -111,32 +106,12 @@ server {
     proxy_pass http://gitlab-workhorse;
   }
 
-  ## If a static asset file is requested, then proxy passes the request to
-  ## the upsteam (gitlab unicorn).
-  ## As of 8.3.0 gitlab-workhorse does not properly generated the static assets
-  ## when relative_url is used
-  location {{GITLAB_RELATIVE_URL_ROOT__with_trailing_slash}}assets {
-    try_files $uri /index.html $uri.html @gitlab;
-  }
-
-  location @gitlab {
-    ## If you use HTTPS make sure you disable gzip compression
-    ## to be safe against BREACH attack.
-    # gzip off;
-
-    ## https://github.com/gitlabhq/gitlabhq/issues/694
-    ## Some requests take more than 30 seconds.
-    proxy_read_timeout       300;
-    proxy_connect_timeout    300;
-    proxy_redirect           off;
-    proxy_buffering          {{NGINX_PROXY_BUFFERING}};
-
-    proxy_set_header    Host                $http_host;
-    proxy_set_header    X-Real-IP           $remote_addr;
-    proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
-    proxy_set_header    X-Forwarded-Proto   {{NGINX_X_FORWARDED_PROTO}};
-    proxy_set_header    X-Frame-Options     SAMEORIGIN;
-
-    proxy_pass http://gitlab;
+  error_page 404 /404.html;
+  error_page 422 /422.html;
+  error_page 500 /500.html;
+  error_page 502 /502.html;
+  location ~ ^/(404|422|500|502)\.html$ {
+    root {{GITLAB_INSTALL_DIR}}/public;
+    internal;
   }
 }

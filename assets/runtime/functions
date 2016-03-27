@@ -797,20 +797,6 @@ nginx_configure_gitlab_hsts() {
   fi
 }
 
-nginx_configure_gitlab_relative_url() {
-  if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
-    echo "Configuring nginx::gitlab::relative_url..."
-    GITLAB_RELATIVE_URL_ROOT__with_trailing_slash=${GITLAB_RELATIVE_URL_ROOT}/
-    GITLAB_RELATIVE_URL_ROOT__without_trailing_slash=${GITLAB_RELATIVE_URL_ROOT}
-  else
-    GITLAB_RELATIVE_URL_ROOT__with_trailing_slash=/
-    GITLAB_RELATIVE_URL_ROOT__without_trailing_slash=/
-  fi
-  update_template ${GITLAB_NGINX_CONFIG} \
-    GITLAB_RELATIVE_URL_ROOT__with_trailing_slash \
-    GITLAB_RELATIVE_URL_ROOT__without_trailing_slash
-}
-
 nginx_configure_gitlab_ipv6() {
   if [[ ! -f /proc/net/if_inet6 ]]; then
     # disable ipv6 support
@@ -834,7 +820,6 @@ nginx_configure_gitlab() {
 
   nginx_configure_gitlab_ssl
   nginx_configure_gitlab_hsts
-  nginx_configure_gitlab_relative_url
   nginx_configure_gitlab_ipv6
 }
 
