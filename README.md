@@ -1051,6 +1051,12 @@ See [Rake Tasks](#rake-tasks) for more information on executing rake tasks.
 
 ## Upgrading
 
+> **Important Notice**
+>
+> Since GitLab release `8.6.0` PostgreSQL users should enable `pg_trgm` extension on the GitLab database. Refer to GitLab's [Postgresql Requirements](http://doc.gitlab.com/ce/install/requirements.html#postgresql-requirements) for more information
+>
+> If your using `sameersbn/postgresql` then please upgrade to `sameersbn/postgresql:9.4-17` and add `DB_EXTENSION=pg_trgm` to the environment of the PostgreSQL container (see: https://github.com/sameersbn/docker-gitlab/blob/master/docker-compose.yml#L8).
+
 GitLabHQ releases new versions on the 22nd of every month, bugfix releases immediately follow. I update this project almost immediately when a release is made (at least it has been the case so far). If you are using the image in production environments I recommend that you delay updates by a couple of days after the gitlab release, allowing some time for the dust to settle down.
 
 To upgrade to newer gitlab releases, simply follow this 4 step upgrade procedure.
