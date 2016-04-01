@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
     - name: postgresql
-      image: sameersbn/postgresql:9.4-17
+      image: sameersbn/postgresql:9.4-18
       env:
         - name: DB_USER
           value: gitlab
