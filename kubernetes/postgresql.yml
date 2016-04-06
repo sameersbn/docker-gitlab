@@ -22,7 +22,7 @@ spec:
         - mountPath: /var/lib/postgresql
           name: data
       livenessProbe:
-        TCPSocket:
+        tcpSocket:
           port: 5432
         initialDelaySeconds: 30
         timeoutSeconds: 5
