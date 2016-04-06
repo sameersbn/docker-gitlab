@@ -15,7 +15,7 @@ spec:
         - mountPath: /var/lib/redis
           name: data
       livenessProbe:
-        TCPSocket:
+        tcpSocket:
           port: 6379
         initialDelaySeconds: 30
         timeoutSeconds: 5
