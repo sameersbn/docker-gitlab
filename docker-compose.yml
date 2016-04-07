@@ -1,20 +1,16 @@
-db-vars:
-  image: ebellani/db-vars:0.0.1
+postgresql:
+  restart: always
+  image: sameersbn/postgresql:9.4-17
   environment:
     - DB_USER=gitlab
     - DB_PASS=password
     - DB_NAME=gitlabhq_production
-
-postgresql:
-  extends:
-    service: db-vars
-  restart: always
-  image: sameersbn/postgresql:9.4-17
   volumes:
     - /srv/docker/gitlab/postgresql:/var/lib/postgresql
+
 gitlab:
   restart: always
-  image: sameersbn/gitlab:8.5.8-1
+  image: brickabode/broto:0.0.1
   links:
     - redis:redisio
     - postgresql:postgresql
