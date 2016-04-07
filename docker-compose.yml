@@ -8,12 +8,23 @@ postgresql:
     - DB_EXTENSION=pg_trgm
   volumes:
     - /srv/docker/gitlab/postgresql:/var/lib/postgresql
+  networks:
+    - gitlab-tier
+
+redis:
+  restart: always
+  image: sameersbn/redis:latest
+  volumes:
+    - /srv/docker/gitlab/redis:/var/lib/redis
+  networks:
+    - gitlab-tier
+
 gitlab:
   restart: always
   image: sameersbn/gitlab:8.6.4
   links:
     - redis:redisio
-    - postgresql:postgresql
+    - postgresql:sql
   ports:
     - "10080:80"
     - "10022:22"
@@ -24,9 +35,18 @@ gitlab:
 
     - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
 
+    - DB_HOST=sql
+    - DB_USER=gitlab
+    - DB_PASS=password
+    - DB_NAME=gitlabhq_production
+
+    - REDIS_HOST=redisio
+
+    - GITLAB_SSH_HOST=gitlab
+    - GITLAB_SSH_PORT=10022
+
     - GITLAB_HOST=localhost
     - GITLAB_PORT=10080
-    - GITLAB_SSH_PORT=10022
     - GITLAB_RELATIVE_URL_ROOT=
 
     - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
@@ -57,8 +77,9 @@ gitlab:
     - IMAP_STARTTLS=false
   volumes:
     - /srv/docker/gitlab/gitlab:/home/git/data
-redis:
-  restart: always
-  image: sameersbn/redis:latest
-  volumes:
-    - /srv/docker/gitlab/redis:/var/lib/redis
+  networks:
+    - gitlab-tier
+
+networks:
+  gitlab-tier:
+    driver: bridge
