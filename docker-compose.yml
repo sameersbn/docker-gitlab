@@ -43,11 +43,9 @@ gitlab:
 
     - REDIS_HOST=redisio
 
-    - GITLAB_SSH_HOST=gitlab
-    - GITLAB_SSH_PORT=10022
-
     - GITLAB_HOST=localhost
     - GITLAB_PORT=10080
+    - GITLAB_SSH_PORT=10022
     - GITLAB_RELATIVE_URL_ROOT=
 
     - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
