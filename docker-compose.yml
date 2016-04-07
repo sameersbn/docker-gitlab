@@ -39,6 +39,7 @@ gitlab:
     - DB_USER=gitlab
     - DB_PASS=password
     - DB_NAME=gitlabhq_production
+    - DB_ADAPTER=postgresql
 
     - REDIS_HOST=redisio
 
