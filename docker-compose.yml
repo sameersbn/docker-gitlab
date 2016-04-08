@@ -8,15 +8,17 @@ postgresql:
   volumes:
     - /srv/docker/gitlab/postgresql:/var/lib/postgresql
 
-gitlab:
+broto:
   restart: always
   image: brickabode/broto:0.0.1
   links:
     - redis:redisio
     - postgresql:postgresql
   ports:
+    # host:container
     - "10080:80"
     - "10022:22"
+    - "10081:81"
   environment:
     - DEBUG=false
     - TZ=Asia/Kolkata
