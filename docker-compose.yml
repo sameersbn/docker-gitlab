@@ -43,8 +43,9 @@ gitlab:
 
     - REDIS_HOST=gitlab-redis
 
-    - GITLAB_HOST=localhost
+    - GITLAB_HOST=gitlab-main
     - GITLAB_PORT=10080
+    - GITLAB_SSH_HOST=localhost
     - GITLAB_SSH_PORT=10022
     - GITLAB_RELATIVE_URL_ROOT=
 
