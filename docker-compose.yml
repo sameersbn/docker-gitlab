@@ -10,7 +10,7 @@ postgresql:
     - /srv/docker/gitlab/postgresql:/var/lib/postgresql
 gitlab:
   restart: always
-  image: sameersbn/gitlab:8.6.4
+  image: sameersbn/gitlab:8.6.5
   links:
     - redis:redisio
     - postgresql:postgresql
