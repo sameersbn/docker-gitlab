@@ -5,8 +5,7 @@ metadata:
   labels:
     name: gitlab
 spec:
-  type: ClusterIP
-  externalIPs: [172.17.4.201]
+  type: LoadBalancer
   ports:
     - name: http
       port: 80
