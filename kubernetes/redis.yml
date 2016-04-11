@@ -1,24 +1,31 @@
 apiVersion: v1
-kind: Pod
+kind: ReplicationController
 metadata:
   name: redis
-  labels:
-    name: redis
 spec:
-  containers:
-    - name: redis
-      image: sameersbn/redis
-      ports:
-        - containerPort: 6379
-          protocol: TCP
-      volumeMounts:
-        - mountPath: /var/lib/redis
-          name: data
-      livenessProbe:
-        tcpSocket:
-          port: 6379
-        initialDelaySeconds: 30
-        timeoutSeconds: 5
-  volumes:
-    - name: data
-      emptyDir: {}
+  replicas: 1
+  selector:
+    name: redis
+  template:
+    metadata:
+      name: redis
+      labels:
+        name: redis
+    spec:
+      containers:
+        - name: redis
+          image: sameersbn/redis
+          ports:
+            - containerPort: 6379
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /var/lib/redis
+              name: data
+          livenessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+      volumes:
+        - name: data
+          emptyDir: {}
