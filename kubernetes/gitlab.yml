@@ -1,111 +1,111 @@
 apiVersion: v1
-kind: Pod
+kind: ReplicationController
 metadata:
   name: gitlab
-  labels:
-    name: gitlab
 spec:
-  containers:
-    - name: gitlab
-      image: sameersbn/gitlab:8.6.5
-      env:
-        - name: TZ
-          value: Asia/Kolkata
-        - name: GITLAB_TIMEZONE
-          value: Kolkata
+  replicas: 1
+  selector:
+    name: gitlab
+  template:
+    metadata: 
+      name: gitlab
+      labels: 
+        name: gitlab
+    spec:
+      containers:
+        - name: gitlab
+          image: sameersbn/gitlab:8.6.5
+          env:
+            - name: TZ
+              value: Asia/Kolkata
+            - name: GITLAB_TIMEZONE
+              value: Kolkata
 
-        - name: GITLAB_SECRETS_DB_KEY_BASE
-          value: long-and-random-alpha-numeric-string
+            - name: GITLAB_SECRETS_DB_KEY_BASE
+              value: long-and-random-alpha-numeric-string
 
-        - name: GITLAB_HOST
-          value: git.example.com
-        - name: GITLAB_PORT
-          value: "80"
-        - name: GITLAB_SSH_PORT
-          value: "22"
+            - name: GITLAB_HOST
+              value: git.default.cluster.local
+            - name: GITLAB_PORT
+              value: "80"
+            - name: GITLAB_SSH_PORT
+              value: "22"
 
-        - name: GITLAB_NOTIFY_ON_BROKEN_BUILDS
-          value: "true"
-        - name: GITLAB_NOTIFY_PUSHER
-          value: "false"
+            - name: GITLAB_NOTIFY_ON_BROKEN_BUILDS
+              value: "true"
+            - name: GITLAB_NOTIFY_PUSHER
+              value: "false"
 
-        - name: GITLAB_EMAIL
-          value: notifications@example.com
-        - name: GITLAB_EMAIL_REPLY_TO
-          value: noreply@example.com
-        - name: GITLAB_INCOMING_EMAIL_ADDRESS
-          value: reply@example.com
+            - name: GITLAB_BACKUP_SCHEDULE
+              value: daily
+            - name: GITLAB_BACKUP_TIME
+              value: 01:00
 
-        - name: GITLAB_BACKUP_SCHEDULE
-          value: daily
-        - name: GITLAB_BACKUP_TIME
-          value: 01:00
+            - name: DB_TYPE
+              value: postgres
+            - name: DB_HOST
+              value: postgresql
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              value: gitlab
+            - name: DB_PASS
+              value: passw0rd
+            - name: DB_NAME
+              value: gitlab_production
 
-        - name: DB_TYPE
-          value: postgres
-        - name: DB_HOST
-          value: postgresql
-        - name: DB_PORT
-          value: "5432"
-        - name: DB_USER
-          value: gitlab
-        - name: DB_PASS
-          value: passw0rd
-        - name: DB_NAME
-          value: gitlab_production
+            - name: REDIS_HOST
+              value: redis
+            - name: REDIS_PORT
+              value: "6379"
 
-        - name: REDIS_HOST
-          value: redis
-        - name: REDIS_PORT
-          value: "6379"
+            - name: SMTP_ENABLED
+              value: "false"
+            - name: SMTP_DOMAIN
+              value: www.example.com
+            - name: SMTP_HOST
+              value: smtp.gmail.com
+            - name: SMTP_PORT
+              value: "587"
+            - name: SMTP_USER
+              value: mailer@example.com
+            - name: SMTP_PASS
+              value: password
+            - name: SMTP_STARTTLS
+              value: "true"
+            - name: SMTP_AUTHENTICATION
+              value: login
 
-        - name: SMTP_ENABLED
-          value: "false"
-        - name: SMTP_DOMAIN
-          value: www.example.com
-        - name: SMTP_HOST
-          value: smtp.gmail.com
-        - name: SMTP_PORT
-          value: "587"
-        - name: SMTP_USER
-          value: mailer@example.com
-        - name: SMTP_PASS
-          value: password
-        - name: SMTP_STARTTLS
-          value: "true"
-        - name: SMTP_AUTHENTICATION
-          value: login
-
-        - name: IMAP_ENABLED
-          value: "false"
-        - name: IMAP_HOST
-          value: imap.gmail.com
-        - name: IMAP_PORT
-          value: "993"
-        - name: IMAP_USER
-          value: mailer@example.com
-        - name: IMAP_PASS
-          value: password
-        - name: IMAP_SSL
-          value: "true"
-        - name: IMAP_STARTTLS
-          value: "false"
-      ports:
-        - name: http
-          containerPort: 80
-          protocol: TCP
-        - name: ssh
-          containerPort: 22
-          protocol: TCP
-      volumeMounts:
-        - mountPath: /home/git/data
-          name: data
-      livenessProbe:
-        httpGet:
-          path: /
-          port: 80
-        initialDelaySeconds: 90
-        timeoutSeconds: 5
-  volumes:
-    - name: data
-      emptyDir: {}
+            - name: IMAP_ENABLED
+              value: "false"
+            - name: IMAP_HOST
+              value: imap.gmail.com
+            - name: IMAP_PORT
+              value: "993"
+            - name: IMAP_USER
+              value: mailer@example.com
+            - name: IMAP_PASS
+              value: password
+            - name: IMAP_SSL
+              value: "true"
+            - name: IMAP_STARTTLS
+              value: "false"
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: ssh
+              containerPort: 22
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /home/git/data
+              name: data
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 90
+            timeoutSeconds: 5
+      volumes:
+        - name: data
+          emptyDir: {}
