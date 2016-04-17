@@ -75,6 +75,9 @@ production: &base
     ##   6 - Blue
     # default_theme: 2 # default: 2
 
+    # Enable or disable user signups (first run only)
+    signup_enabled: {{GITLAB_SIGNUP_ENABLED}}
+
     ## Automatic issue closing
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
     # This happens when the commit is pushed or merged into the default branch of a project.
