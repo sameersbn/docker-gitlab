@@ -4,6 +4,7 @@ This file only reflects the changes that are made in this image. Please refer to
 
 **latest**
 - added `GITLAB_SIGNUP_ENABLED` option to enable/disable signups
+- gitlab: upgrade to CE v8.6.7
 
 **8.6.6**
 - gitlab: upgrade to CE v8.6.6
