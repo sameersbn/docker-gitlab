@@ -839,7 +839,8 @@ nginx_configure_gitlab_ci() {
       GITLAB_LOG_DIR \
       GITLAB_HOST \
       GITLAB_CI_HOST \
-      DNS_RESOLVERS
+      DNS_RESOLVERS \
+      NGINX_GITLAB_CI_CLIENT_MAX_BODY_SIZE
   fi
 }
 
