@@ -241,7 +241,7 @@ gitlab_finalize_redis_parameters() {
 
 gitlab_check_redis_connection() {
   timeout=60
-  while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} ping >/dev/null 2>&1
+  while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} -n ${REDIS_DB_NUMBER} ping >/dev/null 2>&1
   do
     timeout=$(expr $timeout - 1)
     if [[ $timeout -eq 0 ]]; then
@@ -263,7 +263,8 @@ gitlab_configure_redis() {
 
   update_template ${GITLAB_RESQUE_CONFIG} \
     REDIS_HOST \
-    REDIS_PORT
+    REDIS_PORT \
+    REDIS_DB_NUMBER
 }
 
 gitlab_configure_gitlab_workhorse() {
