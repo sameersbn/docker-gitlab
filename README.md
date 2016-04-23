@@ -829,7 +829,6 @@ Below is the complete list of available options that can be used to customize yo
 - **NGINX_PROXY_BUFFERING**: Enable `proxy_buffering`. Defaults to `off`.
 - **NGINX_ACCEL_BUFFERING**: Enable `X-Accel-Buffering` header. Default to `no`
 - **NGINX_X_FORWARDED_PROTO**: Advanced configuration option for the `proxy_set_header X-Forwarded-Proto` setting in the gitlab nginx vHost configuration. Defaults to `https` when `GITLAB_HTTPS` is `true`, else defaults to `$scheme`.
-- **NGINX_GITLAB_CI_CLIENT_MAX_BODY_SIZE**: Sets the client_max_body_size of GitLab CI. `$GITLAB_CI_HOST` must be set to get this working. This could be used for large logs or artifacts that are greater than the default. Defaults to `10m` .
 - **REDIS_HOST**: The hostname of the redis server. Defaults to `localhost`
 - **REDIS_PORT**: The connection port of the redis server. Defaults to `6379`.
 - **UNICORN_WORKERS**: The number of unicorn workers to start. Defaults to `3`.
