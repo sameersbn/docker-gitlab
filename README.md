@@ -661,7 +661,7 @@ Once you have the client ID and secret keys generated, configure them using the 
 
 For example, if your client ID is `xxx.apps.googleusercontent.com` and client secret key is `yyy`, then adding `--env 'OAUTH_GOOGLE_API_KEY=xxx.apps.googleusercontent.com' --env 'OAUTH_GOOGLE_APP_SECRET=yyy'` to the docker run command enables support for Google OAuth.
 
-You can also restrict logins to a single domain by adding `--env 'OAUTH_GOOGLE_RESTRICT_DOMAIN=example.com'`. This is particularly useful when combined with `--env 'OAUTH_ALLOW_SSO=true'` and `--env 'OAUTH_BLOCK_AUTO_CREATED_USERS=false'`.
+You can also restrict logins to a single domain by adding `--env 'OAUTH_GOOGLE_RESTRICT_DOMAIN=example.com'`.
 
 #### Facebook
 
@@ -883,8 +883,8 @@ Below is the complete list of available options that can be used to customize yo
 - **LDAP_BASE**: Base where we can search for users. No default.
 - **LDAP_USER_FILTER**: Filter LDAP users. No default.
 - **OAUTH_ENABLED**: Enable OAuth support. Defaults to `true` if any of the support OAuth providers is configured, else defaults to `false`.
-- **OAUTH_AUTO_SIGN_IN_WITH_PROVIDER**: Automatically sign in with a specific OAuth provider without showing GitLab sign-in page. Accepted values are `google_oauth2`, `twitter`, `github`, `gitlab`, `bitbucket` and `saml`. No default.
-- **OAUTH_ALLOW_SSO**: This allows users to login without having a user account first. User accounts will be created automatically when authentication was successful. Defaults to `false`.
+- **OAUTH_AUTO_SIGN_IN_WITH_PROVIDER**: Automatically sign in with a specific OAuth provider without showing GitLab sign-in page. Accepted values are `cas3`, `github`, `bitbucket`, `gitlab`, `google_oauth2`, `facebook`, `twitter`, `saml`, `crowd`, `auth0` and `azure_oauth2`. No default.
+- **OAUTH_ALLOW_SSO**: Comma separated list of oauth providers for single sign-on. This allows users to login without having a user account. The account is created automatically when authentication is successful. Accepted values are `cas3`, `github`, `bitbucket`, `gitlab`, `google_oauth2`, `facebook`, `twitter`, `saml`, `crowd`, `auth0` and `azure_oauth2`. No default.
 - **OAUTH_BLOCK_AUTO_CREATED_USERS**: Locks down those users until they have been cleared by the admin. Defaults to `true`.
 - **OAUTH_AUTO_LINK_LDAP_USER**: Look up new users in LDAP servers. If a match is found (same uid), automatically link the omniauth identity with the LDAP account. Defaults to `false`.
 - **OAUTH_AUTO_LINK_SAML_USER**: Allow users with existing accounts to login and auto link their account via SAML login, without having to do a manual login first and manually add SAML. Defaults to `false`.

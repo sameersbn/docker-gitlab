@@ -5,6 +5,7 @@ This file only reflects the changes that are made in this image. Please refer to
 **latest**
 - gitlab-shell: upgrade to v.2.7.2
 - gitlab: upgrade to CE v8.7.0
+- SSO: `OAUTH_ALLOW_SSO` now specifies a comma separated list of providers.
 
 **8.6.7**
 - added `GITLAB_SIGNUP_ENABLED` option to enable/disable signups
