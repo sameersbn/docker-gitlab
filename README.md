@@ -457,15 +457,18 @@ Please refer the [Available Configuration Parameters](#available-configuration-p
 
 #### Reply by email
 
-Since version `8.0.0` GitLab adds support for commenting on issues by replying to emails. Please read the [documentation on reply by email](http://doc.gitlab.com/ce/incoming_email/README.html) to understand the requirements of this feature.
+Since version `8.0.0` GitLab adds support for commenting on issues by replying to emails.
 
 To enable this feature you need to provide IMAP configuration parameters that will allow GitLab to connect to your mail server and read mails. Additionally, you may need to specify `GITLAB_INCOMING_EMAIL_ADDRESS` if your incoming email address is not the same as the `IMAP_USER`.
+
+If your email provider supports email [sub-addressing](https://en.wikipedia.org/wiki/Email_address#Sub-addressing) then you should add the `+%{key}` placeholder after the user part of the email address, eg. `GITLAB_INCOMING_EMAIL_ADDRESS=reply+%{key}@example.com`. Please read the [documentation on reply by email](http://doc.gitlab.com/ce/incoming_email/README.html) to understand the requirements for this feature.
 
 If you are using Gmail then all you need to do is:
 
 ```bash
 docker run --name gitlab -d \
     --env 'IMAP_USER=USER@gmail.com' --env 'IMAP_PASS=PASSWORD' \
+    --env 'GITLAB_INCOMING_EMAIL_ADDRESS=USER+%{key}@gmail.com' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
     sameersbn/gitlab:8.6.7-1
 ```
@@ -658,7 +661,7 @@ Once you have the client ID and secret keys generated, configure them using the 
 
 For example, if your client ID is `xxx.apps.googleusercontent.com` and client secret key is `yyy`, then adding `--env 'OAUTH_GOOGLE_API_KEY=xxx.apps.googleusercontent.com' --env 'OAUTH_GOOGLE_APP_SECRET=yyy'` to the docker run command enables support for Google OAuth.
 
-You can also restrict logins to a single domain by adding `--env 'OAUTH_GOOGLE_RESTRICT_DOMAIN=example.com'`. This is particularly useful when combined with `--env 'OAUTH_ALLOW_SSO=true'` and `--env 'OAUTH_BLOCK_AUTO_CREATED_USERS=false'`.
+You can also restrict logins to a single domain by adding `--env 'OAUTH_GOOGLE_RESTRICT_DOMAIN=example.com'`.
 
 #### Facebook
 
@@ -783,7 +786,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_EMAIL_DISPLAY_NAME**: The name displayed in emails sent out by the GitLab mailer. Defaults to `GitLab`.
 - **GITLAB_EMAIL_REPLY_TO**: The reply-to address of emails sent out by GitLab. Defaults to value of `GITLAB_EMAIL`, else defaults to `noreply@example.com`.
 - **GITLAB_EMAIL_ENABLED**: Enable or disable gitlab mailer. Defaults to the `SMTP_ENABLED` configuration.
-- **GITLAB_INCOMING_EMAIL_ADDRESS**: The incoming email address for reply by email. Defaults to the value of `IMAP_USER`, else defaults to `reply@example.com`.
+- **GITLAB_INCOMING_EMAIL_ADDRESS**: The incoming email address for reply by email. Defaults to the value of `IMAP_USER`, else defaults to `reply@example.com`. Please read the [reply by email](http://doc.gitlab.com/ce/incoming_email/README.html) documentation to curretly set this parameter.
 - **GITLAB_INCOMING_EMAIL_ENABLED**: Enable or disable gitlab reply by email feature. Defaults to the value of `IMAP_ENABLED`.
 - **GITLAB_SIGNUP_ENABLED**: Enable or disable user signups (first run only). Default is `true`.
 - **GITLAB_USERNAME_CHANGE**: Enable or disable ability for users to change their username. Defaults is `true`.
@@ -816,6 +819,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_SSH_HOST**: The ssh host. Defaults to **GITLAB_HOST**.
 - **GITLAB_SSH_PORT**: The ssh port number. Defaults to `22`.
 - **GITLAB_RELATIVE_URL_ROOT**: The relative url of the GitLab server, e.g. `/git`. No default.
+- **GITLAB_TRUSTED_PROXIES**: Add IP address reverse proxy to trusted proxy list, otherwise users will appear signed in from that address. Currently only a single entry is permitted. No defaults.
 - **GITLAB_HTTPS**: Set to `true` to enable https support, disabled by default.
 - **SSL_SELF_SIGNED**: Set to `true` when using self signed ssl certificates. `false` by default.
 - **SSL_CERTIFICATE_PATH**: Location of the ssl certificate. Defaults to `/home/git/data/certs/gitlab.crt`
@@ -880,11 +884,12 @@ Below is the complete list of available options that can be used to customize yo
 - **LDAP_BASE**: Base where we can search for users. No default.
 - **LDAP_USER_FILTER**: Filter LDAP users. No default.
 - **OAUTH_ENABLED**: Enable OAuth support. Defaults to `true` if any of the support OAuth providers is configured, else defaults to `false`.
-- **OAUTH_AUTO_SIGN_IN_WITH_PROVIDER**: Automatically sign in with a specific OAuth provider without showing GitLab sign-in page. Accepted values are `google_oauth2`, `twitter`, `github`, `gitlab`, `bitbucket` and `saml`. No default.
-- **OAUTH_ALLOW_SSO**: This allows users to login without having a user account first. User accounts will be created automatically when authentication was successful. Defaults to `false`.
+- **OAUTH_AUTO_SIGN_IN_WITH_PROVIDER**: Automatically sign in with a specific OAuth provider without showing GitLab sign-in page. Accepted values are `cas3`, `github`, `bitbucket`, `gitlab`, `google_oauth2`, `facebook`, `twitter`, `saml`, `crowd`, `auth0` and `azure_oauth2`. No default.
+- **OAUTH_ALLOW_SSO**: Comma separated list of oauth providers for single sign-on. This allows users to login without having a user account. The account is created automatically when authentication is successful. Accepted values are `cas3`, `github`, `bitbucket`, `gitlab`, `google_oauth2`, `facebook`, `twitter`, `saml`, `crowd`, `auth0` and `azure_oauth2`. No default.
 - **OAUTH_BLOCK_AUTO_CREATED_USERS**: Locks down those users until they have been cleared by the admin. Defaults to `true`.
 - **OAUTH_AUTO_LINK_LDAP_USER**: Look up new users in LDAP servers. If a match is found (same uid), automatically link the omniauth identity with the LDAP account. Defaults to `false`.
 - **OAUTH_AUTO_LINK_SAML_USER**: Allow users with existing accounts to login and auto link their account via SAML login, without having to do a manual login first and manually add SAML. Defaults to `false`.
+- **OAUTH_EXTERNAL_PROVIDERS**: Comma separated list if oauth providers to disallow access to `internal` projects. Users creating accounts via these providers will have access internal projects. Accepted values are `cas3`, `github`, `bitbucket`, `gitlab`, `google_oauth2`, `facebook`, `twitter`, `saml`, `crowd`, `auth0` and `azure_oauth2`. No default.
 - **OAUTH_CAS3_LABEL**: The "Sign in with" button label. Defaults to "cas3".
 - **OAUTH_CAS3_SERVER**: CAS3 server URL. No defaults.
 - **OAUTH_CAS3_DISABLE_SSL_VERIFICATION**: Disable CAS3 SSL verification. Defaults to `false`.

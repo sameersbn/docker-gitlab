@@ -294,6 +294,15 @@ gitlab_configure_relative_url() {
   fi
 }
 
+gitlab_configure_trusted_proxies() {
+  if [[ -n ${GITLAB_TRUSTED_PROXIES} ]]; then
+    echo "Configuring gitlab::trusted_proxies..."
+    update_template ${GITLAB_CONFIG} GITLAB_TRUSTED_PROXIES
+  else
+    exec_as_git sed -i "/{{GITLAB_TRUSTED_PROXIES}}/d" ${GITLAB_CONFIG}
+  fi
+}
+
 gitlab_configure_timezone() {
   echo "Configuring gitlab::timezone..."
   update_template ${GITLAB_CONFIG} GITLAB_TIMEZONE
@@ -590,7 +599,8 @@ gitlab_configure_oauth() {
     OAUTH_ALLOW_SSO \
     OAUTH_BLOCK_AUTO_CREATED_USERS \
     OAUTH_AUTO_LINK_LDAP_USER \
-    OAUTH_AUTO_LINK_SAML_USER
+    OAUTH_AUTO_LINK_SAML_USER \
+    OAUTH_EXTERNAL_PROVIDERS
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
     cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2)
@@ -1108,6 +1118,7 @@ configure_gitlab() {
   gitlab_configure_sidekiq
   gitlab_configure_gitlab_workhorse
   gitlab_configure_relative_url
+  gitlab_configure_trusted_proxies
   gitlab_configure_unicorn
   gitlab_configure_timezone
   gitlab_configure_rack_attack
