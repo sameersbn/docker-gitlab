@@ -43,6 +43,7 @@ EOF
 
 # configure git for ${GITLAB_USER}
 exec_as_git git config --global core.autocrlf input
+exec_as_git git config --global gc.auto 0
 
 # install gitlab-shell
 echo "Downloading gitlab-workhorse v.${GITLAB_SHELL_VERSION}..."
