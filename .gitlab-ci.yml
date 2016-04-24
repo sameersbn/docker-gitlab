@@ -1,4 +1,4 @@
-image: gitlab/dind
+image: docker:dind
 
 deploy:
   script:
