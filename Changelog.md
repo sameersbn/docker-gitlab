@@ -7,6 +7,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - gitlab: upgrade to CE v8.7.0
 - SSO: `OAUTH_ALLOW_SSO` now specifies a comma separated list of providers.
 - OAuth: Added `OAUTH_EXTERNAL_PROVIDERS` to specify external oauth providers.
+- Exposed `GITLAB_TRUSTED_PROXIES` configuration parameter
 
 **8.6.7**
 - added `GITLAB_SIGNUP_ENABLED` option to enable/disable signups

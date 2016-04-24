@@ -819,6 +819,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_SSH_HOST**: The ssh host. Defaults to **GITLAB_HOST**.
 - **GITLAB_SSH_PORT**: The ssh port number. Defaults to `22`.
 - **GITLAB_RELATIVE_URL_ROOT**: The relative url of the GitLab server, e.g. `/git`. No default.
+- **GITLAB_TRUSTED_PROXIES**: Add IP address reverse proxy to trusted proxy list, otherwise users will appear signed in from that address. Currently only a single entry is permitted. No defaults.
 - **GITLAB_HTTPS**: Set to `true` to enable https support, disabled by default.
 - **SSL_SELF_SIGNED**: Set to `true` when using self signed ssl certificates. `false` by default.
 - **SSL_CERTIFICATE_PATH**: Location of the ssl certificate. Defaults to `/home/git/data/certs/gitlab.crt`
