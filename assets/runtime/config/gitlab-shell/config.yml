@@ -43,7 +43,7 @@ redis:
   host: "{{REDIS_HOST}}"
   port: {{REDIS_PORT}}
   # pass: redispass # Allows you to specify the password for Redis
-  database: 0
+  database: {{REDIS_DB_NUMBER}}
   # socket: /tmp/redis.socket # Only define this if you want to use sockets
   namespace: resque:gitlab
 

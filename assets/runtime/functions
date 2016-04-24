@@ -1140,7 +1140,8 @@ configure_gitlab_shell() {
     GITLAB_SHELL_INSTALL_DIR \
     SSL_SELF_SIGNED \
     REDIS_HOST \
-    REDIS_PORT
+    REDIS_PORT \
+    REDIS_DB_NUMBER
 }
 
 configure_nginx() {
