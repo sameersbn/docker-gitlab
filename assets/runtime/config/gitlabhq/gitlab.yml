@@ -331,7 +331,7 @@ production: &base
     # will need to use the full name of the provider, like `google_oauth2` for Google.
     # Refer to the examples below for the full names of the supported providers.
     # (default: [])
-    external_providers: []
+    external_providers: [{{OAUTH_EXTERNAL_PROVIDERS}}]
 
     ## Auth providers
     # Uncomment the following lines and fill in the data of the auth provider you want to use
