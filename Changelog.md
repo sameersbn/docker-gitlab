@@ -2,7 +2,7 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG) for the list of changes in GitLab.
 
-**latest**
+**8.7.0**
 - gitlab-shell: upgrade to v.2.7.2
 - gitlab: upgrade to CE v8.7.0
 - SSO: `OAUTH_ALLOW_SSO` now specifies a comma separated list of providers.
