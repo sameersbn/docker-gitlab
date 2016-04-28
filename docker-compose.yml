@@ -1,7 +1,6 @@
 postgresql:
-  container_name: gitlab-storage
   restart: always
-  image: sameersbn/postgresql:9.4-18
+  image: sameersbn/postgresql:9.4-20
   environment:
     - DB_USER=gitlab
     - DB_PASS=password
@@ -13,7 +12,6 @@ postgresql:
     - gitlab-tier
 
 redis:
-  container_name: gitlab-redis
   restart: always
   image: sameersbn/redis:latest
   volumes:
@@ -24,7 +22,10 @@ redis:
 gitlab:
   container_name: gitlab-main
   restart: always
-  image: sameersbn/gitlab:8.6.4
+  image: sameersbn/gitlab:8.7.0
+  depends_on:
+    - redis
+    - postgresql
   ports:
     - "10080:80"
     - "10022:22"
@@ -35,17 +36,15 @@ gitlab:
 
     - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
 
-    - DB_HOST=gitlab-storage
+    - DB_HOST=postgresql
     - DB_USER=gitlab
-    - DB_PASS=password
     - DB_NAME=gitlabhq_production
+    - DB_PASS=password
     - DB_ADAPTER=postgresql
+    - REDIS_HOST=redis
 
-    - REDIS_HOST=gitlab-redis
-
-    - GITLAB_HOST=gitlab-main
+    - GITLAB_HOST=localhost
     - GITLAB_PORT=10080
-    - GITLAB_SSH_HOST=localhost
     - GITLAB_SSH_PORT=10022
     - GITLAB_RELATIVE_URL_ROOT=
 
