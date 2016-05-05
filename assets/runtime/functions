@@ -514,6 +514,23 @@ gitlab_configure_oauth_bitbucket() {
   fi
 }
 
+gitlab_configure_oauth_saml_attribute_statements() {
+  if [[ -n ${OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL} && \
+        -n ${OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME} ]]; then
+    echo "Configuring gitlab::oauth::saml::attribute_statements..."
+    update_template ${GITLAB_CONFIG} \
+      OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL \
+      OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME \
+      OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME \
+      OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME
+    # Remove undefined optional attributes
+    exec_as_git sed -i "/first_name: \\[''\\],/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/last_name: \\[''\\],/d" ${GITLAB_CONFIG}
+  else
+    exec_as_git sed -i "/attribute_statements:/,/{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL}}/d" ${GITLAB_CONFIG}
+  fi
+}
+
 gitlab_configure_oauth_saml() {
   if [[ -n ${OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL} && \
         -n ${OAUTH_SAML_IDP_CERT_FINGERPRINT} && \
@@ -528,7 +545,12 @@ gitlab_configure_oauth_saml() {
       OAUTH_SAML_IDP_CERT_FINGERPRINT \
       OAUTH_SAML_IDP_SSO_TARGET_URL \
       OAUTH_SAML_ISSUER \
-      OAUTH_SAML_NAME_IDENTIFIER_FORMAT
+      OAUTH_SAML_NAME_IDENTIFIER_FORMAT \
+      OAUTH_SAML_GROUPS_ATTRIBUTE \
+      OAUTH_SAML_EXTERNAL_GROUPS
+    exec_as_git sed -i "/groups_attribute: '',/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/external_groups: \\[\\],/d" ${GITLAB_CONFIG}
+    gitlab_configure_oauth_saml_attribute_statements
   else
     exec_as_git sed -i "/name: 'saml'/,/{{OAUTH_SAML_NAME_IDENTIFIER_FORMAT}}/d" ${GITLAB_CONFIG}
   fi

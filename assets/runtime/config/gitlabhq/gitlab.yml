@@ -373,13 +373,18 @@ production: &base
           app_secret: '{{OAUTH_TWITTER_APP_SECRET}}' }
       - { name: 'saml',
           label: '{{OAUTH_SAML_LABEL}}',
-          groups_attribute: 'Groups',
-          external_groups: ['Contractors', 'Freelancers'],
+          groups_attribute: '{{OAUTH_SAML_GROUPS_ATTRIBUTE}}',
+          external_groups: [{{OAUTH_SAML_EXTERNAL_GROUPS}}],
           args: {
                   assertion_consumer_service_url: '{{OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL}}',
                   idp_cert_fingerprint: '{{OAUTH_SAML_IDP_CERT_FINGERPRINT}}',
                   idp_sso_target_url: '{{OAUTH_SAML_IDP_SSO_TARGET_URL}}',
                   issuer: '{{OAUTH_SAML_ISSUER}}',
+                  attribute_statements: { 
+                    first_name: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME}}'],
+                    last_name: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME}}'],
+                    name: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME}}'],
+                    email: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL}}'] },
                   name_identifier_format: '{{OAUTH_SAML_NAME_IDENTIFIER_FORMAT}}' } }
       - { name: 'crowd',
           args: {
