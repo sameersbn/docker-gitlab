@@ -916,6 +916,12 @@ Below is the complete list of available options that can be used to customize yo
 - **OAUTH_SAML_ISSUER**: The name of your application. When `GITLAB_HTTPS=true`, defaults to `https://${GITLAB_HOST}` else defaults to `http://${GITLAB_HOST}`.
 - **OAUTH_SAML_LABEL**: The "Sign in with" button label. Defaults to "Our SAML Provider".
 - **OAUTH_SAML_NAME_IDENTIFIER_FORMAT**: Describes the format of the username required by GitLab, Defaults to `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`
+- **OAUTH_SAML_GROUPS_ATTRIBUTE**: Map groups attribute in a SAMLResponse to external groups. No defaults.
+- **OAUTH_SAML_EXTERNAL_GROUPS**: List of external groups in a SAMLResponse. Value is comma separated list of single quoted groups. Example: `'group1','group2'`. No defaults. 
+- **OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL**: Map 'email' attribute name in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [Gitlab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details.
+- **OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME**: Map 'name' attribute in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [Gitlab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details.
+- **OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME**: Map 'first_name' attribute in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [Gitlab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details.
+- **OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME**: Map 'last_name' attribute in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [Gitlab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details.
 - **OAUTH_CROWD_SERVER_URL**: Crowd server url. No defaults.
 - **OAUTH_CROWD_APP_NAME**: Crowd server application name. No defaults.
 - **OAUTH_CROWD_APP_PASSWORD**: Crowd server application password. No defaults.
