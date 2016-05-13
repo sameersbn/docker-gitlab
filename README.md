@@ -59,6 +59,7 @@
     - [Amazon Web Services (AWS) Remote Backups](#amazon-web-services-aws-remote-backups)
     - [Rake Tasks](#rake-tasks)
     - [Import Repositories](#import-repositories)
+    - [Options to run commands](#options-to-run-commands)
     - [Upgrading](#upgrading)
     - [Shell Access](#shell-access)
 - [References](#references)
