@@ -3,7 +3,7 @@
 [![Deploy to Tutum](https://s.tutum.co/deploy-to-tutum.svg)](https://dashboard.tutum.co/stack/deploy/)
 
 # sameersbn/gitlab:8.7.5
-
+--
 - [Introduction](#introduction)
     - [Changelog](Changelog.md)
 - [Contributing](#contributing)
@@ -1061,6 +1061,30 @@ docker run --name gitlab -it --rm [OPTIONS] \
 Watch the logs and your repositories should be available into your new gitlab container.
 
 See [Rake Tasks](#rake-tasks) for more information on executing rake tasks.
+
+## Options to run commands
+
+This documentation often use [OPTIONS] placeholder in `docker run` commands (to create backups, import bare repositories...).
+
+Considering the Gitlab instance has been configured with `docker-compose` method of [Quick Start](#quick-start) and that the Gitlab, Redis and Postgresql containers are called *gitlab_gitlab_1*, *gitlab_redis_1* and *gitlab_postgresql_1* respectively, here is the configuration to replace [OPTIONS] placeholder:
+
+```bash
+--link gitlab_redis_1:redisio --link gitlab_postgresql_1:postgresql -e "GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alpha-numeric-string" -v "/srv/docker/gitlab/gitlab:/home/git/data"
+```
+
+> **Notice**
+>
+> Before executing any `docker run` command, stop the running Gitlab container. For instance, to import repositories:
+>
+> ```bash
+> docker stop gitlab_gitlab_1
+> docker run --name gitlab -it --rm \
+    --link gitlab_redis_1:redisio --link gitlab_postgresql_1:postgresql \
+    -e "GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alpha-numeric-string" \
+    -v "/srv/docker/gitlab/gitlab:/home/git/data" \
+    sameersbn/gitlab:8.7.5 app:rake gitlab:import:repos
+> docker start gitlab_gitlab_1
+> ```
 
 ## Upgrading
 
