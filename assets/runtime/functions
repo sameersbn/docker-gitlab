@@ -241,7 +241,7 @@ gitlab_finalize_redis_parameters() {
 
 gitlab_check_redis_connection() {
   timeout=60
-  while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} ping >/dev/null 2>&1
+  while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} -n ${REDIS_DB_NUMBER} ping >/dev/null 2>&1
   do
     timeout=$(expr $timeout - 1)
     if [[ $timeout -eq 0 ]]; then
@@ -263,7 +263,8 @@ gitlab_configure_redis() {
 
   update_template ${GITLAB_RESQUE_CONFIG} \
     REDIS_HOST \
-    REDIS_PORT
+    REDIS_PORT \
+    REDIS_DB_NUMBER
 }
 
 gitlab_configure_gitlab_workhorse() {
@@ -291,6 +292,15 @@ gitlab_configure_relative_url() {
   if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
     echo "Configuring gitlab::relative_url..."
     update_template ${GITLAB_RELATIVE_URL_CONFIG} GITLAB_RELATIVE_URL_ROOT
+  fi
+}
+
+gitlab_configure_trusted_proxies() {
+  if [[ -n ${GITLAB_TRUSTED_PROXIES} ]]; then
+    echo "Configuring gitlab::trusted_proxies..."
+    update_template ${GITLAB_CONFIG} GITLAB_TRUSTED_PROXIES
+  else
+    exec_as_git sed -i "/{{GITLAB_TRUSTED_PROXIES}}/d" ${GITLAB_CONFIG}
   fi
 }
 
@@ -504,6 +514,23 @@ gitlab_configure_oauth_bitbucket() {
   fi
 }
 
+gitlab_configure_oauth_saml_attribute_statements() {
+  if [[ -n ${OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL} && \
+        -n ${OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME} ]]; then
+    echo "Configuring gitlab::oauth::saml::attribute_statements..."
+    update_template ${GITLAB_CONFIG} \
+      OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL \
+      OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME \
+      OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME \
+      OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME
+    # Remove undefined optional attributes
+    exec_as_git sed -i "/first_name: \\[''\\],/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/last_name: \\[''\\],/d" ${GITLAB_CONFIG}
+  else
+    exec_as_git sed -i "/attribute_statements:/,/{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL}}/d" ${GITLAB_CONFIG}
+  fi
+}
+
 gitlab_configure_oauth_saml() {
   if [[ -n ${OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL} && \
         -n ${OAUTH_SAML_IDP_CERT_FINGERPRINT} && \
@@ -518,7 +545,12 @@ gitlab_configure_oauth_saml() {
       OAUTH_SAML_IDP_CERT_FINGERPRINT \
       OAUTH_SAML_IDP_SSO_TARGET_URL \
       OAUTH_SAML_ISSUER \
-      OAUTH_SAML_NAME_IDENTIFIER_FORMAT
+      OAUTH_SAML_NAME_IDENTIFIER_FORMAT \
+      OAUTH_SAML_GROUPS_ATTRIBUTE \
+      OAUTH_SAML_EXTERNAL_GROUPS
+    exec_as_git sed -i "/groups_attribute: '',/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/external_groups: \\[\\],/d" ${GITLAB_CONFIG}
+    gitlab_configure_oauth_saml_attribute_statements
   else
     exec_as_git sed -i "/name: 'saml'/,/{{OAUTH_SAML_NAME_IDENTIFIER_FORMAT}}/d" ${GITLAB_CONFIG}
   fi
@@ -590,7 +622,8 @@ gitlab_configure_oauth() {
     OAUTH_ALLOW_SSO \
     OAUTH_BLOCK_AUTO_CREATED_USERS \
     OAUTH_AUTO_LINK_LDAP_USER \
-    OAUTH_AUTO_LINK_SAML_USER
+    OAUTH_AUTO_LINK_SAML_USER \
+    OAUTH_EXTERNAL_PROVIDERS
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
     cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2)
@@ -1097,6 +1130,7 @@ configure_gitlab() {
     GITLAB_MAX_OBJECT_SIZE \
     GITLAB_SSH_HOST \
     GITLAB_SSH_PORT \
+    GITLAB_SIGNUP_ENABLED \
     GITLAB_USERNAME_CHANGE \
     GITLAB_CREATE_GROUP \
     GITLAB_TIMEOUT
@@ -1107,6 +1141,7 @@ configure_gitlab() {
   gitlab_configure_sidekiq
   gitlab_configure_gitlab_workhorse
   gitlab_configure_relative_url
+  gitlab_configure_trusted_proxies
   gitlab_configure_unicorn
   gitlab_configure_timezone
   gitlab_configure_rack_attack
@@ -1138,7 +1173,8 @@ configure_gitlab_shell() {
     GITLAB_SHELL_INSTALL_DIR \
     SSL_SELF_SIGNED \
     REDIS_HOST \
-    REDIS_PORT
+    REDIS_PORT \
+    REDIS_DB_NUMBER
 }
 
 configure_nginx() {

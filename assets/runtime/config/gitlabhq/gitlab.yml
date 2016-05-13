@@ -46,6 +46,12 @@ production: &base
     #
     relative_url_root: {{GITLAB_RELATIVE_URL_ROOT}}
 
+    # Trusted Proxies
+    # Customize if you have GitLab behind a reverse proxy which is running on a different machine.
+    # Add the IP address for your reverse proxy to the list, otherwise users will appear signed in from that address.
+    trusted_proxies:
+      - {{GITLAB_TRUSTED_PROXIES}}
+
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
     # user: git
 
@@ -75,12 +81,15 @@ production: &base
     ##   6 - Blue
     # default_theme: 2 # default: 2
 
+    # Enable or disable user signups (first run only)
+    signup_enabled: {{GITLAB_SIGNUP_ENABLED}}
+
     ## Automatic issue closing
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
     # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
     # Tip: you can test your closing pattern at http://rubular.com.
-    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?))+)'
+    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing))(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)'
 
     ## Default project features settings
     default_projects_features:
@@ -106,7 +115,7 @@ production: &base
     enabled: {{GITLAB_INCOMING_EMAIL_ENABLED}}
 
     # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-    # The `%{key}` placeholder is added after the user part, after a `+` character, before the `@`.
+    # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
     address: "{{GITLAB_INCOMING_EMAIL_ADDRESS}}"
 
     # Email account username
@@ -155,7 +164,17 @@ production: &base
     # Flag stuck CI builds as failed
     stuck_ci_builds_worker:
       cron: "0 0 * * *"
+    # Periodically run 'git fsck' on all repositories. If started more than
+    # once per hour you will have concurrent 'git fsck' jobs.
+    repository_check_worker:
+      cron: "20 * * * *"
+    # Send admin emails once a day
+    admin_email_worker:
+      cron: "0 0 * * *"
 
+    # Remove outdated repository archives
+    repository_archive_cache_worker:
+      cron: "0 * * * *"
 
   #
   # 2. GitLab CI settings
@@ -291,7 +310,8 @@ production: &base
     # This allows users to login without having a user account first. Define the allowed providers
     # using an array, e.g. ["saml", "twitter"], or as true/false to allow all providers or none.
     # User accounts will be created automatically when authentication was successful.
-    allow_single_sign_on: {{OAUTH_ALLOW_SSO}}
+    allow_single_sign_on: [{{OAUTH_ALLOW_SSO}}]
+
     # Locks down those users until they have been cleared by the admin (default: true).
     block_auto_created_users: {{OAUTH_BLOCK_AUTO_CREATED_USERS}}
     # Look up new users in LDAP servers. If a match is found (same uid), automatically
@@ -302,6 +322,13 @@ production: &base
     # login, without having to do a manual login first and manually add SAML
     # (default: false)
     auto_link_saml_user: {{OAUTH_AUTO_LINK_SAML_USER}}
+
+    # Set different Omniauth providers as external so that all users creating accounts
+    # via these providers will not be able to have access to internal projects. You
+    # will need to use the full name of the provider, like `google_oauth2` for Google.
+    # Refer to the examples below for the full names of the supported providers.
+    # (default: [])
+    external_providers: [{{OAUTH_EXTERNAL_PROVIDERS}}]
 
     ## Auth providers
     # Uncomment the following lines and fill in the data of the auth provider you want to use
@@ -346,11 +373,18 @@ production: &base
           app_secret: '{{OAUTH_TWITTER_APP_SECRET}}' }
       - { name: 'saml',
           label: '{{OAUTH_SAML_LABEL}}',
+          groups_attribute: '{{OAUTH_SAML_GROUPS_ATTRIBUTE}}',
+          external_groups: [{{OAUTH_SAML_EXTERNAL_GROUPS}}],
           args: {
                   assertion_consumer_service_url: '{{OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL}}',
                   idp_cert_fingerprint: '{{OAUTH_SAML_IDP_CERT_FINGERPRINT}}',
                   idp_sso_target_url: '{{OAUTH_SAML_IDP_SSO_TARGET_URL}}',
                   issuer: '{{OAUTH_SAML_ISSUER}}',
+                  attribute_statements: { 
+                    first_name: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME}}'],
+                    last_name: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME}}'],
+                    name: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME}}'],
+                    email: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL}}'] },
                   name_identifier_format: '{{OAUTH_SAML_NAME_IDENTIFIER_FORMAT}}' } }
       - { name: 'crowd',
           args: {

@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
-GITLAB_SHELL_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-shell.git
-GITLAB_WORKHORSE_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
+GITLAB_CLONE_URL=https://github.com/gitlabhq/gitlabhq.git
+GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz
+GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse/repository/archive.tar.gz
 
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
@@ -43,10 +43,15 @@ EOF
 
 # configure git for ${GITLAB_USER}
 exec_as_git git config --global core.autocrlf input
+exec_as_git git config --global gc.auto 0
 
 # install gitlab-shell
-echo "Cloning gitlab-shell v.${GITLAB_SHELL_VERSION}..."
-exec_as_git git clone -q -b v${GITLAB_SHELL_VERSION} --depth 1 ${GITLAB_SHELL_CLONE_URL} ${GITLAB_SHELL_INSTALL_DIR}
+echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
+mkdir -p ${GITLAB_SHELL_INSTALL_DIR}
+wget -cq ${GITLAB_SHELL_URL}?ref=v${GITLAB_SHELL_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz
+tar xf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz --strip 1 -C ${GITLAB_SHELL_INSTALL_DIR}
+rm -rf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz
+chown -R ${GITLAB_USER}: ${GITLAB_SHELL_INSTALL_DIR}
 
 cd ${GITLAB_SHELL_INSTALL_DIR}
 exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
@@ -55,8 +60,12 @@ exec_as_git ./bin/install
 # remove unused repositories directory created by gitlab-shell install
 exec_as_git rm -rf ${GITLAB_HOME}/repositories
 
-echo "Cloning gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
-exec_as_git git clone -q -b v${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_CLONE_URL} ${GITLAB_WORKHORSE_INSTALL_DIR}
+echo "Downloading gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
+mkdir -p ${GITLAB_WORKHORSE_INSTALL_DIR}
+wget -cq ${GITLAB_WORKHORSE_URL}?ref=v${GITLAB_WORKHORSE_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-workhorse-${GITLAB_WORKHORSE_VERSION}.tar.gz
+tar xf ${GITLAB_BUILD_DIR}/gitlab-workhorse-${GITLAB_WORKHORSE_VERSION}.tar.gz --strip 1 -C ${GITLAB_WORKHORSE_INSTALL_DIR}
+rm -rf ${GITLAB_BUILD_DIR}/gitlab-workhorse-${GITLAB_WORKHORSE_VERSION}.tar.gz
+chown -R ${GITLAB_USER}: ${GITLAB_WORKHORSE_INSTALL_DIR}
 
 echo "Downloading Go ${GOLANG_VERSION}..."
 wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
@@ -74,6 +83,9 @@ exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${G
 
 # remove HSTS config from the default headers, we configure it in nginx
 exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
+
+# revert `rake gitlab:setup` changes from gitlabhq/gitlabhq@a54af831bae023770bf9b2633cc45ec0d5f5a66a
+exec_as_git sed -i 's/db:reset/db:setup/' ${GITLAB_INSTALL_DIR}/lib/tasks/gitlab/setup.rake
 
 cd ${GITLAB_INSTALL_DIR}
 

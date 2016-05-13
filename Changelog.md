@@ -2,6 +2,35 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**8.7.5**
+- gitlab: upgrade to CE v8.7.5
+
+**8.7.3**
+- gitlab: upgrade to CE v8.7.3
+
+**8.7.2**
+- gitlab: upgrade to CE v8.7.2
+
+**8.7.1**
+- gitlab: upgrade to CE v8.7.1
+
+**8.7.0**
+- gitlab-shell: upgrade to v.2.7.2
+- gitlab: upgrade to CE v8.7.0
+- SSO: `OAUTH_ALLOW_SSO` now specifies a comma separated list of providers.
+- OAuth: Added `OAUTH_EXTERNAL_PROVIDERS` to specify external oauth providers.
+- Exposed `GITLAB_TRUSTED_PROXIES` configuration parameter
+
+**8.6.7**
+- added `GITLAB_SIGNUP_ENABLED` option to enable/disable signups
+- gitlab: upgrade to CE v8.6.7
+
+**8.6.6**
+- gitlab: upgrade to CE v8.6.6
+
+**8.6.5**
+- gitlab: upgrade to CE v8.6.5
+
 **8.6.4**
 - gitlab: upgrade to CE v8.6.4
 

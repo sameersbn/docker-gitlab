@@ -1,4 +1,4 @@
 # If you change this file in a Merge Request, please also create
 # a Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
 #
-production: redis://{{REDIS_HOST}}:{{REDIS_PORT}}
+production: redis://{{REDIS_HOST}}:{{REDIS_PORT}}/{{REDIS_DB_NUMBER}}
