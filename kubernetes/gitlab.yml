@@ -7,14 +7,14 @@ spec:
   selector:
     name: gitlab
   template:
-    metadata: 
+    metadata:
       name: gitlab
-      labels: 
+      labels:
         name: gitlab
     spec:
       containers:
         - name: gitlab
-          image: sameersbn/gitlab:8.7.3
+          image: sameersbn/gitlab:8.7.5
           env:
             - name: TZ
               value: Asia/Kolkata
