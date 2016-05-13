@@ -46,7 +46,7 @@ exec_as_git git config --global core.autocrlf input
 exec_as_git git config --global gc.auto 0
 
 # install gitlab-shell
-echo "Downloading gitlab-workhorse v.${GITLAB_SHELL_VERSION}..."
+echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
 mkdir -p ${GITLAB_SHELL_INSTALL_DIR}
 wget -cq ${GITLAB_SHELL_URL}?ref=v${GITLAB_SHELL_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz
 tar xf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz --strip 1 -C ${GITLAB_SHELL_INSTALL_DIR}
