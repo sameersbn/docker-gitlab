@@ -21,5 +21,7 @@ build:
 
 deploy:
   stage: deploy
+  only:
+  - tags
   script:
   - docker push ${IMAGENAME}:${CI_BUILD_TAG} 
