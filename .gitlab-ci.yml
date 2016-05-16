@@ -1,5 +1,27 @@
-image: docker:dind
+image: docker:latest
+
+variables:
+  IMAGENAME: "docker.mietz.io:5000/gitlab"
+
+before_script:
+- docker info
+- docker login -u ${USERNAME} -p ${PASSWORD} docker.mietz.io:5000 
+
+stages:
+- build
+- deploy
+
+build:
+  stage: build
+  only:
+   - tags
+  script:
+  - docker build -t ${IMAGENAME}:${CI_BUILD_TAG} .
+  
 
 deploy:
+  stage: deploy
+  only:
+  - tags
   script:
-    - ci/gitlab
+  - docker push ${IMAGENAME}:${CI_BUILD_TAG} 
