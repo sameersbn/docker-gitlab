@@ -11,8 +11,6 @@ services:
       - DB_EXTENSION=pg_trgm
     volumes:
       - /srv/docker/gitlab/postgresql:/var/lib/postgresql:Z
-    networks:
-      - gitlab-tier
   
   redis:
     restart: always
@@ -21,8 +19,6 @@ services:
       - --loglevel warning
     volumes:
       - /srv/docker/gitlab/redis:/var/lib/redis:Z
-    networks:
-      - gitlab-tier
   
   gitlab:
     restart: always
@@ -82,9 +78,3 @@ services:
       - IMAP_STARTTLS=false
     volumes:
       - /srv/docker/gitlab/gitlab:/home/git/data:Z
-    networks:
-      - gitlab-tier
-
-networks:
-  gitlab-tier:
-    driver: bridge
