@@ -1,64 +1,80 @@
-postgresql:
-  restart: always
-  image: sameersbn/postgresql:9.4-21
-  environment:
-    - DB_USER=gitlab
-    - DB_PASS=password
-    - DB_NAME=gitlabhq_production
-    - DB_EXTENSION=pg_trgm
-  volumes:
-    - /srv/docker/gitlab/postgresql:/var/lib/postgresql
-gitlab:
-  restart: always
-  image: sameersbn/gitlab:8.7.5
-  links:
-    - redis:redisio
-    - postgresql:postgresql
-  ports:
-    - "10080:80"
-    - "10022:22"
-  environment:
-    - DEBUG=false
-    - TZ=Asia/Kolkata
-    - GITLAB_TIMEZONE=Kolkata
+version: '2'
 
-    - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
+services:
+  postgresql:
+    restart: always
+    image: sameersbn/postgresql:9.4-21
+    environment:
+      - DB_USER=gitlab
+      - DB_PASS=password
+      - DB_NAME=gitlabhq_production
+      - DB_EXTENSION=pg_trgm
+    volumes:
+      - /srv/docker/gitlab/postgresql:/var/lib/postgresql:Z
+  
+  redis:
+    restart: always
+    image: sameersbn/redis:latest
+    command:
+      - --loglevel warning
+    volumes:
+      - /srv/docker/gitlab/redis:/var/lib/redis:Z
+  
+  gitlab:
+    restart: always
+    image: sameersbn/gitlab:8.7.5
+    depends_on:
+      - redis
+      - postgresql
+    ports:
+      - "10080:80"
+      - "10022:22"
+    environment:
+      - DEBUG=false
 
-    - GITLAB_HOST=localhost
-    - GITLAB_PORT=10080
-    - GITLAB_SSH_PORT=10022
-    - GITLAB_RELATIVE_URL_ROOT=
+      - TZ=Asia/Kolkata
+      - GITLAB_TIMEZONE=Kolkata
+      - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
+  
+      - DB_HOST=postgresql
+      - DB_USER=gitlab
+      - DB_NAME=gitlabhq_production
+      - DB_PASS=password
+      - DB_ADAPTER=postgresql
 
-    - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
-    - GITLAB_NOTIFY_PUSHER=false
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
 
-    - GITLAB_EMAIL=notifications@example.com
-    - GITLAB_EMAIL_REPLY_TO=noreply@example.com
-    - GITLAB_INCOMING_EMAIL_ADDRESS=reply@example.com
-
-    - GITLAB_BACKUP_SCHEDULE=daily
-    - GITLAB_BACKUP_TIME=01:00
-
-    - SMTP_ENABLED=false
-    - SMTP_DOMAIN=www.example.com
-    - SMTP_HOST=smtp.gmail.com
-    - SMTP_PORT=587
-    - SMTP_USER=mailer@example.com
-    - SMTP_PASS=password
-    - SMTP_STARTTLS=true
-    - SMTP_AUTHENTICATION=login
-
-    - IMAP_ENABLED=false
-    - IMAP_HOST=imap.gmail.com
-    - IMAP_PORT=993
-    - IMAP_USER=mailer@example.com
-    - IMAP_PASS=password
-    - IMAP_SSL=true
-    - IMAP_STARTTLS=false
-  volumes:
-    - /srv/docker/gitlab/gitlab:/home/git/data
-redis:
-  restart: always
-  image: sameersbn/redis:latest
-  volumes:
-    - /srv/docker/gitlab/redis:/var/lib/redis
+      - GITLAB_HOST=localhost
+      - GITLAB_PORT=10080
+      - GITLAB_SSH_PORT=10022
+      - GITLAB_RELATIVE_URL_ROOT=
+  
+      - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
+      - GITLAB_NOTIFY_PUSHER=false
+  
+      - GITLAB_EMAIL=notifications@example.com
+      - GITLAB_EMAIL_REPLY_TO=noreply@example.com
+      - GITLAB_INCOMING_EMAIL_ADDRESS=reply@example.com
+  
+      - GITLAB_BACKUP_SCHEDULE=daily
+      - GITLAB_BACKUP_TIME=01:00
+  
+      - SMTP_ENABLED=false
+      - SMTP_DOMAIN=www.example.com
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=587
+      - SMTP_USER=mailer@example.com
+      - SMTP_PASS=password
+      - SMTP_STARTTLS=true
+      - SMTP_AUTHENTICATION=login
+  
+      - IMAP_ENABLED=false
+      - IMAP_HOST=imap.gmail.com
+      - IMAP_PORT=993
+      - IMAP_USER=mailer@example.com
+      - IMAP_PASS=password
+      - IMAP_SSL=true
+      - IMAP_STARTTLS=false
+    volumes:
+      - /srv/docker/gitlab/gitlab:/home/git/data:Z
