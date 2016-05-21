@@ -11,7 +11,7 @@ services:
       - DB_EXTENSION=pg_trgm
     volumes:
       - /srv/docker/gitlab/postgresql:/var/lib/postgresql:Z
-  
+
   redis:
     restart: always
     image: sameersbn/redis:latest
@@ -19,10 +19,10 @@ services:
       - --loglevel warning
     volumes:
       - /srv/docker/gitlab/redis:/var/lib/redis:Z
-  
+
   gitlab:
     restart: always
-    image: sameersbn/gitlab:8.7.5
+    image: sameersbn/gitlab:8.7.6
     depends_on:
       - redis
       - postgresql
@@ -35,7 +35,7 @@ services:
       - TZ=Asia/Kolkata
       - GITLAB_TIMEZONE=Kolkata
       - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
-  
+
       - DB_HOST=postgresql
       - DB_USER=gitlab
       - DB_NAME=gitlabhq_production
@@ -49,17 +49,17 @@ services:
       - GITLAB_PORT=10080
       - GITLAB_SSH_PORT=10022
       - GITLAB_RELATIVE_URL_ROOT=
-  
+
       - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
       - GITLAB_NOTIFY_PUSHER=false
-  
+
       - GITLAB_EMAIL=notifications@example.com
       - GITLAB_EMAIL_REPLY_TO=noreply@example.com
       - GITLAB_INCOMING_EMAIL_ADDRESS=reply@example.com
-  
+
       - GITLAB_BACKUP_SCHEDULE=daily
       - GITLAB_BACKUP_TIME=01:00
-  
+
       - SMTP_ENABLED=false
       - SMTP_DOMAIN=www.example.com
       - SMTP_HOST=smtp.gmail.com
@@ -68,7 +68,7 @@ services:
       - SMTP_PASS=password
       - SMTP_STARTTLS=true
       - SMTP_AUTHENTICATION=login
-  
+
       - IMAP_ENABLED=false
       - IMAP_HOST=imap.gmail.com
       - IMAP_PORT=993
