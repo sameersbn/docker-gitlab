@@ -98,6 +98,7 @@ production: &base
       wiki: {{GITLAB_PROJECTS_WIKI}}
       snippets: {{GITLAB_PROJECTS_SNIPPETS}}
       builds: {{GITLAB_PROJECTS_BUILDS}}
+      container_registry: {{GITLAB_PROJECTS_CONTAINER_REGISTRY}}
 
     ## Webhook settings
     # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
@@ -380,7 +381,7 @@ production: &base
                   idp_cert_fingerprint: '{{OAUTH_SAML_IDP_CERT_FINGERPRINT}}',
                   idp_sso_target_url: '{{OAUTH_SAML_IDP_SSO_TARGET_URL}}',
                   issuer: '{{OAUTH_SAML_ISSUER}}',
-                  attribute_statements: { 
+                  attribute_statements: {
                     first_name: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME}}'],
                     last_name: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME}}'],
                     name: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME}}'],

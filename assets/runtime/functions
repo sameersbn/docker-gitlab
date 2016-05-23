@@ -807,7 +807,9 @@ gitlab_configure_project_features() {
     GITLAB_PROJECTS_WIKI \
     GITLAB_PROJECTS_SNIPPETS \
     GITLAB_PROJECTS_BUILDS \
+    GITLAB_PROJECTS_CONTAINER_REGISTRY \
     GITLAB_WEBHOOK_TIMEOUT
+
 }
 
 nginx_configure_gitlab_ssl() {

@@ -796,6 +796,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_PROJECTS_WIKI**: Set if *wiki* feature should be enabled by default for new projects. Defaults is `true`.
 - **GITLAB_PROJECTS_SNIPPETS**: Set if *snippets* feature should be enabled by default for new projects. Defaults is `false`.
 - **GITLAB_PROJECTS_BUILDS**: Set if *builds* feature should be enabled by default for new projects. Defaults is `true`.
+- **GITLAB_PROJECTS_CONTAINER_REGISTRY**: Set if *container_registry* feature should be enabled by default for new projects. Defaults is `true`.
 - **GITLAB_WEBHOOK_TIMEOUT**: Sets the timeout for webhooks. Defaults to `10` seconds.
 - **GITLAB_TIMEOUT**: Sets the timeout for git commands. Defaults to `10` seconds.
 - **GITLAB_MAX_OBJECT_SIZE**: Maximum size (in bytes) of a git object (eg. a commit) in bytes. Defaults to `20971520`, i.e. `20` megabytes.
