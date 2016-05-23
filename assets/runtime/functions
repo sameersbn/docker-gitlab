@@ -17,6 +17,7 @@ GITLAB_ROBOTS_CONFIG="${GITLAB_INSTALL_DIR}/public/robots.txt"
 GITLAB_SHELL_CONFIG="${GITLAB_SHELL_INSTALL_DIR}/config.yml"
 GITLAB_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab"
 GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
+GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
 
 # Compares two version strings `a` and `b`
 # Returns
@@ -810,7 +811,20 @@ gitlab_configure_project_features() {
     GITLAB_PROJECTS_WIKI \
     GITLAB_PROJECTS_SNIPPETS \
     GITLAB_PROJECTS_BUILDS \
+    GITLAB_PROJECTS_CONTAINER_REGISTRY \
     GITLAB_WEBHOOK_TIMEOUT
+}
+
+gitlab_configure_registry(){
+  echo "Configuring gitlab::registry..."
+  update_template ${GITLAB_CONFIG} \
+  GITLAB_REGISTRY_ENABLED \
+  GITLAB_REGISTRY_DIR \
+  GITLAB_REGISTRY_HOST \
+  GITLAB_REGISTRY_PORT \
+  GITLAB_REGISTRY_API_URL \
+  GITLAB_REGISTRY_KEY_PATH \
+  GITLAB_REGISTRY_ISSUER
 }
 
 nginx_configure_gitlab_ssl() {
@@ -876,6 +890,27 @@ nginx_configure_gitlab_ci() {
       GITLAB_HOST \
       GITLAB_CI_HOST \
       DNS_RESOLVERS
+  fi
+}
+
+nginx_configure_gitlab_registry() {
+  if [[ $GITLAB_REGISTRY_ENABLED == true ]]; then
+    echo "Configuring nginx::gitlab-registry..."
+    update_template ${GITLAB_REGISTRY_NGINX_CONFIG} \
+      GITLAB_LOG_DIR \
+      GITLAB_REGISTRY_PORT \
+      GITLAB_REGISTRY_HOST \
+      GITLAB_REGISTRY_API_URL
+  fi
+  nginx_configure_gitlab_registry_ssl
+}
+
+nginx_configure_gitlab_registry_ssl() {
+  if [[  $GITLAB_REGISTRY_ENABLED == true && -f ${SSL_REGISTRY_KEY_PATH} && -f ${SSL_REGISTRY_CERT_PATH} ]]; then
+    echo "Configuring nginx::gitlab::registry::ssl..."
+    update_template ${GITLAB_REGISTRY_NGINX_CONFIG} \
+      SSL_REGISTRY_KEY_PATH \
+      SSL_REGISTRY_CERT_PATH
   fi
 }
 
@@ -1115,6 +1150,14 @@ install_configuration_templates() {
   if [[ -n $GITLAB_CI_HOST ]]; then
     install_template root: nginx/gitlab_ci ${GITLAB_CI_NGINX_CONFIG}
   fi
+
+  if [[ ${GITLAB_REGISTRY_ENABLED} == true ]]; then
+    if [[ -f ${SSL_REGISTRY_KEY_PATH} && -f ${SSL_REGISTRY_CERT_PATH} ]]; then
+      install_template root: nginx/gitlab-registry-ssl ${GITLAB_REGISTRY_NGINX_CONFIG}
+    else
+      install_template root: nginx/gitlab-registry ${GITLAB_REGISTRY_NGINX_CONFIG}
+    fi
+  fi
 }
 
 configure_gitlab() {
@@ -1159,6 +1202,7 @@ configure_gitlab() {
   gitlab_configure_gravatar
   gitlab_configure_analytics
   gitlab_configure_backups
+  gitlab_configure_registry
 
   # remove stale gitlab.socket
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
@@ -1185,6 +1229,7 @@ configure_nginx() {
   sed -i "s|worker_processes .*|worker_processes ${NGINX_WORKERS};|" /etc/nginx/nginx.conf
   nginx_configure_gitlab
   nginx_configure_gitlab_ci
+  nginx_configure_gitlab_registry
 }
 
 migrate_database() {
