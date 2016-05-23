@@ -809,7 +809,18 @@ gitlab_configure_project_features() {
     GITLAB_PROJECTS_BUILDS \
     GITLAB_PROJECTS_CONTAINER_REGISTRY \
     GITLAB_WEBHOOK_TIMEOUT
+}
 
+gitlab_configure_registry(){
+  echo "Configuring gitlab::registry..."
+  update_template ${GITLAB_CONFIG} \
+  GITLAB_REGISTRY_ENABLED \
+  GITLAB_REGISTRY_HOST \
+  GITLAB_REGISTRY_PORT \
+  GITLAB_REGISTRY_API_URL \
+  GITLAB_REGISTRY_KEY_PATH \
+  GITLAB_REGISTRY_PATH \
+  GITLAB_REGISTRY_ISSUER
 }
 
 nginx_configure_gitlab_ssl() {
@@ -1158,6 +1169,7 @@ configure_gitlab() {
   gitlab_configure_gravatar
   gitlab_configure_analytics
   gitlab_configure_backups
+  gitlab_configure_registry
 
   # remove stale gitlab.socket
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket

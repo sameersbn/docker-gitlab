@@ -821,6 +821,13 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_SSH_PORT**: The ssh port number. Defaults to `22`.
 - **GITLAB_RELATIVE_URL_ROOT**: The relative url of the GitLab server, e.g. `/git`. No default.
 - **GITLAB_TRUSTED_PROXIES**: Add IP address reverse proxy to trusted proxy list, otherwise users will appear signed in from that address. Currently only a single entry is permitted. No defaults.
+- **GITLAB_REGISTRY_ENABLED**: Enables the GitLab Container Registry. Defautls to `true`.
+- **GITLAB_REGISTRY_HOST**: Sets the Gitlab Registry Host. Defaults to `registry.example.com`
+- **GITLAB_REGISTRY_PORT**: Sets the GitLab Registry Port. Defaults to `5000`.
+- **GITLAB_REGISTRY_API_URL**: Sets the Gitlab Registry Api URL. Defaults to `http://localhost:5000`
+- **GITLAB_REGISTRY_KEY_PATH**: Sets the GitLab Registry Key Path. Defaults to `config/registry.key`
+- **GITLAB_REGISTRY_PATH**: Sets the GitLab Registry PATH. Defaults to `shared/registry`.
+- **GITLAB_REGISTRY_ISSUER**: Sets the Gitlab Registry Issuer. Defaults to `gitlab-issuer`.
 - **GITLAB_HTTPS**: Set to `true` to enable https support, disabled by default.
 - **SSL_SELF_SIGNED**: Set to `true` when using self signed ssl certificates. `false` by default.
 - **SSL_CERTIFICATE_PATH**: Location of the ssl certificate. Defaults to `/home/git/data/certs/gitlab.crt`
