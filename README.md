@@ -789,14 +789,14 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_INCOMING_EMAIL_ADDRESS**: The incoming email address for reply by email. Defaults to the value of `IMAP_USER`, else defaults to `reply@example.com`. Please read the [reply by email](http://doc.gitlab.com/ce/incoming_email/README.html) documentation to curretly set this parameter.
 - **GITLAB_INCOMING_EMAIL_ENABLED**: Enable or disable gitlab reply by email feature. Defaults to the value of `IMAP_ENABLED`.
 - **GITLAB_SIGNUP_ENABLED**: Enable or disable user signups (first run only). Default is `true`.
-- **GITLAB_USERNAME_CHANGE**: Enable or disable ability for users to change their username. Defaults is `true`.
-- **GITLAB_CREATE_GROUP**: Enable or disable ability for users to create groups. Defaults is `true`.
-- **GITLAB_PROJECTS_ISSUES**: Set if *issues* feature should be enabled by default for new projects. Defaults is `true`.
-- **GITLAB_PROJECTS_MERGE_REQUESTS**: Set if *merge requests* feature should be enabled by default for new projects. Defaults is `true`.
-- **GITLAB_PROJECTS_WIKI**: Set if *wiki* feature should be enabled by default for new projects. Defaults is `true`.
-- **GITLAB_PROJECTS_SNIPPETS**: Set if *snippets* feature should be enabled by default for new projects. Defaults is `false`.
-- **GITLAB_PROJECTS_BUILDS**: Set if *builds* feature should be enabled by default for new projects. Defaults is `true`.
-- **GITLAB_PROJECTS_CONTAINER_REGISTRY**: Set if *container_registry* feature should be enabled by default for new projects. Defaults is `true`.
+- **GITLAB_USERNAME_CHANGE**: Enable or disable ability for users to change their username. Defaults to `true`.
+- **GITLAB_CREATE_GROUP**: Enable or disable ability for users to create groups. Defaults to `true`.
+- **GITLAB_PROJECTS_ISSUES**: Set if *issues* feature should be enabled by default for new projects. Defaults to `true`.
+- **GITLAB_PROJECTS_MERGE_REQUESTS**: Set if *merge requests* feature should be enabled by default for new projects. Defaults to `true`.
+- **GITLAB_PROJECTS_WIKI**: Set if *wiki* feature should be enabled by default for new projects. Defaults to `true`.
+- **GITLAB_PROJECTS_SNIPPETS**: Set if *snippets* feature should be enabled by default for new projects. Defaults to `false`.
+- **GITLAB_PROJECTS_BUILDS**: Set if *builds* feature should be enabled by default for new projects. Defaults to `true`.
+- **GITLAB_PROJECTS_CONTAINER_REGISTRY**: Set if *container_registry* feature should be enabled by default for new projects. Defaults to `true`.
 - **GITLAB_WEBHOOK_TIMEOUT**: Sets the timeout for webhooks. Defaults to `10` seconds.
 - **GITLAB_TIMEOUT**: Sets the timeout for git commands. Defaults to `10` seconds.
 - **GITLAB_MAX_OBJECT_SIZE**: Maximum size (in bytes) of a git object (eg. a commit) in bytes. Defaults to `20971520`, i.e. `20` megabytes.
@@ -821,10 +821,10 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_SSH_PORT**: The ssh port number. Defaults to `22`.
 - **GITLAB_RELATIVE_URL_ROOT**: The relative url of the GitLab server, e.g. `/git`. No default.
 - **GITLAB_TRUSTED_PROXIES**: Add IP address reverse proxy to trusted proxy list, otherwise users will appear signed in from that address. Currently only a single entry is permitted. No defaults.
-- **GITLAB_REGISTRY_ENABLED**: Enables the GitLab Container Registry. Defautls to `false`.
+- **GITLAB_REGISTRY_ENABLED**: Enables the GitLab Container Registry. Defaults to `false`.
 - **GITLAB_REGISTRY_HOST**: Sets the Gitlab Registry Host. Defaults to `registry.example.com`
 - **GITLAB_REGISTRY_PORT**: Sets the GitLab Registry Port. Defaults to `5000`.
-- **GITLAB_REGISTRY_API_URL**: Sets the Gitlab Registry Api URL. Defaults to `http://localhost:5000`
+- **GITLAB_REGISTRY_API_URL**: Sets the Gitlab Registry API URL. Defaults to `http://localhost:5000`
 - **GITLAB_REGISTRY_KEY_PATH**: Sets the GitLab Registry Key Path. Defaults to `config/registry.key`
 - **GITLAB_REGISTRY_PATH**: Sets the GitLab Registry PATH. Defaults to `shared/registry`.
 - **GITLAB_REGISTRY_ISSUER**: Sets the Gitlab Registry Issuer. Defaults to `gitlab-issuer`.
