@@ -37,7 +37,7 @@ server {
   ssl_session_cache  builtin:1000  shared:SSL:10m;
   ssl_session_timeout  5m;
 
-  access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_registry_access.log gitlab_access;
+  access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_registry_access.log;
   error_log   {{GITLAB_LOG_DIR}}/nginx/gitlab_registry_error.log;
 
   location / {
