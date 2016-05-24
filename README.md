@@ -835,6 +835,8 @@ Below is the complete list of available options that can be used to customize yo
 - **SSL_DHPARAM_PATH**: Location of the dhparam file. Defaults to `/home/git/data/certs/dhparam.pem`
 - **SSL_VERIFY_CLIENT**: Enable verification of client certificates using the `SSL_CA_CERTIFICATES_PATH` file. Defaults to `false`
 - **SSL_CA_CERTIFICATES_PATH**: List of SSL certificates to trust. Defaults to `/home/git/data/certs/ca.crt`.
+- **SSL_REGISTRY_KEY_PATH**: Location of the ssl private key for gitlab container registry. Defaults to `/home/git/data/certs/registry.key`
+- **SSL_REGISTRY_CERT_PATH**: Location of the ssl certificate for the gitlab container registy. Defaults to `/home/git/data/certs/registry.crt`
 - **NGINX_WORKERS**: The number of nginx workers to start. Defaults to `1`.
 - **NGINX_HSTS_ENABLED**: Advanced configuration option for turning off the HSTS configuration. Applicable only when SSL is in use. Defaults to `true`. See [#138](https://github.com/sameersbn/docker-gitlab/issues/138) for use case scenario.
 - **NGINX_HSTS_MAXAGE**: Advanced configuration option for setting the HSTS max-age in the gitlab nginx vHost configuration. Applicable only when SSL is in use. Defaults to `31536000`.
