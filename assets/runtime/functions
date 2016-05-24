@@ -702,7 +702,8 @@ gitlab_configure_backups_aws() {
         AWS_BACKUP_REGION \
         AWS_BACKUP_ACCESS_KEY_ID \
         AWS_BACKUP_SECRET_ACCESS_KEY \
-        AWS_BACKUP_BUCKET
+        AWS_BACKUP_BUCKET \
+        AWS_BACKUP_MULTIPART_CHUNK_SIZE
       ;;
     *)
       exec_as_git sed -i "/upload:/,/remote_directory:/d" ${GITLAB_CONFIG}
