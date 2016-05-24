@@ -907,7 +907,7 @@ nginx_configure_gitlab_registry_ssl() {
 
     update_template ${GITLAB_REGISTRY_NGINX_CONFIG} \
       SSL_REGISTRY_KEY_PATH \
-      SSL_REGISTRY_CERT_PATH 
+      SSL_REGISTRY_CERT_PATH
   fi
 }
 
@@ -1152,7 +1152,7 @@ install_configuration_templates() {
     if [[ -f ${SSL_REGISTRY_KEY_PATH} && -f ${SSL_REGISTRY_CERT_PATH} ]]; then
       install_template root: nginx/gitlab-registry-ssl ${GITLAB_REGISTRY_NGINX_CONFIG}
     else
-      install_template root: nginx/gitlab-regisry ${GITLAB_REGISTRY_NGINX_CONFIG}
+      install_template root: nginx/gitlab-registry ${GITLAB_REGISTRY_NGINX_CONFIG}
     fi
   fi
 }
