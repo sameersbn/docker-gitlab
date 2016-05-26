@@ -1,11 +1,11 @@
 image: docker:latest
 
 variables:
-  IMAGENAME: "docker.mietz.io:5000/gitlab"
+  IMAGENAME: "${REPO}/gitlab"
 
 before_script:
 - docker info
-- docker login -u ${USERNAME} -p ${PASSWORD} docker.mietz.io:5000 
+- docker login -u ${USERNAME} -p ${PASSWORD} ${REPO}
 
 stages:
 - build
