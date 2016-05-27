@@ -7,7 +7,7 @@
 
 ## Redirects all HTTP traffic to the HTTPS host
 server {
-  listen *:{{GITLAB_REGISTRY_PORT}};
+  listen *:80;
   server_name  {{GITLAB_REGISTRY_HOST}};
   server_tokens off; ## Don't show the nginx version number, a security best practice
   return 301 https://$http_host:$request_uri;
