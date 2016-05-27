@@ -891,27 +891,6 @@ nginx_configure_gitlab_ci() {
   fi
 }
 
-nginx_configure_gitlab_registry() {
-  if [[ $GITLAB_REGISTRY_ENABLED == true ]]; then
-    echo "Configuring nginx::gitlab-registry..."
-    update_template ${GITLAB_REGISTRY_NGINX_CONFIG} \
-      GITLAB_LOG_DIR \
-      GITLAB_REGISTRY_PORT \
-      GITLAB_REGISTRY_HOST \
-      GITLAB_REGISTRY_API_URL
-  fi
-  nginx_configure_gitlab_registry_ssl
-}
-
-nginx_configure_gitlab_registry_ssl() {
-  if [[  $GITLAB_REGISTRY_ENABLED == true && -f ${SSL_REGISTRY_KEY_PATH} && -f ${SSL_REGISTRY_CERT_PATH} ]]; then
-    echo "Configuring nginx::gitlab::registry::ssl..."
-    update_template ${GITLAB_REGISTRY_NGINX_CONFIG} \
-      SSL_REGISTRY_KEY_PATH \
-      SSL_REGISTRY_CERT_PATH
-  fi
-}
-
 #   _|_|_|              _|        _|  _|
 #   _|    _|  _|    _|  _|_|_|    _|        _|_|_|
 #   _|_|_|    _|    _|  _|    _|  _|  _|  _|
@@ -1227,7 +1206,6 @@ configure_nginx() {
   sed -i "s|worker_processes .*|worker_processes ${NGINX_WORKERS};|" /etc/nginx/nginx.conf
   nginx_configure_gitlab
   nginx_configure_gitlab_ci
-  nginx_configure_gitlab_registry
 }
 
 migrate_database() {
