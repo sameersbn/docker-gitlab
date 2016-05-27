@@ -1206,7 +1206,6 @@ configure_nginx() {
   sed -i "s|worker_processes .*|worker_processes ${NGINX_WORKERS};|" /etc/nginx/nginx.conf
   nginx_configure_gitlab
   nginx_configure_gitlab_ci
-  nginx_configure_gitlab_registry
 }
 
 migrate_database() {
