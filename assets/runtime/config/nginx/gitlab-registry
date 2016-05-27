@@ -47,7 +47,7 @@ server {
     proxy_set_header  X-Forwarded-Proto $scheme;
     proxy_read_timeout                  900;
 
-    proxy_pass http://{{GITLAB_HOST}}/$request_uri;
+    proxy_pass http://gitlab-workhorse;
   }
 
 }
