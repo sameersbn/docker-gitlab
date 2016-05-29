@@ -2,6 +2,21 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**8.8.0**
+- gitlab: upgrade to CE v8.8.0
+- added `GITLAB_REGISTRY_ENABLED` configuration parameter
+- added `GITLAB_REGISTRY_HOST` configuration parameter
+- added `GITLAB_REGISTRY_PORT` configuration parameter
+- added `GITLAB_REGISTRY_API_URL` configuration parameter
+- added `GITLAB_REGISTRY_KEY_PATH` configuration parameter
+- added `GITLAB_REGISTRY_PATH` configuration parameter
+- added `GITLAB_REGISTRY_ISSUER` configuration parameter
+- added `GITLAB_PROJECTS_CONTAINER_REGISTRY` configuration parameter
+- added `SSL_REGISTRY_KEY_PATH` configuration parameter
+- added `SSL_REGISTRY_CERT_PATH` configuration parameter
+- added `AWS_BACKUP_MULTIPART_CHUNK_SIZE` configuration parameter
+
+
 **8.7.6**
 - gitlab: upgrade to CE v8.7.6
 

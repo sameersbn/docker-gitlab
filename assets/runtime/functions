@@ -17,6 +17,7 @@ GITLAB_ROBOTS_CONFIG="${GITLAB_INSTALL_DIR}/public/robots.txt"
 GITLAB_SHELL_CONFIG="${GITLAB_SHELL_INSTALL_DIR}/config.yml"
 GITLAB_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab"
 GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
+GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
 
 # Compares two version strings `a` and `b`
 # Returns
@@ -702,7 +703,8 @@ gitlab_configure_backups_aws() {
         AWS_BACKUP_REGION \
         AWS_BACKUP_ACCESS_KEY_ID \
         AWS_BACKUP_SECRET_ACCESS_KEY \
-        AWS_BACKUP_BUCKET
+        AWS_BACKUP_BUCKET \
+        AWS_BACKUP_MULTIPART_CHUNK_SIZE
       ;;
     *)
       exec_as_git sed -i "/upload:/,/remote_directory:/d" ${GITLAB_CONFIG}
@@ -807,7 +809,20 @@ gitlab_configure_project_features() {
     GITLAB_PROJECTS_WIKI \
     GITLAB_PROJECTS_SNIPPETS \
     GITLAB_PROJECTS_BUILDS \
+    GITLAB_PROJECTS_CONTAINER_REGISTRY \
     GITLAB_WEBHOOK_TIMEOUT
+}
+
+gitlab_configure_registry(){
+  echo "Configuring gitlab::registry..."
+  update_template ${GITLAB_CONFIG} \
+  GITLAB_REGISTRY_ENABLED \
+  GITLAB_REGISTRY_HOST \
+  GITLAB_REGISTRY_PORT \
+  GITLAB_REGISTRY_API_URL \
+  GITLAB_REGISTRY_KEY_PATH \
+  GITLAB_REGISTRY_PATH \
+  GITLAB_REGISTRY_ISSUER
 }
 
 nginx_configure_gitlab_ssl() {
@@ -875,6 +890,21 @@ nginx_configure_gitlab_ci() {
       DNS_RESOLVERS
   fi
 }
+
+nginx_configure_gitlab_registry() {
+  if [[ $GITLAB_REGISTRY_ENABLED == true ]]; then
+    echo "Configuring nginx::gitlab-registry..."
+    update_template ${GITLAB_REGISTRY_NGINX_CONFIG} \
+      GITLAB_LOG_DIR \
+      GITLAB_HOST \
+      GITLAB_REGISTRY_PORT \
+      GITLAB_REGISTRY_HOST \
+      GITLAB_REGISTRY_API_URL \
+      SSL_REGISTRY_KEY_PATH \
+      SSL_REGISTRY_CERT_PATH
+  fi
+}
+
 
 #   _|_|_|              _|        _|  _|
 #   _|    _|  _|    _|  _|_|_|    _|        _|_|_|
@@ -1112,6 +1142,10 @@ install_configuration_templates() {
   if [[ -n $GITLAB_CI_HOST ]]; then
     install_template root: nginx/gitlab_ci ${GITLAB_CI_NGINX_CONFIG}
   fi
+
+  if [[ ${GITLAB_REGISTRY_ENABLED} == true ]]; then
+    install_template root: nginx/gitlab-registry ${GITLAB_REGISTRY_NGINX_CONFIG}
+  fi
 }
 
 configure_gitlab() {
@@ -1156,6 +1190,7 @@ configure_gitlab() {
   gitlab_configure_gravatar
   gitlab_configure_analytics
   gitlab_configure_backups
+  gitlab_configure_registry
 
   # remove stale gitlab.socket
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
@@ -1182,6 +1217,7 @@ configure_nginx() {
   sed -i "s|worker_processes .*|worker_processes ${NGINX_WORKERS};|" /etc/nginx/nginx.conf
   nginx_configure_gitlab
   nginx_configure_gitlab_ci
+  nginx_configure_gitlab_registry
 }
 
 migrate_database() {
@@ -1196,12 +1232,6 @@ migrate_database() {
       COUNT=$(PGPASSWORD="${DB_PASS}" psql -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -Atw -c "${QUERY}")
       ;;
   esac
-  if [[ -z ${COUNT} || ${COUNT} -eq 0 ]]; then
-    echo "Setting up GitLab for firstrun. Please be patient, this could take a while..."
-    exec_as_git force=yes bundle exec rake gitlab:setup \
-      ${GITLAB_ROOT_PASSWORD:+GITLAB_ROOT_PASSWORD=$GITLAB_ROOT_PASSWORD} \
-      ${GITLAB_ROOT_EMAIL:+GITLAB_ROOT_EMAIL=$GITLAB_ROOT_EMAIL} >/dev/null
-  fi
 
   # migrate database if the gitlab version has changed.
   CACHE_VERSION=
@@ -1240,6 +1270,13 @@ migrate_database() {
 
     echo "${GITLAB_VERSION}" > ${GITLAB_TEMP_DIR}/VERSION
     rm -rf ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT # force cache cleanup
+  fi
+
+  if [[ -z ${COUNT} || ${COUNT} -eq 0 ]]; then
+    echo "Setting up GitLab for firstrun. Please be patient, this could take a while..."
+    exec_as_git force=yes bundle exec rake gitlab:setup \
+      ${GITLAB_ROOT_PASSWORD:+GITLAB_ROOT_PASSWORD=$GITLAB_ROOT_PASSWORD} \
+      ${GITLAB_ROOT_EMAIL:+GITLAB_ROOT_EMAIL=$GITLAB_ROOT_EMAIL} >/dev/null
   fi
 
   # clear cache if relative_url has changed.
