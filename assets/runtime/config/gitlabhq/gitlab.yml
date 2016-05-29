@@ -181,7 +181,7 @@ production: &base
     enabled: {{GITLAB_REGISTRY_ENABLED}}    # Enables GitLab Container Registry Defaults to `true`
     host: {{GITLAB_REGISTRY_HOST}}          #registry.example.com
     port: {{GITLAB_REGISTRY_PORT}}          # 5005
-    api_url: {{GITLAB_REGISTRY_API_URL}}    #http://localhost:5000/ # internal address to the registry, will be used by GitLab to directly communicate with API
+    api_url: "{{GITLAB_REGISTRY_API_URL}}"    #http://localhost:5000/ # internal address to the registry, will be used by GitLab to directly communicate with API
     key_path: {{GITLAB_REGISTRY_KEY_PATH}}  # config/registry.key
     path: {{GITLAB_REGISTRY_PATH}}          # shared/registry
     issuer: {{GITLAB_REGISTRY_ISSUER}}       #gitlab-issuer
