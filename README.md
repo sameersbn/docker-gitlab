@@ -687,6 +687,8 @@ Once you have the Client ID and secret generated, configure them using the `OAUT
 
 For example, if your Client ID is `xxx` and the Client secret is `yyy`, then adding `--env 'OAUTH_GITHUB_API_KEY=xxx' --env 'OAUTH_GITHUB_APP_SECRET=yyy'` to the docker run command enables support for GitHub OAuth.
 
+Users of GitHub Enterprise may want to specify `OAUTH_GITHUB_URL` and `OAUTH_GITHUB_VERIFY_SSL` as well.
+
 #### GitLab
 
 To enable the GitLab OAuth2 OmniAuth provider you must register your application with GitLab. GitLab will generate a Client ID and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/gitlab.html) for the procedure to generate the Client ID and secret with GitLab.
@@ -906,6 +908,8 @@ Below is the complete list of available options that can be used to customize yo
 - **OAUTH_TWITTER_APP_SECRET**: Twitter App API secret. No defaults.
 - **OAUTH_GITHUB_API_KEY**: GitHub App Client ID. No defaults.
 - **OAUTH_GITHUB_APP_SECRET**: GitHub App Client secret. No defaults.
+- **OAUTH_GITHUB_URL**: Url to the GitHub Enterprise server. Defaults to https://github.com
+- **OAUTH_GITHUB_VERIFY_SSL**: Enable SSL verification while communicating with the GitHub server. Defaults to `true`.
 - **OAUTH_GITLAB_API_KEY**: GitLab App Client ID. No defaults.
 - **OAUTH_GITLAB_APP_SECRET**: GitLab App Client secret. No defaults.
 - **OAUTH_BITBUCKET_API_KEY**: BitBucket App Client ID. No defaults.

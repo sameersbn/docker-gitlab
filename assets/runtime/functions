@@ -483,6 +483,8 @@ gitlab_configure_oauth_github() {
     update_template ${GITLAB_CONFIG} \
       OAUTH_GITHUB_API_KEY \
       OAUTH_GITHUB_APP_SECRET \
+      OAUTH_GITHUB_URL \
+      OAUTH_GITHUB_VERIFY_SSL \
       OAUTH_GITHUB_SCOPE
   else
     exec_as_git sed -i "/name: 'github'/,/{{OAUTH_GITHUB_SCOPE}}/d" ${GITLAB_CONFIG}

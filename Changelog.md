@@ -4,6 +4,7 @@ This file only reflects the changes that are made in this image. Please refer to
 
 **8.8.0**
 - gitlab: upgrade to CE v8.8.0
+- oauth: exposed `OAUTH_GITHUB_URL` and `OAUTH_GITHUB_VERIFY_SSL` options for users for GitHub Enterprise.
 
 **8.7.6**
 - gitlab: upgrade to CE v8.7.6
