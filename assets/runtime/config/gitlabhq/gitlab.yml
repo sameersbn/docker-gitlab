@@ -98,6 +98,7 @@ production: &base
       wiki: {{GITLAB_PROJECTS_WIKI}}
       snippets: {{GITLAB_PROJECTS_SNIPPETS}}
       builds: {{GITLAB_PROJECTS_BUILDS}}
+      container_registry: true
 
     ## Webhook settings
     # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
@@ -168,13 +169,22 @@ production: &base
     # once per hour you will have concurrent 'git fsck' jobs.
     repository_check_worker:
       cron: "20 * * * *"
-    # Send admin emails once a day
+    # Send admin emails once a week
     admin_email_worker:
-      cron: "0 0 * * *"
+      cron: "0 0 * * 0"
 
     # Remove outdated repository archives
     repository_archive_cache_worker:
       cron: "0 * * * *"
+
+  registry:
+    # enabled: true
+    # host: registry.example.com
+    # port: 5005
+    # api_url: http://localhost:5000/ # internal address to the registry, will be used by GitLab to directly communicate with API
+    # key_path: config/registry.key
+    # path: shared/registry
+    # issuer: gitlab-issuer
 
   #
   # 2. GitLab CI settings
@@ -351,6 +361,8 @@ production: &base
           label: 'GitHub',
           app_id: '{{OAUTH_GITHUB_API_KEY}}',
           app_secret: '{{OAUTH_GITHUB_APP_SECRET}}',
+          url: "https://github.com",
+          verify_ssl: true,
           args: { scope: '{{OAUTH_GITHUB_SCOPE}}' } }
       - { name: 'bitbucket',
           app_id: '{{OAUTH_BITBUCKET_API_KEY}}',
