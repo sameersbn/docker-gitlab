@@ -47,6 +47,9 @@ services:
     - TZ=Asia/Kolkata
     - GITLAB_TIMEZONE=Kolkata
 
+    - GITLAB_HTTPS=false
+    - SSL_SELF_SIGNED=false
+
     - GITLAB_HOST=localhost
     - GITLAB_PORT=10080
     - GITLAB_SSH_PORT=10022
