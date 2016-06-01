@@ -22,7 +22,7 @@ services:
 
   gitlab:
     restart: always
-    image: sameersbn/gitlab:8.7.6
+    image: sameersbn/gitlab:8.8.0
     depends_on:
     - redis
     - postgresql
@@ -47,12 +47,17 @@ services:
     - TZ=Asia/Kolkata
     - GITLAB_TIMEZONE=Kolkata
 
+    - GITLAB_HTTPS=false
+    - SSL_SELF_SIGNED=false
+
     - GITLAB_HOST=localhost
     - GITLAB_PORT=10080
     - GITLAB_SSH_PORT=10022
     - GITLAB_RELATIVE_URL_ROOT=
-    - GITLAB_ROOT_PASSWORD=
     - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
+
+    - GITLAB_ROOT_PASSWORD=
+    - GITLAB_ROOT_EMAIL=
 
     - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
     - GITLAB_NOTIFY_PUSHER=false
@@ -108,6 +113,8 @@ services:
 
     - OAUTH_GITHUB_API_KEY=
     - OAUTH_GITHUB_APP_SECRET=
+    - OAUTH_GITHUB_URL=
+    - OAUTH_GITHUB_VERIFY_SSL=
 
     - OAUTH_GITLAB_API_KEY=
     - OAUTH_GITLAB_APP_SECRET=

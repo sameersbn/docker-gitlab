@@ -483,6 +483,8 @@ gitlab_configure_oauth_github() {
     update_template ${GITLAB_CONFIG} \
       OAUTH_GITHUB_API_KEY \
       OAUTH_GITHUB_APP_SECRET \
+      OAUTH_GITHUB_URL \
+      OAUTH_GITHUB_VERIFY_SSL \
       OAUTH_GITHUB_SCOPE
   else
     exec_as_git sed -i "/name: 'github'/,/{{OAUTH_GITHUB_SCOPE}}/d" ${GITLAB_CONFIG}
@@ -702,7 +704,8 @@ gitlab_configure_backups_aws() {
         AWS_BACKUP_REGION \
         AWS_BACKUP_ACCESS_KEY_ID \
         AWS_BACKUP_SECRET_ACCESS_KEY \
-        AWS_BACKUP_BUCKET
+        AWS_BACKUP_BUCKET \
+        AWS_BACKUP_MULTIPART_CHUNK_SIZE
       ;;
     *)
       exec_as_git sed -i "/upload:/,/remote_directory:/d" ${GITLAB_CONFIG}
@@ -1196,12 +1199,6 @@ migrate_database() {
       COUNT=$(PGPASSWORD="${DB_PASS}" psql -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -Atw -c "${QUERY}")
       ;;
   esac
-  if [[ -z ${COUNT} || ${COUNT} -eq 0 ]]; then
-    echo "Setting up GitLab for firstrun. Please be patient, this could take a while..."
-    exec_as_git force=yes bundle exec rake gitlab:setup \
-      ${GITLAB_ROOT_PASSWORD:+GITLAB_ROOT_PASSWORD=$GITLAB_ROOT_PASSWORD} \
-      ${GITLAB_ROOT_EMAIL:+GITLAB_ROOT_EMAIL=$GITLAB_ROOT_EMAIL} >/dev/null
-  fi
 
   # migrate database if the gitlab version has changed.
   CACHE_VERSION=
@@ -1240,6 +1237,13 @@ migrate_database() {
 
     echo "${GITLAB_VERSION}" > ${GITLAB_TEMP_DIR}/VERSION
     rm -rf ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT # force cache cleanup
+  fi
+
+  if [[ -z ${COUNT} || ${COUNT} -eq 0 ]]; then
+    echo "Setting up GitLab for firstrun. Please be patient, this could take a while..."
+    exec_as_git force=yes bundle exec rake gitlab:setup \
+      ${GITLAB_ROOT_PASSWORD:+GITLAB_ROOT_PASSWORD=$GITLAB_ROOT_PASSWORD} \
+      ${GITLAB_ROOT_EMAIL:+GITLAB_ROOT_EMAIL=$GITLAB_ROOT_EMAIL} >/dev/null
   fi
 
   # clear cache if relative_url has changed.

@@ -41,8 +41,8 @@ server {
 
 ## HTTPS host
 server {
-  listen 0.0.0.0:443 ssl spdy;
-  listen [::]:443 ssl spdy default_server;
+  listen 0.0.0.0:443 ssl http2;
+  listen [::]:443 ssl http2 default_server;
   server_name {{GITLAB_HOST}}; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
 
@@ -110,7 +110,8 @@ server {
   error_page 422 /422.html;
   error_page 500 /500.html;
   error_page 502 /502.html;
-  location ~ ^/(404|422|500|502)\.html$ {
+  error_page 503 /503.html;
+  location ~ ^/(404|422|500|502|503)\.html$ {
     root {{GITLAB_INSTALL_DIR}}/public;
     internal;
   }
