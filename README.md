@@ -830,6 +830,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_REGISTRY_KEY_PATH**: Sets the GitLab Registry Key Path. Defaults to `config/registry.key`
 - **GITLAB_REGISTRY_DIR**: Sets the GitLab Registry PATH. Defaults to `shared/registry`.
 - **GITLAB_REGISTRY_ISSUER**: Sets the Gitlab Registry Issuer. Defaults to `gitlab-issuer`.
+- **GITLAB_REGISTRY_REVERSE_PROXY_DISABLED**: Disables the built-in Reverse Proxy for the Registry. Defaults to `false`.
 - **GITLAB_HTTPS**: Set to `true` to enable https support, disabled by default.
 - **SSL_SELF_SIGNED**: Set to `true` when using self signed ssl certificates. `false` by default.
 - **SSL_CERTIFICATE_PATH**: Location of the ssl certificate. Defaults to `/home/git/data/certs/gitlab.crt`

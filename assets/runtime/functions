@@ -1152,10 +1152,12 @@ install_configuration_templates() {
   fi
 
   if [[ ${GITLAB_REGISTRY_ENABLED} == true ]]; then
-    if [[ -f ${SSL_REGISTRY_KEY_PATH} && -f ${SSL_REGISTRY_CERT_PATH} ]]; then
-      install_template root: nginx/gitlab-registry-ssl ${GITLAB_REGISTRY_NGINX_CONFIG}
-    else
-      install_template root: nginx/gitlab-registry ${GITLAB_REGISTRY_NGINX_CONFIG}
+    if [[ ${GITLAB_REGISTRY_REVERSE_PROXY_DISABLED} == false ]]; then
+      if [[ -f ${SSL_REGISTRY_KEY_PATH} && -f ${SSL_REGISTRY_CERT_PATH} ]]; then
+        install_template root: nginx/gitlab-registry-ssl ${GITLAB_REGISTRY_NGINX_CONFIG}
+      else
+        install_template root: nginx/gitlab-registry ${GITLAB_REGISTRY_NGINX_CONFIG}
+      fi
     fi
   fi
 }
@@ -1229,7 +1231,9 @@ configure_nginx() {
   sed -i "s|worker_processes .*|worker_processes ${NGINX_WORKERS};|" /etc/nginx/nginx.conf
   nginx_configure_gitlab
   nginx_configure_gitlab_ci
-  nginx_configure_gitlab_registry
+  if [[ ${GITLAB_REGISTRY_REVERSE_PROXY_DISABLED} == false ]]; then
+    nginx_configure_gitlab_registry
+  fi
 }
 
 migrate_database() {
