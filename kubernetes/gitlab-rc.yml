@@ -24,6 +24,11 @@ spec:
             - name: GITLAB_SECRETS_DB_KEY_BASE
               value: long-and-random-alpha-numeric-string
 
+            - name: GITLAB_ROOT_PASSWORD
+              value:
+            - name: GITLAB_ROOT_EMAIL
+              value:
+
             - name: GITLAB_HOST
               value: git.default.cluster.local
             - name: GITLAB_PORT
