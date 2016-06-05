@@ -16,8 +16,8 @@ spec:
       - name: redis
         image: sameersbn/redis
         ports:
-        - containerPort: 6379
-          protocol: TCP
+        - name: redis
+          containerPort: 6379
         volumeMounts:
         - mountPath: /var/lib/redis
           name: data

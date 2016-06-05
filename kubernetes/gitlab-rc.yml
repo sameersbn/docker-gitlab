@@ -98,10 +98,8 @@ spec:
         ports:
         - name: http
           containerPort: 80
-          protocol: TCP
         - name: ssh
           containerPort: 22
-          protocol: TCP
         volumeMounts:
         - mountPath: /home/git/data
           name: data

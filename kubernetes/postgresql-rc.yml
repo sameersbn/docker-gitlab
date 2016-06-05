@@ -25,8 +25,8 @@ spec:
         - name: DB_EXTENSION
           value: pg_trgm
         ports:
-        - containerPort: 5432
-          protocol: TCP
+        - name: postgres
+          containerPort: 5432
         volumeMounts:
         - mountPath: /var/lib/postgresql
           name: data
