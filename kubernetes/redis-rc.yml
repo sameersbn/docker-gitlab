@@ -22,8 +22,10 @@ spec:
             - mountPath: /var/lib/redis
               name: data
           livenessProbe:
-            tcpSocket:
-              port: 6379
+            exec:
+              command:
+                - redis-cli
+                - ping
             initialDelaySeconds: 30
             timeoutSeconds: 5
       volumes:
