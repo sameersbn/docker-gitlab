@@ -13,28 +13,28 @@ spec:
         name: redis
     spec:
       containers:
-        - name: redis
-          image: sameersbn/redis
-          ports:
-            - containerPort: 6379
-              protocol: TCP
-          volumeMounts:
-            - mountPath: /var/lib/redis
-              name: data
-          livenessProbe:
-            exec:
-              command:
-                - redis-cli
-                - ping
-            initialDelaySeconds: 30
-            timeoutSeconds: 5
-          readinessProbe:
-            exec:
-              command:
-                - redis-cli
-                - ping
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
+      - name: redis
+        image: sameersbn/redis
+        ports:
+        - containerPort: 6379
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /var/lib/redis
+          name: data
+        livenessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
       volumes:
-        - name: data
-          emptyDir: {}
+      - name: data
+        emptyDir: {}
