@@ -106,6 +106,12 @@ spec:
               port: 80
             initialDelaySeconds: 180
             timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
       volumes:
         - name: data
           emptyDir: {}

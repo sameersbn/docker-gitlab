@@ -28,6 +28,13 @@ spec:
                 - ping
             initialDelaySeconds: 30
             timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - redis-cli
+                - ping
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
       volumes:
         - name: data
           emptyDir: {}
