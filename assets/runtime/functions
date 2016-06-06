@@ -1010,6 +1010,13 @@ initialize_datadir() {
   chmod u+rwX ${GITLAB_LFS_OBJECTS_DIR}
   chown ${GITLAB_USER}: ${GITLAB_LFS_OBJECTS_DIR}
 
+  # create registry dir
+  if [[ ${GITLAB_REGISTRY_ENABLED} == true ]]; then
+    mkdir -p ${GITLAB_REGISTRY_DIR}
+    chmod u+rwX ${GITLAB_REGISTRY_DIR}
+    chown ${GITLAB_USER}: ${GITLAB_REGISTRY_DIR}
+  fi
+
   # create the backups directory
   mkdir -p ${GITLAB_BACKUP_DIR}
   chown ${GITLAB_USER}: ${GITLAB_BACKUP_DIR}
