@@ -900,19 +900,12 @@ nginx_configure_gitlab_registry() {
       GITLAB_LOG_DIR \
       GITLAB_REGISTRY_PORT \
       GITLAB_REGISTRY_HOST \
-      GITLAB_REGISTRY_API_URL
-  fi
-  nginx_configure_gitlab_registry_ssl
-}
-
-nginx_configure_gitlab_registry_ssl() {
-  if [[  $GITLAB_REGISTRY_ENABLED == true && -f ${SSL_REGISTRY_KEY_PATH} && -f ${SSL_REGISTRY_CERT_PATH} ]]; then
-    echo "Configuring nginx::gitlab::registry::ssl..."
-    update_template ${GITLAB_REGISTRY_NGINX_CONFIG} \
+      GITLAB_REGISTRY_API_URL \
       SSL_REGISTRY_KEY_PATH \
       SSL_REGISTRY_CERT_PATH
   fi
 }
+
 
 #   _|_|_|              _|        _|  _|
 #   _|    _|  _|    _|  _|_|_|    _|        _|_|_|
@@ -1160,11 +1153,7 @@ install_configuration_templates() {
   fi
 
   if [[ ${GITLAB_REGISTRY_ENABLED} == true ]]; then
-    if [[ -f ${SSL_REGISTRY_KEY_PATH} && -f ${SSL_REGISTRY_CERT_PATH} ]]; then
-      install_template root: nginx/gitlab-registry-ssl ${GITLAB_REGISTRY_NGINX_CONFIG}
-    else
-      install_template root: nginx/gitlab-registry ${GITLAB_REGISTRY_NGINX_CONFIG}
-    fi
+    install_template root: nginx/gitlab-registry ${GITLAB_REGISTRY_NGINX_CONFIG}
   fi
 }
 
