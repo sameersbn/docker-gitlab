@@ -817,14 +817,26 @@ gitlab_configure_project_features() {
 
 gitlab_configure_registry(){
   echo "Configuring gitlab::registry..."
-  update_template ${GITLAB_CONFIG} \
-  GITLAB_REGISTRY_ENABLED \
-  GITLAB_REGISTRY_DIR \
-  GITLAB_REGISTRY_HOST \
-  GITLAB_REGISTRY_PORT \
-  GITLAB_REGISTRY_API_URL \
-  GITLAB_REGISTRY_KEY_PATH \
-  GITLAB_REGISTRY_ISSUER
+  if [[ $GITLAB_REGISTRY_PORT != 443 ]]; then
+    update_template ${GITLAB_CONFIG} \
+      GITLAB_REGISTRY_ENABLED \
+      GITLAB_REGISTRY_DIR \
+      GITLAB_REGISTRY_HOST \
+      GITLAB_REGISTRY_PORT \
+      GITLAB_REGISTRY_API_URL \
+      GITLAB_REGISTRY_KEY_PATH \
+      GITLAB_REGISTRY_ISSUER
+  else
+    GITLAB_REGISTRY_PORT="" # Sets Registry Port to empty to set the key empty in the  .gitlab-ci.yml
+    update_template ${GITLAB_CONFIG} \
+      GITLAB_REGISTRY_ENABLED \
+      GITLAB_REGISTRY_DIR \
+      GITLAB_REGISTRY_HOST \
+      GITLAB_REGISTRY_PORT \
+      GITLAB_REGISTRY_API_URL \
+      GITLAB_REGISTRY_KEY_PATH \
+      GITLAB_REGISTRY_ISSUER
+  fi
 }
 
 nginx_configure_gitlab_ssl() {
@@ -898,7 +910,7 @@ nginx_configure_gitlab_registry() {
     echo "Configuring nginx::gitlab-registry..."
     update_template ${GITLAB_REGISTRY_NGINX_CONFIG} \
       GITLAB_LOG_DIR \
-      GITLAB_REGISTRY_PORT \
+      NGINX_REGISTRY_PROXY_PORT \
       GITLAB_REGISTRY_HOST \
       GITLAB_REGISTRY_API_URL \
       SSL_REGISTRY_KEY_PATH \
