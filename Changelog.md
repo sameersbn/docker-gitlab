@@ -5,6 +5,9 @@ This file only reflects the changes that are made in this image. Please refer to
 **latest**
 - added `GITLAB_PROJECTS_LIMIT` configuration option
 
+**8.8.4**
+- gitlab: upgrade to CE v8.8.4
+
 **8.8.3**
 - gitlab: upgrade to CE v8.8.3
 
