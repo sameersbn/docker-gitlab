@@ -49,6 +49,7 @@
         - [Microsoft Azure](#microsoft-azure)
     - [External Issue Trackers](#external-issue-trackers)
     - [Host UID / GID Mapping](#host-uid--gid-mapping)
+    - [Reuse docker host SSH daemon](docs/docker_host_ssh.md)
     - [Piwik](#piwik)
     - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
