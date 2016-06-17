@@ -1,0 +1,80 @@
+postgresql:
+  restart: always
+  image: sameersbn/postgresql:9.4-11
+  environment:
+    - DB_USER=gitlab
+    - DB_PASS=password
+    - DB_NAME=gitlabhq_production
+  volumes:
+    - /srv/docker/gitlab/postgresql:/var/lib/postgresql
+
+gitlab-nginx:
+  build: gitlab-nginx
+
+nginx:
+  image: nginx:1.9
+  volumes:
+    - /srv/docker/gitlab/nginx:/var/log/gitlab/nginx
+  volumes_from:
+    - gitlab-nginx
+  ports:
+    - "10080:80"
+  # we need some time to wait until the script configures nginx config
+  command: "sh -c 'sleep 15 && /usr/sbin/nginx -g \"daemon off;\"'"
+
+gitlab:
+  restart: always
+  image: sameersbn/gitlab
+  links:
+    - redis:redisio
+    - postgresql:postgresql
+    - nginx:nginx
+  ports:
+    - "10022:22"
+  environment:
+    - DEBUG=false
+    - TZ=Asia/Kolkata
+    - GITLAB_TIMEZONE=Kolkata
+
+    - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
+
+    - GITLAB_HOST=localhost
+    - GITLAB_PORT=10080
+    - GITLAB_SSH_PORT=10022
+    - GITLAB_RELATIVE_URL_ROOT=
+
+    - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
+    - GITLAB_NOTIFY_PUSHER=false
+
+    - GITLAB_EMAIL=notifications@example.com
+    - GITLAB_EMAIL_REPLY_TO=noreply@example.com
+    - GITLAB_INCOMING_EMAIL_ADDRESS=reply@example.com
+
+    - GITLAB_BACKUP_SCHEDULE=daily
+    - GITLAB_BACKUP_TIME=01:00
+
+    - SMTP_ENABLED=false
+    - SMTP_DOMAIN=www.example.com
+    - SMTP_HOST=smtp.gmail.com
+    - SMTP_PORT=587
+    - SMTP_USER=mailer@example.com
+    - SMTP_PASS=password
+    - SMTP_STARTTLS=true
+    - SMTP_AUTHENTICATION=login
+
+    - IMAP_ENABLED=false
+    - IMAP_HOST=imap.gmail.com
+    - IMAP_PORT=993
+    - IMAP_USER=mailer@example.com
+    - IMAP_PASS=password
+    - IMAP_SSL=true
+    - IMAP_STARTTLS=false
+  volumes:
+    - /srv/docker/gitlab/gitlab:/home/git/data
+  volumes_from:
+    - gitlab-nginx
+redis:
+  restart: always
+  image: sameersbn/redis:latest
+  volumes:
+    - /srv/docker/gitlab/redis:/var/lib/redis

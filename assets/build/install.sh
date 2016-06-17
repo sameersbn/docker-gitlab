@@ -261,9 +261,9 @@ environment=HOME=${GITLAB_HOME}
 command=/usr/local/bin/gitlab-workhorse
   -listenUmask 0
   -listenNetwork unix
-  -listenAddr ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab-workhorse.socket
-  -authBackend http://127.0.0.1:8080{{GITLAB_RELATIVE_URL_ROOT}}
-  -authSocket ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
+  -listenAddr   /var/run/gitlab/socket/gitlab-workhorse.socket
+  -authBackend  http://127.0.0.1:8080{{GITLAB_RELATIVE_URL_ROOT}}
+  -authSocket   ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
   -documentRoot ${GITLAB_INSTALL_DIR}/public
   -proxyHeadersTimeout {{GITLAB_WORKHORSE_TIMEOUT}}
 user=git
