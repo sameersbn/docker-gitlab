@@ -826,7 +826,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_TRUSTED_PROXIES**: Add IP address reverse proxy to trusted proxy list, otherwise users will appear signed in from that address. Currently only a single entry is permitted. No defaults.
 - **GITLAB_REGISTRY_ENABLED**: Enables the GitLab Container Registry. Defaults to `false`.
 - **GITLAB_REGISTRY_HOST**: Sets the Gitlab Registry Host. Defaults to `registry.example.com`
-- **GITLAB_REGISTRY_PORT**: Sets the GitLab Registry Port. Defaults to `5000`.
+- **GITLAB_REGISTRY_PORT**: Sets the GitLab Registry Port. Defaults to `443`.
 - **GITLAB_REGISTRY_API_URL**: Sets the Gitlab Registry API URL. Defaults to `http://localhost:5000`
 - **GITLAB_REGISTRY_KEY_PATH**: Sets the GitLab Registry Key Path. Defaults to `config/registry.key`
 - **GITLAB_REGISTRY_DIR**: Sets the GitLab Registry PATH. Defaults to `shared/registry`.
