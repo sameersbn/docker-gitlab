@@ -827,7 +827,7 @@ gitlab_configure_registry(){
       GITLAB_REGISTRY_KEY_PATH \
       GITLAB_REGISTRY_ISSUER
   else
-    GITLAB_REGISTRY_PORT="" # Sets Registry Port to empty to set the key empty in the  .gitlab-ci.yml
+    local GITLAB_REGISTRY_PORT="" # Sets Registry Port to empty to set the key empty in the  .gitlab-ci.yml
     update_template ${GITLAB_CONFIG} \
       GITLAB_REGISTRY_ENABLED \
       GITLAB_REGISTRY_DIR \
