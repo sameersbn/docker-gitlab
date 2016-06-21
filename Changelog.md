@@ -4,7 +4,7 @@ This file only reflects the changes that are made in this image. Please refer to
 
 **8.8.5-1**
 - added GitLab Container Registry support
-- added `SSL_CIPHERS` option to change chipers of the nginx
+- added `SSL_CIPHERS` option to change ciphers of the nginx
 
 **8.8.5**
 - gitlab: upgrade to CE v8.8.5
