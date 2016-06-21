@@ -817,26 +817,24 @@ gitlab_configure_project_features() {
 
 gitlab_configure_registry(){
   echo "Configuring gitlab::registry..."
-  if [[ $GITLAB_REGISTRY_PORT != 443 ]]; then
-    update_template ${GITLAB_CONFIG} \
-      GITLAB_REGISTRY_ENABLED \
-      GITLAB_REGISTRY_DIR \
-      GITLAB_REGISTRY_HOST \
-      GITLAB_REGISTRY_PORT \
-      GITLAB_REGISTRY_API_URL \
-      GITLAB_REGISTRY_KEY_PATH \
-      GITLAB_REGISTRY_ISSUER
-  else
-    GITLAB_REGISTRY_PORT="" # Sets Registry Port to empty to set the key empty in the  .gitlab-ci.yml
-    update_template ${GITLAB_CONFIG} \
-      GITLAB_REGISTRY_ENABLED \
-      GITLAB_REGISTRY_DIR \
-      GITLAB_REGISTRY_HOST \
-      GITLAB_REGISTRY_PORT \
-      GITLAB_REGISTRY_API_URL \
-      GITLAB_REGISTRY_KEY_PATH \
-      GITLAB_REGISTRY_ISSUER
+
+  if [[ ${GITLAB_REGISTRY_PORT} == 443 ]]; then
+    # Sets GITLAB_REGISTRY_PORT empty for the scope of this function.
+    # This helps us to add an empty key to `.gitlab-ci.yml`.
+    # Because 443 is the default https port it doesn't need to be included in docker push/pull commands
+    # and shouldn't be displayed on the gitlab ui.
+    # Example: `docker pull registry:443/some/image` is the same as `docker pull registry/some/image`
+    local GITLAB_REGISTRY_PORT=""
   fi
+
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_REGISTRY_ENABLED \
+    GITLAB_REGISTRY_DIR \
+    GITLAB_REGISTRY_HOST \
+    GITLAB_REGISTRY_PORT \
+    GITLAB_REGISTRY_API_URL \
+    GITLAB_REGISTRY_KEY_PATH \
+    GITLAB_REGISTRY_ISSUER
 }
 
 nginx_configure_gitlab_ssl() {
@@ -911,7 +909,7 @@ nginx_configure_gitlab_registry() {
     echo "Configuring nginx::gitlab-registry..."
     update_template ${GITLAB_REGISTRY_NGINX_CONFIG} \
       GITLAB_LOG_DIR \
-      NGINX_REGISTRY_PROXY_PORT \
+      GITLAB_REGISTRY_PORT \
       GITLAB_REGISTRY_HOST \
       GITLAB_REGISTRY_API_URL \
       SSL_REGISTRY_KEY_PATH \
@@ -1175,7 +1173,7 @@ install_configuration_templates() {
       install_template root: nginx/gitlab-registry ${GITLAB_REGISTRY_NGINX_CONFIG}
     else
       echo "SSL key and certificates for Registry were not found"
-      echo "Assuming that the Registry is running behind an enabled load balancer"
+      echo "Assuming that the Registry is running behind a HTTPS enabled load balancer."
     fi
   fi
 }
