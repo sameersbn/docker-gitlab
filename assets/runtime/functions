@@ -851,7 +851,8 @@ nginx_configure_gitlab_ssl() {
       SSL_KEY_PATH \
       SSL_DHPARAM_PATH \
       SSL_VERIFY_CLIENT \
-      SSL_CA_CERTIFICATES_PATH
+      SSL_CA_CERTIFICATES_PATH \
+      SSL_CIPHERS
   fi
 }
 
