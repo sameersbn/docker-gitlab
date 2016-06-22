@@ -67,7 +67,7 @@ services:
     - postgresql
     ports:
     - "10080:80"
-    - "5500:5000"
+    - "5500:5500"
     - "10022:22"
     volumes:
     - /srv/gitlab/gitlab:/home/git/data:Z
