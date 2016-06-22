@@ -85,7 +85,7 @@ services:
 
     - REDIS_HOST=redis
     - REDIS_PORT=6379
-    - GITLAB_SSH_PORT=1022
+    - GITLAB_SSH_PORT=10022
     - GITLAB_PORT=10080
     - GITLAB_HOST=localhost
 
@@ -107,7 +107,7 @@ services:
     enviroment:
     - REGISTRY_LOG_LEVEL=info
     - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/registry
-    - REGISTRY_AUTH_TOKEN_REALM=https://gitlab.example.com/jwt/auth
+    - REGISTRY_AUTH_TOKEN_REALM=https://gitlab.example.com:10080/jwt/auth
     - REGISTRY_AUTH_TOKEN_SERVICE=container_registry
     - REGISTRY_AUTH_TOKEN_ISSUER=gitlab-issuer
     - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/certs/registry-auth.crt
