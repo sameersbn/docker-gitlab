@@ -48,7 +48,7 @@ docker run -it --rm [OPTIONS] \
 
 Make a note of the backup archive `xxxxxxxxxx_gitlab_backup.tar` as it is the backup you will have to rollback to in case of errors.
 
-### Create Gitlab CI backup
+### Create GitLab CI backup
 
 ```bash
 docker run -it --rm [OPTIONS] \
