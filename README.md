@@ -593,7 +593,7 @@ docker run --name gitlab -d \
 
 Again, drop the `--env 'SSL_SELF_SIGNED=true'` option if you are using CA certified SSL certificates.
 
-In case Gitlab responds to any kind of POST request (login, OAUTH, changing settings etc.) with a 422 HTTP Error, consider adding this to your reverse proxy configuration:
+In case GitLab responds to any kind of POST request (login, OAUTH, changing settings etc.) with a 422 HTTP Error, consider adding this to your reverse proxy configuration:
 
 `proxy_set_header X-Forwarded-Ssl on;` (nginx format)
 
@@ -827,12 +827,12 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_RELATIVE_URL_ROOT**: The relative url of the GitLab server, e.g. `/git`. No default.
 - **GITLAB_TRUSTED_PROXIES**: Add IP address reverse proxy to trusted proxy list, otherwise users will appear signed in from that address. Currently only a single entry is permitted. No defaults.
 - **GITLAB_REGISTRY_ENABLED**: Enables the GitLab Container Registry. Defaults to `false`.
-- **GITLAB_REGISTRY_HOST**: Sets the Gitlab Registry Host. Defaults to `registry.example.com`
+- **GITLAB_REGISTRY_HOST**: Sets the GitLab Registry Host. Defaults to `registry.example.com`
 - **GITLAB_REGISTRY_PORT**: Sets the GitLab Registry Port. Defaults to `443`.
-- **GITLAB_REGISTRY_API_URL**: Sets the Gitlab Registry API URL. Defaults to `http://localhost:5000`
+- **GITLAB_REGISTRY_API_URL**: Sets the GitLab Registry API URL. Defaults to `http://localhost:5000`
 - **GITLAB_REGISTRY_KEY_PATH**: Sets the GitLab Registry Key Path. Defaults to `config/registry.key`
 - **GITLAB_REGISTRY_DIR**: Directory to store the container images will be shared with registry. Defaults to `$GITLAB_SHARED_DIR/registry`
-- **GITLAB_REGISTRY_ISSUER**: Sets the Gitlab Registry Issuer. Defaults to `gitlab-issuer`.
+- **GITLAB_REGISTRY_ISSUER**: Sets the GitLab Registry Issuer. Defaults to `gitlab-issuer`.
 - **GITLAB_HTTPS**: Set to `true` to enable https support, disabled by default.
 - **SSL_SELF_SIGNED**: Set to `true` when using self signed ssl certificates. `false` by default.
 - **SSL_CERTIFICATE_PATH**: Location of the ssl certificate. Defaults to `/home/git/data/certs/gitlab.crt`
@@ -936,10 +936,10 @@ Below is the complete list of available options that can be used to customize yo
 - **OAUTH_SAML_NAME_IDENTIFIER_FORMAT**: Describes the format of the username required by GitLab, Defaults to `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`
 - **OAUTH_SAML_GROUPS_ATTRIBUTE**: Map groups attribute in a SAMLResponse to external groups. No defaults.
 - **OAUTH_SAML_EXTERNAL_GROUPS**: List of external groups in a SAMLResponse. Value is comma separated list of single quoted groups. Example: `'group1','group2'`. No defaults.
-- **OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL**: Map 'email' attribute name in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [Gitlab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details.
-- **OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME**: Map 'name' attribute in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [Gitlab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details.
-- **OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME**: Map 'first_name' attribute in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [Gitlab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details.
-- **OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME**: Map 'last_name' attribute in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [Gitlab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details.
+- **OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL**: Map 'email' attribute name in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [GitLab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details.
+- **OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME**: Map 'name' attribute in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [GitLab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details.
+- **OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME**: Map 'first_name' attribute in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [GitLab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details.
+- **OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME**: Map 'last_name' attribute in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [GitLab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details.
 - **OAUTH_CROWD_SERVER_URL**: Crowd server url. No defaults.
 - **OAUTH_CROWD_APP_NAME**: Crowd server application name. No defaults.
 - **OAUTH_CROWD_APP_PASSWORD**: Crowd server application password. No defaults.
@@ -975,7 +975,7 @@ Below is the complete list of available options that can be used to customize yo
 
 ## Creating backups
 
-Gitlab defines a rake task to take a backup of your gitlab installation. The backup consists of all git repositories, uploaded files and as you might expect, the sql database.
+GitLab defines a rake task to take a backup of your gitlab installation. The backup consists of all git repositories, uploaded files and as you might expect, the sql database.
 
 Before taking a backup make sure the container is stopped and removed to avoid container name conflicts.
 
@@ -996,7 +996,7 @@ A backup will be created in the backups folder of the [Data Store](#data-store).
 
 ## Restoring Backups
 
-Gitlab also defines a rake task to restore a backup.
+GitLab also defines a rake task to restore a backup.
 
 Before performing a restore make sure the container is stopped and removed to avoid container name conflicts.
 
