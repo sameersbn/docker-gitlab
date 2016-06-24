@@ -53,7 +53,7 @@ services:
     image: sameersbn/postgresql:9.4-22
     volumes:
     - /srv/gitlab/postgresql:/var/lib/postgresql:Z
-    enviroment:
+    environment:
     - DB_USER=gitlab
     - DB_PASS=password
     - DB_NAME=gitlabhq_production
@@ -73,7 +73,7 @@ services:
     - /srv/gitlab/gitlab:/home/git/data:Z
     - /srv/gitlab/logs:/var/log/gitlab
     - ./certs:/certs
-    enviroment:
+    environment:
     - DEBUG=false
 
     - DB_ADAPTER=postgresql
@@ -104,7 +104,7 @@ services:
     volumes:
      - /srv/gitlab/shared/registry:/registry
      - ./certs:/certs
-    enviroment:
+    environment:
     - REGISTRY_LOG_LEVEL=info
     - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/registry
     - REGISTRY_AUTH_TOKEN_REALM=https://gitlab.example.com:10080/jwt/auth
