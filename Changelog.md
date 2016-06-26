@@ -2,6 +2,12 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**latest**
+- gitlab: upgrade to CE v8.9.1
+
+**8.9.0**
+- gitlab: upgrade to CE v8.9.0
+
 **8.8.5-1**
 - added GitLab Container Registry support
 - added `SSL_CIPHERS` option to change ciphers of the nginx
