@@ -185,7 +185,7 @@ __NOTE__: Please allow a couple of minutes for the GitLab application to start.
 
 Point your browser to `http://localhost:10080` and set a password for the `root` user account.
 
-You should now have the GitLab application up and ready for testing. If you want to use this image in production the please read on.
+You should now have the GitLab application up and ready for testing. If you want to use this image in production then please read on.
 
 *The rest of the document will use the docker command line. You can quite simply adapt your configuration into a `docker-compose.yml` file if you wish to do so.*
 
