@@ -844,6 +844,7 @@ Below is the complete list of available options that can be used to customize yo
 - **SSL_REGISTRY_CERT_PATH**: Location of the ssl certificate for the gitlab container registy. Defaults to `/home/git/data/certs/registry.crt`
 - **SSL_CIPHERS**: List of supported SSL ciphers: Defaults to `ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4`
 - **NGINX_WORKERS**: The number of nginx workers to start. Defaults to `1`.
+- **NGINX_SERVER_NAMES_HASH_BUCKET_SIZE**: Sets the bucket size for the server names hash tables. This is needed when you have long server_names or your an error message from nginx like *nginx: [emerg] could not build server_names_hash, you should increase server_names_hash_bucket_size:..*. It should be only increment by a power of 2. Defaults to `32`.
 - **NGINX_HSTS_ENABLED**: Advanced configuration option for turning off the HSTS configuration. Applicable only when SSL is in use. Defaults to `true`. See [#138](https://github.com/sameersbn/docker-gitlab/issues/138) for use case scenario.
 - **NGINX_HSTS_MAXAGE**: Advanced configuration option for setting the HSTS max-age in the gitlab nginx vHost configuration. Applicable only when SSL is in use. Defaults to `31536000`.
 - **NGINX_PROXY_BUFFERING**: Enable `proxy_buffering`. Defaults to `off`.
