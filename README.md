@@ -841,7 +841,7 @@ Below is the complete list of available options that can be used to customize yo
 - **SSL_VERIFY_CLIENT**: Enable verification of client certificates using the `SSL_CA_CERTIFICATES_PATH` file. Defaults to `false`
 - **SSL_CA_CERTIFICATES_PATH**: List of SSL certificates to trust. Defaults to `/home/git/data/certs/ca.crt`.
 - **SSL_REGISTRY_KEY_PATH**: Location of the ssl private key for gitlab container registry. Defaults to `/home/git/data/certs/registry.key`
-- **SSL_REGISTRY_CERT_PATH**: Location of the ssl certificate for the gitlab container registy. Defaults to `/home/git/data/certs/registry.crt`
+- **SSL_REGISTRY_CERT_PATH**: Location of the ssl certificate for the gitlab container registry. Defaults to `/home/git/data/certs/registry.crt`
 - **SSL_CIPHERS**: List of supported SSL ciphers: Defaults to `ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4`
 - **NGINX_WORKERS**: The number of nginx workers to start. Defaults to `1`.
 - **NGINX_HSTS_ENABLED**: Advanced configuration option for turning off the HSTS configuration. Applicable only when SSL is in use. Defaults to `true`. See [#138](https://github.com/sameersbn/docker-gitlab/issues/138) for use case scenario.
