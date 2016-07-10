@@ -1245,7 +1245,11 @@ configure_gitlab_shell() {
 
 configure_nginx() {
   echo "Configuring nginx..."
-  sed -i "s|worker_processes .*|worker_processes ${NGINX_WORKERS};|" /etc/nginx/nginx.conf
+  sed -i \
+  -e "s|worker_processes .*|worker_processes ${NGINX_WORKERS};|" \
+  -e "s|# server_names_hash_bucket_size 64;|server_names_hash_bucket_size ${NGINX_SERVER_NAMES_HASH_BUCKET_SIZE};|" \
+  /etc/nginx/nginx.conf
+
   nginx_configure_gitlab
   nginx_configure_gitlab_ci
   nginx_configure_gitlab_registry
