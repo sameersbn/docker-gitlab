@@ -15,9 +15,6 @@ GITLAB_RESQUE_CONFIG="${GITLAB_INSTALL_DIR}/config/resque.yml"
 GITLAB_SECRETS_CONFIG="${GITLAB_INSTALL_DIR}/config/secrets.yml"
 GITLAB_ROBOTS_CONFIG="${GITLAB_INSTALL_DIR}/public/robots.txt"
 GITLAB_SHELL_CONFIG="${GITLAB_SHELL_INSTALL_DIR}/config.yml"
-GITLAB_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab"
-GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
-GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
 
 # Compares two version strings `a` and `b`
 # Returns
@@ -837,87 +834,6 @@ gitlab_configure_registry(){
     GITLAB_REGISTRY_ISSUER
 }
 
-nginx_configure_gitlab_ssl() {
-  if [[ ${GITLAB_HTTPS} == true && -f ${SSL_CERTIFICATE_PATH} && -f ${SSL_KEY_PATH} && -f ${SSL_DHPARAM_PATH} ]]; then
-    echo "Configuring nginx::gitlab::ssl..."
-
-    if [[ ! -f ${SSL_CA_CERTIFICATES_PATH} ]]; then
-      sed -i "/{{SSL_CA_CERTIFICATES_PATH}}/d" ${GITLAB_NGINX_CONFIG}
-    fi
-    update_template ${GITLAB_NGINX_CONFIG} \
-      SSL_CERTIFICATE_PATH \
-      SSL_KEY_PATH \
-      SSL_DHPARAM_PATH \
-      SSL_VERIFY_CLIENT \
-      SSL_CA_CERTIFICATES_PATH \
-      SSL_CIPHERS
-  fi
-}
-
-nginx_configure_gitlab_hsts() {
-  if [[ ${GITLAB_HTTPS} == true ]]; then
-    echo "Configuring nginx::gitlab::hsts..."
-    if [[ ${NGINX_HSTS_ENABLED} != true ]]; then
-      sed -i "/{{NGINX_HSTS_MAXAGE}}/d" ${GITLAB_NGINX_CONFIG}
-    fi
-    update_template ${GITLAB_NGINX_CONFIG} NGINX_HSTS_MAXAGE
-  else
-    sed -i "/{{NGINX_HSTS_MAXAGE}}/d" ${GITLAB_NGINX_CONFIG}
-  fi
-}
-
-nginx_configure_gitlab_ipv6() {
-  if [[ ! -f /proc/net/if_inet6 ]]; then
-    # disable ipv6 support
-    sed -i \
-      -e "/listen \[::\]:80/d" \
-      -e "/listen \[::\]:443/d" \
-      ${GITLAB_NGINX_CONFIG}
-  fi
-}
-
-nginx_configure_gitlab() {
-  echo "Configuring nginx::gitlab..."
-  update_template ${GITLAB_NGINX_CONFIG} \
-    GITLAB_INSTALL_DIR \
-    GITLAB_LOG_DIR \
-    GITLAB_HOST \
-    GITLAB_PORT \
-    NGINX_PROXY_BUFFERING \
-    NGINX_ACCEL_BUFFERING \
-    NGINX_X_FORWARDED_PROTO
-
-  nginx_configure_gitlab_ssl
-  nginx_configure_gitlab_hsts
-  nginx_configure_gitlab_ipv6
-}
-
-nginx_configure_gitlab_ci() {
-  if [[ -n $GITLAB_CI_HOST ]]; then
-    echo "Configuring nginx::gitlab_ci..."
-    DNS_RESOLVERS=$(cat /etc/resolv.conf  | grep '^\s*nameserver' | awk '{print $2}' ORS=' ')
-    update_template ${GITLAB_CI_NGINX_CONFIG} \
-      GITLAB_LOG_DIR \
-      GITLAB_HOST \
-      GITLAB_CI_HOST \
-      DNS_RESOLVERS
-  fi
-}
-
-nginx_configure_gitlab_registry() {
-  if [[ $GITLAB_REGISTRY_ENABLED == true && -f ${SSL_REGISTRY_CERT_PATH} && -f ${SSL_REGISTRY_KEY_PATH} ]]; then
-    echo "Configuring nginx::gitlab-registry..."
-    update_template ${GITLAB_REGISTRY_NGINX_CONFIG} \
-      GITLAB_LOG_DIR \
-      GITLAB_REGISTRY_PORT \
-      GITLAB_REGISTRY_HOST \
-      GITLAB_REGISTRY_API_URL \
-      SSL_REGISTRY_KEY_PATH \
-      SSL_REGISTRY_CERT_PATH
-  fi
-}
-
-
 #   _|_|_|              _|        _|  _|
 #   _|    _|  _|    _|  _|_|_|    _|        _|_|_|
 #   _|_|_|    _|    _|  _|    _|  _|  _|  _|
@@ -951,10 +867,6 @@ initialize_logdir() {
   mkdir -p ${GITLAB_LOG_DIR}/supervisor
   chmod -R 0755 ${GITLAB_LOG_DIR}/supervisor
   chown -R root: ${GITLAB_LOG_DIR}/supervisor
-
-  mkdir -p ${GITLAB_LOG_DIR}/nginx
-  chmod -R 0755 ${GITLAB_LOG_DIR}/nginx
-  chown -R ${GITLAB_USER}: ${GITLAB_LOG_DIR}/nginx
 
   mkdir -p ${GITLAB_LOG_DIR}/gitlab
   chmod -R 0755 ${GITLAB_LOG_DIR}/gitlab
@@ -1151,31 +1063,6 @@ install_configuration_templates() {
     exec_as_git cp ${GITLAB_ROBOTS_PATH} ${GITLAB_ROBOTS_CONFIG}
   fi
 
-  ## ${GITLAB_NGINX_CONFIG}
-  if [[ ${GITLAB_HTTPS} == true ]]; then
-    if [[ -f ${SSL_CERTIFICATE_PATH} && -f ${SSL_KEY_PATH} && -f ${SSL_DHPARAM_PATH} ]]; then
-      install_template root: nginx/gitlab-ssl ${GITLAB_NGINX_CONFIG}
-    else
-      echo "SSL keys and certificates were not found."
-      echo "Assuming that the container is running behind a HTTPS enabled load balancer."
-      install_template root: nginx/gitlab ${GITLAB_NGINX_CONFIG}
-    fi
-  else
-    install_template root: nginx/gitlab ${GITLAB_NGINX_CONFIG}
-  fi
-
-  if [[ -n $GITLAB_CI_HOST ]]; then
-    install_template root: nginx/gitlab_ci ${GITLAB_CI_NGINX_CONFIG}
-  fi
-
-  if [[ ${GITLAB_REGISTRY_ENABLED} == true ]]; then
-    if [[ -f ${SSL_REGISTRY_CERT_PATH} && -f ${SSL_REGISTRY_KEY_PATH} ]]; then
-      install_template root: nginx/gitlab-registry ${GITLAB_REGISTRY_NGINX_CONFIG}
-    else
-      echo "SSL key and certificates for Registry were not found"
-      echo "Assuming that the Registry is running behind a HTTPS enabled load balancer."
-    fi
-  fi
 }
 
 configure_gitlab() {
@@ -1241,18 +1128,6 @@ configure_gitlab_shell() {
     REDIS_HOST \
     REDIS_PORT \
     REDIS_DB_NUMBER
-}
-
-configure_nginx() {
-  echo "Configuring nginx..."
-  sed -i \
-  -e "s|worker_processes .*|worker_processes ${NGINX_WORKERS};|" \
-  -e "s|# server_names_hash_bucket_size 64;|server_names_hash_bucket_size ${NGINX_SERVER_NAMES_HASH_BUCKET_SIZE};|" \
-  /etc/nginx/nginx.conf
-
-  nginx_configure_gitlab
-  nginx_configure_gitlab_ci
-  nginx_configure_gitlab_registry
 }
 
 migrate_database() {
