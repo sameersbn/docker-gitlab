@@ -136,9 +136,6 @@ rm -rf ${GITLAB_INSTALL_DIR}/shared
 cp ${GITLAB_INSTALL_DIR}/lib/support/init.d/gitlab /etc/init.d/gitlab
 chmod +x /etc/init.d/gitlab
 
-# disable default nginx configuration and enable gitlab's nginx configuration
-rm -rf /etc/nginx/sites-enabled/default
-
 # configure sshd
 sed -i \
   -e "s|^[#]*UsePAM yes|UsePAM no|" \
@@ -151,11 +148,6 @@ echo "UseDNS no" >> /etc/ssh/sshd_config
 # move supervisord.log file to ${GITLAB_LOG_DIR}/supervisor/
 sed -i "s|^[#]*logfile=.*|logfile=${GITLAB_LOG_DIR}/supervisor/supervisord.log ;|" /etc/supervisor/supervisord.conf
 
-# move nginx logs to ${GITLAB_LOG_DIR}/nginx
-sed -i \
-  -e "s|access_log /var/log/nginx/access.log;|access_log ${GITLAB_LOG_DIR}/nginx/access.log;|" \
-  -e "s|error_log /var/log/nginx/error.log;|error_log ${GITLAB_LOG_DIR}/nginx/error.log;|" \
-  /etc/nginx/nginx.conf
 
 # configure supervisord log rotation
 cat > /etc/logrotate.d/supervisord <<EOF
@@ -196,18 +188,6 @@ ${GITLAB_LOG_DIR}/gitlab-shell/*.log {
 }
 EOF
 
-# configure gitlab vhost log rotation
-cat > /etc/logrotate.d/gitlab-nginx <<EOF
-${GITLAB_LOG_DIR}/nginx/*.log {
-  weekly
-  missingok
-  rotate 52
-  compress
-  delaycompress
-  notifempty
-  copytruncate
-}
-EOF
 
 # configure supervisord to start unicorn
 cat > /etc/supervisor/conf.d/unicorn.conf <<EOF
@@ -300,18 +280,6 @@ stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 EOF
 
-# configure supervisord to start nginx
-cat > /etc/supervisor/conf.d/nginx.conf <<EOF
-[program:nginx]
-priority=20
-directory=/tmp
-command=/usr/sbin/nginx -g "daemon off;"
-user=root
-autostart=true
-autorestart=true
-stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
-stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
-EOF
 
 # configure supervisord to start crond
 cat > /etc/supervisor/conf.d/cron.conf <<EOF
