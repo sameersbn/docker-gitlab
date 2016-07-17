@@ -17,7 +17,7 @@
 ## See installation.md#using-https for additional HTTPS configuration details.
 
 upstream gitlab-workhorse {
-  server unix:{{GITLAB_INSTALL_DIR}}/tmp/sockets/gitlab-workhorse.socket fail_timeout=0;
+  server localhost:8181 fail_timeout=0;
 }
 
 ## Normal HTTP host
