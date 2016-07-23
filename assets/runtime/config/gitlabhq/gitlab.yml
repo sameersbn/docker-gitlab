@@ -30,8 +30,8 @@ production: &base
   gitlab:
     ## Web server settings (note: host is the FQDN, do not include http://)
     host: {{GITLAB_HOST}}
-    port: {{GITLAB_PORT}}
-    https: {{GITLAB_HTTPS}}
+    port: {{GITLAB_PORT}} # Set to 443 if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
+    https: {{GITLAB_HTTPS}} # Set to true if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
 
     # Uncommment this line below if your ssh host is different from HTTP/HTTPS one
     # (you'd obviously need to replace ssh.host_example.com with your own host).
@@ -71,7 +71,7 @@ production: &base
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 
     default_projects_limit: {{GITLAB_PROJECTS_LIMIT}}
-    default_can_create_group: {{GITLAB_CREATE_GROUP}}     # default: true
+    default_can_create_group: {{GITLAB_CREATE_GROUP}}  # default: true
     username_changing_enabled: {{GITLAB_USERNAME_CHANGE}} # default: true - User can change her username/namespace
     ## Default theme ID
     ##   1 - Graphite
@@ -107,7 +107,7 @@ production: &base
 
     ## Repository downloads directory
     # When a user clicks e.g. 'Download zip' on a project, a temporary zip file is created in the following directory.
-    # The default is 'tmp/repositories' relative to the root of the Rails app.
+    # The default is 'shared/cache/archive/' relative to the root of the Rails app.
     repository_downloads_path: {{GITLAB_DOWNLOADS_DIR}}
 
   ## Reply by email
@@ -166,15 +166,13 @@ production: &base
     # Flag stuck CI builds as failed
     stuck_ci_builds_worker:
       cron: "0 0 * * *"
+    # Remove expired build artifacts
+    expire_build_artifacts_worker:
+      cron: "50 * * * *"
     # Periodically run 'git fsck' on all repositories. If started more than
     # once per hour you will have concurrent 'git fsck' jobs.
     repository_check_worker:
       cron: "20 * * * *"
-
-    # Remove expired build artifacts
-    expire_build_artifacts_worker:
-      cron: "50 * * * *"
-
     # Send admin emails once a week
     admin_email_worker:
       cron: "0 0 * * 0"
@@ -184,13 +182,13 @@ production: &base
       cron: "0 * * * *"
 
   registry:
-    enabled: {{GITLAB_REGISTRY_ENABLED}}    # Enables GitLab Container Registry Defaults to `true`
-    host: {{GITLAB_REGISTRY_HOST}}          # registry.example.com
-    port: {{GITLAB_REGISTRY_PORT}}          # 5005
-    api_url: {{GITLAB_REGISTRY_API_URL}}    # http://localhost:5000/ # internal address to the registry, will be used by GitLab to directly communicate with API
-    key: {{GITLAB_REGISTRY_KEY_PATH}}       # config/registry.key
+    enabled: {{GITLAB_REGISTRY_ENABLED}}
+    host: {{GITLAB_REGISTRY_HOST}}
+    port: {{GITLAB_REGISTRY_PORT}}
+    api_url: {{GITLAB_REGISTRY_API_URL}}    # internal address to the registry, will be used by GitLab to directly communicate with API
+    key: {{GITLAB_REGISTRY_KEY_PATH}}
     path: {{GITLAB_REGISTRY_DIR}}
-    issuer: {{GITLAB_REGISTRY_ISSUER}}      # gitlab-issuer
+    issuer: {{GITLAB_REGISTRY_ISSUER}}
 
   #
   # 2. GitLab CI settings
@@ -441,7 +439,7 @@ production: &base
   satellites:
     path: {{GITLAB_DATA_DIR}}/gitlab-satellites/
 
-   ## Repositories settings
+  ## Repositories settings
   repositories:
     # Paths where repositories can be stored. Give the canonicalized absolute pathname.
     # NOTE: REPOS PATHS MUST NOT CONTAIN ANY SYMLINK!!!
