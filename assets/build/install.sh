@@ -103,8 +103,14 @@ chown -R ${GITLAB_USER}: ${GITLAB_HOME}
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.mysql ${GITLAB_INSTALL_DIR}/config/database.yml
 
+# add temporary git respository folder for `assets:precompile`
+exec_as_git mkdir -p /home/git/repositories
+
 echo "Compiling assets. Please be patient, this could take a while..."
 exec_as_git bundle exec rake assets:clean assets:precompile USE_DB=false >/dev/null 2>&1
+
+# cleanup temporary git repository folder for `assets:precompile`
+rm -rf /home/git/repositories
 
 # remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
 rm -rf ${GITLAB_DATA_DIR}/config/secrets.yml
