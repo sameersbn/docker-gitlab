@@ -2,6 +2,154 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**8.10.0**
+- gitlab: upgrade to CE v8.10.0
+
+**8.9.6**
+- gitlab: upgrade to CE v8.9.6
+
+**8.9.5**
+- gitlab: upgrade to CE v8.9.5
+
+**8.9.4**
+- gitlab: upgrade to CE v8.9.4
+
+**8.9.3**
+- gitlab: upgrade to CE v8.9.3
+
+**8.9.2**
+- gitlab: upgrade to CE v8.9.2
+
+**8.9.1**
+- gitlab: upgrade to CE v8.9.1
+
+**8.9.0**
+- gitlab: upgrade to CE v8.9.0
+
+**8.8.5-1**
+- added GitLab Container Registry support
+- added `SSL_CIPHERS` option to change ciphers of the nginx
+
+**8.8.5**
+- gitlab: upgrade to CE v8.8.5
+
+**8.8.4**
+- gitlab: upgrade to CE v8.8.4
+- added `GITLAB_PROJECTS_LIMIT` configuration option
+
+**8.8.3**
+- gitlab: upgrade to CE v8.8.3
+
+**8.8.2**
+- gitlab: upgrade to CE v8.8.2
+
+**8.8.1**
+- gitlab: upgrade to CE v8.8.1
+
+**8.8.0**
+- gitlab: upgrade to CE v8.8.0
+- oauth: exposed `OAUTH_GITHUB_URL` and `OAUTH_GITHUB_VERIFY_SSL` options for users for GitHub Enterprise.
+
+**8.7.6**
+- gitlab: upgrade to CE v8.7.6
+
+**8.7.5**
+- gitlab: upgrade to CE v8.7.5
+
+**8.7.3**
+- gitlab: upgrade to CE v8.7.3
+
+**8.7.2**
+- gitlab: upgrade to CE v8.7.2
+
+**8.7.1**
+- gitlab: upgrade to CE v8.7.1
+
+**8.7.0**
+- gitlab-shell: upgrade to v.2.7.2
+- gitlab: upgrade to CE v8.7.0
+- SSO: `OAUTH_ALLOW_SSO` now specifies a comma separated list of providers.
+- OAuth: Added `OAUTH_EXTERNAL_PROVIDERS` to specify external oauth providers.
+- Exposed `GITLAB_TRUSTED_PROXIES` configuration parameter
+
+**8.6.7**
+- added `GITLAB_SIGNUP_ENABLED` option to enable/disable signups
+- gitlab: upgrade to CE v8.6.7
+
+**8.6.6**
+- gitlab: upgrade to CE v8.6.6
+
+**8.6.5**
+- gitlab: upgrade to CE v8.6.5
+
+**8.6.4**
+- gitlab: upgrade to CE v8.6.4
+
+**8.6.3**
+- gitlab-shell: upgrade to v.2.6.12
+- gitlab: upgrade to CE v8.6.3
+
+**8.6.2**
+- gitlab: upgrade to CE v8.6.2
+
+**8.6.1**
+- gitlab: upgrade to CE v8.6.1
+
+**8.6.0**
+- gitlab-shell: upgrade to v.2.6.11
+- gitlab-workhorse: upgrade to v0.7.1
+- gitlab: upgrade to CE v8.6.0
+- exposed configuration parameters for auth0 OAUTH support
+- fixed relative_url support
+
+**8.5.8**
+- gitlab: upgrade to CE v8.5.8
+
+**8.5.7**
+- gitlab: upgrade to CE v8.5.7
+
+**8.5.5**
+- gitlab: upgrade to CE v8.5.5
+
+**8.5.4**
+- gitlab: upgrade to CE v8.5.4
+
+**8.5.3**
+- gitlab: upgrade to CE v8.5.3
+
+**8.5.1**
+- gitlab: upgrade to CE v8.5.1
+
+**8.5.0**
+- gitlab-workhorse: upgrade to v0.6.4
+- gitlab: upgrade to CE v8.5.0
+- firstrun: expose `GITLAB_ROOT_EMAIL` configuration option
+- expose `OAUTH_AUTO_LINK_SAML_USER` configuration parameter
+
+**8.4.4**
+- gitlab: upgrade to CE v8.4.4
+
+**8.4.3**
+- gitlab: upgrade to CE v8.4.3
+
+**8.4.2**
+- gitlab-workhorse: upgrade to v0.6.2
+- gitlab: upgrade to CE v8.4.2
+
+**8.4.1**
+- gitlab: upgrade to CE v8.4.1
+
+**8.4.0-1**
+- `assets:precompile` moved back to build time
+
+**8.4.0**
+- gitlab-shell: upgrade to v.2.6.10
+- gitlab-workhorse: upgrade to v0.6.1
+- gitlab: upgrade to CE v8.4.0
+- oauth: expose cas3 oauth configuration options
+- oauth: expose azure oauth configuration options
+- `assets:precompile` executed at runtime
+
 **8.3.4**
 - gitlab-workhorse: upgrade to v0.5.4
 - gitlab: upgrade to CE v8.3.4
@@ -21,7 +169,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - renamed config `CA_CERTIFICATES_PATH` to `SSL_CA_CERTIFICATES_PATH`
 - renamed config `GITLAB_HTTPS_HSTS_ENABLED` to `NGINX_HSTS_ENABLED`
 - renamed config `GITLAB_HTTPS_HSTS_MAXAGE` to `NGINX_HSTS_MAXAGE`
-- renamed config `GITLAB_BACKUPS` to `GITLAB_BACKUPS_SCHEDULE`
+- renamed config `GITLAB_BACKUPS` to `GITLAB_BACKUP_SCHEDULE`
 - gitlab-workhorse: upgrade to v0.5.1
 - gitlab: upgrade to CE v8.3.0
 - expose `GITLAB_MAX_OBJECT_SIZE` configuration parameter

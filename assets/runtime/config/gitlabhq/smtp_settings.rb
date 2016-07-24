@@ -10,6 +10,7 @@
 if Rails.env.production?
   Rails.application.config.action_mailer.delivery_method = :smtp
 
+  ActionMailer::Base.delivery_method = :smtp
   ActionMailer::Base.smtp_settings = {
     address: "{{SMTP_HOST}}",
     port: {{SMTP_PORT}},
