@@ -4,6 +4,7 @@ This file only reflects the changes that are made in this image. Please refer to
 
 **8.10.2**
 - gitlab: upgrade to CE v8.10.2
+- Improve `OAUTH_GOOGLE_RESTRICT_DOMAIN` for multiple restricted domains
 
 **8.10.1**
 - gitlab: upgrade to CE v8.10.1
