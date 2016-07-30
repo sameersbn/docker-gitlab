@@ -661,7 +661,7 @@ Once you have the client ID and secret keys generated, configure them using the 
 
 For example, if your client ID is `xxx.apps.googleusercontent.com` and client secret key is `yyy`, then adding `--env 'OAUTH_GOOGLE_API_KEY=xxx.apps.googleusercontent.com' --env 'OAUTH_GOOGLE_APP_SECRET=yyy'` to the docker run command enables support for Google OAuth.
 
-You can also restrict logins to a single domain by adding `--env 'OAUTH_GOOGLE_RESTRICT_DOMAIN=example.com'`.
+You can also restrict logins to a single domain by adding `--env "OAUTH_GOOGLE_RESTRICT_DOMAIN='example.com'"`.
 
 #### Facebook
 
@@ -916,7 +916,7 @@ Below is the complete list of available options that can be used to customize yo
 | `OAUTH_CAS3_LOGOUT_URL` | CAS3 logout URL. Defaults to `/cas/logout` |
 | `OAUTH_GOOGLE_API_KEY` | Google App Client ID. No defaults. |
 | `OAUTH_GOOGLE_APP_SECRET` | Google App Client Secret. No defaults. |
-| `OAUTH_GOOGLE_RESTRICT_DOMAIN` | Google App restricted domain. No defaults. |
+| `OAUTH_GOOGLE_RESTRICT_DOMAIN` | List of Google App restricted domains. Value is comma separated list of single quoted groups. Example: `'exemple.com','exemple2.com'`. No defaults. |
 | `OAUTH_FACEBOOK_API_KEY` | Facebook App API key. No defaults. |
 | `OAUTH_FACEBOOK_APP_SECRET` | Facebook App API secret. No defaults. |
 | `OAUTH_TWITTER_API_KEY` | Twitter App API key. No defaults. |
