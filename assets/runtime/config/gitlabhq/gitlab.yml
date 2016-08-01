@@ -380,7 +380,10 @@ production: &base
           label: 'Google',
           app_id: '{{OAUTH_GOOGLE_API_KEY}}',
           app_secret: '{{OAUTH_GOOGLE_APP_SECRET}}',
-          args: { access_type: 'offline', approval_prompt: '{{OAUTH_GOOGLE_APPROVAL_PROMPT}}', hd: [{{OAUTH_GOOGLE_RESTRICT_DOMAIN}}] } }
+          args: {
+            access_type: 'offline',
+            approval_prompt: '{{OAUTH_GOOGLE_APPROVAL_PROMPT}}',
+            hd: [{{OAUTH_GOOGLE_RESTRICT_DOMAIN}}] } }
       - { name: 'facebook',
           app_id: '{{OAUTH_FACEBOOK_API_KEY}}',
           app_secret: '{{OAUTH_FACEBOOK_APP_SECRET}}' }

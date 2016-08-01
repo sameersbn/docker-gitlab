@@ -443,11 +443,20 @@ gitlab_configure_oauth_google() {
   if [[ -n ${OAUTH_GOOGLE_API_KEY} && -n ${OAUTH_GOOGLE_APP_SECRET} ]]; then
     echo "Configuring gitlab::oauth::google..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
-    update_template ${GITLAB_CONFIG} \
-      OAUTH_GOOGLE_API_KEY \
-      OAUTH_GOOGLE_APP_SECRET \
-      OAUTH_GOOGLE_RESTRICT_DOMAIN \
-      OAUTH_GOOGLE_APPROVAL_PROMPT
+    if [[ -n ${OAUTH_GOOGLE_RESTRICT_DOMAIN} ]]; then
+      update_template ${GITLAB_CONFIG} \
+        OAUTH_GOOGLE_API_KEY \
+        OAUTH_GOOGLE_APP_SECRET \
+        OAUTH_GOOGLE_RESTRICT_DOMAIN \
+        OAUTH_GOOGLE_APPROVAL_PROMPT
+    else
+      exec_as_git sed -i "/ hd\: \[{{OAUTH_GOOGLE_RESTRICT_DOMAIN}}\]/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "s/approval_prompt: '{{OAUTH_GOOGLE_APPROVAL_PROMPT}}',/approval_prompt: '{{OAUTH_GOOGLE_APPROVAL_PROMPT}}' } }/" ${GITLAB_CONFIG}
+      update_template ${GITLAB_CONFIG} \
+        OAUTH_GOOGLE_API_KEY \
+        OAUTH_GOOGLE_APP_SECRET \
+        OAUTH_GOOGLE_APPROVAL_PROMPT
+    fi
   else
     exec_as_git sed -i "/name: 'google_oauth2'/,/{{OAUTH_GOOGLE_RESTRICT_DOMAIN}}/d" ${GITLAB_CONFIG}
   fi
