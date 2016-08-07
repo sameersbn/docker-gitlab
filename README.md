@@ -5,6 +5,7 @@
 - [Introduction](#introduction)
     - [Changelog](Changelog.md)
 - [Contributing](#contributing)
+- [Team](#team)
 - [Issues](#issues)
 - [Announcements](https://github.com/sameersbn/docker-gitlab/issues/39)
 - [Prerequisites](#prerequisites)
@@ -72,8 +73,13 @@ Dockerfile to build a [GitLab](https://about.gitlab.com/) container image.
 If you find this image useful here's how you can help:
 
 - Send a Pull Request with your awesome new features and bug fixes
-- Help new users with [Issues](https://github.com/sameersbn/docker-gitlab/issues) they may encounter
+- Be a part of the community and help resolve [Issues](https://github.com/sameersbn/docker-gitlab/issues)
 - Support the development of this image with a [donation](http://www.damagehead.com/donate/)
+
+# Team
+
+- Niclas Mietz ([SolidNerd](https://github.com/SolidNerd))
+- Sameer Naik ([sameersbn](https://github.com/sameersbn))
 
 # Issues
 
