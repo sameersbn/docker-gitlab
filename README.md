@@ -28,7 +28,7 @@
     - [Mail](#mail)
         - [Reply by email](#reply-by-email)
     - [SSL](#ssl)
-        - [Generation of Self Signed Certificates](#generation-of-self-signed-certificates)
+        - [Generation of Self Signed Certificate](#generation-of-self-signed-certificate)
         - [Strengthening the server security](#strengthening-the-server-security)
         - [Installation of the SSL Certificates](#installation-of-the-ssl-certificates)
         - [Enabling HTTPS support](#enabling-https-support)
@@ -495,9 +495,9 @@ To secure your application via SSL you basically need two things:
 
 When using CA certified certificates, these files are provided to you by the CA. When using self-signed certificates you need to generate these files yourself. Skip to [Strengthening the server security](#strengthening-the-server-security) section if you are armed with CA certified SSL certificates.
 
-#### Generation of Self Signed Certificates
+#### Generation of Self Signed Certificate
 
-Generation of self-signed SSL certificates involves a simple 3 step procedure.
+Generation of self-signed SSL certificate involves a simple 3-step procedure:
 
 **STEP 1**: Create the server private key
 
@@ -517,7 +517,7 @@ openssl req -new -key gitlab.key -out gitlab.csr
 openssl x509 -req -days 3650 -in gitlab.csr -signkey gitlab.key -out gitlab.crt
 ```
 
-Congratulations! you have now generated an SSL certificate that will be valid for 10 years.
+Congratulations! You now a self-signed SSL certificate valid for 10 years.
 
 #### Strengthening the server security
 
@@ -630,7 +630,7 @@ The default path image is configured to look for the trusted SSL certificates is
 
 Copy the `ca.crt` file into the certs directory on the [datastore](#data-store). The `ca.crt` file should contain the root certificates of all the servers you want to trust. With respect to GitLab CI, this will be the contents of the gitlab_ci.crt file as described in the [README](https://github.com/sameersbn/docker-gitlab-ci/blob/master/README.md#ssl) of the [docker-gitlab-ci](https://github.com/sameersbn/docker-gitlab-ci) container.
 
-By default, our own server certificate [gitlab.crt](#generation-of-self-signed-certificates) is added to the trusted certificates list.
+By default, our own server certificate [gitlab.crt](#generation-of-self-signed-certificate) is added to the trusted certificates list.
 
 ### Deploy to a subdirectory (relative url root)
 
