@@ -28,7 +28,7 @@
     - [Mail](#mail)
         - [Reply by email](#reply-by-email)
     - [SSL](#ssl)
-        - [Generation of Self Signed Certificate](#generation-of-self-signed-certificate)
+        - [Generation of a Self Signed Certificate](#generation-of-a-self-signed-certificate)
         - [Strengthening the server security](#strengthening-the-server-security)
         - [Installation of the SSL Certificates](#installation-of-the-ssl-certificates)
         - [Enabling HTTPS support](#enabling-https-support)
