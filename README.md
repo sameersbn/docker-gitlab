@@ -28,7 +28,7 @@
     - [Mail](#mail)
         - [Reply by email](#reply-by-email)
     - [SSL](#ssl)
-        - [Generation of Self Signed Certificate](#generation-of-self-signed-certificate)
+        - [Generation of a Self Signed Certificate](#generation-of-a-self-signed-certificate)
         - [Strengthening the server security](#strengthening-the-server-security)
         - [Installation of the SSL Certificates](#installation-of-the-ssl-certificates)
         - [Enabling HTTPS support](#enabling-https-support)
@@ -485,7 +485,7 @@ Please refer the [Available Configuration Parameters](#available-configuration-p
 
 ### SSL
 
-Access to the gitlab application can be secured using SSL so as to prevent unauthorized access to the data in your repositories. While a CA certified SSL certificate allows for verification of trust via the CA, a self signed certificates can also provide an equal level of trust verification as long as each client takes some additional steps to verify the identity of your website. I will provide instructions on achieving this towards the end of this section.
+Access to the gitlab application can be secured using SSL so as to prevent unauthorized access to the data in your repositories. While a CA certified SSL certificate allows for verification of trust via the CA, a self signed certificate can also provide an equal level of trust verification as long as each client takes some additional steps to verify the identity of your website. I will provide instructions on achieving this towards the end of this section.
 
 Jump to the [Using HTTPS with a load balancer](#using-https-with-a-load-balancer) section if you are using a load balancer such as hipache, haproxy or nginx.
 
@@ -495,9 +495,9 @@ To secure your application via SSL you basically need two things:
 
 When using CA certified certificates, these files are provided to you by the CA. When using self-signed certificates you need to generate these files yourself. Skip to [Strengthening the server security](#strengthening-the-server-security) section if you are armed with CA certified SSL certificates.
 
-#### Generation of Self Signed Certificate
+#### Generation of a Self Signed Certificate
 
-Generation of self-signed SSL certificate involves a simple 3-step procedure:
+Generation of a self-signed SSL certificate involves a simple 3-step procedure:
 
 **STEP 1**: Create the server private key
 
@@ -517,7 +517,7 @@ openssl req -new -key gitlab.key -out gitlab.csr
 openssl x509 -req -days 3650 -in gitlab.csr -signkey gitlab.key -out gitlab.crt
 ```
 
-Congratulations! You now a self-signed SSL certificate valid for 10 years.
+Congratulations! You now have a self-signed SSL certificate valid for 10 years.
 
 #### Strengthening the server security
 
