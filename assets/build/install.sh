@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-GITLAB_CLONE_URL=https://github.com/gitlabhq/gitlabhq.git
+GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
 GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz
 GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse/repository/archive.tar.gz
 
