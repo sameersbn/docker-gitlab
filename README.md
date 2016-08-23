@@ -1057,7 +1057,7 @@ docker run --name gitlab -it --rm [OPTIONS] \
 You can also use `docker exec` to run raketasks on running gitlab instance. For example,
 
 ```bash
-docker exec -it gitlab sudo -HEu git bundle exec rake gitlab:env:info RAILS_ENV=production
+docker exec --user git -it gitlab bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
 
 Similarly, to import bare repositories into GitLab project instance
