@@ -142,7 +142,7 @@ The quickest way to get started is using [docker-compose](https://docs.docker.co
 wget https://raw.githubusercontent.com/sameersbn/docker-gitlab/master/docker-compose.yml
 ```
 
-Generate a random string that is at least `32` characters long and assign to `GITLAB_SECRETS_DB_KEY_BASE` environment variable. Once set you should not change this value and ensure you backup this value.
+Generate a random string that is at least `32` characters long and assign to `GITLAB_SECRETS_DB_KEY_BASE` and generate a random string that is at least `64` characters long for `GITLAB_SECRETS_SECRET_KEY_BASE` and `GITLAB_SECRETS_OTP_KEY_BASE` . Once set you should not change this value and ensure you backup this value.
 
 > **Tip**: You can generate a random string using `pwgen -Bsv1 64` and assign it as the value of `GITLAB_SECRETS_DB_KEY_BASE`.
 
@@ -181,6 +181,8 @@ docker run --name gitlab -d \
     --publish 10022:22 --publish 10080:80 \
     --env 'GITLAB_PORT=10080' --env 'GITLAB_SSH_PORT=10022' \
     --env 'GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alpha-numeric-string' \
+    --env 'GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alpha-numeric-string' \
+    --env 'GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alpha-numeric-string' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
     sameersbn/gitlab:8.11.0
 ```
@@ -791,6 +793,8 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_CI_HOST` | If you are migrating from GitLab CI use this parameter to configure the redirection to the GitLab service so that your existing runners continue to work without any changes. No defaults. |
 | `GITLAB_PORT` | The port of the GitLab server. This value indicates the public port on which the GitLab application will be accessible on the network and appropriately configures GitLab to generate the correct urls. It does not affect the port on which the internal nginx server will be listening on. Defaults to `443` if `GITLAB_HTTPS=true`, else defaults to `80`. |
 | `GITLAB_SECRETS_DB_KEY_BASE` | Encryption key for special GitLab variables in the database. Ensure that your key is at least 32 characters long and that you don't lose it. You can generate one using `pwgen -Bsv1 64`. If you are migrating from GitLab CI, you need to set this value to the value of `GITLAB_CI_SECRETS_DB_KEY_BASE`. No defaults. |
+| `GITLAB_SECRETS_SECRET_KEY_BASE` | Encryption key for  GitLab. Ensure that your key is at least 64 characters long and that you don't lose it. You can generate one using `pwgen -Bsv1 64`. No defaults. |
+| `GITLAB_SECRETS_OTP_KEY_BASE` |  Encryption key for OTP related stuff with  GitLab. Ensure that your key is at least 64 characters long and that you don't lose it. You can generate one using `pwgen -Bsv1 64`. No defaults. |
 | `GITLAB_TIMEZONE` | Configure the timezone for the gitlab application. This configuration does not effect cron jobs. Defaults to `UTC`. See the list of [acceptable values](http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html). |
 | `GITLAB_ROOT_PASSWORD` | The password for the root user on firstrun. Defaults to `5iveL!fe`. |
 | `GITLAB_ROOT_EMAIL` | The email for the root user on firstrun. Defaults to `admin@example.com` |
@@ -1131,6 +1135,7 @@ Replace `x.x.x` with the version you are upgrading from. For example, if you are
 - **Step 4**: Start the image
 
 > **Note**: Since GitLab `8.0.0` you need to provide the `GITLAB_SECRETS_DB_KEY_BASE` parameter while starting the image.
+> **Note**: Since GitLab `8.11.0` you need to provide the `GITLAB_SECRETS_SECRET_KEY_BASE` and `GITLAB_SECRETS_OTP_KEY_BASE` parameter while starting the image.
 
 ```bash
 docker run --name gitlab -d [OPTIONS] sameersbn/gitlab:8.11.0

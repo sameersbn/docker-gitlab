@@ -4,6 +4,8 @@ This file only reflects the changes that are made in this image. Please refer to
 
 **8.11.0**
 - gitlab: upgrade to CE v8.11.0
+- added `GITLAB_SECRETS_SECRET_KEY_BASE`
+- added `GITLAB_SECRETS_OTP_KEY_BASE`
 
 **8.10.7**
 - gitlab: upgrade to CE v8.10.7

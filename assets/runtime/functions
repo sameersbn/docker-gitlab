@@ -656,7 +656,24 @@ gitlab_configure_secrets() {
     return 1
   fi
 
-  update_template ${GITLAB_SECRETS_CONFIG} GITLAB_SECRETS_DB_KEY_BASE
+  if [[ -z $GITLAB_SECRETS_SECRET_KEY_BASE ]]; then
+    echo "ERROR: "
+    echo "  Please configure the GITLAB_SECRETS_SECRET_KEY_BASE parameter."
+    echo "  Cannot continue. Aborting..."
+    return 1
+  fi
+
+  if [[ -z $GITLAB_SECRETS_OTP_KEY_BASE ]]; then
+    echo "ERROR: "
+    echo "  Please configure the GITLAB_SECRETS_OTP_KEY_BASE parameter."
+    echo "  Cannot continue. Aborting..."
+    return 1
+  fi
+
+  update_template ${GITLAB_SECRETS_CONFIG} \
+  GITLAB_SECRETS_DB_KEY_BASE \
+  GITLAB_SECRETS_SECRET_KEY_BASE \
+  GITLAB_SECRETS_OTP_KEY_BASE
 }
 
 gitlab_configure_sidekiq() {
