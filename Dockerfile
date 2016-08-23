@@ -1,9 +1,10 @@
 FROM sameersbn/ubuntu:14.04.20160817
 MAINTAINER sameer@damagehead.com
 
-ENV GITLAB_VERSION=8.10.7 \
+ENV GITLAB_VERSION=8.11.0 \
+    RUBY_VERSION=2.3 \
     GOLANG_VERSION=1.5.3 \
-    GITLAB_SHELL_VERSION=3.2.1 \
+    GITLAB_SHELL_VERSION=3.4.0 \
     GITLAB_WORKHORSE_VERSION=0.7.8 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
@@ -29,7 +30,7 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor logrotate locales curl \
       nginx openssh-server mysql-client postgresql-client redis-tools \
-      git-core ruby2.1 python2.7 python-docutils nodejs gettext-base \
+      git-core ruby${RUBY_VERSION} python2.7 python-docutils nodejs gettext-base \
       libmysqlclient18 libpq5 zlib1g libyaml-0-2 libssl1.0.0 \
       libgdbm3 libreadline6 libncurses5 libffi6 \
       libxml2 libxslt1.1 libcurl3 libicu52 \

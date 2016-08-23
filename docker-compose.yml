@@ -22,7 +22,7 @@ services:
 
   gitlab:
     restart: always
-    image: sameersbn/gitlab:8.10.7
+    image: sameersbn/gitlab:8.11.0
     depends_on:
     - redis
     - postgresql
@@ -55,6 +55,8 @@ services:
     - GITLAB_SSH_PORT=10022
     - GITLAB_RELATIVE_URL_ROOT=
     - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
+    - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alphanumeric-string
+    - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alphanumeric-string
 
     - GITLAB_ROOT_PASSWORD=
     - GITLAB_ROOT_EMAIL=
