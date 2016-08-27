@@ -2,10 +2,16 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**8.11.2**
+- gitlab: upgrade to CE v8.11.2
+
 **8.11.0**
 - gitlab: upgrade to CE v8.11.0
 - added `GITLAB_SECRETS_SECRET_KEY_BASE`
 - added `GITLAB_SECRETS_OTP_KEY_BASE`
+
+**Important**
+When you start to upgrade from `8.10-7` or below use the key of `/home/git/data/.secret` for  `GITLAB_SECRETS_OTP_KEY_BASE` otherwise it will break your 2FA .
 
 **8.10.7**
 - gitlab: upgrade to CE v8.10.7
