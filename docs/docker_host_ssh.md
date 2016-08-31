@@ -52,6 +52,19 @@ docker run --name gitlab -it --rm [options] \
     sameersbn/gitlab:8.11.3
 ```
 
+Create the script at `/srv/gitlab/data/fix_ssh_permissions.incron.sh`:
+
+```bash
+#!/bin/bash
+[ -e "$1" ] && chgrp git "$1" && chmod g+r$([ -d "$1" ] && echo x) "$1"
+```
+
+Make it executable:
+
+```bash
+chmod +x /srv/gitlab/data/fix_ssh_permissions.incron.sh
+```
+
 Install incron:
 
 ```bash
@@ -68,11 +81,8 @@ incrontab -e
 and paste this:
 
 ```
-/srv/gitlab/data/.ssh IN_ATTRIB,IN_ONLYDIR chmod 755 $@
-/srv/gitlab/data/.ssh/authorized_keys IN_ATTRIB chmod 644 $@
+/srv/gitlab/data/.ssh IN_ATTRIB /srv/gitlab/data/fix_ssh_permissions.incron.sh $@/$#
 ```
-
-**PLEASE NOTE: keeping `.authorized_keys` world-readable brings a security risk. Use this method with discretion.**
 
 ## Access GitLab
 
