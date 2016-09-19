@@ -1,7 +1,7 @@
 Reuse docker host SSH daemon
 ============================
 
-It is possible to use the SSH daemon that runs on the docker host instead of using a separate SSH port for Gitlab.
+It is possible to use the SSH daemon that runs on the docker host instead of using a separate SSH port for GitLab.
 
 ## Setup
 
