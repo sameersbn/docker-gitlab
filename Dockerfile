@@ -4,8 +4,8 @@ MAINTAINER sameer@damagehead.com
 ENV GITLAB_VERSION=8.12.0 \
     RUBY_VERSION=2.3 \
     GOLANG_VERSION=1.5.3 \
-    GITLAB_SHELL_VERSION=3.4.0 \
     GITLAB_WORKHORSE_VERSION=0.7.11 \
+    GITLAB_SHELL_VERSION=3.6.0 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
