@@ -40,6 +40,14 @@ redis:
   database: {{REDIS_DB_NUMBER}}
   # socket: /tmp/redis.socket # Only define this if you want to use sockets
   namespace: resque:gitlab
+  # sentinels:
+  #   -
+  #     host: 127.0.0.1
+  #     port: 26380
+  #   -
+  #     host: 127.0.0.1
+  #     port: 26381
+
 
 # Log file.
 # Default is gitlab-shell.log in the root directory.
