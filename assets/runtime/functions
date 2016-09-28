@@ -1114,8 +1114,8 @@ initialize_datadir() {
   chown ${GITLAB_USER}: ${GITLAB_DATA_DIR}
 
   # create the ssh directory for server keys
-  mkdir -p ${GITLAB_DATA_DIR}/ssh
-  chown -R root: ${GITLAB_DATA_DIR}/ssh
+  mkdir -p ${SSH_HOST_KEYS_DIR}
+  chown -R root: ${SSH_HOST_KEYS_DIR}
 
   # create the repositories directory and make sure it has the right permissions
   mkdir -p ${GITLAB_REPOS_DIR}
@@ -1253,20 +1253,20 @@ generate_ssh_key() {
 }
 
 generate_ssh_host_keys() {
-  sed -i "s|HostKey /etc/ssh/|HostKey ${GITLAB_DATA_DIR}/ssh/|g" /etc/ssh/sshd_config
-  if [[ ! -e ${GITLAB_DATA_DIR}/ssh/ssh_host_rsa_key ]]; then
+  sed -i "s|HostKey /etc/ssh/|HostKey ${SSH_HOST_KEYS_DIR}|g" /etc/ssh/sshd_config
+  if [[ ! -e ${SSH_HOST_KEYS_DIR}/ssh_host_rsa_key ]]; then
     echo -n "Generating OpenSSH host keys... "
-    generate_ssh_key rsa1     ${GITLAB_DATA_DIR}/ssh/ssh_host_key
-    generate_ssh_key rsa      ${GITLAB_DATA_DIR}/ssh/ssh_host_rsa_key
-    generate_ssh_key dsa      ${GITLAB_DATA_DIR}/ssh/ssh_host_dsa_key
-    generate_ssh_key ecdsa    ${GITLAB_DATA_DIR}/ssh/ssh_host_ecdsa_key
-    generate_ssh_key ed25519  ${GITLAB_DATA_DIR}/ssh/ssh_host_ed25519_key
+    generate_ssh_key rsa1     ${SSH_HOST_KEYS_DIR}/ssh_host_key
+    generate_ssh_key rsa      ${SSH_HOST_KEYS_DIR}/ssh_host_rsa_key
+    generate_ssh_key dsa      ${SSH_HOST_KEYS_DIR}/ssh_host_dsa_key
+    generate_ssh_key ecdsa    ${SSH_HOST_KEYS_DIR}/ssh_host_ecdsa_key
+    generate_ssh_key ed25519  ${SSH_HOST_KEYS_DIR}/ssh_host_ed25519_key
     echo
   fi
 
   # ensure existing host keys have the right permissions
-  chmod 0600 ${GITLAB_DATA_DIR}/ssh/*_key
-  chmod 0644 ${GITLAB_DATA_DIR}/ssh/*.pub
+  chmod 0600 ${SSH_HOST_KEYS_DIR}/*_key
+  chmod 0644 ${SSH_HOST_KEYS_DIR}/*.pub
 }
 
 initialize_system() {
