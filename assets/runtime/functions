@@ -1254,6 +1254,10 @@ generate_ssh_key() {
 
 generate_ssh_host_keys() {
   sed -i "s|HostKey /etc/ssh/|HostKey ${SSH_HOST_KEYS_DIR}|g" /etc/ssh/sshd_config
+  if [[ -n "${SSH_HOST_KEYS_COPY_FROM}" ]]; then
+    cp -f ${SSH_HOST_KEYS_COPY_FROM}/ssh_host*key ${SSH_HOST_KEYS_DIR}/
+    cp -f ${SSH_HOST_KEYS_COPY_FROM}/ssh_host*key.pub ${SSH_HOST_KEYS_DIR}/
+  fi
   if [[ ! -e ${SSH_HOST_KEYS_DIR}/ssh_host_rsa_key ]]; then
     echo -n "Generating OpenSSH host keys... "
     generate_ssh_key rsa1     ${SSH_HOST_KEYS_DIR}/ssh_host_key
