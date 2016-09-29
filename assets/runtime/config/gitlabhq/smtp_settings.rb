@@ -23,6 +23,6 @@ if Rails.env.production?
     ca_path: "{{SMTP_CA_PATH}}",
     ca_file: "{{SMTP_CA_FILE}}",
     tls: {{SMTP_TLS}},
-	ssl: {{SMTP_SSL}}
+    ssl: {{SMTP_SSL}}
   }
 end
