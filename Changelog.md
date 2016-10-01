@@ -56,7 +56,7 @@ When you start to upgrade from `8.10-7` or below use the key of `/home/git/data/
 **8.10.3**
 - gitlab: upgrade to CE v8.10.3
 
-8.10.2-1**
+**8.10.2-1**
 - Fix `OAUTH_GOOGLE_RESTRICT_DOMAIN`
 
 **8.10.2**
