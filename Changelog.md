@@ -5,6 +5,10 @@ This file only reflects the changes that are made in this image. Please refer to
 8.12.3
 - gitlab: upgrade to CE v8.12.3
 
+Important:
+We skipped `8.12.2` because it doesn't contain any changes. For more
+information [8.12.3 release](https://about.gitlab.com/2016/09/29/gitlab-8-12-3-released/)
+
 8.12.1
 - gitlab: upgrade to CE v8.12.1
 
