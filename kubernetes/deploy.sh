@@ -12,11 +12,11 @@ do
   kubectl -f $svc create
 done
 
-# create the replication controllers
-for rc in *-rc.yml
+# create the deployments
+for deploy in *-deploy.yml
 do
-  echo -n "Creating $rc... "
-  kubectl -f $rc create
+  echo -n "Applying $deploy... "
+  kubectl create -f $deploy --record
 done
 
 # list pod,rc,svc
