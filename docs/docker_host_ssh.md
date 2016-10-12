@@ -56,7 +56,9 @@ Create the script at `/srv/gitlab/data/fix_ssh_permissions.incron.sh`:
 
 ```bash
 #!/bin/bash
-[ -e "$1" ] && chgrp git "$1" && chmod g+r$([ -d "$1" ] && echo x) "$1"
+[ $(stat -c %G "$1") != "git" ] && chgrp git "$1"
+[ -f "$1" -a $(stat -c %a "$1") != 640 ] && chmod 640 "$1"
+[ -d "$1" -a $(stat -c %a "$1") != 710 ] && chmod 710 "$1"
 ```
 
 Make it executable:
