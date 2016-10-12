@@ -866,6 +866,7 @@ Below is the complete list of available options that can be used to customize yo
 | `NGINX_PROXY_BUFFERING` | Enable `proxy_buffering`. Defaults to `off`. |
 | `NGINX_ACCEL_BUFFERING` | Enable `X-Accel-Buffering` header. Default to `no` |
 | `NGINX_X_FORWARDED_PROTO` | Advanced configuration option for the `proxy_set_header X-Forwarded-Proto` setting in the gitlab nginx vHost configuration. Defaults to `https` when `GITLAB_HTTPS` is `true`, else defaults to `$scheme`. |
+| `NGINX_RETAIN_IP_HEADER` | set to `true` if docker container runs behind a reverse proxy (like CDN), nginx will retain HTTP header `X-Real-IP` and `X-Forwarded-For`. `false` by default. |
 | `REDIS_HOST` | The hostname of the redis server. Defaults to `localhost` |
 | `REDIS_PORT` | The connection port of the redis server. Defaults to `6379`. |
 | `REDIS_DB_NUMBER` | The redis database number. Defaults to '0'. |
