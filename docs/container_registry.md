@@ -157,17 +157,17 @@ services:
 
 ## Generating certificate for authentication with the registry
 
-So GitLab handles for us the authentication with Registry we need an certifcate to do that secure.
+So GitLab handles for us the authentication with Registry we need an certificate to do that secure.
 With have here two options:
 
 1. Use a signed certificate from an Trusted Certificate Authority.
 2. Self-Signed Certificate for the authentication process.
 
-### Signed Certifcate
+### Signed Certificate
 If you have a signed certificate from a Trusted Certificate Authority you need only to copy the files in then `certs` folder and mount the folder in both containers (gitlab,registry) like in the docker-compose example.
 After that you need to set an environment variable in each container.
 In the **GitLab Container** you need to set `GITLAB_REGISTRY_KEY_PATH` this is the private key of the signed certificate.
-In the **Registry Container** you need to set `REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE` to the certificate file of the signed certifcate.
+In the **Registry Container** you need to set `REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE` to the certificate file of the signed certificate.
 For more info read [token auth configuration documentation][token-config].
 
 ### Self Signed Certificate
