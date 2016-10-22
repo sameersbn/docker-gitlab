@@ -20,14 +20,13 @@ Since `8.8.0` GitLab introduces container registry. GitLab is helping to authent
 
 Here is an example of all configuration parameters that can be used in the GitLab container.
 
-```
+```yml
 ...
 gitlab:
     ...
     environment:
     - GITLAB_REGISTRY_ENABLED=true
     - GITLAB_REGISTRY_HOST=registry.gitlab.example.com
-    - GITLAB_REGISTRY_PORT=5500
     - GITLAB_REGISTRY_API_URL=http://registry:5000
     - GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key
     - GITLAB_REGISTRY_ISSUER=gitlab-issuer
@@ -102,7 +101,6 @@ services:
     - postgresql
     ports:
     - "10080:80"
-    - "5500:5500"
     - "10022:22"
     volumes:
     - ./gitlab:/home/git/data:Z
@@ -127,7 +125,7 @@ services:
     - GITLAB_SECRETS_DB_KEY_BASE=superrandomsecret
     - GITLAB_REGISTRY_ENABLED=true
     - GITLAB_REGISTRY_HOST=registry.gitlab.example.com
-    - GITLAB_REGISTRY_PORT=5500
+    - GITLAB_REGISTRY_PORT=5000
     - GITLAB_REGISTRY_API_URL=http://registry:5000
     - GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key
     - SSL_REGISTRY_KEY_PATH=/certs/registry.key
