@@ -127,6 +127,7 @@ services:
     - GITLAB_REGISTRY_HOST=registry.gitlab.example.com
     - GITLAB_REGISTRY_PORT=5000
     - GITLAB_REGISTRY_API_URL=http://registry:5000
+    - GITLAB_REGISTRY_CERT_PATH=/certs/registry-auth.crt
     - GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key
     - SSL_REGISTRY_KEY_PATH=/certs/registry.key
     - SSL_REGISTRY_CERT_PATH=/certs/registry.crt
@@ -366,6 +367,7 @@ docker run --name gitlab -d [PREVIOUS_OPTIONS] \
 --env 'GITLAB_REGISTRY_ENABLED=true' \
 --env 'GITLAB_REGISTRY_HOST=registry.gitlab.example.com' \
 --env 'GITLAB_REGISTRY_API_URL=http://registry:5000/' \
+--env 'GITLAB_REGISTRY_CERT_PATH=/certs/registry-auth.crt' \
 --env 'GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key' \
 --link registry:registry
 sameersbn/gitlab:8.13.6
