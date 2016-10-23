@@ -180,7 +180,7 @@ Generate a self signed certificate with openssl.
 
 - **Step 2**: Generate a private key and sign request for the private key
 ```bash
-openssl req -nodes -newkey rsa:4096 -keyout registry-auth.key -out registry-auth.csr -subj "/CN=gitlab-issuer"
+openssl req -nodes -newkey rsa:4096 -keyout registry-auth.key -out registry-auth.csr -subj "/CN=registry.example.com"
 ```
 
 - **Step 3**: Sign your created privated key
@@ -190,7 +190,7 @@ openssl x509 -in registry-auth.csr -out registry-auth.crt -req -signkey registry
 
 After this mount the `certs` dir in both containers and set the same environment variables like way of the signed certificate.
 
-
+A complete docker-compose file is found here: [docker-compose-registry.yml](docker-compose-registry.yml)
 
 ## Container Registry storage driver
 
