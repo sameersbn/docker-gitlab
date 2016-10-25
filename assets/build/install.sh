@@ -231,16 +231,7 @@ priority=10
 directory=${GITLAB_INSTALL_DIR}
 environment=HOME=${GITLAB_HOME}
 command=bundle exec sidekiq -c {{SIDEKIQ_CONCURRENCY}}
-  -q post_receive
-  -q mailers
-  -q archive_repo
-  -q system_hook
-  -q project_web_hook
-  -q gitlab_shell
-  -q incoming_email
-  -q runner
-  -q common
-  -q default
+  -C ${GITLAB_INSTALL_DIR}/config/sidekiq_queues.yml
   -e ${RAILS_ENV}
   -t {{SIDEKIQ_SHUTDOWN_TIMEOUT}}
   -P ${GITLAB_INSTALL_DIR}/tmp/pids/sidekiq.pid

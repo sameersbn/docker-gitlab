@@ -67,6 +67,7 @@ production: &base
     email_from: {{GITLAB_EMAIL}}
     email_display_name: {{GITLAB_EMAIL_DISPLAY_NAME}}
     email_reply_to: {{GITLAB_EMAIL_REPLY_TO}}
+    email_subject_suffix: '{{GITLAB_EMAIL_SUBJECT_SUFFIX}}'
 
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 

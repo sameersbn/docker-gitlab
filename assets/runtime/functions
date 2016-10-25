@@ -359,7 +359,8 @@ gitlab_configure_mail_delivery() {
     GITLAB_EMAIL_ENABLED \
     GITLAB_EMAIL \
     GITLAB_EMAIL_DISPLAY_NAME \
-    GITLAB_EMAIL_REPLY_TO
+    GITLAB_EMAIL_REPLY_TO \
+    GITLAB_EMAIL_SUBJECT_SUFFIX
 }
 
 gitlab_configure_mailroom() {
