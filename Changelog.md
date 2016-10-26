@@ -5,6 +5,7 @@ This file only reflects the changes that are made in this image. Please refer to
 **8.13.0**
 - gitlab: upgrade to CE v8.13.0
 - added `GITLAB_EMAIL_SUBJECT_SUFFIX`
+
 **8.12.7**
 - gitlab: upgrade to CE v8.12.7
 
