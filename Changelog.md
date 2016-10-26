@@ -2,6 +2,9 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**8.13.1**
+- gitlab: upgrade to CE v8.13.1
+
 **8.13.0**
 - gitlab: upgrade to CE v8.13.0
 - added `GITLAB_EMAIL_SUBJECT_SUFFIX`
