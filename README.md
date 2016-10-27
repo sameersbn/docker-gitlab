@@ -804,8 +804,8 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_ROOT_EMAIL` || The email for the root user on firstrun. Defaults to `admin@example.com` |
 | `GITLAB_EMAIL` || The email address for the GitLab server. Defaults to value of `SMTP_USER`, else defaults to `example@example.com`. |
 | `GITLAB_EMAIL_DISPLAY_NAME` || The name displayed in emails sent out by the GitLab mailer. Defaults to `GitLab`. |
-| `GITLAB_EMAIL_REPLY_TO` | The reply-to address of emails sent out by GitLab. Defaults to value of `GITLAB_EMAIL`, else defaults to `noreply@example.com`. |
-| `GITLAB_EMAIL_SUBJECT_SUFFIX` |8.13.0| The e-mail subject suffix used in e-mails sent by GitLab. No defaults. |
+| `GITLAB_EMAIL_REPLY_TO` || The reply-to address of emails sent out by GitLab. Defaults to value of `GITLAB_EMAIL`, else defaults to `noreply@example.com`. |
+| `GITLAB_EMAIL_SUBJECT_SUFFIX` | 8.13.0 | The e-mail subject suffix used in e-mails sent by GitLab. No defaults. |
 | `GITLAB_EMAIL_ENABLED` || Enable or disable gitlab mailer. Defaults to the `SMTP_ENABLED` configuration. |
 | `GITLAB_INCOMING_EMAIL_ADDRESS` || The incoming email address for reply by email. Defaults to the value of `IMAP_USER`, else defaults to `reply@example.com`. Please read the [reply by email](http://doc.gitlab.com/ce/incoming_email/README.html) documentation to curretly set this parameter. |
 | `GITLAB_INCOMING_EMAIL_ENABLED` || Enable or disable gitlab reply by email feature. Defaults to the value of `IMAP_ENABLED`. |
@@ -949,7 +949,7 @@ Below is the complete list of available options that can be used to customize yo
 | `OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL` || The URL at which the SAML assertion should be received. When `GITLAB_HTTPS=true`, defaults to `https://${GITLAB_HOST}/users/auth/saml/callback` else defaults to `http://${GITLAB_HOST}/users/auth/saml/callback`. |
 | `OAUTH_SAML_IDP_CERT_FINGERPRINT` || The SHA1 fingerprint of the certificate. No Defaults. |
 | `OAUTH_SAML_IDP_SSO_TARGET_URL` || The URL to which the authentication request should be sent. No defaults. |
-| `OAUTH_SAML_ISSUER` | The name of your application. When `GITLAB_HTTPS=true`, defaults to `https://${GITLAB_HOST}` else defaults to `http://${GITLAB_HOST}`. |
+| `OAUTH_SAML_ISSUER` || The name of your application. When `GITLAB_HTTPS=true`, defaults to `https://${GITLAB_HOST}` else defaults to `http://${GITLAB_HOST}`. |
 | `OAUTH_SAML_LABEL` || The "Sign in with" button label. Defaults to "Our SAML Provider". |
 | `OAUTH_SAML_NAME_IDENTIFIER_FORMAT` || Describes the format of the username required by GitLab, Defaults to `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` |
 | `OAUTH_SAML_GROUPS_ATTRIBUTE` || Map groups attribute in a SAMLResponse to external groups. No defaults. |
