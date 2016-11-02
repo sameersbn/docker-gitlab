@@ -12,6 +12,7 @@ paths_to_be_protected = [
   "#{Rails.application.config.relative_url_root}/users/confirmation",
   "#{Rails.application.config.relative_url_root}/unsubscribes/",
   "#{Rails.application.config.relative_url_root}/import/github/personal_access_token"
+
 ]
 
 # Create one big regular expression that matches strings starting with any of

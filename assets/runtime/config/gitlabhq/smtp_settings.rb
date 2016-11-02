@@ -19,7 +19,7 @@ if Rails.env.production?
     domain: "{{SMTP_DOMAIN}}",
     authentication: "{{SMTP_AUTHENTICATION}}",
     enable_starttls_auto: {{SMTP_STARTTLS}},
-    openssl_verify_mode: "{{SMTP_OPENSSL_VERIFY_MODE}}",
+    openssl_verify_mode: '{{SMTP_OPENSSL_VERIFY_MODE}}',
     ca_path: "{{SMTP_CA_PATH}}",
     ca_file: "{{SMTP_CA_FILE}}",
     tls: {{SMTP_TLS}}

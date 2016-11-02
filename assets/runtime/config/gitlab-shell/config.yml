@@ -38,7 +38,7 @@ redis:
   port: {{REDIS_PORT}}
   # pass: redispass # Allows you to specify the password for Redis
   database: {{REDIS_DB_NUMBER}}
-  # socket: /tmp/redis.socket # Only define this if you want to use sockets
+  # socket: /var/run/redis/redis.sock # Comment out this line if you want to use TCP or Sentinel
   namespace: resque:gitlab
   # sentinels:
   #   -

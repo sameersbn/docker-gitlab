@@ -19,7 +19,7 @@ server {
   # If a different port is specified in https://gitlab.com/gitlab-org/gitlab-ce/blob/8-8-stable/config/gitlab.yml.example#L182,
   # it should be declared here as well
   listen *:{{GITLAB_REGISTRY_PORT}} ssl http2;
-  server_name {{GITLAB_REGISTRY_HOST}};
+  server_name  {{GITLAB_REGISTRY_HOST}};
   server_tokens off; ## Don't show the nginx version number, a security best practice
 
   client_max_body_size 0;
@@ -47,7 +47,7 @@ server {
     proxy_set_header  X-Forwarded-Proto $scheme;
     proxy_read_timeout                  900;
 
-    proxy_pass {{GITLAB_REGISTRY_API_URL}};
+    proxy_pass          {{GITLAB_REGISTRY_API_URL}};
   }
 
 }
