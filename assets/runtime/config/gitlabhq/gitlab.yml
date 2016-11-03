@@ -67,6 +67,7 @@ production: &base
     email_from: {{GITLAB_EMAIL}}
     email_display_name: {{GITLAB_EMAIL_DISPLAY_NAME}}
     email_reply_to: {{GITLAB_EMAIL_REPLY_TO}}
+    email_subject_suffix: '{{GITLAB_EMAIL_SUBJECT_SUFFIX}}'
 
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 
@@ -185,7 +186,7 @@ production: &base
     enabled: {{GITLAB_REGISTRY_ENABLED}}
     host: {{GITLAB_REGISTRY_HOST}}
     port: {{GITLAB_REGISTRY_PORT}}
-    api_url: {{GITLAB_REGISTRY_API_URL}}    # internal address to the registry, will be used by GitLab to directly communicate with API
+    api_url: {{GITLAB_REGISTRY_API_URL}} # internal address to the registry, will be used by GitLab to directly communicate with API
     key: {{GITLAB_REGISTRY_KEY_PATH}}
     path: {{GITLAB_REGISTRY_DIR}}
     issuer: {{GITLAB_REGISTRY_ISSUER}}
@@ -473,7 +474,6 @@ production: &base
   ## GitLab Shell settings
   gitlab_shell:
     path: {{GITLAB_SHELL_INSTALL_DIR}}/
-
     hooks_path: {{GITLAB_SHELL_INSTALL_DIR}}/hooks/
 
     # File that contains the secret key for verifying access for gitlab-shell.
