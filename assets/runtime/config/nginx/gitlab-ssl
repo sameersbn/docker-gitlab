@@ -31,7 +31,7 @@ server {
   ## to be served if you visit any address that your server responds to, eg.
   ## the ip address of the server (http://x.x.x.x/)
   listen 0.0.0.0:80;
-  listen [::]:80 ipv6only=off default_server;
+  listen [::]:80 ipv6only=on default_server;
   server_name _; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
   return 301 https://$http_host:{{GITLAB_PORT}}$request_uri;
@@ -42,7 +42,7 @@ server {
 ## HTTPS host
 server {
   listen 0.0.0.0:443 ssl http2;
-  listen [::]:443 ipv6only=off ssl http2 default_server;
+  listen [::]:443 ipv6only=on ssl http2 default_server;
   server_name {{GITLAB_HOST}}; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
 
