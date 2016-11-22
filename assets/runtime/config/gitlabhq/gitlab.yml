@@ -140,6 +140,9 @@ production: &base
     # The mailbox where incoming mail will end up. Usually "inbox".
     mailbox: "{{IMAP_MAILBOX}}"
 
+    # The IDLE command timeout.
+    idle_timeout: {{IMAP_TIMEOUT}}
+
   ## Build Artifacts
   artifacts:
     enabled: {{GITLAB_ARTIFACTS_ENABLED}}
