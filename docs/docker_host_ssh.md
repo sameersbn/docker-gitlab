@@ -94,6 +94,13 @@ touch /srv/docker/gitlab/data/.ssh
 touch /srv/docker/gitlab/data/.ssh/authorized_keys
 ```
 
+Ensure that OpenSSH is running without `StrictModes`:
+
+```
+sed -i 's/StrictModes yes/StrictModes no/' /etc/ssh/sshd_config
+/etc/init.d/ssh reload
+```
+
 ## Access GitLab
 
 Use Docker host to access repositories:
