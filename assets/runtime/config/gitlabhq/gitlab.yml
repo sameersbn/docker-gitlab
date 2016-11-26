@@ -113,7 +113,7 @@ production: &base
 
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
-  # For documentation on how to set this up, see http://doc.gitlab.com/ce/incoming_email/README.html
+  # For documentation on how to set this up, see http://doc.gitlab.com/ce/administration/reply_by_email.html
   incoming_email:
     enabled: {{GITLAB_INCOMING_EMAIL_ENABLED}}
 
@@ -139,6 +139,9 @@ production: &base
 
     # The mailbox where incoming mail will end up. Usually "inbox".
     mailbox: "{{IMAP_MAILBOX}}"
+
+    # The IDLE command timeout.
+    idle_timeout: {{IMAP_TIMEOUT}}
 
   ## Build Artifacts
   artifacts:
@@ -446,7 +449,9 @@ production: &base
   ## Repositories settings
   repositories:
     # Paths where repositories can be stored. Give the canonicalized absolute pathname.
-    # NOTE: REPOS PATHS MUST NOT CONTAIN ANY SYMLINK!!!
+    # IMPORTANT: None of the path components may be symlink, because
+    # gitlab-shell invokes Dir.pwd inside the repository path and that results
+    # real path not the symlink.
     storages: # You must have at least a `default` storage path.
       default: {{GITLAB_REPOS_DIR}}/
 
@@ -561,6 +566,10 @@ test:
       project_url: "http://redmine/projects/:issues_tracker_id"
       issues_url: "http://redmine/:project_id/:issues_tracker_id/:id"
       new_issue_url: "http://redmine/projects/:issues_tracker_id/issues/new"
+    jira:
+      title: "JIRA"
+      url: https://sample_company.atlasian.net
+      project_key: PROJECT
   ldap:
     enabled: false
     servers:

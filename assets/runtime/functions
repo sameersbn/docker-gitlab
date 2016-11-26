@@ -386,6 +386,7 @@ gitlab_configure_mailroom() {
       -e "/{{IMAP_SSL}}/d" \
       -e "/{{IMAP_STARTTLS}}/d" \
       -e "/{{IMAP_MAILBOX}}/d" \
+      -e "/{{IMAP_TIMEOUT}}/d" \
       ${GITLAB_CONFIG}
   fi
 
@@ -398,7 +399,8 @@ gitlab_configure_mailroom() {
     IMAP_PORT \
     IMAP_SSL \
     IMAP_STARTTLS \
-    IMAP_MAILBOX
+    IMAP_MAILBOX \
+    IMAP_TIMEOUT
 
   # enable/disable startup of mailroom
   echo "mail_room_enabled=${GITLAB_INCOMING_EMAIL_ENABLED}" >> /etc/default/gitlab
