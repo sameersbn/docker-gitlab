@@ -1012,6 +1012,12 @@ A backup will be created in the backups folder of the [Data Store](#data-store).
 
 *P.S. Backups can also be generated on a running instance using `docker exec` as described in the [Rake Tasks](#rake-tasks) section. However, to avoid undesired side-effects, I advice against running backup and restore operations on a running instance.*
 
+When using `docker-compose` you may use the following command to execute the backup.
+
+```bash
+docker-compose run --rm gitlab app:rake gitlab:backup:create
+```
+
 ## Restoring Backups
 
 GitLab also defines a rake task to restore a backup.
@@ -1036,6 +1042,13 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
     sameersbn/gitlab:8.14.1 app:rake gitlab:backup:restore BACKUP=1417624827
+```
+
+When using `docker-compose` you may use the following command to execute the restore.
+
+```bash
+docker-compose run --rm gitlab app:rake gitlab:backup:restore # List available backups
+docker-compose run --rm gitlab app:rake gitlab:backup:restore BACKUP=1417624827 # Choose to restore from 1417624827
 ```
 
 ## Automated Backups
@@ -1086,6 +1099,18 @@ For a complete list of available rake tasks please refer https://github.com/gitl
 
 *P.S. Please avoid running the rake tasks for backup and restore operations on a running gitlab instance.*
 
+To use the `app:rake` command with `docker-compose` use the following command.
+
+```bash
+# For stopped instances
+docker-compose run --rm gitlab app:rake gitlab:env:info
+docker-compose run --rm gitlab app:rake gitlab:import:repos
+
+# For running instances
+docker-compose exec --user git gitlab bundle exec rake gitlab:env:info RAILS_ENV=production
+docker-compose exec gitlab sudo -HEu git bundle exec rake gitlab:import:repos RAILS_ENV=production
+```
+
 ## Import Repositories
 
 Copy all the **bare** git repositories to the `repositories/` directory of the [data store](#data-store) and execute the `gitlab:import:repos` rake task like so:
@@ -1098,6 +1123,7 @@ docker run --name gitlab -it --rm [OPTIONS] \
 Watch the logs and your repositories should be available into your new gitlab container.
 
 See [Rake Tasks](#rake-tasks) for more information on executing rake tasks.
+Usage when using `docker-compose` can also be found there.
 
 ## Upgrading
 
