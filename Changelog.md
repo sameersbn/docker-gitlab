@@ -2,10 +2,10 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
-**8.14.3
+**8.14.3**
 - gitlab: upgrade to CE v8.14.3
 
-**8.14.2
+**8.14.2**
 - gitlab: upgrade to CE v8.14.2
 
 **8.14.1**
