@@ -60,7 +60,7 @@ exec_as_git ./bin/install
 # remove unused repositories directory created by gitlab-shell install
 exec_as_git rm -rf ${GITLAB_HOME}/repositories
 
-echo "Downloading gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
+echo "Downloading gitlab-workhorse v${GITLAB_WORKHORSE_VERSION}..."
 mkdir -p ${GITLAB_WORKHORSE_INSTALL_DIR}
 wget -cq ${GITLAB_WORKHORSE_URL}?ref=v${GITLAB_WORKHORSE_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-workhorse-${GITLAB_WORKHORSE_VERSION}.tar.gz
 tar xf ${GITLAB_BUILD_DIR}/gitlab-workhorse-${GITLAB_WORKHORSE_VERSION}.tar.gz --strip 1 -C ${GITLAB_WORKHORSE_INSTALL_DIR}
