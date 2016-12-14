@@ -1,6 +1,258 @@
 # Changelog
 
-This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG) for the list of changes in GitLab.
+This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
+
+**8.14.4**
+- gitlab: upgrade to CE v8.14.4
+
+**8.14.3**
+- gitlab: upgrade to CE v8.14.3
+
+**8.14.2**
+- gitlab: upgrade to CE v8.14.2
+
+**8.14.1**
+- gitlab: upgrade to CE v8.14.1
+
+**8.14.0**
+- gitlab: upgrade to CE v8.14.0
+- added `IMAP_TIMEOUT`
+- update golang to 1.6.3
+
+**8.13.6**
+- gitlab: upgrade to CE v8.13.6
+
+**8.13.5**
+- gitlab: upgrade to CE v8.13.5
+
+**Important**:
+We skipped `8.13.4` because it doesn't contain any changes. For more
+information [8.13.4 release](https://about.gitlab.com/2016/11/09/gitlab-8-dot-13-dot-5-released/)
+
+**8.12.1**
+
+**8.13.3**
+- gitlab: upgrade to CE v8.13.3
+
+**8.13.2**
+- gitlab: upgrade to CE v8.13.2
+
+**8.13.1**
+- gitlab: upgrade to CE v8.13.1
+
+**8.13.0**
+- gitlab: upgrade to CE v8.13.0
+- added `GITLAB_EMAIL_SUBJECT_SUFFIX`
+
+**8.12.7**
+- gitlab: upgrade to CE v8.12.7
+
+**8.12.6**
+- gitlab: upgrade to CE v8.12.6
+
+**8.12.5**
+- gitlab: upgrade to CE v8.12.5
+
+**8.12.4**
+- gitlab: upgrade to CE v8.12.4
+
+**8.12.3**
+- gitlab: upgrade to CE v8.12.3
+
+**Important**:
+We skipped `8.12.2` because it doesn't contain any changes. For more
+information [8.12.3 release](https://about.gitlab.com/2016/09/29/gitlab-8-12-3-released/)
+
+**8.12.1**
+- gitlab: upgrade to CE v8.12.1
+
+**8.12.0**
+- gitlab: upgrade to CE v8.12.0
+
+**8.11.7**
+- gitlab: upgrade to CE v8.11.7
+
+**8.11.6**
+- gitlab: upgrade to CE v8.11.6
+
+**8.11.5**
+- gitlab: upgrade to CE v8.11.5
+
+**8.11.4**
+- gitlab: upgrade to CE v8.11.4
+
+**8.11.3**
+- gitlab: upgrade to CE v8.11.3
+
+**8.11.2**
+- gitlab: upgrade to CE v8.11.2
+
+**8.11.0**
+- gitlab: upgrade to CE v8.11.0
+- added `GITLAB_SECRETS_SECRET_KEY_BASE`
+- added `GITLAB_SECRETS_OTP_KEY_BASE`
+
+**Important**
+When you start to upgrade from `8.10-7` or below use the key of `/home/git/data/.secret` for  `GITLAB_SECRETS_OTP_KEY_BASE` otherwise it will break your 2FA .
+
+**8.10.7**
+- gitlab: upgrade to CE v8.10.7
+
+**8.10.6**
+- gitlab: upgrade to CE v8.10.6
+
+**8.10.5**
+- gitlab: upgrade to CE v8.10.5
+
+**8.10.4**
+- gitlab: upgrade to CE v8.10.4
+
+**8.10.3**
+- gitlab: upgrade to CE v8.10.3
+
+**8.10.2-1**
+- Fix `OAUTH_GOOGLE_RESTRICT_DOMAIN`
+
+**8.10.2**
+- gitlab: upgrade to CE v8.10.2
+- Improve `OAUTH_GOOGLE_RESTRICT_DOMAIN` for multiple restricted domains
+
+**8.10.1**
+- gitlab: upgrade to CE v8.10.1
+
+**8.10.0**
+- gitlab: upgrade to CE v8.10.0
+
+**8.9.6**
+- gitlab: upgrade to CE v8.9.6
+
+**8.9.5**
+- gitlab: upgrade to CE v8.9.5
+
+**8.9.4**
+- gitlab: upgrade to CE v8.9.4
+
+**8.9.3**
+- gitlab: upgrade to CE v8.9.3
+
+**8.9.2**
+- gitlab: upgrade to CE v8.9.2
+
+**8.9.1**
+- gitlab: upgrade to CE v8.9.1
+
+**8.9.0**
+- gitlab: upgrade to CE v8.9.0
+
+**8.8.5-1**
+- added GitLab Container Registry support
+- added `SSL_CIPHERS` option to change ciphers of the nginx
+
+**8.8.5**
+- gitlab: upgrade to CE v8.8.5
+
+**8.8.4**
+- gitlab: upgrade to CE v8.8.4
+- added `GITLAB_PROJECTS_LIMIT` configuration option
+
+**8.8.3**
+- gitlab: upgrade to CE v8.8.3
+
+**8.8.2**
+- gitlab: upgrade to CE v8.8.2
+
+**8.8.1**
+- gitlab: upgrade to CE v8.8.1
+
+**8.8.0**
+- gitlab: upgrade to CE v8.8.0
+- oauth: exposed `OAUTH_GITHUB_URL` and `OAUTH_GITHUB_VERIFY_SSL` options for users for GitHub Enterprise.
+
+**8.7.6**
+- gitlab: upgrade to CE v8.7.6
+
+**8.7.5**
+- gitlab: upgrade to CE v8.7.5
+
+**8.7.3**
+- gitlab: upgrade to CE v8.7.3
+
+**8.7.2**
+- gitlab: upgrade to CE v8.7.2
+
+**8.7.1**
+- gitlab: upgrade to CE v8.7.1
+
+**8.7.0**
+- gitlab-shell: upgrade to v.2.7.2
+- gitlab: upgrade to CE v8.7.0
+- SSO: `OAUTH_ALLOW_SSO` now specifies a comma separated list of providers.
+- OAuth: Added `OAUTH_EXTERNAL_PROVIDERS` to specify external oauth providers.
+- Exposed `GITLAB_TRUSTED_PROXIES` configuration parameter
+
+**8.6.7**
+- added `GITLAB_SIGNUP_ENABLED` option to enable/disable signups
+- gitlab: upgrade to CE v8.6.7
+
+**8.6.6**
+- gitlab: upgrade to CE v8.6.6
+
+**8.6.5**
+- gitlab: upgrade to CE v8.6.5
+
+**8.6.4**
+- gitlab: upgrade to CE v8.6.4
+
+**8.6.3**
+- gitlab-shell: upgrade to v.2.6.12
+- gitlab: upgrade to CE v8.6.3
+
+**8.6.2**
+- gitlab: upgrade to CE v8.6.2
+
+**8.6.1**
+- gitlab: upgrade to CE v8.6.1
+
+**8.6.0**
+- gitlab-shell: upgrade to v.2.6.11
+- gitlab-workhorse: upgrade to v0.7.1
+- gitlab: upgrade to CE v8.6.0
+- exposed configuration parameters for auth0 OAUTH support
+- fixed relative_url support
+
+**8.5.8**
+- gitlab: upgrade to CE v8.5.8
+
+**8.5.7**
+- gitlab: upgrade to CE v8.5.7
+
+**8.5.5**
+- gitlab: upgrade to CE v8.5.5
+
+**8.5.4**
+- gitlab: upgrade to CE v8.5.4
+
+**8.5.3**
+- gitlab: upgrade to CE v8.5.3
+
+**8.5.1**
+- gitlab: upgrade to CE v8.5.1
+
+**8.5.0**
+- gitlab-workhorse: upgrade to v0.6.4
+- gitlab: upgrade to CE v8.5.0
+- firstrun: expose `GITLAB_ROOT_EMAIL` configuration option
+- expose `OAUTH_AUTO_LINK_SAML_USER` configuration parameter
+
+**8.4.4**
+- gitlab: upgrade to CE v8.4.4
+
+**8.4.3**
+- gitlab: upgrade to CE v8.4.3
+
+**8.4.2**
+- gitlab-workhorse: upgrade to v0.6.2
+- gitlab: upgrade to CE v8.4.2
 
 **8.4.1**
 - gitlab: upgrade to CE v8.4.1
@@ -35,7 +287,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - renamed config `CA_CERTIFICATES_PATH` to `SSL_CA_CERTIFICATES_PATH`
 - renamed config `GITLAB_HTTPS_HSTS_ENABLED` to `NGINX_HSTS_ENABLED`
 - renamed config `GITLAB_HTTPS_HSTS_MAXAGE` to `NGINX_HSTS_MAXAGE`
-- renamed config `GITLAB_BACKUPS` to `GITLAB_BACKUPS_SCHEDULE`
+- renamed config `GITLAB_BACKUPS` to `GITLAB_BACKUP_SCHEDULE`
 - gitlab-workhorse: upgrade to v0.5.1
 - gitlab: upgrade to CE v8.3.0
 - expose `GITLAB_MAX_OBJECT_SIZE` configuration parameter

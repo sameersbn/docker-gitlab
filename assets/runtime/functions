@@ -8,7 +8,8 @@ USERCONF_TEMPLATES_DIR="${GITLAB_DATA_DIR}/config"
 GITLAB_CONFIG="${GITLAB_INSTALL_DIR}/config/gitlab.yml"
 GITLAB_DATABASE_CONFIG="${GITLAB_INSTALL_DIR}/config/database.yml"
 GITLAB_UNICORN_CONFIG="${GITLAB_INSTALL_DIR}/config/unicorn.rb"
-GITLAB_RACK_ATTACK_CONFIG="${GITLAB_INSTALL_DIR}/config/rack_attack.rb"
+GITLAB_RELATIVE_URL_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/relative_url.rb"
+GITLAB_RACK_ATTACK_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/rack_attack.rb"
 GITLAB_SMTP_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb"
 GITLAB_RESQUE_CONFIG="${GITLAB_INSTALL_DIR}/config/resque.yml"
 GITLAB_SECRETS_CONFIG="${GITLAB_INSTALL_DIR}/config/secrets.yml"
@@ -16,6 +17,7 @@ GITLAB_ROBOTS_CONFIG="${GITLAB_INSTALL_DIR}/public/robots.txt"
 GITLAB_SHELL_CONFIG="${GITLAB_SHELL_INSTALL_DIR}/config.yml"
 GITLAB_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab"
 GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
+GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
 
 # Compares two version strings `a` and `b`
 # Returns
@@ -240,7 +242,7 @@ gitlab_finalize_redis_parameters() {
 
 gitlab_check_redis_connection() {
   timeout=60
-  while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} ping >/dev/null 2>&1
+  while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} -n ${REDIS_DB_NUMBER} ping >/dev/null 2>&1
   do
     timeout=$(expr $timeout - 1)
     if [[ $timeout -eq 0 ]]; then
@@ -262,12 +264,15 @@ gitlab_configure_redis() {
 
   update_template ${GITLAB_RESQUE_CONFIG} \
     REDIS_HOST \
-    REDIS_PORT
+    REDIS_PORT \
+    REDIS_DB_NUMBER
 }
 
 gitlab_configure_gitlab_workhorse() {
   echo "Configuring gitlab::gitlab-workhorse..."
-  update_template /etc/supervisor/conf.d/gitlab-workhorse.conf GITLAB_RELATIVE_URL_ROOT
+  update_template /etc/supervisor/conf.d/gitlab-workhorse.conf \
+    GITLAB_RELATIVE_URL_ROOT \
+    GITLAB_WORKHORSE_TIMEOUT
 }
 
 gitlab_configure_unicorn() {
@@ -282,6 +287,22 @@ gitlab_configure_unicorn() {
     GITLAB_INSTALL_DIR \
     UNICORN_WORKERS \
     UNICORN_TIMEOUT
+}
+
+gitlab_configure_relative_url() {
+  if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
+    echo "Configuring gitlab::relative_url..."
+    update_template ${GITLAB_RELATIVE_URL_CONFIG} GITLAB_RELATIVE_URL_ROOT
+  fi
+}
+
+gitlab_configure_trusted_proxies() {
+  if [[ -n ${GITLAB_TRUSTED_PROXIES} ]]; then
+    echo "Configuring gitlab::trusted_proxies..."
+    update_template ${GITLAB_CONFIG} GITLAB_TRUSTED_PROXIES
+  else
+    exec_as_git sed -i "/{{GITLAB_TRUSTED_PROXIES}}/d" ${GITLAB_CONFIG}
+  fi
 }
 
 gitlab_configure_timezone() {
@@ -338,7 +359,8 @@ gitlab_configure_mail_delivery() {
     GITLAB_EMAIL_ENABLED \
     GITLAB_EMAIL \
     GITLAB_EMAIL_DISPLAY_NAME \
-    GITLAB_EMAIL_REPLY_TO
+    GITLAB_EMAIL_REPLY_TO \
+    GITLAB_EMAIL_SUBJECT_SUFFIX
 }
 
 gitlab_configure_mailroom() {
@@ -364,6 +386,7 @@ gitlab_configure_mailroom() {
       -e "/{{IMAP_SSL}}/d" \
       -e "/{{IMAP_STARTTLS}}/d" \
       -e "/{{IMAP_MAILBOX}}/d" \
+      -e "/{{IMAP_TIMEOUT}}/d" \
       ${GITLAB_CONFIG}
   fi
 
@@ -376,7 +399,8 @@ gitlab_configure_mailroom() {
     IMAP_PORT \
     IMAP_SSL \
     IMAP_STARTTLS \
-    IMAP_MAILBOX
+    IMAP_MAILBOX \
+    IMAP_TIMEOUT
 
   # enable/disable startup of mailroom
   echo "mail_room_enabled=${GITLAB_INCOMING_EMAIL_ENABLED}" >> /etc/default/gitlab
@@ -422,11 +446,20 @@ gitlab_configure_oauth_google() {
   if [[ -n ${OAUTH_GOOGLE_API_KEY} && -n ${OAUTH_GOOGLE_APP_SECRET} ]]; then
     echo "Configuring gitlab::oauth::google..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
-    update_template ${GITLAB_CONFIG} \
-      OAUTH_GOOGLE_API_KEY \
-      OAUTH_GOOGLE_APP_SECRET \
-      OAUTH_GOOGLE_RESTRICT_DOMAIN \
-      OAUTH_GOOGLE_APPROVAL_PROMPT
+    if [[ -n ${OAUTH_GOOGLE_RESTRICT_DOMAIN} ]]; then
+      update_template ${GITLAB_CONFIG} \
+        OAUTH_GOOGLE_API_KEY \
+        OAUTH_GOOGLE_APP_SECRET \
+        OAUTH_GOOGLE_RESTRICT_DOMAIN \
+        OAUTH_GOOGLE_APPROVAL_PROMPT
+    else
+      exec_as_git sed -i "/ hd\: \[{{OAUTH_GOOGLE_RESTRICT_DOMAIN}}\]/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "s/approval_prompt: '{{OAUTH_GOOGLE_APPROVAL_PROMPT}}',/approval_prompt: '{{OAUTH_GOOGLE_APPROVAL_PROMPT}}' } }/" ${GITLAB_CONFIG}
+      update_template ${GITLAB_CONFIG} \
+        OAUTH_GOOGLE_API_KEY \
+        OAUTH_GOOGLE_APP_SECRET \
+        OAUTH_GOOGLE_APPROVAL_PROMPT
+    fi
   else
     exec_as_git sed -i "/name: 'google_oauth2'/,/{{OAUTH_GOOGLE_RESTRICT_DOMAIN}}/d" ${GITLAB_CONFIG}
   fi
@@ -463,6 +496,8 @@ gitlab_configure_oauth_github() {
     update_template ${GITLAB_CONFIG} \
       OAUTH_GITHUB_API_KEY \
       OAUTH_GITHUB_APP_SECRET \
+      OAUTH_GITHUB_URL \
+      OAUTH_GITHUB_VERIFY_SSL \
       OAUTH_GITHUB_SCOPE
   else
     exec_as_git sed -i "/name: 'github'/,/{{OAUTH_GITHUB_SCOPE}}/d" ${GITLAB_CONFIG}
@@ -494,6 +529,23 @@ gitlab_configure_oauth_bitbucket() {
   fi
 }
 
+gitlab_configure_oauth_saml_attribute_statements() {
+  if [[ -n ${OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL} && \
+        -n ${OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME} ]]; then
+    echo "Configuring gitlab::oauth::saml::attribute_statements..."
+    update_template ${GITLAB_CONFIG} \
+      OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL \
+      OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME \
+      OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME \
+      OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME
+    # Remove undefined optional attributes
+    exec_as_git sed -i "/first_name: \\[''\\],/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/last_name: \\[''\\],/d" ${GITLAB_CONFIG}
+  else
+    exec_as_git sed -i "/attribute_statements:/,/{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL}}/d" ${GITLAB_CONFIG}
+  fi
+}
+
 gitlab_configure_oauth_saml() {
   if [[ -n ${OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL} && \
         -n ${OAUTH_SAML_IDP_CERT_FINGERPRINT} && \
@@ -508,7 +560,12 @@ gitlab_configure_oauth_saml() {
       OAUTH_SAML_IDP_CERT_FINGERPRINT \
       OAUTH_SAML_IDP_SSO_TARGET_URL \
       OAUTH_SAML_ISSUER \
-      OAUTH_SAML_NAME_IDENTIFIER_FORMAT
+      OAUTH_SAML_NAME_IDENTIFIER_FORMAT \
+      OAUTH_SAML_GROUPS_ATTRIBUTE \
+      OAUTH_SAML_EXTERNAL_GROUPS
+    exec_as_git sed -i "/groups_attribute: '',/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/external_groups: \\[\\],/d" ${GITLAB_CONFIG}
+    gitlab_configure_oauth_saml_attribute_statements
   else
     exec_as_git sed -i "/name: 'saml'/,/{{OAUTH_SAML_NAME_IDENTIFIER_FORMAT}}/d" ${GITLAB_CONFIG}
   fi
@@ -526,6 +583,21 @@ gitlab_configure_oauth_crowd() {
       OAUTH_CROWD_APP_PASSWORD
   else
     exec_as_git sed -i "/name: 'crowd'/,/{{OAUTH_CROWD_APP_PASSWORD}}/d" ${GITLAB_CONFIG}
+  fi
+}
+
+gitlab_configure_oauth_auth0() {
+  if [[ -n ${OAUTH_AUTH0_CLIENT_ID} && \
+        -n ${OAUTH_AUTH0_CLIENT_SECRET} && \
+        -n ${OAUTH_AUTH0_DOMAIN} ]]; then
+    echo "Configuring gitlab::oauth::auth0..."
+    OAUTH_ENABLED=${OAUTH_ENABLED:-true}
+    update_template ${GITLAB_CONFIG} \
+      OAUTH_AUTH0_CLIENT_ID \
+      OAUTH_AUTH0_CLIENT_SECRET \
+      OAUTH_AUTH0_DOMAIN
+  else
+    exec_as_git sed -i "/name: 'auth0'/,/{{OAUTH_AUTH0_DOMAIN}}/d" ${GITLAB_CONFIG}
   fi
 }
 
@@ -556,6 +628,7 @@ gitlab_configure_oauth() {
   gitlab_configure_oauth_bitbucket
   gitlab_configure_oauth_saml
   gitlab_configure_oauth_crowd
+  gitlab_configure_oauth_auth0
   gitlab_configure_oauth_azure
 
   OAUTH_ENABLED=${OAUTH_ENABLED:-false}
@@ -563,7 +636,9 @@ gitlab_configure_oauth() {
     OAUTH_ENABLED \
     OAUTH_ALLOW_SSO \
     OAUTH_BLOCK_AUTO_CREATED_USERS \
-    OAUTH_AUTO_LINK_LDAP_USER
+    OAUTH_AUTO_LINK_LDAP_USER \
+    OAUTH_AUTO_LINK_SAML_USER \
+    OAUTH_EXTERNAL_PROVIDERS
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
     cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2)
@@ -584,7 +659,24 @@ gitlab_configure_secrets() {
     return 1
   fi
 
-  update_template ${GITLAB_SECRETS_CONFIG} GITLAB_SECRETS_DB_KEY_BASE
+  if [[ -z $GITLAB_SECRETS_SECRET_KEY_BASE ]]; then
+    echo "ERROR: "
+    echo "  Please configure the GITLAB_SECRETS_SECRET_KEY_BASE parameter."
+    echo "  Cannot continue. Aborting..."
+    return 1
+  fi
+
+  if [[ -z $GITLAB_SECRETS_OTP_KEY_BASE ]]; then
+    echo "ERROR: "
+    echo "  Please configure the GITLAB_SECRETS_OTP_KEY_BASE parameter."
+    echo "  Cannot continue. Aborting..."
+    return 1
+  fi
+
+  update_template ${GITLAB_SECRETS_CONFIG} \
+  GITLAB_SECRETS_DB_KEY_BASE \
+  GITLAB_SECRETS_SECRET_KEY_BASE \
+  GITLAB_SECRETS_OTP_KEY_BASE
 }
 
 gitlab_configure_sidekiq() {
@@ -622,7 +714,7 @@ gitlab_configure_backups_schedule() {
           weekly) day_of_week=0 ;;
           monthly) day_of_month=01 ;;
         esac
-        echo "$min $hour $day_of_month $month $day_of_week /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create RAILS_ENV=${RAILS_ENV}'" >> /tmp/cron.${GITLAB_USER}
+        echo "$min $hour $day_of_month $month $day_of_week /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create SKIP=${GITLAB_BACKUP_SKIP} RAILS_ENV=${RAILS_ENV}'" >> /tmp/cron.${GITLAB_USER}
         crontab -u ${GITLAB_USER} /tmp/cron.${GITLAB_USER}
       fi
       rm -rf /tmp/cron.${GITLAB_USER}
@@ -642,7 +734,8 @@ gitlab_configure_backups_aws() {
         AWS_BACKUP_REGION \
         AWS_BACKUP_ACCESS_KEY_ID \
         AWS_BACKUP_SECRET_ACCESS_KEY \
-        AWS_BACKUP_BUCKET
+        AWS_BACKUP_BUCKET \
+        AWS_BACKUP_MULTIPART_CHUNK_SIZE
       ;;
     *)
       exec_as_git sed -i "/upload:/,/remote_directory:/d" ${GITLAB_CONFIG}
@@ -747,7 +840,30 @@ gitlab_configure_project_features() {
     GITLAB_PROJECTS_WIKI \
     GITLAB_PROJECTS_SNIPPETS \
     GITLAB_PROJECTS_BUILDS \
+    GITLAB_PROJECTS_CONTAINER_REGISTRY \
     GITLAB_WEBHOOK_TIMEOUT
+}
+
+gitlab_configure_registry(){
+  echo "Configuring gitlab::registry..."
+
+  if [[ ${GITLAB_REGISTRY_PORT} == 443 ]]; then
+    # Sets GITLAB_REGISTRY_PORT empty for the scope of this function.
+    # This helps us to add an empty key to `.gitlab-ci.yml`.
+    # Because 443 is the default https port it doesn't need to be included in docker push/pull commands
+    # and shouldn't be displayed on the gitlab ui.
+    # Example: `docker pull registry:443/some/image` is the same as `docker pull registry/some/image`
+    local GITLAB_REGISTRY_PORT=""
+  fi
+
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_REGISTRY_ENABLED \
+    GITLAB_REGISTRY_DIR \
+    GITLAB_REGISTRY_HOST \
+    GITLAB_REGISTRY_PORT \
+    GITLAB_REGISTRY_API_URL \
+    GITLAB_REGISTRY_KEY_PATH \
+    GITLAB_REGISTRY_ISSUER
 }
 
 nginx_configure_gitlab_ssl() {
@@ -762,7 +878,8 @@ nginx_configure_gitlab_ssl() {
       SSL_KEY_PATH \
       SSL_DHPARAM_PATH \
       SSL_VERIFY_CLIENT \
-      SSL_CA_CERTIFICATES_PATH
+      SSL_CA_CERTIFICATES_PATH \
+      SSL_CIPHERS
   fi
 }
 
@@ -776,20 +893,6 @@ nginx_configure_gitlab_hsts() {
   else
     sed -i "/{{NGINX_HSTS_MAXAGE}}/d" ${GITLAB_NGINX_CONFIG}
   fi
-}
-
-nginx_configure_gitlab_relative_url() {
-  if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
-    echo "Configuring nginx::gitlab::relative_url..."
-    GITLAB_RELATIVE_URL_ROOT__with_trailing_slash=${GITLAB_RELATIVE_URL_ROOT}/
-    GITLAB_RELATIVE_URL_ROOT__without_trailing_slash=${GITLAB_RELATIVE_URL_ROOT}
-  else
-    GITLAB_RELATIVE_URL_ROOT__with_trailing_slash=/
-    GITLAB_RELATIVE_URL_ROOT__without_trailing_slash=/
-  fi
-  update_template ${GITLAB_NGINX_CONFIG} \
-    GITLAB_RELATIVE_URL_ROOT__with_trailing_slash \
-    GITLAB_RELATIVE_URL_ROOT__without_trailing_slash
 }
 
 nginx_configure_gitlab_ipv6() {
@@ -815,7 +918,6 @@ nginx_configure_gitlab() {
 
   nginx_configure_gitlab_ssl
   nginx_configure_gitlab_hsts
-  nginx_configure_gitlab_relative_url
   nginx_configure_gitlab_ipv6
 }
 
@@ -831,6 +933,20 @@ nginx_configure_gitlab_ci() {
   fi
 }
 
+nginx_configure_gitlab_registry() {
+  if [[ $GITLAB_REGISTRY_ENABLED == true && -f ${SSL_REGISTRY_CERT_PATH} && -f ${SSL_REGISTRY_KEY_PATH} ]]; then
+    echo "Configuring nginx::gitlab-registry..."
+    update_template ${GITLAB_REGISTRY_NGINX_CONFIG} \
+      GITLAB_LOG_DIR \
+      GITLAB_REGISTRY_PORT \
+      GITLAB_REGISTRY_HOST \
+      GITLAB_REGISTRY_API_URL \
+      SSL_REGISTRY_KEY_PATH \
+      SSL_REGISTRY_CERT_PATH
+  fi
+}
+
+
 #   _|_|_|              _|        _|  _|
 #   _|    _|  _|    _|  _|_|_|    _|        _|_|_|
 #   _|_|_|    _|    _|  _|    _|  _|  _|  _|
@@ -844,7 +960,7 @@ map_uidgid() {
   USERMAP_UID=${USERMAP_UID:-$USERMAP_ORIG_UID}
   if [[ ${USERMAP_UID} != ${USERMAP_ORIG_UID} ]] || [[ ${USERMAP_GID} != ${USERMAP_ORIG_GID} ]]; then
     echo "Mapping UID and GID for ${GITLAB_USER}:${GITLAB_USER} to $USERMAP_UID:$USERMAP_GID"
-    groupmod -g ${USERMAP_GID} ${GITLAB_USER}
+    groupmod -o -g ${USERMAP_GID} ${GITLAB_USER}
     sed -i -e "s|:${USERMAP_ORIG_UID}:${USERMAP_GID}:|:${USERMAP_UID}:${USERMAP_GID}:|" /etc/passwd
     find ${GITLAB_HOME} -path ${GITLAB_DATA_DIR}/\* -prune -o -print0 | xargs -0 chown -h ${GITLAB_USER}:
   fi
@@ -913,6 +1029,7 @@ initialize_datadir() {
   chmod u+rwX ${GITLAB_SHARED_DIR}
   chown ${GITLAB_USER}: ${GITLAB_SHARED_DIR}
 
+  # create attifacts dir
   mkdir -p ${GITLAB_ARTIFACTS_DIR}
   chmod u+rwX ${GITLAB_ARTIFACTS_DIR}
   chown ${GITLAB_USER}: ${GITLAB_ARTIFACTS_DIR}
@@ -926,13 +1043,20 @@ initialize_datadir() {
   chmod u+rwX ${GITLAB_LFS_OBJECTS_DIR}
   chown ${GITLAB_USER}: ${GITLAB_LFS_OBJECTS_DIR}
 
+  # create registry dir
+  if [[ ${GITLAB_REGISTRY_ENABLED} == true ]]; then
+    mkdir -p ${GITLAB_REGISTRY_DIR}
+    chmod u+rwX ${GITLAB_REGISTRY_DIR}
+    chown ${GITLAB_USER}: ${GITLAB_REGISTRY_DIR}
+  fi
+
   # create the backups directory
   mkdir -p ${GITLAB_BACKUP_DIR}
   chown ${GITLAB_USER}: ${GITLAB_BACKUP_DIR}
 
   # create the uploads directory
   mkdir -p ${GITLAB_DATA_DIR}/uploads
-  chmod 0750 ${GITLAB_DATA_DIR}/uploads
+  chmod 0700 ${GITLAB_DATA_DIR}/uploads
   chown ${GITLAB_USER}: ${GITLAB_DATA_DIR}/uploads
 
   # create the .ssh directory
@@ -941,6 +1065,25 @@ initialize_datadir() {
   chmod 700 ${GITLAB_DATA_DIR}/.ssh
   chmod 600 ${GITLAB_DATA_DIR}/.ssh/authorized_keys
   chown -R ${GITLAB_USER}: ${GITLAB_DATA_DIR}/.ssh
+
+  # recompile and persist assets when relative_url is in use
+  if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
+    mkdir -p ${GITLAB_TEMP_DIR}/cache
+    chmod 755 ${GITLAB_TEMP_DIR}/cache
+    chown ${GITLAB_USER}: ${GITLAB_TEMP_DIR}/cache
+
+    mkdir -p ${GITLAB_TEMP_DIR}/assets
+    chmod 755 ${GITLAB_TEMP_DIR}/assets
+    chown ${GITLAB_USER}: ${GITLAB_TEMP_DIR}/assets
+
+    # symlink ${GITLAB_INSTALL_DIR}/tmp/cache -> ${GITLAB_TEMP_DIR}/cache
+    rm -rf ${GITLAB_INSTALL_DIR}/tmp/cache
+    exec_as_git ln -s ${GITLAB_TEMP_DIR}/cache ${GITLAB_INSTALL_DIR}/tmp/cache
+
+    # symlink ${GITLAB_INSTALL_DIR}/public/assets -> ${GITLAB_TEMP_DIR}/assets
+    rm -rf ${GITLAB_INSTALL_DIR}/public/assets
+    exec_as_git ln -s ${GITLAB_TEMP_DIR}/assets ${GITLAB_INSTALL_DIR}/public/assets
+  fi
 }
 
 sanitize_datadir() {
@@ -968,9 +1111,14 @@ sanitize_datadir() {
   chmod -R u+rwX ${GITLAB_LFS_OBJECTS_DIR}
   chown -R ${GITLAB_USER}: ${GITLAB_LFS_OBJECTS_DIR}
 
+  if [[ ${GITLAB_REGISTRY_ENABLED} == true ]]; then
+    chmod -R u+rwX ${GITLAB_REGISTRY_DIR}
+    chown -R ${GITLAB_USER}: ${GITLAB_REGISTRY_DIR}
+  fi
+
   find ${GITLAB_DATA_DIR}/uploads -type f -exec chmod 0644 {} \;
   find ${GITLAB_DATA_DIR}/uploads -type d -not -path ${GITLAB_DATA_DIR}/uploads -exec chmod 0755 {} \;
-  chmod 0750 ${GITLAB_DATA_DIR}/uploads/
+  chmod 0700 ${GITLAB_DATA_DIR}/uploads/
   chown ${GITLAB_USER}: ${GITLAB_DATA_DIR}/uploads/
 
   echo "Creating gitlab-shell hooks..."
@@ -1019,6 +1167,10 @@ install_configuration_templates() {
   install_template ${GITLAB_USER}: gitlabhq/secrets.yml ${GITLAB_SECRETS_CONFIG} 0600
   install_template ${GITLAB_USER}: gitlab-shell/config.yml ${GITLAB_SHELL_CONFIG} 0640
 
+  if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
+    install_template ${GITLAB_USER}: gitlabhq/relative_url.rb ${GITLAB_RELATIVE_URL_CONFIG} 0644
+  fi
+
   if [[ ${SMTP_ENABLED} == true  ]]; then
     install_template ${GITLAB_USER}: gitlabhq/smtp_settings.rb ${GITLAB_SMTP_CONFIG}
   fi
@@ -1033,7 +1185,7 @@ install_configuration_templates() {
     if [[ -f ${SSL_CERTIFICATE_PATH} && -f ${SSL_KEY_PATH} && -f ${SSL_DHPARAM_PATH} ]]; then
       install_template root: nginx/gitlab-ssl ${GITLAB_NGINX_CONFIG}
     else
-      echo "SSL keys and certificates were not found."
+      echo "SSL Key, SSL Certificate and DHParam were not found."
       echo "Assuming that the container is running behind a HTTPS enabled load balancer."
       install_template root: nginx/gitlab ${GITLAB_NGINX_CONFIG}
     fi
@@ -1043,6 +1195,15 @@ install_configuration_templates() {
 
   if [[ -n $GITLAB_CI_HOST ]]; then
     install_template root: nginx/gitlab_ci ${GITLAB_CI_NGINX_CONFIG}
+  fi
+
+  if [[ ${GITLAB_REGISTRY_ENABLED} == true ]]; then
+    if [[ -f ${SSL_REGISTRY_CERT_PATH} && -f ${SSL_REGISTRY_KEY_PATH} ]]; then
+      install_template root: nginx/gitlab-registry ${GITLAB_REGISTRY_NGINX_CONFIG}
+    else
+      echo "SSL key and certificates for Registry were not found"
+      echo "Assuming that the Registry is running behind a HTTPS enabled load balancer."
+    fi
   fi
 }
 
@@ -1062,6 +1223,8 @@ configure_gitlab() {
     GITLAB_MAX_OBJECT_SIZE \
     GITLAB_SSH_HOST \
     GITLAB_SSH_PORT \
+    GITLAB_SIGNUP_ENABLED \
+    GITLAB_PROJECTS_LIMIT \
     GITLAB_USERNAME_CHANGE \
     GITLAB_CREATE_GROUP \
     GITLAB_TIMEOUT
@@ -1071,6 +1234,8 @@ configure_gitlab() {
   gitlab_configure_secrets
   gitlab_configure_sidekiq
   gitlab_configure_gitlab_workhorse
+  gitlab_configure_relative_url
+  gitlab_configure_trusted_proxies
   gitlab_configure_unicorn
   gitlab_configure_timezone
   gitlab_configure_rack_attack
@@ -1085,6 +1250,10 @@ configure_gitlab() {
   gitlab_configure_gravatar
   gitlab_configure_analytics
   gitlab_configure_backups
+  gitlab_configure_registry
+
+  # remove stale gitlab.socket
+  rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
 }
 
 configure_gitlab_shell() {
@@ -1093,20 +1262,23 @@ configure_gitlab_shell() {
     GITLAB_RELATIVE_URL_ROOT \
     GITLAB_HOME \
     GITLAB_LOG_DIR \
-    GITLAB_DATA_DIR \
-    GITLAB_BACKUP_DIR \
-    GITLAB_REPOS_DIR \
     GITLAB_SHELL_INSTALL_DIR \
     SSL_SELF_SIGNED \
     REDIS_HOST \
-    REDIS_PORT
+    REDIS_PORT \
+    REDIS_DB_NUMBER
 }
 
 configure_nginx() {
   echo "Configuring nginx..."
-  sed -i "s|worker_processes .*|worker_processes ${NGINX_WORKERS};|" /etc/nginx/nginx.conf
+  sed -i \
+  -e "s|worker_processes .*|worker_processes ${NGINX_WORKERS};|" \
+  -e "s|# server_names_hash_bucket_size 64;|server_names_hash_bucket_size ${NGINX_SERVER_NAMES_HASH_BUCKET_SIZE};|" \
+  /etc/nginx/nginx.conf
+
   nginx_configure_gitlab
   nginx_configure_gitlab_ci
+  nginx_configure_gitlab_registry
 }
 
 migrate_database() {
@@ -1121,9 +1293,12 @@ migrate_database() {
       COUNT=$(PGPASSWORD="${DB_PASS}" psql -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -Atw -c "${QUERY}")
       ;;
   esac
+
   if [[ -z ${COUNT} || ${COUNT} -eq 0 ]]; then
     echo "Setting up GitLab for firstrun. Please be patient, this could take a while..."
-    exec_as_git force=yes bundle exec rake gitlab:setup ${GITLAB_ROOT_PASSWORD:+GITLAB_ROOT_PASSWORD=$GITLAB_ROOT_PASSWORD} >/dev/null
+    exec_as_git force=yes bundle exec rake gitlab:setup \
+      ${GITLAB_ROOT_PASSWORD:+GITLAB_ROOT_PASSWORD=$GITLAB_ROOT_PASSWORD} \
+      ${GITLAB_ROOT_EMAIL:+GITLAB_ROOT_EMAIL=$GITLAB_ROOT_EMAIL} >/dev/null
   fi
 
   # migrate database if the gitlab version has changed.
@@ -1166,8 +1341,14 @@ migrate_database() {
   fi
 
   # clear cache if relative_url has changed.
-  [[ -f ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT ]] && CACHE_GITLAB_RELATIVE_URL_ROOT=$(cat ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT)
-  if [[ ! -f ${GITLAB_DATA_DIR}/tmp/GITLAB_RELATIVE_URL_ROOT || ${GITLAB_RELATIVE_URL_ROOT} != ${CACHE_GITLAB_RELATIVE_URL_ROOT} ]]; then
+  [[ -f ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT ]] && CACHE_GITLAB_RELATIVE_URL_ROOT=$(cat ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT)
+  if [[ ! -f ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT || ${GITLAB_RELATIVE_URL_ROOT} != ${CACHE_GITLAB_RELATIVE_URL_ROOT} ]]; then
+    # assets need to be recompiled when GITLAB_RELATIVE_URL_ROOT is used
+    if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
+      echo "Recompiling assets (relative_url in use), this could take a while..."
+      exec_as_git bundle exec rake assets:clean assets:precompile >/dev/null 2>&1
+    fi
+
     echo "Clearing cache..."
     exec_as_git bundle exec rake cache:clear >/dev/null 2>&1
     echo "${GITLAB_RELATIVE_URL_ROOT}" > ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT

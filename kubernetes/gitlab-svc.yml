@@ -9,11 +9,9 @@ spec:
   ports:
     - name: http
       port: 80
-      targetPort: 80
-      protocol: TCP
+      targetPort: http
     - name: ssh
       port: 22
-      targetPort: 22
-      protocol: TCP
+      targetPort: ssh
   selector:
     name: gitlab
