@@ -241,8 +241,12 @@ gitlab_finalize_redis_parameters() {
 }
 
 gitlab_check_redis_connection() {
+  REDIS_FLAG=""
+  if [[ -n ${REDIS_PASSWORD} ]]; then
+    REDIS_FLAG="-a ${REDIS_PASSWORD}"
+  fi
   timeout=60
-  while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} -n ${REDIS_DB_NUMBER} ping >/dev/null 2>&1
+  while ! redis-cli -h ${REDIS_HOST} ${REDIS_FLAG} -p ${REDIS_PORT} -n ${REDIS_DB_NUMBER} ping >/dev/null 2>&1
   do
     timeout=$(expr $timeout - 1)
     if [[ $timeout -eq 0 ]]; then
@@ -262,10 +266,15 @@ gitlab_configure_redis() {
   gitlab_finalize_redis_parameters
   gitlab_check_redis_connection
 
+  if [[ -n ${REDIS_PASSWORD} ]]; then
+    REDIS_PASSWORD=':'${REDIS_PASSWORD}'@'
+  fi
+
   update_template ${GITLAB_RESQUE_CONFIG} \
     REDIS_HOST \
     REDIS_PORT \
-    REDIS_DB_NUMBER
+    REDIS_DB_NUMBER \
+    REDIS_PASSWORD
 }
 
 gitlab_configure_gitlab_workhorse() {
