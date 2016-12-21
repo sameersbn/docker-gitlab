@@ -3,7 +3,7 @@ GitLab Container Registry
 Since `8.8.0` GitLab introduces container registry. GitLab is helping to authenticate the user against the registry and proxy it via NGINX. If we are talking about [Registry](https://docs.docker.com/registry) we are meaning the registry from docker and Container Registry is the feature of GitLab.
 
 - [Prerequisites](#prerequisites)
-- [Available Paramerts](#available-parameters)
+- [Available Parameters](#available-parameters)
 - [Installation](#installation)
 - [Maintenance](#maintenance)
     - [Creating Backups](#creating-backups)
