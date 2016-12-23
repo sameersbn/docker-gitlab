@@ -1028,6 +1028,14 @@ Before performing a restore make sure the container is stopped and removed to av
 docker stop gitlab && docker rm gitlab
 ```
 
+If this is a fresh database that you're doing the restore on, first
+you need to prepare the database:
+
+```bash
+docker run --name gitlab -it --rm [OPTIONS] \
+    sameersbn/gitlab:8.14.4 app:rake db:setup
+```
+
 Execute the rake task to restore a backup. Make sure you run the container in interactive mode `-it`.
 
 ```bash
@@ -1050,6 +1058,12 @@ When using `docker-compose` you may use the following command to execute the res
 docker-compose run --rm gitlab app:rake gitlab:backup:restore # List available backups
 docker-compose run --rm gitlab app:rake gitlab:backup:restore BACKUP=1417624827 # Choose to restore from 1417624827
 ```
+
+## Host Key Backups (ssh)
+
+SSH keys are not backed up in the normal gitlab backup process. You
+will need to backup the `ssh/` directory in the data volume by hand
+and you will want to restore it prior to doing a gitlab restore.
 
 ## Automated Backups
 
