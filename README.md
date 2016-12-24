@@ -940,6 +940,10 @@ Below is the complete list of available options that can be used to customize yo
 | `OAUTH_FACEBOOK_APP_SECRET` | Facebook App API secret. No defaults. |
 | `OAUTH_TWITTER_API_KEY` | Twitter App API key. No defaults. |
 | `OAUTH_TWITTER_APP_SECRET` | Twitter App API secret. No defaults. |
+| `OAUTH_AUTHENTIQ_CLIENT_ID` | authentiq Client ID. No defaults. |
+| `OAUTH_AUTHENTIQ_CLIENT_SECRET` | authentiq Client secret. No defaults. |
+| `OAUTH_AUTHENTIQ_SCOPE` | Scope of Authentiq Application Defaults to `'aq:name email~rs address aq:push'`|
+| `OAUTH_AUTHENTIQ_REDIRECT_URI` |  Callback URL for Authentiq. No defaults. |
 | `OAUTH_GITHUB_API_KEY` | GitHub App Client ID. No defaults. |
 | `OAUTH_GITHUB_APP_SECRET` | GitHub App Client secret. No defaults. |
 | `OAUTH_GITHUB_URL` | Url to the GitHub Enterprise server. Defaults to https://github.com |
