@@ -832,6 +832,13 @@ gitlab_configure_lfs() {
     GITLAB_LFS_OBJECTS_DIR
 }
 
+gitlab_configure_mattermost() {
+  echo "Configuring gitlab::mattermost..."
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_MATTERMOST_ENABLED \
+    GITLAB_MATTERMOST_URL
+}
+
 gitlab_configure_project_features() {
   echo "Configuring gitlab::project_features..."
   update_template ${GITLAB_CONFIG} \
@@ -1242,6 +1249,7 @@ configure_gitlab() {
   gitlab_configure_ci
   gitlab_configure_artifacts
   gitlab_configure_lfs
+  gitlab_configure_mattermost
   gitlab_configure_project_features
   gitlab_configure_mail_delivery
   gitlab_configure_mailroom
