@@ -637,6 +637,7 @@ gitlab_configure_oauth() {
   gitlab_configure_oauth_google
   gitlab_configure_oauth_facebook
   gitlab_configure_oauth_twitter
+  gitlab_configure_oauth_authentiq
   gitlab_configure_oauth_github
   gitlab_configure_oauth_gitlab
   gitlab_configure_oauth_bitbucket
