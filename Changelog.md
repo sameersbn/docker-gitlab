@@ -4,8 +4,12 @@ This file only reflects the changes that are made in this image. Please refer to
 
 **8.15.0**
 - gitlab: upgrade to CE v8.15.0
-- gitlab-workhorse: upgrade to v1.2.1
-- gitlab-shell: upgrade to v4.1.1
+- added `GITLAB_MATTERMOST_ENABLED`
+- added `GITLAB_MATTERMOST_URL`
+- added `OAUTH_AUTHENTIQ_CLIENT_ID`
+- added `OAUTH_AUTHENTIQ_CLIENT_SECRET`
+- added `OAUTH_AUTHENTIQ_SCOPE`
+- added `OAUTH_AUTHENTIQ_REDIRECT_URI`
 
 **8.14.5**
 - gitlab: upgrade to CE v8.14.5
