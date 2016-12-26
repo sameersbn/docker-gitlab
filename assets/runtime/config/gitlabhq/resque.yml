@@ -14,7 +14,7 @@ test:
   url: redis://localhost:6379
 production:
   # Redis (single instance)
-  url: redis://{{REDIS_HOST}}:{{REDIS_PORT}}/{{REDIS_DB_NUMBER}}
+  url: redis://{{REDIS_PASSWORD}}{{REDIS_HOST}}:{{REDIS_PORT}}/{{REDIS_DB_NUMBER}}
   ##
   # Redis + Sentinel (for HA)
   #
