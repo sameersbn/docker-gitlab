@@ -155,6 +155,12 @@ production: &base
     # The location where LFS objects are stored (default: shared/lfs-objects).
     storage_path: {{GITLAB_LFS_OBJECTS_DIR}}
 
+  ## Mattermost
+  ## For enabling Add to Mattermost button
+  mattermost:
+    enabled: {{GITLAB_MATTERMOST_ENABLED}}
+    host: '{{GITLAB_MATTERMOST_URL}}'
+
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
@@ -365,6 +371,10 @@ production: &base
                   login_url: '{{OAUTH_CAS3_LOGIN_URL}}',
                   service_validate_url: '{{OAUTH_CAS3_VALIDATE_URL}}',
                   logout_url: '{{OAUTH_CAS3_LOGOUT_URL}}'} }
+       - { name: 'authentiq',
+          app_id: '{{OAUTH_AUTHENTIQ_CLIENT_ID}}',
+          app_secret: 'OAUTH_AUTHENTIQ_CLIENT_SECRET',
+          args: { scope: {{OAUTH_AUTHENTIQ_SCOPE}}, redirect_uri: '{{OAUTH_AUTHENTIQ_REDIRECT_URI}}' } }
       - { name: 'github',
           label: 'GitHub',
           app_id: '{{OAUTH_GITHUB_API_KEY}}',

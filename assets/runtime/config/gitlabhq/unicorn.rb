@@ -44,7 +44,7 @@ listen "127.0.0.1:8080", :tcp_nopush => true
 # nuke workers after 30 seconds instead of 60 seconds (the default)
 #
 # NOTICE: git push over http depends on this value.
-# If you want be able to push huge amount of data to git repository over http
+# If you want to be able to push huge amount of data to git repository over http
 # you will have to increase this value too.
 #
 # Example of output if you try to push 1GB repo to GitLab over http.

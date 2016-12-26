@@ -489,6 +489,20 @@ gitlab_configure_oauth_twitter() {
   fi
 }
 
+gitlab_configure_oauth_authentiq() {
+  if [[ -n ${OAUTH_AUTHENTIQ_CLIENT_ID} && -n ${OAUTH_AUTHENTIQ_CLIENT_SECRET} ]]; then
+    echo "Configuring gitlab::oauth::authentiq..."
+    OAUTH_ENABLED=${OAUTH_ENABLED:-true}
+    update_template ${GITLAB_CONFIG} \
+      OAUTH_AUTHENTIQ_CLIENT_ID \
+      OAUTH_AUTHENTIQ_CLIENT_SECRET \
+      OAUTH_AUTHENTIQ_SCOPE \
+      OAUTH_AUTHENTIQ_REDIRECT_URI 
+  else
+    exec_as_git sed -i "/name: 'authentiq'/,/{{OAUTH_AUTHENTIQ_SCOPE}}/d" ${GITLAB_CONFIG}
+  fi
+}
+
 gitlab_configure_oauth_github() {
   if [[ -n ${OAUTH_GITHUB_API_KEY} && -n ${OAUTH_GITHUB_APP_SECRET} ]]; then
     echo "Configuring gitlab::oauth::github..."
@@ -623,6 +637,7 @@ gitlab_configure_oauth() {
   gitlab_configure_oauth_google
   gitlab_configure_oauth_facebook
   gitlab_configure_oauth_twitter
+  gitlab_configure_oauth_authentiq
   gitlab_configure_oauth_github
   gitlab_configure_oauth_gitlab
   gitlab_configure_oauth_bitbucket
@@ -830,6 +845,13 @@ gitlab_configure_lfs() {
   update_template ${GITLAB_CONFIG} \
     GITLAB_LFS_ENABLED \
     GITLAB_LFS_OBJECTS_DIR
+}
+
+gitlab_configure_mattermost() {
+  echo "Configuring gitlab::mattermost..."
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_MATTERMOST_ENABLED \
+    GITLAB_MATTERMOST_URL
 }
 
 gitlab_configure_project_features() {
@@ -1242,6 +1264,7 @@ configure_gitlab() {
   gitlab_configure_ci
   gitlab_configure_artifacts
   gitlab_configure_lfs
+  gitlab_configure_mattermost
   gitlab_configure_project_features
   gitlab_configure_mail_delivery
   gitlab_configure_mailroom
