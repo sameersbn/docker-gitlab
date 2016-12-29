@@ -85,7 +85,7 @@ services:
     - ./redis:/var/lib/redis:Z
   postgresql:
     restart: always
-    image: sameersbn/postgresql:9.5-3
+    image: sameersbn/postgresql:9.5-4
     volumes:
     - ./postgresql:/var/lib/postgresql:Z
     environment:
