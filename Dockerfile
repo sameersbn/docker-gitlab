@@ -1,4 +1,4 @@
-FROM sameersbn/ubuntu:14.04.20161217
+FROM sameersbn/ubuntu:14.04.20170110
 MAINTAINER sameer@damagehead.com
 
 ENV GITLAB_VERSION=8.15.4 \
