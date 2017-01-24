@@ -1,5 +1,6 @@
 [![Docker Repository on Quay.io](https://quay.io/repository/sameersbn/gitlab/status "Docker Repository on Quay.io")](https://quay.io/repository/sameersbn/gitlab)
 [![](https://images.microbadger.com/badges/image/sameersbn/gitlab.svg)](http://microbadger.com/images/sameersbn/gitlab "Get your own image badge on microbadger.com")
+
 # sameersbn/gitlab:8.16.0
 
 - [Introduction](#introduction)
@@ -39,6 +40,7 @@
     - [Deploy to a subdirectory (relative url root)](#deploy-to-a-subdirectory-relative-url-root)
     - [OmniAuth Integration](#omniauth-integration)
         - [CAS3](#cas3)
+        - [Authentiq](#authentiq)
         - [Google](#google)
         - [Twitter](#twitter)
         - [GitHub](#github)
@@ -66,7 +68,11 @@
 
 # Introduction
 
-Dockerfile to build a [GitLab](https://about.gitlab.com/) container image.
+Dockerfile to build a [GitLab](https://about.gitlab.com/) image for the [Docker](https://www.docker.com/products/docker-engine) opensource container platform.
+
+GitLab CE is set up in the Docker image using the [install from source](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) method as documented in the the official GitLab documentation.
+
+For other methods to install GitLab please refer to the [Official GitLab Installation Guide](https://about.gitlab.com/installation/) which includes a [GitLab image for Docker](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/docker).
 
 # Contributing
 
@@ -666,6 +672,16 @@ Refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/omniaut
 To enable the CAS OmniAuth provider you must register your application with your CAS instance. This requires the service URL GitLab will supply to CAS. It should be something like: https://git.example.com:443/users/auth/cas3/callback?url. By default handling for SLO is enabled, you only need to configure CAS for backchannel logout.
 
 For example, if your cas server url is `https://sso.example.com`, then adding `--env 'OAUTH_CAS3_SERVER=https://sso.example.com'` to the docker run command enables support for CAS3 OAuth. Please refer to [Available Configuration Parameters](#available-configuration-parameters) for additional CAS3 configuration parameters.
+
+#### Authentiq
+
+To enable the Authentiq OmniAuth provider for passwordless authentication you must register an application with Authentiq. Please refer to the GitLab [documentation](https://docs.gitlab.com/ce/administration/auth/authentiq.html) for the procedure to generate the client ID and secret key with Authentiq.
+
+Once you have the API client id and client secret generated, configure them using the `OAUTH_AUTHENTIQ_CLIENT_ID` and `OAUTH_AUTHENTIQ_CLIENT_SECRET` environment variables respectively.
+
+For example, if your API key is `xxx` and the API secret key is `yyy`, then adding `--env 'OAUTH_AUTHENTIQ_CLIENT_ID=xxx' --env 'OAUTH_AUTHENTIQ_CLIENT_SECRET=yyy'` to the docker run command enables support for Authentiq OAuth.
+
+You may want to specify `OAUTH_AUTHENTIQ_REDIRECT_URI` as well. The OAuth scope can be altered as well with `OAUTH_AUTHENTIQ_SCOPE` (defaults to `'aq:name email~rs address aq:push'`).
 
 #### Google
 
