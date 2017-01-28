@@ -675,7 +675,7 @@ For example, if your cas server url is `https://sso.example.com`, then adding `-
 
 #### Authentiq
 
-To enable the Authentiq OmniAuth provider for passwordless authentication you must register an application with Authentiq. Please refer to the GitLab [documentation](https://docs.gitlab.com/ce/administration/auth/authentiq.html) for the procedure to generate the client ID and secret key with Authentiq.
+To enable the Authentiq OmniAuth provider for passwordless authentication you must register an application with [Authentiq](https://www.authentiq.com/). Please refer to the GitLab [documentation](https://docs.gitlab.com/ce/administration/auth/authentiq.html) for the procedure to generate the client ID and secret key with Authentiq.
 
 Once you have the API client id and client secret generated, configure them using the `OAUTH_AUTHENTIQ_CLIENT_ID` and `OAUTH_AUTHENTIQ_CLIENT_SECRET` environment variables respectively.
 
