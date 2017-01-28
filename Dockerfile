@@ -1,11 +1,11 @@
-FROM sameersbn/ubuntu:14.04.20170110
+FROM sameersbn/ubuntu:14.04.20170123
 MAINTAINER sameer@damagehead.com
 
-ENV GITLAB_VERSION=8.15.4 \
+ENV GITLAB_VERSION=8.16.0 \
     RUBY_VERSION=2.3 \
     GOLANG_VERSION=1.6.3 \
     GITLAB_SHELL_VERSION=4.1.1 \
-    GITLAB_WORKHORSE_VERSION=1.2.1 \
+    GITLAB_WORKHORSE_VERSION=1.3.0 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
