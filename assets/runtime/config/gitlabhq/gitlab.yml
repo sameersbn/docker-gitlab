@@ -478,13 +478,13 @@ production: &base
     #   # encryption: 'AES256'
       # Fog storage connection settings, see http://fog.io/storage/ .
       #end-aws
-      #start-gce
+      #start-gcs
       connection:
         provider: Google
         google_storage_access_key_id: {{GCS_BACKUP_ACCESS_KEY_ID}}
         google_storage_secret_access_key: '{{GCS_BACKUP_SECRET_ACCESS_KEY}}'
       remote_directory: '{{GCS_BACKUP_BUCKET}}'
-      #end-gce
+      #end-gcs
 
   ## GitLab Shell settings
   gitlab_shell:
