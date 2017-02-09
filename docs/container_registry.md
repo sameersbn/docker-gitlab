@@ -100,9 +100,9 @@ services:
     depends_on:
     - redis
     - postgresql
+    - registry
     ports:
     - "10080:80"
-    - "5500:5500"
     - "10022:22"
     volumes:
     - ./gitlab:/home/git/data:Z
@@ -127,7 +127,7 @@ services:
     - GITLAB_SECRETS_DB_KEY_BASE=superrandomsecret
     - GITLAB_REGISTRY_ENABLED=true
     - GITLAB_REGISTRY_HOST=registry.gitlab.example.com
-    - GITLAB_REGISTRY_PORT=5500
+    - GITLAB_REGISTRY_PORT=5000
     - GITLAB_REGISTRY_API_URL=http://registry:5000
     - GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key
     - SSL_REGISTRY_KEY_PATH=/certs/registry.key
@@ -136,6 +136,8 @@ services:
   registry:
     restart: always
     image: registry:2.4.1
+    ports:
+    - "5000:5000"
     volumes:
     - ./gitlab/shared/registry:/registry
     - ./certs:/certs
