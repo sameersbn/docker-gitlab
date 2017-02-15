@@ -28,8 +28,12 @@ http_settings:
 auth_file: "{{GITLAB_HOME}}/.ssh/authorized_keys"
 
 # File that contains the secret key for verifying access to GitLab.
-# Default is .gitlab_shell_secret in the root directory.
+# Default is .gitlab_shell_secret in the gitlab-shell directory.
 secret_file: "{{GITLAB_SHELL_INSTALL_DIR}}/.gitlab_shell_secret"
+
+# Parent directory for global custom hook directories (pre-receive.d, update.d, post-receive.d)
+# Default is hooks in the gitlab-shell directory.
+custom_hooks_dir: "{{GITLAB_SHELL_INSTALL_DIR}}/hooks"
 
 # Redis settings used for pushing commit notices to gitlab
 redis:
