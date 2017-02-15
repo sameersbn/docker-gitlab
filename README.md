@@ -58,6 +58,7 @@
     - [Restoring Backups](#restoring-backups)
     - [Automated Backups](#automated-backups)
     - [Amazon Web Services (AWS) Remote Backups](#amazon-web-services-aws-remote-backups)
+    - [Google Cloud Storage (GCS) Remote Backups](#google-cloud-storage-gcs-remote-backup)
     - [Rake Tasks](#rake-tasks)
     - [Import Repositories](#import-repositories)
     - [Upgrading](#upgrading)
@@ -1003,6 +1004,10 @@ Below is the complete list of available options that can be used to customize yo
 | `AWS_BACKUP_SECRET_ACCESS_KEY` | AWS secret access key. No defaults. |
 | `AWS_BACKUP_BUCKET` | AWS bucket for backup uploads. No defaults. |
 | `AWS_BACKUP_MULTIPART_CHUNK_SIZE` | Enables mulitpart uploads when file size reaches a defined size. See at [AWS S3 Docs](http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html) |
+| `GCS_BACKUPS` | Enables automatic uploads to an Google Cloud Storage (GCS) instance. Defaults to `false`.  |
+| `GCS_BACKUP_ACCESS_KEY_ID` | GCS access key id. No defaults |
+| `GCS_BACKUP_SECRET_ACCESS_KEY` | GCS secret access key. No defaults |
+| `GCS_BACKUP_BUCKET` | GCS bucket for backup uploads. No defaults |
 | `GITLAB_ROBOTS_PATH` | Location of custom `robots.txt`. Uses GitLab's default `robots.txt` configuration by default. See [www.robotstxt.org](http://www.robotstxt.org) for examples. |
 | `RACK_ATTACK_ENABLED` | Enable/disable rack middleware for blocking & throttling abusive requests Defaults to `true`. |
 | `RACK_ATTACK_WHITELIST` | Always allow requests from whitelisted host. Defaults to `127.0.0.1` |
@@ -1102,6 +1107,15 @@ The image can be configured to automatically upload the backups to an AWS S3 buc
 More details about the appropriate IAM user properties can found on [doc.gitlab.com](http://doc.gitlab.com/ce/raketasks/backup_restore.html#upload-backups-to-remote-cloud-storage)
 
 AWS uploads are performed alongside normal backups, both through the appropriate `app:rake` command and when an automatic backup is performed.
+
+### Google Cloud Storage (GCS) Remote Backups
+
+The image can be configured to automatically upload the backups to an Google Cloud Storage bucket. To enable automatic GCS backups first add `--env 'GCS_BACKUPS=true'` to the docker run command. In addition `GCS_BACKUP_BUCKET` must be properly configured to point to the desired GCS location.
+Finally a couple of `Interoperable storage access keys` user must be created and their keys exposed through `GCS_BACKUP_ACCESS_KEY_ID` and `GCS_BACKUP_SECRET_ACCESS_KEY`.
+
+More details about the Cloud storage interoperability  properties can found on [cloud.google.com/storage](https://cloud.google.com/storage/docs/interoperability)
+
+GCS uploads are performed alongside normal backups, both through the appropriate `app:rake` command and when an automatic backup is performed.
 
 ## Rake Tasks
 

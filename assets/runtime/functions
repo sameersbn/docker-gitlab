@@ -738,24 +738,35 @@ gitlab_configure_backups_schedule() {
 }
 
 gitlab_configure_backups_aws() {
-  case ${AWS_BACKUPS} in
-    true)
-      echo "Configuring gitlab::backups::aws..."
-      if [[ -z ${AWS_BACKUP_REGION} || -z ${AWS_BACKUP_ACCESS_KEY_ID} || -z ${AWS_BACKUP_SECRET_ACCESS_KEY} || -z ${AWS_BACKUP_BUCKET} ]]; then
-        printf "\nMissing AWS options. Aborting...\n"
-        return 1
-      fi
-      update_template ${GITLAB_CONFIG} \
-        AWS_BACKUP_REGION \
-        AWS_BACKUP_ACCESS_KEY_ID \
-        AWS_BACKUP_SECRET_ACCESS_KEY \
-        AWS_BACKUP_BUCKET \
-        AWS_BACKUP_MULTIPART_CHUNK_SIZE
-      ;;
-    *)
-      exec_as_git sed -i "/upload:/,/remote_directory:/d" ${GITLAB_CONFIG}
-      ;;
-  esac
+    echo "Configuring gitlab::backups::aws..."
+    exec_as_git sed -i "/#start-gcs/,/#end-gcs/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/#start-aws/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/#end-aws/d" ${GITLAB_CONFIG}
+    if [[ -z ${AWS_BACKUP_REGION} || -z ${AWS_BACKUP_ACCESS_KEY_ID} || -z ${AWS_BACKUP_SECRET_ACCESS_KEY} || -z ${AWS_BACKUP_BUCKET} ]]; then
+      printf "\nMissing AWS options. Aborting...\n"
+      return 1
+    fi
+    update_template ${GITLAB_CONFIG} \
+      AWS_BACKUP_REGION \
+      AWS_BACKUP_ACCESS_KEY_ID \
+      AWS_BACKUP_SECRET_ACCESS_KEY \
+      AWS_BACKUP_BUCKET \
+      AWS_BACKUP_MULTIPART_CHUNK_SIZE
+}
+
+gitlab_configure_backup_gcs() {
+    echo "Configuring gitlab::backups::gcs..."
+    exec_as_git sed -i "/#start-aws/,/#end-aws/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/#start-gcs/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/#end-gcs/d" ${GITLAB_CONFIG}
+    if [[ -z ${GCS_BACKUP_ACCESS_KEY_ID} || -z ${GCS_BACKUP_SECRET_ACCESS_KEY} || -z ${GCS_BACKUP_BUCKET} ]]; then
+      printf "\nMissing GCS options. Aborting...\n"
+      return 1
+    fi
+    update_template ${GITLAB_CONFIG} \
+      GCS_BACKUP_ACCESS_KEY_ID \
+      GCS_BACKUP_SECRET_ACCESS_KEY \
+      GCS_BACKUP_BUCKET
 }
 
 gitlab_configure_backups() {
@@ -765,9 +776,22 @@ gitlab_configure_backups() {
     GITLAB_BACKUP_EXPIRY \
     GITLAB_BACKUP_PG_SCHEMA \
     GITLAB_BACKUP_ARCHIVE_PERMISSIONS
-
   gitlab_configure_backups_schedule
-  gitlab_configure_backups_aws
+  BACKUP_ACTIVE=(${AWS_BACKUPS} OR ${GCS_BACKUPS})
+  if [[ ${BACKUP_ACTIVE} == false ]]; then
+    exec_as_git sed -i "/upload:/,/#end-gcs/d" ${GITLAB_CONFIG}
+    return 0
+  fi
+  if [[ ${AWS_BACKUPS} == true && ${GCS_BACKUPS} == true ]]; then
+    printf "\nAWS and GCE cannot be enabled together, please choose one...\n"
+    return 1
+  fi
+  if [[ ${AWS_BACKUPS} == true ]]; then
+    gitlab_configure_backups_aws
+  fi
+  if [[ ${GCS_BACKUPS} == true ]]; then
+    gitlab_configure_backup_gcs
+  fi
 }
 
 gitlab_configure_gravatar() {

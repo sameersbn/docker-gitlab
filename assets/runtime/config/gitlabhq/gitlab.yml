@@ -473,6 +473,7 @@ production: &base
     pg_schema: {{GITLAB_BACKUP_PG_SCHEMA}}     # default: nil, it means that all schemas will be backed up
     upload:
       # Fog storage connection settings, see http://fog.io/storage/ .
+      #start-aws
       connection:
         provider: AWS
         region: {{AWS_BACKUP_REGION}}
@@ -485,6 +486,15 @@ production: &base
     #   multipart_chunk_size: 104857600
     #   # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
     #   # encryption: 'AES256'
+      # Fog storage connection settings, see http://fog.io/storage/ .
+      #end-aws
+      #start-gcs
+      connection:
+        provider: Google
+        google_storage_access_key_id: {{GCS_BACKUP_ACCESS_KEY_ID}}
+        google_storage_secret_access_key: '{{GCS_BACKUP_SECRET_ACCESS_KEY}}'
+      remote_directory: '{{GCS_BACKUP_BUCKET}}'
+      #end-gcs
 
   ## GitLab Shell settings
   gitlab_shell:
