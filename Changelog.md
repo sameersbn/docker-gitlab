@@ -2,20 +2,14 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
-**8.16.4**
-- gitlab: upgrade to CE v8.16.4
+**8.15.7**
+- gitlab: upgrade to CE v8.15.7
 
-**8.16.3**
-- gitlab: upgrade to CE v8.16.3
+**8.15.6**
+- gitlab: upgrade to CE v8.15.6
 
-**8.16.2**
-- gitlab: upgrade to CE v8.16.2
-
-**8.16.1**
-- gitlab: upgrade to CE v8.16.1
-
-**8.16.0**
-- gitlab: upgrade to CE v8.16.0
+**8.15.5**
+- gitlab: upgrade to CE v8.15.5
 
 **8.15.4**
 - gitlab: upgrade to CE v8.15.4
