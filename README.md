@@ -1060,7 +1060,7 @@ you need to prepare the database:
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:8.14.4 app:rake db:setup
+    sameersbn/gitlab:8.14.5 app:rake db:setup
 ```
 
 Execute the rake task to restore a backup. Make sure you run the container in interactive mode `-it`.
