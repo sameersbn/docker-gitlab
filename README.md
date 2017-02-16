@@ -1009,6 +1009,7 @@ Below is the complete list of available options that can be used to customize yo
 | `PIWIK_SITE_ID` | Sets the Piwik site ID. No defaults. |
 | `AWS_BACKUPS` | Enables automatic uploads to an Amazon S3 instance. Defaults to `false`. |
 | `AWS_BACKUP_REGION` | AWS region. No defaults. |
+| `AWS_BACKUP_ENDPOINT` | AWS endpoint. No defaults. |
 | `AWS_BACKUP_ACCESS_KEY_ID` | AWS access key id. No defaults. |
 | `AWS_BACKUP_SECRET_ACCESS_KEY` | AWS secret access key. No defaults. |
 | `AWS_BACKUP_BUCKET` | AWS bucket for backup uploads. No defaults. |
@@ -1114,6 +1115,8 @@ By default, when automated backups are enabled, backups are held for a period of
 The image can be configured to automatically upload the backups to an AWS S3 bucket. To enable automatic AWS backups first add `--env 'AWS_BACKUPS=true'` to the docker run command. In addition `AWS_BACKUP_REGION` and `AWS_BACKUP_BUCKET` must be properly configured to point to the desired AWS location. Finally an IAM user must be configured with appropriate access permission and their AWS keys exposed through `AWS_BACKUP_ACCESS_KEY_ID` and `AWS_BACKUP_SECRET_ACCESS_KEY`.
 
 More details about the appropriate IAM user properties can found on [doc.gitlab.com](http://doc.gitlab.com/ce/raketasks/backup_restore.html#upload-backups-to-remote-cloud-storage)
+
+For remote backup to selfhosted s3 compatible storage, use `AWS_BACKUP_ENDPOINT`.
 
 AWS uploads are performed alongside normal backups, both through the appropriate `app:rake` command and when an automatic backup is performed.
 

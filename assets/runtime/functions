@@ -743,12 +743,25 @@ gitlab_configure_backups_aws() {
     exec_as_git sed -i "/#start-gcs/,/#end-gcs/d" ${GITLAB_CONFIG}
     exec_as_git sed -i "/#start-aws/d" ${GITLAB_CONFIG}
     exec_as_git sed -i "/#end-aws/d" ${GITLAB_CONFIG}
-    if [[ -z ${AWS_BACKUP_REGION} || -z ${AWS_BACKUP_ACCESS_KEY_ID} || -z ${AWS_BACKUP_SECRET_ACCESS_KEY} || -z ${AWS_BACKUP_BUCKET} ]]; then
-      printf "\nMissing AWS options. Aborting...\n"
+
+    if [[ -z ${AWS_BACKUP_REGION} && -z ${AWS_BACKUP_ENDPOINT} ]]; then
+      echo "\nMissing AWS region or endpoint. Aborting...\n"
       return 1
     fi
+
+    if [[ ! -z ${AWS_BACKUP_ENDPOINT} ]]; then
+      AWS_BACKUP_PATH_STYLE="true"
+    fi
+
+    if [[ -z ${AWS_BACKUP_ACCESS_KEY_ID} || -z ${AWS_BACKUP_SECRET_ACCESS_KEY} || -z ${AWS_BACKUP_BUCKET} ]]; then
+      echo "\nMissing AWS options. Aborting...\n"
+      return 1
+    fi
+
     update_template ${GITLAB_CONFIG} \
       AWS_BACKUP_REGION \
+      AWS_BACKUP_ENDPOINT \
+      AWS_BACKUP_PATH_STYLE \
       AWS_BACKUP_ACCESS_KEY_ID \
       AWS_BACKUP_SECRET_ACCESS_KEY \
       AWS_BACKUP_BUCKET \
