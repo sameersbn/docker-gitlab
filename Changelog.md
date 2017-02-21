@@ -4,6 +4,7 @@ This file only reflects the changes that are made in this image. Please refer to
 
 **8.16.6**
 - gitlab: upgrade to CE v8.16.6
+- Fix logical bug of Remote Backup
 
 **8.16.5**
 - gitlab: upgrade to CE v8.16.5
