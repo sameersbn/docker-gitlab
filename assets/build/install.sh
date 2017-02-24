@@ -5,6 +5,8 @@ GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
 GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz
 GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse/repository/archive.tar.gz
 GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages/repository/archive.tar.gz
+GITLAB_MONITOR_URL=https://gitlab.com/gitlab-org/gitlab-monitor/repository/archive.tar.gz
+
 
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
@@ -61,13 +63,28 @@ exec_as_git ./bin/install
 # remove unused repositories directory created by gitlab-shell install
 exec_as_git rm -rf ${GITLAB_HOME}/repositories
 
+
 # download gitlab-workhose
+echo "Downloading gitlab-monitor v.${GITLAB_MONITOR_VERSION}..."
+mkdir -p ${GITLAB_MONITOR_INSTALL_DIR}
+wget -cq ${GITLAB_MONITOR_URL}?ref=v${GITLAB_MONITOR_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-monitor-${GITLAB_MONITOR_VERSION}.tar.gz
+tar xf ${GITLAB_BUILD_DIR}/gitlab-monitor-${GITLAB_MONITOR_VERSION}.tar.gz --strip 1 -C ${GITLAB_MONITOR_INSTALL_DIR}
+rm -rf ${GITLAB_BUILD_DIR}/gitlab-monitor-${GITLAB_MONITOR_VERSION}.tar.gz
+chown -R ${GITLAB_USER}: ${GITLAB_MONITOR_INSTALL_DIR}
+
+cd ${GITLAB_MONITOR_INSTALL_DIR}
+exec_as_git bundle install -j$(nproc) --deployment
+
+
+
+
 echo "Downloading gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
 mkdir -p ${GITLAB_WORKHORSE_INSTALL_DIR}
 wget -cq ${GITLAB_WORKHORSE_URL}?ref=v${GITLAB_WORKHORSE_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-workhorse-${GITLAB_WORKHORSE_VERSION}.tar.gz
 tar xf ${GITLAB_BUILD_DIR}/gitlab-workhorse-${GITLAB_WORKHORSE_VERSION}.tar.gz --strip 1 -C ${GITLAB_WORKHORSE_INSTALL_DIR}
 rm -rf ${GITLAB_BUILD_DIR}/gitlab-workhorse-${GITLAB_WORKHORSE_VERSION}.tar.gz
 chown -R ${GITLAB_USER}: ${GITLAB_WORKHORSE_INSTALL_DIR}
+
 
 #download golang
 echo "Downloading Go ${GOLANG_VERSION}..."
@@ -283,6 +300,22 @@ command=/usr/local/bin/gitlab-workhorse
   -authSocket ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
   -documentRoot ${GITLAB_INSTALL_DIR}/public
   -proxyHeadersTimeout {{GITLAB_WORKHORSE_TIMEOUT}}
+user=git
+autostart=true
+autorestart=true
+stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
+stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
+EOF
+
+
+
+# configure supervisord to start gitlab-monitor
+cat > /etc/supervisor/conf.d/gitlab-monitor.conf <<EOF
+[program:gitlab-monitor]
+priority=30
+directory=${GITLAB_MONITOR_INSTALL_DIR}
+environment=HOME=${GITLAB_HOME}
+command=bundle exec ${GITLAB_MONITOR_INSTALL_DIR}/bin/gitlab-mon web -c ${GITLAB_MONITOR_INSTALL_DIR}/config/gitlab-monitor.yml
 user=git
 autostart=true
 autorestart=true

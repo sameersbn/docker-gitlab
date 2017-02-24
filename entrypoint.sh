@@ -11,6 +11,7 @@ case ${1} in
     configure_gitlab
     configure_gitlab_shell
     configure_gitlab_pages
+    configure_gitlab_monitor
     configure_nginx
 
     case ${1} in

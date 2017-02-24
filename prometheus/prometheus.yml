@@ -1,0 +1,42 @@
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+      monitor: 'prometheus-stack-monitor'
+
+# Load and evaluate rules in this file every 'evaluation_interval' seconds.
+rule_files:
+  # - "first.rules"
+  # - "second.rules"
+
+scrape_configs:
+
+  - job_name: 'prometheus'
+
+    scrape_interval: 5s
+    scrape_timeout: 10s
+
+    target_groups:
+      - targets: ['localhost:9090']
+
+  - job_name: 'gitlab-process'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    metrics_path: '/process'
+    static_configs:
+      - targets: ['gitlab:9168']
+  - job_name: 'gitlab-database'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    metrics_path: '/database'
+    static_configs:
+      - targets: ['gitlab:9168']
+  - job_name: 'gitlab-sidekiq'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    metrics_path: '/sidekiq'
+    static_configs:
+      - targets: ['gitlab:9168']

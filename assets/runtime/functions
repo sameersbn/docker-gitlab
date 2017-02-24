@@ -15,6 +15,7 @@ GITLAB_RESQUE_CONFIG="${GITLAB_INSTALL_DIR}/config/resque.yml"
 GITLAB_SECRETS_CONFIG="${GITLAB_INSTALL_DIR}/config/secrets.yml"
 GITLAB_ROBOTS_CONFIG="${GITLAB_INSTALL_DIR}/public/robots.txt"
 GITLAB_SHELL_CONFIG="${GITLAB_SHELL_INSTALL_DIR}/config.yml"
+GITLAB_MONITOR_CONFIG="${GITLAB_MONITOR_INSTALL_DIR}/config/gitlab-monitor.yml"
 GITLAB_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab"
 GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
 GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
@@ -1266,6 +1267,7 @@ install_configuration_templates() {
   install_template ${GITLAB_USER}: gitlabhq/resque.yml ${GITLAB_RESQUE_CONFIG} 0640
   install_template ${GITLAB_USER}: gitlabhq/secrets.yml ${GITLAB_SECRETS_CONFIG} 0600
   install_template ${GITLAB_USER}: gitlab-shell/config.yml ${GITLAB_SHELL_CONFIG} 0640
+  install_template ${GITLAB_USER}: gitlab-monitor/gitlab-monitor.yml ${GITLAB_MONITOR_CONFIG} 0640
 
   if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
     install_template ${GITLAB_USER}: gitlabhq/relative_url.rb ${GITLAB_RELATIVE_URL_CONFIG} 0644
@@ -1386,6 +1388,7 @@ configure_gitlab_shell() {
 }
 
 
+
 configure_gitlab_pages() {
   if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
   echo "Configuring gitlab-pages..."
@@ -1423,6 +1426,19 @@ stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
 stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
 EOF
 fi
+
+configure_gitlab_monitor() {
+  echo "Configuring gitlab-monitor..."
+  update_template ${GITLAB_MONITOR_CONFIG} \
+  DB_NAME \
+  DB_USER \
+  DB_HOST \
+  DB_PASS \
+  DB_PORT \
+  GITLAB_REPOS_DIR \
+  REDIS_HOST \
+  REDIS_PORT
+
 }
 
 configure_nginx() {

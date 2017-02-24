@@ -1,0 +1,40 @@
+server:
+  listen_address: 0.0.0.0
+  listen_port: 9168
+
+probes:
+  database:
+    multiple: true
+    tuple_stats:
+      class_name: Database::TuplesProber
+      methods:
+        - probe_db
+      opts:
+        connection_string: dbname={{DB_NAME}} user={{DB_USER}} host={{DB_HOST}} password={{DB_PASS}} port={{DB_PORT}}
+  git:
+    methods:
+      - probe_pull
+      - probe_push
+    opts:
+      source: {{GITLAB_REPOS_DIR}}
+  process:
+    methods:
+      - probe_memory
+      - probe_age
+      - probe_count
+    opts:
+      - pid_or_pattern: "sidekiq .* \\[.*?\\]"
+        name: sidekiq
+      - pid_or_pattern: "unicorn worker\\[.*?\\]"
+        name: unicorn
+      - pid_or_pattern: "git-upload-pack --stateless-rpc"
+        name: git_upload_pack
+        quantiles: true
+  sidekiq:
+    methods:
+      - probe_queues
+      - probe_jobs
+      - probe_workers
+      - probe_retries
+    opts:
+      redis_url: "redis://{{REDIS_HOST}}:{{REDIS_PORT}}"
