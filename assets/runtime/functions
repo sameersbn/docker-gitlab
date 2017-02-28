@@ -777,7 +777,7 @@ gitlab_configure_backups() {
     GITLAB_BACKUP_PG_SCHEMA \
     GITLAB_BACKUP_ARCHIVE_PERMISSIONS
   gitlab_configure_backups_schedule
-  if [[ -z ${AWS_BACKUPS} || -z ${GCS_BACKUPS} ]]; then
+  if [[ ${AWS_BACKUPS} != true && ${GCS_BACKUPS} != true ]]; then
     exec_as_git sed -i "/upload:/,/#end-gcs/d" ${GITLAB_CONFIG}
     return 0
   fi
