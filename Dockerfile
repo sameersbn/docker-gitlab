@@ -1,5 +1,7 @@
 FROM sameersbn/ubuntu:14.04.20170123
-MAINTAINER sameer@damagehead.com
+#MAINTAINER sameer@damagehead.com
+#感谢原作者
+MAINTAINER tommylee@leebing.com
 
 ENV GITLAB_VERSION=8.16.6 \
     RUBY_VERSION=2.3 \

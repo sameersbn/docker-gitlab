@@ -31,13 +31,13 @@ case ${1} in
     esac
     ;;
   app:help)
-    echo "Available options:"
-    echo " app:start        - Starts the gitlab server (default)"
-    echo " app:init         - Initialize the gitlab server (e.g. create databases, compile assets), but don't start it."
-    echo " app:sanitize     - Fix repository/builds directory permissions."
-    echo " app:rake <task>  - Execute a rake task."
-    echo " app:help         - Displays the help"
-    echo " [command]        - Execute the specified command, eg. bash."
+    echo "有效的选项:"
+    echo " app:start        - 启动gitlab服务器(默认选项)"
+    echo " app:init         - 初始化gitlab服务器(如创建数据库, 编译资源), 但是并不会启动。"
+    echo " app:sanitize     - 确定repository/builds目录权限。"
+    echo " app:rake <task>  - 执行一个rake任务。"
+    echo " app:help         - 显示帮助信息"
+    echo " [command]        - 执行指定命令，如bash。"
     ;;
   *)
     exec "$@"
