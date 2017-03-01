@@ -15,6 +15,7 @@ case ${1} in
     case ${1} in
       app:start)
         migrate_database
+        rm -rf /var/run/supervisor.sock
         exec /usr/bin/supervisord -nc /etc/supervisor/supervisord.conf
         ;;
       app:init)

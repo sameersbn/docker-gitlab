@@ -6,8 +6,8 @@
 # GitLab user. git by default
 user: git
 
-# Url to gitlab instance. Used for api calls.
-# Default: http://localhost:8080
+# URL to GitLab instance, used for API calls. Default: http://localhost:8080.
+# For relative URL support read http://doc.gitlab.com/ce/install/relative_url.html
 # You only have to change the default if you have configured Unicorn
 # to listen on a custom port, or if you have configured Unicorn to
 # only listen on a Unix domain socket. For Unix domain sockets use
@@ -17,24 +17,23 @@ gitlab_url: "http://localhost:8080{{GITLAB_RELATIVE_URL_ROOT}}"
 
 # See installation.md#using-https for additional HTTPS configuration details.
 http_settings:
+#  read_timeout: 300
 #  user: someone
 #  password: somepass
 #  ca_file: /etc/ssl/cert.pem
 #  ca_path: /etc/pki/tls/certs
   self_signed_cert: {{SSL_SELF_SIGNED}}
 
-# Repositories path
-# Give the canonicalized absolute pathname,
-# REPOS_PATH MUST NOT CONTAIN ANY SYMLINK!!!
-# Check twice that none of the components is a symlink, including "/home".
-repos_path: "{{GITLAB_REPOS_DIR}}"
-
 # File used as authorized_keys for gitlab user
 auth_file: "{{GITLAB_HOME}}/.ssh/authorized_keys"
 
 # File that contains the secret key for verifying access to GitLab.
-# Default is .gitlab_shell_secret in the root directory.
+# Default is .gitlab_shell_secret in the gitlab-shell directory.
 secret_file: "{{GITLAB_SHELL_INSTALL_DIR}}/.gitlab_shell_secret"
+
+# Parent directory for global custom hook directories (pre-receive.d, update.d, post-receive.d)
+# Default is hooks in the gitlab-shell directory.
+custom_hooks_dir: "{{GITLAB_SHELL_INSTALL_DIR}}/hooks"
 
 # Redis settings used for pushing commit notices to gitlab
 redis:
@@ -42,9 +41,17 @@ redis:
   host: "{{REDIS_HOST}}"
   port: {{REDIS_PORT}}
   # pass: redispass # Allows you to specify the password for Redis
-  database: 0
-  # socket: /tmp/redis.socket # Only define this if you want to use sockets
+  database: {{REDIS_DB_NUMBER}}
+  # socket: /var/run/redis/redis.sock # Comment out this line if you want to use TCP or Sentinel
   namespace: resque:gitlab
+  # sentinels:
+  #   -
+  #     host: 127.0.0.1
+  #     port: 26380
+  #   -
+  #     host: 127.0.0.1
+  #     port: 26381
+
 
 # Log file.
 # Default is gitlab-shell.log in the root directory.
@@ -65,3 +72,10 @@ audit_usernames: false
 # For Debian and Ubuntu systems this can be done with: sudo apt-get install git-annex
 # For CentOS: sudo yum install epel-release && sudo yum install git-annex
 git_annex_enabled: false
+
+# Git trace log file.
+# If set, git commands receive GIT_TRACE* environment variables
+# See https://git-scm.com/book/es/v2/Git-Internals-Environment-Variables#Debugging for documentation
+# An absolute path starting with / – the trace output will be appended to that file.
+# It needs to exist so we can check permissions and avoid to throwing warnings to the users.
+git_trace_log_file:
