@@ -30,7 +30,9 @@ services:
     - "10080:80"
     - "10022:22"
     volumes:
-    - /srv/docker/gitlab/gitlab:/home/git/data:Z
+    - /srv/gitlab/config:/etc/gitlab \
+    - /srv/gitlab/logs:/var/log/gitlab \
+    - /srv/gitlab/data:/var/opt/gitlab **
     environment:
     - DEBUG=false
 
