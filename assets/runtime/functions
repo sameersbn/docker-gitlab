@@ -18,6 +18,7 @@ GITLAB_SHELL_CONFIG="${GITLAB_SHELL_INSTALL_DIR}/config.yml"
 GITLAB_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab"
 GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
 GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
+GITLAB_PAGES_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-pages"
 
 # Compares two version strings `a` and `b`
 # Returns
@@ -911,6 +912,30 @@ gitlab_configure_registry(){
     GITLAB_REGISTRY_ISSUER
 }
 
+gitlab_configure_pages(){
+  echo "Configuring gitlab::pages..."
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_PAGES_ENABLED \
+    GITLAB_PAGES_DOMAIN \
+    GITLAB_PAGES_PORT \
+    GITLAB_PAGES_HTTPS
+
+  if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTP} ]]; then
+    update_template ${GITLAB_CONFIG} \
+      GITLAB_PAGES_EXTERNAL_HTTP
+  else
+    exec_as_git sed -ie "/{{GITLAB_PAGES_EXTERNAL_HTTP}}/d" ${GITLAB_CONFIG}
+  fi
+
+  if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTPS} ]]; then
+    update_template ${GITLAB_CONFIG} \
+      GITLAB_PAGES_EXTERNAL_HTTPS
+  else
+    exec_as_git sed -ie "/{{GITLAB_PAGES_EXTERNAL_HTTPS}}/d" ${GITLAB_CONFIG}
+  fi
+}
+
+
 nginx_configure_gitlab_ssl() {
   if [[ ${GITLAB_HTTPS} == true && -f ${SSL_CERTIFICATE_PATH} && -f ${SSL_KEY_PATH} && -f ${SSL_DHPARAM_PATH} ]]; then
     echo "Configuring nginx::gitlab::ssl..."
@@ -988,6 +1013,28 @@ nginx_configure_gitlab_registry() {
       GITLAB_REGISTRY_API_URL \
       SSL_REGISTRY_KEY_PATH \
       SSL_REGISTRY_CERT_PATH
+  fi
+}
+
+nginx_configure_pages(){
+  local GITLAB_PAGES_DOMAIN=$(echo $GITLAB_PAGES_DOMAIN | sed 's/\./\\\\./g')
+
+  if [[ ${GITLAB_PAGES_HTTPS} == true ]]; then
+    echo "Configuring nginx::gitlab-pages..."
+    update_template ${GITLAB_PAGES_NGINX_CONFIG} \
+      GITLAB_PAGES_DOMAIN \
+      GITLAB_PAGES_PORT \
+      GITLAB_LOG_DIR \
+      GITLAB_PAGES_DOMAIN \
+      SSL_PAGES_CERT_PATH \
+      SSL_PAGES_KEY_PATH \
+      SSL_DHPARAM_PATH \
+      GITLAB_LOG_DIR
+  else
+    echo "Configuring nginx::gitlab-pages..."
+    update_template ${GITLAB_PAGES_NGINX_CONFIG} \
+      GITLAB_PAGES_DOMAIN \
+      GITLAB_LOG_DIR 
   fi
 }
 
@@ -1079,6 +1126,11 @@ initialize_datadir() {
   chmod u+rwX ${GITLAB_ARTIFACTS_DIR}
   chown ${GITLAB_USER}: ${GITLAB_ARTIFACTS_DIR}
 
+  # create pages dir
+  mkdir -p ${GITLAB_PAGES_DIR}
+  chmod u+rwX ${GITLAB_PAGES_DIR}
+  chown ${GITLAB_USER}: ${GITLAB_PAGES_DIR}
+
   # symlink ${GITLAB_INSTALL_DIR}/shared -> ${GITLAB_DATA_DIR}/shared
   rm -rf ${GITLAB_INSTALL_DIR}/shared
   ln -sf ${GITLAB_SHARED_DIR} ${GITLAB_INSTALL_DIR}/shared
@@ -1152,6 +1204,9 @@ sanitize_datadir() {
 
   chmod -R u+rwX ${GITLAB_ARTIFACTS_DIR}
   chown -R ${GITLAB_USER}: ${GITLAB_ARTIFACTS_DIR}
+
+  chmod -R u+rwX ${GITLAB_PAGES_DIR}
+  chown -R ${GITLAB_USER}: ${GITLAB_PAGES_DIR}
 
   chmod -R u+rwX ${GITLAB_LFS_OBJECTS_DIR}
   chown -R ${GITLAB_USER}: ${GITLAB_LFS_OBJECTS_DIR}
@@ -1238,6 +1293,22 @@ install_configuration_templates() {
     install_template root: nginx/gitlab ${GITLAB_NGINX_CONFIG}
   fi
 
+
+  ## ${GITLAB_PAGES_NGINX_CONFIG}
+  if [[ ${GITLAB_PAGES_HTTPS} == true ]]; then
+    if [[ -f ${SSL_PAGES_CERT_PATH} && -f ${SSL_PAGES_KEY_PATH} ]]; then
+      install_template root: nginx/gitlab-pages-ssl ${GITLAB_PAGES_NGINX_CONFIG}
+    else
+      echo "SSL Key, SSL Certificate were not found."
+      echo "Assuming that the container is running behind a HTTPS enabled load balancer."
+      install_template root: nginx/gitlab-pages ${GITLAB_PAGES_NGINX_CONFIG}
+    fi
+  else
+    install_template root: nginx/gitlab-pages ${GITLAB_PAGES_NGINX_CONFIG}
+  fi
+
+
+
   if [[ -n $GITLAB_CI_HOST ]]; then
     install_template root: nginx/gitlab_ci ${GITLAB_CI_NGINX_CONFIG}
   fi
@@ -1297,6 +1368,7 @@ configure_gitlab() {
   gitlab_configure_analytics
   gitlab_configure_backups
   gitlab_configure_registry
+  gitlab_configure_pages
 
   # remove stale gitlab.socket
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
@@ -1315,6 +1387,44 @@ configure_gitlab_shell() {
     REDIS_DB_NUMBER
 }
 
+
+configure_gitlab_pages() {
+  echo "Configuring gitlab-pages..."
+cat > /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
+[program:gitlab-pages]
+priority=20
+directory=${GITLAB_INSTALL_DIR}
+environment=HOME=${GITLAB_HOME}
+command=/usr/local/bin/gitlab-pages
+  -pages-domain ${GITLAB_PAGES_DOMAIN}
+  -pages-root ${GITLAB_PAGES_DIR}
+  -listen-proxy :8090
+EOF
+
+if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTP} ]]; then
+cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
+  -listen-http ${GITLAB_PAGES_EXTERNAL_HTTP}
+EOF
+fi
+
+
+if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTPS} ]]; then
+cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
+  -listen-https ${GITLAB_PAGES_EXTERNAL_HTTPS}
+  -root-cert ${SSL_PAGES_CERT_PATH}
+  -root-key ${SSL_PAGES_KEY_PATH}
+EOF
+fi
+
+cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
+user=git
+autostart=true
+autorestart=true
+stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
+stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
+EOF
+}
+
 configure_nginx() {
   echo "Configuring nginx..."
   sed -i \
@@ -1325,6 +1435,7 @@ configure_nginx() {
   nginx_configure_gitlab
   nginx_configure_gitlab_ci
   nginx_configure_gitlab_registry
+  nginx_configure_pages
 }
 
 migrate_database() {
