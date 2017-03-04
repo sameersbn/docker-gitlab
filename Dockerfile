@@ -30,7 +30,7 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor logrotate locales curl \
       nginx openssh-server mysql-client postgresql-client redis-tools \
-      git-core ruby${RUBY_VERSION} python2.7 python-docutils nodejs gettext-base \
+      ruby${RUBY_VERSION} python2.7 python-docutils nodejs gettext-base \
       libmysqlclient18 libpq5 zlib1g libyaml-0-2 libssl1.0.0 \
       libgdbm3 libreadline6 libncurses5 libffi6 \
       libxml2 libxslt1.1 libcurl3 libicu52 \
@@ -40,6 +40,28 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && gem install --no-document bundler \
  && rm -rf /var/lib/apt/lists/*
 
+# KLUDGE: This secion is to install git 2.10.2 due to this issue:
+# https://gitlab.com/gitlab-org/gitlab-ce/issues/25301 .
+# Once that's resolved delete this RUN command and prefix
+# the line above that starts like this:
+#   ruby${RUBY_VERSION} python2.7 python-docutils [...]
+# with "git " so it looks like:
+#   git ruby${RUBY_VERSION} python2.7 python-docutils [...]
+# Note that "git-core" is deprecated.
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+      libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev \
+      build-essential autoconf \
+    && wget https://github.com/git/git/archive/v2.10.2.tar.gz \
+    && curl -SL https://github.com/git/git/archive/v2.10.2.tar.gz \
+     | tar -xzC /tmp \
+    && cd /tmp/git-2.10.2 \
+    && make configure \
+    && ./configure --prefix=/usr \
+    && make all \
+    && make install \
+    && rm -rf /var/lib/apt/lists/*
+      
 COPY assets/build/ ${GITLAB_BUILD_DIR}/
 RUN bash ${GITLAB_BUILD_DIR}/install.sh
 
