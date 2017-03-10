@@ -963,6 +963,15 @@ nginx_configure_gitlab_ipv6() {
   fi
 }
 
+nginx_configure_gitlab_retain_ip_header() {
+  if [[ ${NGINX_RETAIN_IP_HEADER} == true ]]; then
+    sed -i \
+      -e "/X-Real-IP/d" \
+      -e "/X-Forwarded-For/d" \
+      ${GITLAB_NGINX_CONFIG}
+  fi
+}
+
 nginx_configure_gitlab() {
   echo "Configuring nginx::gitlab..."
   update_template ${GITLAB_NGINX_CONFIG} \
@@ -977,6 +986,7 @@ nginx_configure_gitlab() {
   nginx_configure_gitlab_ssl
   nginx_configure_gitlab_hsts
   nginx_configure_gitlab_ipv6
+  nginx_configure_gitlab_retain_ip_header
 }
 
 nginx_configure_gitlab_ci() {
