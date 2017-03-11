@@ -96,7 +96,7 @@ services:
 
   gitlab:
     restart: always
-    image: phpbcom/docker-gitlab:8.16.7
+    image: phpbcom/docker-gitlab:8.17.0
     depends_on:
     - redis
     - postgresql
@@ -282,7 +282,7 @@ docker stop registry gitlab && docker rm registry gitlab
 Execute the rake task with a removeable container.
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    phpbcom/docker-gitlab:8.16.7 app:rake gitlab:backup:create
+    phpbcom/docker-gitlab:8.17.0 app:rake gitlab:backup:create
 ```
 ## Restoring Backups
 
@@ -298,7 +298,7 @@ Execute the rake task to restore a backup. Make sure you run the container in in
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    phpbcom/docker-gitlab:8.16.7 app:rake gitlab:backup:restore
+    phpbcom/docker-gitlab:8.17.0 app:rake gitlab:backup:restore
 ```
 
 The list of all available backups will be displayed in reverse chronological order. Select the backup you want to restore and continue.
@@ -307,7 +307,7 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    phpbcom/docker-gitlab:8.16.7 app:rake gitlab:backup:restore BACKUP=1417624827
+    phpbcom/docker-gitlab:8.17.0 app:rake gitlab:backup:restore BACKUP=1417624827
 ```
 
 # Upgrading from an existing GitLab installation
@@ -318,7 +318,7 @@ If you want enable this feature for an existing instance of GitLab you need to d
 - **Step 1**: Update the docker image.
 
 ```bash
-docker pull phpbcom/docker-gitlab:8.16.7
+docker pull phpbcom/docker-gitlab:8.17.0
 ```
 
 - **Step 2**: Stop and remove the currently running image
@@ -331,7 +331,7 @@ docker stop gitlab && docker rm gitlab
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:x.x.x app:rake gitlab:backup:create
+    phpbcom/docker-gitlab:x.x.x app:rake gitlab:backup:create
 ```
 
 - **Step 4**: Create a certs folder
@@ -370,7 +370,7 @@ docker run --name gitlab -d [PREVIOUS_OPTIONS] \
 --env 'GITLAB_REGISTRY_API_URL=http://registry:5000/' \
 --env 'GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key' \
 --link registry:registry
-phpbcom/docker-gitlab:8.16.7
+phpbcom/docker-gitlab:8.17.0
 ```
 
 

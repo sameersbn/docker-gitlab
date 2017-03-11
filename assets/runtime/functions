@@ -924,6 +924,19 @@ gitlab_configure_registry(){
     GITLAB_REGISTRY_ISSUER
 }
 
+gitlab_configure_pages() {
+  echo "Configuring gitlab::pages..."
+  if [[ ${GITLAB_PAGES_PORT} == 443 ]]; then
+     local GITLAB_PAGES_HTTPS=true
+  fi
+
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_PAGES_ENABLED \
+    GITLAB_PAGES_DOMAIN \
+    GITLAB_PAGES_PORT \
+    GITLAB_PAGES_HTTPS 
+}
+
 nginx_configure_gitlab_ssl() {
   if [[ ${GITLAB_HTTPS} == true && -f ${SSL_CERTIFICATE_PATH} && -f ${SSL_KEY_PATH} && -f ${SSL_DHPARAM_PATH} ]]; then
     echo "Configuring nginx::gitlab::ssl..."
@@ -1102,6 +1115,11 @@ initialize_datadir() {
   chmod u+rwX ${GITLAB_ARTIFACTS_DIR}
   chown ${GITLAB_USER}: ${GITLAB_ARTIFACTS_DIR}
 
+  # create pages dir
+  mkdir -p ${GITLAB_PAGES_DIR}
+  chmod u+rwX ${GITLAB_PAGES_DIR}
+  chown ${GITLAB_USER}: ${GITLAB_PAGES_DIR}
+
   # symlink ${GITLAB_INSTALL_DIR}/shared -> ${GITLAB_DATA_DIR}/shared
   rm -rf ${GITLAB_INSTALL_DIR}/shared
   ln -sf ${GITLAB_SHARED_DIR} ${GITLAB_INSTALL_DIR}/shared
@@ -1175,6 +1193,9 @@ sanitize_datadir() {
 
   chmod -R u+rwX ${GITLAB_ARTIFACTS_DIR}
   chown -R ${GITLAB_USER}: ${GITLAB_ARTIFACTS_DIR}
+
+  chmod -R u+rwX ${GITLAB_PAGES_DIR}
+  chown -R ${GITLAB_USER}: ${GITLAB_PAGES_DIR}
 
   chmod -R u+rwX ${GITLAB_LFS_OBJECTS_DIR}
   chown -R ${GITLAB_USER}: ${GITLAB_LFS_OBJECTS_DIR}
@@ -1339,6 +1360,27 @@ configure_gitlab_shell() {
     REDIS_DB_NUMBER
 }
 
+
+configure_gitlab_pages() {
+  echo "Configuring gitlab-pages..."
+cat > /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
+[program:gitlab-pages]
+priority=20
+directory=${GITLAB_INSTALL_DIR}
+environment=HOME=${GITLAB_HOME}
+command=/usr/local/bin/gitlab-pages
+  -pages-domain ${GITLAB_PAGES_DOMAIN}
+  -pages-root ${GITLAB_PAGES_DIR}
+  -listen-proxy :8090
+user=git
+autostart=true
+autorestart=true
+stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
+stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
+EOF
+gitlab_configure_pages
+  
+}
 configure_nginx() {
   echo "Configuring nginx..."
   sed -i \

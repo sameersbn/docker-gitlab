@@ -10,6 +10,7 @@ case ${1} in
     initialize_system
     configure_gitlab
     configure_gitlab_shell
+    configure_gitlab_pages
     configure_nginx
 
     case ${1} in

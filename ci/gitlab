@@ -4,7 +4,7 @@ set -e
 
 VERSION=$(cat VERSION)
 DOCKER_REGISTRY_HOST=${DOCKER_REGISTRY_HOST:-hub.docker.com}
-DOCKER_IMAGE=${DOCKER_IMAGE:-sameersbn/gitlab}
+DOCKER_IMAGE=${DOCKER_IMAGE:-phpbcom/docker-gitlab}
 
 docker build -t $DOCKER_IMAGE .
 
