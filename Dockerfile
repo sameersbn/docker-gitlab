@@ -1,7 +1,7 @@
 FROM ubuntu:xenial
 MAINTAINER sameer@damagehead.com
 
-ENV GITLAB_VERSION=8.16.6 \
+ENV GITLAB_VERSION=8.16.7 \
     RUBY_VERSION=2.3 \
     GOLANG_VERSION=1.8 \
     GITLAB_SHELL_VERSION=5.0.0 \

@@ -38,8 +38,11 @@ passwd -d ${GITLAB_USER}
 
 # set PATH (fixes cron job PATH issues)
 cat >> ${GITLAB_HOME}/.profile <<EOF
-PATH=/usr/local/sbin:/usr/local/bin:\$PATH
+PATH=$HOME/.yarn/bin:/usr/local/sbin:/usr/local/bin:\$PATH
 EOF
+
+# install fresh yarn
+su - git -c 'curl --location https://yarnpkg.com/install.sh | bash -'
 
 # configure git for ${GITLAB_USER}
 exec_as_git git config --global core.autocrlf input
