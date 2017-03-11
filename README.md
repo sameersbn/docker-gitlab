@@ -3,6 +3,8 @@
 
 # phpbcom/docker-gitlab:8.16.7
 
+forked from sameersbn/docker-gitlab to maintain slightly more modern and less conservative (will probably break things) version of GitLab docker image.
+
 - [Introduction](#introduction)
     - [Changelog](Changelog.md)
 - [Contributing](#contributing)
@@ -1245,3 +1247,5 @@ docker exec -it gitlab bash
 * https://github.com/gitlabhq/gitlab-recipes/blob/master/web-server/nginx/gitlab-ssl
 * https://github.com/jpetazzo/nsenter
 * https://jpetazzo.github.io/2014/03/23/lxc-attach-nsinit-nsenter-docker-0-9/
+* https://docs.gitlab.com/ce/user/project/pages/index.html
+* https://docs.gitlab.com/ce/administration/pages/index.html
