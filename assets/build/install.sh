@@ -42,7 +42,7 @@ PATH=$HOME/.yarn/bin:/usr/local/sbin:/usr/local/bin:\$PATH
 EOF
 
 # install fresh yarn
-exec_as_git curl --location https://yarnpkg.com/install.sh | bash -
+curl --location https://yarnpkg.com/install.sh | exec_as_git bash -
 
 # configure git for ${GITLAB_USER}
 exec_as_git git config --global core.autocrlf input
