@@ -30,7 +30,7 @@ production: &base
   gitlab:
     ## Web server settings (note: host is the FQDN, do not include http://)
     host: {{GITLAB_HOST}}
-    port: {{GITLAB_PORT}} # Set to 443 if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
+    port: {{GITLAB_PORT_EXT}} # Set to 443 if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
     https: {{GITLAB_HTTPS}} # Set to true if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
 
     # Uncommment this line below if your ssh host is different from HTTP/HTTPS one
