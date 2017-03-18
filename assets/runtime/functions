@@ -1018,23 +1018,23 @@ nginx_configure_gitlab_registry() {
 
 nginx_configure_pages(){
   local GITLAB_PAGES_DOMAIN=$(echo $GITLAB_PAGES_DOMAIN | sed 's/\./\\\\./g')
-
-  if [[ ${GITLAB_PAGES_HTTPS} == true ]]; then
+  if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
     echo "Configuring nginx::gitlab-pages..."
-    update_template ${GITLAB_PAGES_NGINX_CONFIG} \
-      GITLAB_PAGES_DOMAIN \
-      GITLAB_PAGES_PORT \
-      GITLAB_LOG_DIR \
-      GITLAB_PAGES_DOMAIN \
-      SSL_PAGES_CERT_PATH \
-      SSL_PAGES_KEY_PATH \
-      SSL_DHPARAM_PATH \
-      GITLAB_LOG_DIR
-  else
-    echo "Configuring nginx::gitlab-pages..."
-    update_template ${GITLAB_PAGES_NGINX_CONFIG} \
-      GITLAB_PAGES_DOMAIN \
-      GITLAB_LOG_DIR 
+    if [[ ${GITLAB_PAGES_HTTPS} == true ]]; then
+      update_template ${GITLAB_PAGES_NGINX_CONFIG} \
+        GITLAB_PAGES_DOMAIN \
+        GITLAB_PAGES_PORT \
+        GITLAB_LOG_DIR \
+        GITLAB_PAGES_DOMAIN \
+        SSL_PAGES_CERT_PATH \
+        SSL_PAGES_KEY_PATH \
+        SSL_DHPARAM_PATH \
+        GITLAB_LOG_DIR
+    else
+      update_template ${GITLAB_PAGES_NGINX_CONFIG} \
+        GITLAB_PAGES_DOMAIN \
+        GITLAB_LOG_DIR 
+    fi
   fi
 }
 
@@ -1303,8 +1303,6 @@ install_configuration_templates() {
       echo "Assuming that the container is running behind a HTTPS enabled load balancer."
       install_template root: nginx/gitlab-pages ${GITLAB_PAGES_NGINX_CONFIG}
     fi
-  else
-    install_template root: nginx/gitlab-pages ${GITLAB_PAGES_NGINX_CONFIG}
   fi
 
 
@@ -1389,6 +1387,7 @@ configure_gitlab_shell() {
 
 
 configure_gitlab_pages() {
+  if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
   echo "Configuring gitlab-pages..."
 cat > /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
 [program:gitlab-pages]
@@ -1423,6 +1422,7 @@ autorestart=true
 stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
 stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
 EOF
+fi
 }
 
 configure_nginx() {
