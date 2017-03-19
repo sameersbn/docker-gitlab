@@ -2,9 +2,12 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**8.17.2**
+- gitlab: upgrade to CE v8.17.2
+
 **8.17.1**
 - gitlab: upgrade to CE v8.17.1
-- fixes first problem with gitlab-pages
+- fixes first problems with gitlab-pages
 
 **8.17.0**
 - gitlab: upgrade to CE v8.17.0
