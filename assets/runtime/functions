@@ -902,6 +902,21 @@ nginx_configure_gitlab_ipv6() {
   fi
 }
 
+nginx_configure_gitlab_real_ip() {
+  if [[ ${NGINX_REAL_IP_RECURSIVE} == on && \
+     -n ${NGINX_REAL_IP_TRUSTED_ADDRESSES} ]]; then
+    echo "Configuring nginx::gitlab::real_ip..."
+    update_template ${GITLAB_NGINX_CONFIG} \
+      NGINX_REAL_IP_RECURSIVE \
+      NGINX_REAL_IP_TRUSTED_ADDRESSES
+  else
+    NGINX_REAL_IP_RECURSIVE="off"
+    update_template ${GITLAB_NGINX_CONFIG} \
+      NGINX_REAL_IP_RECURSIVE
+    sed -i "/{{NGINX_REAL_IP_TRUSTED_ADDRESSES}}/d" ${GITLAB_NGINX_CONFIG}
+  fi
+}
+
 nginx_configure_gitlab() {
   echo "Configuring nginx::gitlab..."
   update_template ${GITLAB_NGINX_CONFIG} \
@@ -916,6 +931,7 @@ nginx_configure_gitlab() {
   nginx_configure_gitlab_ssl
   nginx_configure_gitlab_hsts
   nginx_configure_gitlab_ipv6
+  nginx_configure_gitlab_real_ip
 }
 
 nginx_configure_gitlab_ci() {
