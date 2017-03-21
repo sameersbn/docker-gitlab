@@ -83,6 +83,7 @@ services:
     - --loglevel warning
     volumes:
     - ./redis:/var/lib/redis:Z
+
   postgresql:
     restart: always
     image: sameersbn/postgresql:9.6-2
@@ -94,14 +95,31 @@ services:
     - DB_NAME=gitlabhq_production
     - DB_EXTENSION=pg_trgm
 
+  registry:
+    restart: always
+    image: registry:2.4.1
+    volumes:
+    - ./gitlab/shared/registry:/registry
+    - ./certs:/certs
+    environment:
+    - REGISTRY_LOG_LEVEL=info
+    - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/registry
+    - REGISTRY_AUTH_TOKEN_REALM=https://gitlab.example.com:10443/jwt/auth
+    - REGISTRY_AUTH_TOKEN_SERVICE=container_registry
+    - REGISTRY_AUTH_TOKEN_ISSUER=gitlab-issuer
+    - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/certs/registry-auth.crt
+    - REGISTRY_STORAGE_DELETE_ENABLED=true
+
   gitlab:
     restart: always
     image: sameersbn/gitlab:8.17.3
     depends_on:
     - redis
     - postgresql
+    - registry
     ports:
     - "10080:80"
+    - "100443:443"
     - "5500:5500"
     - "10022:22"
     volumes:
@@ -132,21 +150,10 @@ services:
     - GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key
     - SSL_REGISTRY_KEY_PATH=/certs/registry.key
     - SSL_REGISTRY_CERT_PATH=/certs/registry.crt
-
-  registry:
-    restart: always
-    image: registry:2.4.1
-    volumes:
-    - ./gitlab/shared/registry:/registry
-    - ./certs:/certs
-    environment:
-    - REGISTRY_LOG_LEVEL=info
-    - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/registry
-    - REGISTRY_AUTH_TOKEN_REALM=http://gitlab.example.com:10080/jwt/auth
-    - REGISTRY_AUTH_TOKEN_SERVICE=container_registry
-    - REGISTRY_AUTH_TOKEN_ISSUER=gitlab-issuer
-    - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/certs/registry-auth.crt
-    - REGISTRY_STORAGE_DELETE_ENABLED=true
+    - GITLAB_HTTPS=true
+    - SSL_CERTIFICATE_PATH=/certs/gitlab.pem
+    - SSL_KEY_PATH=/certs/gitlab.key
+    - SSL_DHPARAM_PATH=/certs/dhparam.pem
 ```
 > **Important Notice**
 >
