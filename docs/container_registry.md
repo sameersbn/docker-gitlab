@@ -20,14 +20,13 @@ Since `8.8.0` GitLab introduces container registry. GitLab is helping to authent
 
 Here is an example of all configuration parameters that can be used in the GitLab container.
 
-```
+```yml
 ...
 gitlab:
     ...
     environment:
     - GITLAB_REGISTRY_ENABLED=true
     - GITLAB_REGISTRY_HOST=registry.gitlab.example.com
-    - GITLAB_REGISTRY_PORT=5500
     - GITLAB_REGISTRY_API_URL=http://registry:5000
     - GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key
     - GITLAB_REGISTRY_ISSUER=gitlab-issuer
@@ -102,7 +101,6 @@ services:
     - postgresql
     ports:
     - "10080:80"
-    - "5500:5500"
     - "10022:22"
     volumes:
     - ./gitlab:/home/git/data:Z
@@ -127,8 +125,9 @@ services:
     - GITLAB_SECRETS_DB_KEY_BASE=superrandomsecret
     - GITLAB_REGISTRY_ENABLED=true
     - GITLAB_REGISTRY_HOST=registry.gitlab.example.com
-    - GITLAB_REGISTRY_PORT=5500
+    - GITLAB_REGISTRY_PORT=5000
     - GITLAB_REGISTRY_API_URL=http://registry:5000
+    - GITLAB_REGISTRY_CERT_PATH=/certs/registry-auth.crt
     - GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key
     - SSL_REGISTRY_KEY_PATH=/certs/registry.key
     - SSL_REGISTRY_CERT_PATH=/certs/registry.crt
@@ -181,7 +180,7 @@ Generate a self signed certificate with openssl.
 
 - **Step 2**: Generate a private key and sign request for the private key
 ```bash
-openssl req -nodes -newkey rsa:4096 -keyout registry-auth.key -out registry-auth.csr -subj "/CN=gitlab-issuer"
+openssl req -nodes -newkey rsa:4096 -keyout registry-auth.key -out registry-auth.csr -subj "/CN=registry.example.com"
 ```
 
 - **Step 3**: Sign your created privated key
@@ -191,7 +190,7 @@ openssl x509 -in registry-auth.csr -out registry-auth.crt -req -signkey registry
 
 After this mount the `certs` dir in both containers and set the same environment variables like way of the signed certificate.
 
-
+A complete docker-compose file is found here: [docker-compose-registry.yml](docker-compose-registry.yml)
 
 ## Container Registry storage driver
 
@@ -368,6 +367,7 @@ docker run --name gitlab -d [PREVIOUS_OPTIONS] \
 --env 'GITLAB_REGISTRY_ENABLED=true' \
 --env 'GITLAB_REGISTRY_HOST=registry.gitlab.example.com' \
 --env 'GITLAB_REGISTRY_API_URL=http://registry:5000/' \
+--env 'GITLAB_REGISTRY_CERT_PATH=/certs/registry-auth.crt' \
 --env 'GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key' \
 --link registry:registry
 sameersbn/gitlab:8.17.3
