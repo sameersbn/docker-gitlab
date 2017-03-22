@@ -188,9 +188,9 @@ production: &base
   # Periodically executed jobs, to self-heal Gitlab, do external synchronizations, etc.
   # Please read here for more information: https://github.com/ondrejbartas/sidekiq-cron#adding-cron-job
   cron_jobs:
-    # Flag stuck CI builds as failed
-    stuck_ci_builds_worker:
-      cron: "0 0 * * *"
+    # Flag stuck CI jobs as failed
+    stuck_ci_jobs_worker:
+      cron: "0 * * * *"
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
@@ -458,6 +458,16 @@ production: &base
   shared:
     path: {{GITLAB_SHARED_DIR}}
 
+  # Gitaly settings
+  gitaly:
+    # The socket_path setting is optional and obsolete. When this is set
+    # GitLab assumes it can reach a Gitaly services via a Unix socket at
+    # this path. When this is commented out GitLab will not use Gitaly.
+    #
+    # This setting is obsolete because we expect it to be moved under
+    # repositories/storages in GitLab 9.1.
+    #
+    # socket_path: tmp/sockets/gitaly.socket
 
   #
   # 4. Advanced settings
@@ -478,7 +488,8 @@ production: &base
     # gitlab-shell invokes Dir.pwd inside the repository path and that results
     # real path not the symlink.
     storages: # You must have at least a `default` storage path.
-      default: {{GITLAB_REPOS_DIR}}/
+      default:
+        path: {{GITLAB_REPOS_DIR}}/
 
   ## Backup settings
   backup:
@@ -538,6 +549,16 @@ production: &base
     max_size: {{GITLAB_MAX_OBJECT_SIZE}} # 20.megabytes
     # Git timeout to read a commit, in seconds
     timeout: {{GITLAB_TIMEOUT}}
+
+  ## Webpack settings
+  # If enabled, this will tell rails to serve frontend assets from the webpack-dev-server running
+  # on a given port instead of serving directly from /assets/webpack. This is only indended for use
+  # in development.<Paste>
+  webpack:
+    # dev_server:
+    #   enabled: true
+    #   host: localhost
+    #   port: 3808
 
   #
   # 5. Extra customization
