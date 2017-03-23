@@ -17,6 +17,7 @@ case ${1} in
       app:start)
         migrate_database
         rm -rf /var/run/supervisor.sock
+        gitlab_redirect_production_log_to_stdout
         exec /usr/bin/supervisord -nc /etc/supervisor/supervisord.conf
         ;;
       app:init)
