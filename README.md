@@ -403,6 +403,7 @@ We are now ready to start the GitLab application.
 
 ```bash
 docker run --name gitlab -d --link gitlab-mysql:mysql \
+    --env 'DB_ADAPTER=postgresql' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
     sameersbn/gitlab:8.17.4
 ```
