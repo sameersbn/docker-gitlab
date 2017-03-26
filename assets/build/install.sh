@@ -45,6 +45,7 @@ EOF
 # configure git for ${GITLAB_USER}
 exec_as_git git config --global core.autocrlf input
 exec_as_git git config --global gc.auto 0
+exec_as_git git config --global repack.writeBitmaps true
 
 # install gitlab-shell
 echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
