@@ -1566,8 +1566,22 @@ execute_raketask() {
   exec_as_git bundle exec rake $@ ${BACKUP:+BACKUP=$BACKUP}
 }
 
-gitlab_redirect_production_log_to_stdout() {
-  echo "Redirecting production.log to stdout..."
-  PRODUCTION_LOG="${GITLAB_LOG_DIR}/gitlab/production.log"
-  tail -f $PRODUCTION_LOG | sed -u 's/^/[production.log] - /' &
+gitlab_redirect_log_files_to_stdout() {
+  echo "Redirecting logs to stdout..."
+
+ redirect_log_file_to_stdout "production.log" "${GITLAB_LOG_DIR}/gitlab/production.log" &
+ redirect_log_file_to_stdout "nginx.log" "${GITLAB_LOG_DIR}/nginx/gitlab_access.log" &
+}
+
+redirect_log_file_to_stdout() {
+  LOG_FILE_NAME=$1
+  LOG_FILE_PATH=$2
+
+  while [ ! -f $LOG_FILE_PATH ]
+  do
+    sleep 5
+  done
+
+  echo "Redirecting ${LOG_FILE_NAME} file to stdout"
+  tail -f $LOG_FILE_PATH | sed -u 's/^/['${LOG_FILE_NAME}'] - /'
 }
