@@ -1298,7 +1298,7 @@ install_configuration_templates() {
 
   ## ${GITLAB_PAGES_NGINX_CONFIG}
   if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
-    if [[ -f ${SSL_PAGES_CERT_PATH} && -f ${SSL_PAGES_KEY_PATH} ]]; then
+    if [[ ${GITLAB_PAGES_HTTPS} == true && -f ${SSL_PAGES_CERT_PATH} && -f ${SSL_PAGES_KEY_PATH} ]]; then
       install_template root: nginx/gitlab-pages-ssl ${GITLAB_PAGES_NGINX_CONFIG}
     else
       echo "SSL Key, SSL Certificate were not found."
