@@ -503,6 +503,8 @@ production: &base
       connection:
         provider: AWS
         region: {{AWS_BACKUP_REGION}}
+        endpoint: {{AWS_BACKUP_ENDPOINT}}
+        path_style: {{AWS_BACKUP_PATH_STYLE}}
         aws_access_key_id: {{AWS_BACKUP_ACCESS_KEY_ID}}
         aws_secret_access_key: '{{AWS_BACKUP_SECRET_ACCESS_KEY}}'
       # The remote 'directory' to store your backups. For S3, this would be the bucket name.
