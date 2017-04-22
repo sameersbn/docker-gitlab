@@ -2,6 +2,9 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**9.1.0-1**
+- Fix gitlab-workhorse version display
+
 **9.1.0**
 - gitlab: upgrade to CE v9.1.0
 - gitlab-shell: upgrade to 5.0.2
