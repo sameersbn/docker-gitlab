@@ -191,6 +191,9 @@ production: &base
     # Flag stuck CI jobs as failed
     stuck_ci_jobs_worker:
       cron: "0 * * * *"
+    # Execute scheduled triggers
+    trigger_schedule_worker:
+      cron: "0 */12 * * *"
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
@@ -468,18 +471,14 @@ production: &base
     # repositories/storages in GitLab 9.1.
     #
     # socket_path: tmp/sockets/gitaly.socket
+    # This setting controls whether GitLab uses Gitaly (new component
+    # introduced in 9.0). Eventually Gitaly use will become mandatory and
+    # this option will disappear.
+    enabled: false
 
   #
   # 4. Advanced settings
   # ==========================
-
-  # GitLab Satellites
-  #
-  # Note for maintainers: keep the satellites.path setting until GitLab 9.0 at
-  # least. This setting is fed to 'rm -rf' in
-  # db/migrate/20151023144219_remove_satellites.rb
-  satellites:
-    path: {{GITLAB_DATA_DIR}}/gitlab-satellites/
 
   ## Repositories settings
   repositories:
@@ -490,6 +489,7 @@ production: &base
     storages: # You must have at least a `default` storage path.
       default:
         path: {{GITLAB_REPOS_DIR}}/
+        gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
 
   ## Backup settings
   backup:
@@ -608,8 +608,8 @@ test:
     # In order to setup it correctly you need to specify
     # your system username you use to run GitLab
     # user: YOUR_USERNAME
-  satellites:
-    path: tmp/tests/gitlab-satellites/
+  pages:
+    path: tmp/tests/pages
   repositories:
     storages:
       default: tmp/tests/repositories/
