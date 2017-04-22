@@ -2,6 +2,14 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**9.1.0**
+- gitlab: upgrade to CE v9.1.0
+- gitlab-shell: upgrade to 5.0.2
+- gitlab-workhorse: upgrade to 1.4.3
+
+**9.0.6**
+- gitlab: upgrade to CE v9.0.6
+
 **9.0.5**
 - gitlab: upgrade to CE v9.0.5
 
