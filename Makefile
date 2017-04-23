@@ -51,3 +51,11 @@ purge: stop
 
 logs:
 	@docker logs -f gitlab-demo
+
+examples: gitlab.env postgres.env
+
+gitlab.env:
+	cp gitlab.env.example gitlab.env
+
+postgres.env:
+	cp postgres.env.example postgres.env
