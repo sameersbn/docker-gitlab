@@ -52,6 +52,9 @@ purge: stop
 logs:
 	@docker logs -f gitlab-demo
 
+up:
+	docker-compose up -d --build
+
 examples: gitlab.env postgres.env
 
 gitlab.env:
