@@ -65,6 +65,7 @@
     - [Shell Access](#shell-access)
 - [Features](#features)
  - [Container Registry](docs/container_registry.md)
+- [Synology](#synology)
 - [References](#references)
 
 # Introduction
@@ -1242,6 +1243,10 @@ For debugging and maintenance purposes you may want access the containers shell.
 ```bash
 docker exec -it gitlab bash
 ```
+
+# Synology
+
+To setup GitLab with Synology DSM follow this [tutorial](https://github.com/cpoetter/Synology-GitLab-Setup).
 
 # References
 
