@@ -1,7 +1,7 @@
-FROM sameersbn/ubuntu:14.04.20170228
+FROM sameersbn/ubuntu:14.04.20170503
 MAINTAINER sameer@damagehead.com
 
-ENV GITLAB_VERSION=9.1.1 \
+ENV GITLAB_VERSION=9.1.2 \
     RUBY_VERSION=2.3 \
     GOLANG_VERSION=1.6.3 \
     GITLAB_SHELL_VERSION=5.0.2 \
