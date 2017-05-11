@@ -119,6 +119,7 @@ exec_as_git bundle install -j$(nproc) --deployment --without development test aw
 chown -R ${GITLAB_USER}: ${GITLAB_HOME}
 
 # gitlab.yml and database.yml are required for `assets:precompile`
+exec_as_git cp ${GITLAB_INSTALL_DIR}/config/resque.yml.example ${GITLAB_INSTALL_DIR}/config/resque.yml
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.mysql ${GITLAB_INSTALL_DIR}/config/database.yml
 
