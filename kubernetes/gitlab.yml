@@ -1,0 +1,251 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitlab
+  labels:
+    name: gitlab
+spec:
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 80
+    - name: ssh
+      port: 22
+      targetPort: ssh
+  selector:
+    name: gitlab
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gitlab
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: gitlab
+      labels:
+        name: gitlab
+    spec:
+      containers:
+      - name: gitlab
+        image: sameersbn/gitlab:9.1.3
+        env:
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: TZ
+        - name: GITLAB_TIMEZONE
+          value: Kolkata
+
+        - name: GITLAB_SECRETS_DB_KEY_BASE
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-secrets
+              key: GITLAB_SECRETS_DB_KEY_BASE
+        - name: GITLAB_SECRETS_SECRET_KEY_BASE
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-secrets
+              key: GITLAB_SECRETS_SECRET_KEY_BASE
+        - name: GITLAB_SECRETS_OTP_KEY_BASE
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-secrets
+              key: GITLAB_SECRETS_OTP_KEY_BASE
+
+        - name: GITLAB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-secrets
+              key: GITLAB_ROOT_PASSWORD
+        - name: GITLAB_ROOT_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-secrets
+              key: GITLAB_ROOT_EMAIL
+        - name: GITLAB_SSH_PORT
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-secrets
+              key: GITLAB_SSH_PORT
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-secrets
+              key: DB_PASS
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-secrets
+              key: DB_NAME
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-secrets
+              key: DB_USER
+        - name: SMTP_PASS
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-secrets
+              key: SMTP_PASS
+        - name: IMAP_PASS
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-secrets
+              key: IMAP_PASS
+
+        - name: GITLAB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: GITLAB_HOST
+        - name: GITLAB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: GITLAB_PORT
+
+        - name: GITLAB_NOTIFY_ON_BROKEN_BUILDS
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: GITLAB_NOTIFY_ON_BROKEN_BUILDS
+        - name: GITLAB_NOTIFY_PUSHER
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: GITLAB_NOTIFY_PUSHER
+
+        - name: GITLAB_BACKUP_SCHEDULE
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: GITLAB_BACKUP_SCHEDULE
+        - name: GITLAB_BACKUP_TIME
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: GITLAB_BACKUP_TIME
+
+        - name: DB_TYPE
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: DB_TYPE
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: DB_HOST
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: DB_PORT
+
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: REDIS_HOST
+        - name: REDIS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: REDIS_PORT
+
+        - name: SMTP_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: SMTP_ENABLED
+        - name: SMTP_DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: SMTP_DOMAIN
+        - name: SMTP_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: SMTP_HOST
+        - name: SMTP_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: SMTP_PORT
+        - name: SMTP_USER
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: SMTP_USER
+        - name: SMTP_STARTTLS
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: SMTP_STARTTLS
+        - name: SMTP_AUTHENTICATION
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: SMTP_AUTHENTICATION
+
+        - name: IMAP_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: IMAP_ENABLED
+        - name: IMAP_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: IMAP_HOST
+        - name: IMAP_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: IMAP_PORT
+        - name: IMAP_USER
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: IMAP_USER
+        - name: IMAP_SSL
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: IMAP_SSL
+        - name: IMAP_STARTTLS
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: IMAP_STARTTLS
+        ports:
+        - name: http
+          containerPort: 80
+        - name: ssh
+          containerPort: 22
+        volumeMounts:
+        - mountPath: /home/git/data
+          name: data
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 900
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+      volumes:
+      - name: data
+        persistentVolumeClaim: 
+          claimName: gitlab-data

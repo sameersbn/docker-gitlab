@@ -1,11 +1,24 @@
+---
 apiVersion: v1
-kind: ReplicationController
+kind: Service
+metadata:
+  name: postgresql
+  labels:
+    name: postgresql
+spec:
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: postgres
+  selector:
+    name: postgresql
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   name: postgresql
 spec:
   replicas: 1
-  selector:
-    name: postgresql
   template:
     metadata:
       name: postgresql
@@ -17,13 +30,25 @@ spec:
         image: sameersbn/postgresql:9.6-2
         env:
         - name: DB_USER
-          value: gitlab
+          valueFrom:
+            secretKeyRef:
+              name: "gitlab-secrets"
+              key: "DB_USER"
         - name: DB_PASS
-          value: passw0rd
+          valueFrom:
+            secretKeyRef:
+              name: "gitlab-secrets"
+              key: "DB_PASS"
         - name: DB_NAME
-          value: gitlab_production
+          valueFrom:
+            secretKeyRef:
+              name: "gitlab-secrets"
+              key: "DB_NAME"
         - name: DB_EXTENSION
-          value: pg_trgm
+          valueFrom:
+            configMapKeyRef:
+              name: "gitlab-config"
+              key: "DB_EXTENSION"
         ports:
         - name: postgres
           containerPort: 5432
@@ -52,4 +77,5 @@ spec:
           timeoutSeconds: 1
       volumes:
       - name: data
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: postgresql-data

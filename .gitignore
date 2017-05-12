@@ -2,3 +2,5 @@
 *.tar.gz
 
 docker-compose.yml
+gitlab-config.yaml
+gitlab-secrets.yaml

@@ -1,11 +1,24 @@
+---
 apiVersion: v1
-kind: ReplicationController
+kind: Service
+metadata:
+  name: redis
+  labels:
+    name: redis
+spec:
+  ports:
+    - name: redis
+      port: 6379
+      targetPort: redis
+  selector:
+    name: redis
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   name: redis
 spec:
   replicas: 1
-  selector:
-    name: redis
   template:
     metadata:
       name: redis
@@ -37,4 +50,5 @@ spec:
           timeoutSeconds: 1
       volumes:
       - name: data
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: redis-data

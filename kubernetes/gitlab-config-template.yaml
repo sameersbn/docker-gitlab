@@ -1,0 +1,34 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: gitlab-config
+data:
+  TZ: "Asia/Kolkata"
+  GITLAB_TIMEZONE: "Kolkata"
+  DB_USER: "gitlab"
+  GITLAB_HOST: "localhost"
+  GITLAB_PORT: "10080"
+  GITLAB_NOTIFY_ON_BROKEN_BUILDS: "true"
+  GITLAB_NOTIFY_PUSHER: "false"
+  GITLAB_BACKUP_SCHEDULE: "daily"
+  GITLAB_BACKUP_TIME: "01:00"
+  DB_TYPE: "postgres"
+  DB_HOST: "postgresql"
+  DB_PORT: "5432"
+  DB_EXTENSION: "pg_trgm"
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"
+  SMTP_ENABLED: "false"
+  SMTP_DOMAIN: "www.example.com"
+  SMTP_HOST: "smtp.gmail.com"
+  SMTP_PORT: "587"
+  SMTP_USER: "mailer@example.com"
+  SMTP_STARTTLS: "true"
+  SMTP_AUTHENTICATION: "login"
+  IMAP_ENABLED: "false"
+  IMAP_HOST: "imap.gmail.com"
+  IMAP_PORT: "993"
+  IMAP_USER: "mailer@example.com"
+  IMAP_SSL: "true"
+  IMAP_STARTTLS: "false"
