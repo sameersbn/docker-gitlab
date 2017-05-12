@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -x
 
 GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
 GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz
@@ -12,7 +13,8 @@ BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
   libc6-dev ruby${RUBY_VERSION}-dev \
   libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
-  libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev"
+  libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev libkrb5-dev \
+  sqlite3 ruby-sqlite3 libsqlite3-dev"
 
 ## Execute a command as GITLAB_USER
 exec_as_git() {
@@ -108,11 +110,18 @@ exec_as_git sed -i 's/db:reset/db:setup/' ${GITLAB_INSTALL_DIR}/lib/tasks/gitlab
 
 cd ${GITLAB_INSTALL_DIR}
 
+exec_as_git echo | tee -a Gemfile
+exec_as_git echo "gem 'tzinfo-data'" | tee -a Gemfile
+bundle install -j$(nproc)
+
 # install gems, use local cache if available
 if [[ -d ${GEM_CACHE_DIR} ]]; then
   mv ${GEM_CACHE_DIR} ${GITLAB_INSTALL_DIR}/vendor/cache
   chown -R ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/vendor/cache
 fi
+
+chown -R ${GITLAB_USER}: ${GITLAB_HOME}
+
 exec_as_git bundle install -j$(nproc) --deployment --without development test aws
 
 # make sure everything in ${GITLAB_HOME} is owned by ${GITLAB_USER} user
@@ -128,7 +137,7 @@ exec_as_git yarn install --production --pure-lockfile
 
 echo "Compiling assets. Please be patient, this could take a while..."
 #Adding webpack compile needed since 8.17
-exec_as_git bundle exec rake assets:clean assets:precompile webpack:compile USE_DB=false SKIP_STORAGE_VALIDATION=true >/dev/null 2>&1
+exec_as_git bundle exec rake assets:clean assets:precompile webpack:compile USE_DB=false SKIP_STORAGE_VALIDATION=true 2>&1
 
 
 # remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
