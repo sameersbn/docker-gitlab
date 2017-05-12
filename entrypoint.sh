@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+
 source ${GITLAB_RUNTIME_DIR}/functions
 
 [[ $DEBUG == true ]] && set -x

@@ -68,11 +68,6 @@ spec:
             secretKeyRef:
               name: gitlab-secrets
               key: GITLAB_ROOT_EMAIL
-        - name: GITLAB_SSH_PORT
-          valueFrom:
-            secretKeyRef:
-              name: gitlab-secrets
-              key: GITLAB_SSH_PORT
         - name: DB_PASS
           valueFrom:
             secretKeyRef:
@@ -104,6 +99,11 @@ spec:
             configMapKeyRef:
               name: gitlab-config
               key: GITLAB_HOST
+        - name: GITLAB_SSH_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: GITLAB_SSH_PORT
         - name: GITLAB_PORT
           valueFrom:
             configMapKeyRef:
