@@ -53,7 +53,7 @@ production: &base
       - {{GITLAB_TRUSTED_PROXIES}}
 
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
-    user: {{ GITLAB_USER }}
+    user: {{GITLAB_SSH_USER}}
 
     ## Date & Time settings
     # Uncomment and customize if you want to change the default time zone of GitLab application.
