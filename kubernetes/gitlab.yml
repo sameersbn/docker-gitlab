@@ -40,7 +40,10 @@ spec:
               name: gitlab-config
               key: TZ
         - name: GITLAB_TIMEZONE
-          value: Kolkata
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-config
+              key: GITLAB_TIMEZONE
 
         - name: GITLAB_SECRETS_DB_KEY_BASE
           valueFrom:
