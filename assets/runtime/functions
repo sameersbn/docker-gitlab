@@ -1438,7 +1438,7 @@ EOF
 fi
 
 cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
-user=git
+user=${GITLAB_USER}
 autostart=true
 autorestart=true
 stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
