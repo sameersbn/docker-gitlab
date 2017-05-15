@@ -1,0 +1,89 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: gitlab-data
+  labels:
+    name: gitlab-data
+spec:
+  capacity:
+    storage: "200Gi"
+  accessModes:
+    - "ReadWriteOnce"
+  persistentVolumeReclaimPolicy: Retain
+  gcePersistentDisk:
+    fsType: "ext4"
+    pdName: "gitlab-data"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: gitlab-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Gi
+  selector:
+    matchLabels:
+      name: "gitlab-data"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgresql-data
+  labels:
+    name: postgresql-data
+spec:
+  capacity:
+    storage: "200Gi"
+  accessModes:
+    - "ReadWriteOnce"
+  persistentVolumeReclaimPolicy: Retain
+  gcePersistentDisk:
+    fsType: "ext4"
+    pdName: "postgresql-data"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgresql-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Gi
+  selector:
+    matchLabels:
+      name: "postgresql-data"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: redis-data
+  labels:
+    name: redis-data
+spec:
+  capacity:
+    storage: "200Gi"
+  accessModes:
+    - "ReadWriteOnce"
+  persistentVolumeReclaimPolicy: Retain
+  gcePersistentDisk:
+    fsType: "ext4"
+    pdName: "redis-data"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: redis-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Gi
+  selector:
+    matchLabels:
+      name: "redis-data"
