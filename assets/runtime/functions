@@ -155,6 +155,7 @@ gitlab_finalize_database_parameters() {
       ;;
     postgresql)
       DB_ENCODING=${DB_ENCODING:-unicode}
+      DB_COLLATION=${DB_COLLATION:-}
       DB_PORT=${DB_PORT:-5432}
       ;;
     *)
