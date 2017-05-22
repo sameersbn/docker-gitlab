@@ -1,0 +1,16 @@
+#! /usr/bin/python
+# EASY-INSTALL-ENTRY-SCRIPT: 'supervisor==3.0b2','console_scripts','supervisord'
+__requires__ = 'supervisor==3.0b2'
+import sys,os,signal
+from pkg_resources import load_entry_point
+
+def handle_term(a,b):
+    os.system("/etc/init.d/nginx stop");
+    os.system("/etc/init.d/gitlab stop");
+
+signal.signal(signal.SIGTERM.handle_term);
+
+if __name__ == '__main__':
+    sys.exit(
+        load_entry_point('supervisor==3.0b2', 'console_scripts', 'supervisord')()
+    )
