@@ -498,7 +498,7 @@ gitlab_configure_oauth_authentiq() {
       OAUTH_AUTHENTIQ_CLIENT_ID \
       OAUTH_AUTHENTIQ_CLIENT_SECRET \
       OAUTH_AUTHENTIQ_SCOPE \
-      OAUTH_AUTHENTIQ_REDIRECT_URI 
+      OAUTH_AUTHENTIQ_REDIRECT_URI
   else
     exec_as_git sed -i "/name: 'authentiq'/,/{{OAUTH_AUTHENTIQ_SCOPE}}/d" ${GITLAB_CONFIG}
   fi
@@ -546,14 +546,16 @@ gitlab_configure_oauth_bitbucket() {
 
 gitlab_configure_oauth_saml_attribute_statements() {
   if [[ -n ${OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL} && \
-        -n ${OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME} ]]; then
+        -n ${OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME} ]]; then
     echo "Configuring gitlab::oauth::saml::attribute_statements..."
     update_template ${GITLAB_CONFIG} \
+      OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME \
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL \
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME \
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME \
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME
     # Remove undefined optional attributes
+    exec_as_git sed -i "/name: \\[''\\],/d" ${GITLAB_CONFIG}
     exec_as_git sed -i "/first_name: \\[''\\],/d" ${GITLAB_CONFIG}
     exec_as_git sed -i "/last_name: \\[''\\],/d" ${GITLAB_CONFIG}
   else
@@ -1054,7 +1056,7 @@ nginx_configure_pages(){
     else
       update_template ${GITLAB_PAGES_NGINX_CONFIG} \
         GITLAB_PAGES_DOMAIN \
-        GITLAB_LOG_DIR 
+        GITLAB_LOG_DIR
     fi
   fi
 }
