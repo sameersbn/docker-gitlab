@@ -3,6 +3,9 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**9.2.1**
+- gitlab: upgrade to CE v9.2.1
+
 **9.2.0**
 - gilab: upgrade to CE v9.2.0
 - Add flexibility to use versions committed into gitlab-ce 
