@@ -47,6 +47,14 @@ exec_as_git git config --global core.autocrlf input
 exec_as_git git config --global gc.auto 0
 exec_as_git git config --global repack.writeBitmaps true
 
+# shallow clone gitlab-ce
+echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
+exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
+
+GITLAB_SHELL_VERSION=${GITLAB_SHELL_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_SHELL_VERSION)}
+GITLAB_WORKHORSE_VERSION=${GITLAB_WORKHOUSE_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_WORKHORSE_VERSION)}
+GITLAB_PAGES_VERSION=${GITLAB_PAGES_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_PAGES_VERSION)}
+
 # install gitlab-shell
 echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
 mkdir -p ${GITLAB_SHELL_INSTALL_DIR}
@@ -95,10 +103,6 @@ mv gitlab-pages /usr/local/bin/
 
 # remove go
 rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz /tmp/go
-
-# shallow clone gitlab-ce
-echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
-exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
 
 # remove HSTS config from the default headers, we configure it in nginx
 exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
