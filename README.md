@@ -92,28 +92,20 @@ See [Contributors](../../graphs/contributors) for the complete list developers t
 
 # Issues
 
-Docker is a relatively new project and is active being developed and tested by a thriving community of developers and testers and every release of docker features many enhancements and bugfixes.
+Before reporting your issue please try updating Docker to the latest version and check if it resolves the issue. Refer to the Docker [installation guide](https://docs.docker.com/installation) for instructions.
 
-Given the nature of the development and release cycle it is very important that you have the latest version of docker installed because any issue that you encounter might have already been fixed with a newer docker release.
+SELinux users should try disabling SELinux using the command `setenforce 0` to see if it resolves the issue.
 
-Install the most recent version of the Docker Engine for your platform using the [official Docker releases](http://docs.docker.com/engine/installation/), which can also be installed using:
+If the above recommendations for not help, please check that [our issue database](../../issues?q=is%20issue) doesn't already include that problem or suggestion before submitting an issue. If you find a match, you can use the "subscribe" button to get notified on updates. Do *not* leave random "+1" or "I have this too" comments, as they only clutter the discussion, and don't help resolving it. However, if you have ways to reproduce the issue or have additional information that may help resolving the issue, please leave a comment.
 
-```bash
-wget -qO- https://get.docker.com/ | sh
-```
+A great way to contribute to the project is to send a detailed report when you encounter an issue. We always appreciate a well-written, thorough bug report, and will thank you for it!
 
-Fedora and RHEL/CentOS users should try disabling selinux with `setenforce 0` and check if resolves the issue. If it does than there is not much that I can help you with. You can either stick with selinux disabled (not recommended by redhat) or switch to using ubuntu.
+When reporting issues, always include:
 
-You may also set `DEBUG=true` to enable debugging of the entrypoint script, which could help you pin point any configuration issues.
+* The output of `docker version`.
+* The output of `docker info`.
 
-If using the latest docker version and/or disabling selinux does not fix the issue then please file a issue request on the [issues](https://github.com/sameersbn/docker-gitlab/issues) page.
-
-In your issue report please make sure you provide the following information:
-
-- The host distribution and release version.
-- Output of the `docker version` command
-- Output of the `docker info` command
-- The `docker run` command you used to run the image (mask out the sensitive bits).
+Also include the steps required to reproduce the problem if possible and applicable. This information will help us review and fix your issue faster. When sending lengthy log-files, consider posting them as a gist (https://gist.github.com). Don't forget to remove sensitive data from your logfiles before posting (you can replace those parts with "REDACTED").
 
 # Prerequisites
 
