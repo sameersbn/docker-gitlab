@@ -5,6 +5,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 
 **9.2.0**
 - gilab: upgrade to CE v9.2.0
+- Add flexibility to use versions committed into gitlab-ce 
 
 **9.1.4**
 - gitlab: upgrade to CE v9.1.4
