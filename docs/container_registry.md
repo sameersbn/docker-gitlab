@@ -99,6 +99,7 @@ services:
     depends_on:
     - redis
     - postgresql
+    - registry
     ports:
     - "10080:80"
     - "10022:22"
@@ -135,6 +136,8 @@ services:
   registry:
     restart: always
     image: registry:2.4.1
+    ports:
+    - "5000:5000"
     volumes:
     - ./gitlab/shared/registry:/registry
     - ./certs:/certs
