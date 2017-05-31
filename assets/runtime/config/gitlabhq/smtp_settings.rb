@@ -22,6 +22,7 @@ if Rails.env.production?
     openssl_verify_mode: '{{SMTP_OPENSSL_VERIFY_MODE}}',
     ca_path: "{{SMTP_CA_PATH}}",
     ca_file: "{{SMTP_CA_FILE}}",
-    tls: {{SMTP_TLS}}
+    tls: {{SMTP_TLS}},
+    ssl: {{SMTP_SSL}}
   }
 end
