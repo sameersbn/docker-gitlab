@@ -905,6 +905,7 @@ Below is the complete list of available options that can be used to customize yo
 | `SIDEKIQ_MEMORY_KILLER_MAX_RSS` | Non-zero value enables the SidekiqMemoryKiller. Defaults to `1000000`. For additional options refer [Configuring the MemoryKiller](http://doc.gitlab.com/ce/operations/sidekiq_memory_killer.html) |
 | `DB_ADAPTER` | The database type. Possible values: `mysql2`, `postgresql`. Defaults to `postgresql`. |
 | `DB_ENCODING` | The database encoding. For `DB_ADAPTER` values `postresql` and `mysql2`, this parameter defaults to `unicode` and `utf8` respectively. |
+| `DB_COLLATION` | The database collation. Defaults to `utf8_general_ci` for `DB_ADAPTER` `mysql2`. This parameter is not supported for `DB_ADAPTER` `postresql` and will be removed. |
 | `DB_HOST` | The database server hostname. Defaults to `localhost`. |
 | `DB_PORT` | The database server port. Defaults to `3306` for mysql and `5432` for postgresql. |
 | `DB_NAME` | The database database name. Defaults to `gitlabhq_production` |
