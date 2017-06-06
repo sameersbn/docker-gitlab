@@ -334,7 +334,7 @@ docker run --name gitlab -it --rm [OPTIONS] \
 ```
 
 - **Step 4**: Create a certs folder
-Create an authentication certificate with [Generating certificate for authentication with the registry](#Generating-certificate-for-authentication-with-the-registry).
+Create an authentication certificate with [Generating certificate for authentication with the registry](#generating-certificate-for-authentication-with-the-registry).
 
 - **Step 5**: Create an registry instance
 
