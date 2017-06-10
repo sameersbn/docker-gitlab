@@ -1433,15 +1433,29 @@ configure_gitlab() {
 
 configure_gitlab_shell() {
   echo "Configuring gitlab-shell..."
-  update_template ${GITLAB_SHELL_CONFIG} \
-    GITLAB_RELATIVE_URL_ROOT \
-    GITLAB_HOME \
-    GITLAB_LOG_DIR \
-    GITLAB_SHELL_INSTALL_DIR \
-    SSL_SELF_SIGNED \
-    REDIS_HOST \
-    REDIS_PORT \
-    REDIS_DB_NUMBER
+  if [[ -n ${REDIS_PASS} ]]; then
+      sed -i -e 's/# pass: redispass # Allows you to specify the password for Redis/pass: "{{REDIS_PASS}}/"'
+      update_template ${GITLAB_SHELL_CONFIG} \
+        GITLAB_RELATIVE_URL_ROOT \
+        GITLAB_HOME \
+        GITLAB_LOG_DIR \
+        GITLAB_SHELL_INSTALL_DIR \
+        SSL_SELF_SIGNED \
+        REDIS_HOST \
+        REDIS_PORT \
+        REDIS_PASS \
+        REDIS_DB_NUMBER
+  else
+      update_template ${GITLAB_SHELL_CONFIG} \
+        GITLAB_RELATIVE_URL_ROOT \
+        GITLAB_HOME \
+        GITLAB_LOG_DIR \
+        GITLAB_SHELL_INSTALL_DIR \
+        SSL_SELF_SIGNED \
+        REDIS_HOST \
+        REDIS_PORT \
+        REDIS_DB_NUMBER
+  fi
 }
 
 
