@@ -96,7 +96,7 @@ gitlab_finalize_database_parameters() {
 
   # Is a Heroku/Dokku style DSN Set?
   if [[ -n ${DATABASE_URL}} ]]; then
-        if [[ ${DATABASE_URL} ~= "([a-z0-9]+):\/\/([a-z0-9]+):([a-z0-9]+)@([a-z0-9-]+):([0-9]+)\/([a-zA-Z0-9]+)" ]]; then
+        if [[ ${DATABASE_URL} =~ "([a-z0-9]+):\/\/([a-z0-9]+):([a-z0-9]+)@([a-z0-9-]+):([0-9]+)\/([a-zA-Z0-9]+)" ]]; then
             if [[ ${BASH_REMATCH[1]} == "postgres" ]]; then
                 DB_ADAPTER="postgresql"
             elif [[ ${BASH_REMATCH[1]} == "mysql" ]]; then
@@ -252,7 +252,7 @@ gitlab_finalize_redis_parameters() {
     REDIS_HOST=${REDIS_HOST:-${REDISIO_PORT_6379_TCP_ADDR}}
     REDIS_PORT=${REDIS_PORT:-${REDISIO_PORT_6379_TCP_PORT}}
   elif [[ -n ${REDIS_URL} ]]; then
-    if [[ ${REDIS_URL} ~= "redis:\/\/([a-z0-9]+):([a-z0-9]+)@([a-z0-9-]+):([0-9]+)" ]]; then
+    if [[ ${REDIS_URL} =~ "redis:\/\/([a-z0-9]+):([a-z0-9]+)@([a-z0-9-]+):([0-9]+)" ]]; then
         REDIS_PASS=${BASH_REMATCH[2]}
         REDIS_HOST=${BASH_REMATCH[3]}
         REDIS_PORT=${BASH_REMATCH[4]}
@@ -275,18 +275,33 @@ gitlab_finalize_redis_parameters() {
 
 gitlab_check_redis_connection() {
   timeout=60
-  while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} -n ${REDIS_DB_NUMBER} ping >/dev/null 2>&1
-  do
-    timeout=$(expr $timeout - 1)
-    if [[ $timeout -eq 0 ]]; then
-      echo ""
-      echo "Could not connect to redis server. Aborting..."
-      return 1
-    fi
-    echo -n "."
-    sleep 1
-  done
-  echo
+  if [[ -n ${REDIS_PASS} ]]; then
+      while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} -n ${REDIS_DB_NUMBER} -a ${REDIS_PASS} ping >/dev/null 2>&1
+      do
+        timeout=$(expr $timeout - 1)
+        if [[ $timeout -eq 0 ]]; then
+          echo ""
+          echo "Could not connect to redis server. Aborting..."
+          return 1
+        fi
+        echo -n "."
+        sleep 1
+      done
+      echo
+  else
+      while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} -n ${REDIS_DB_NUMBER} ping >/dev/null 2>&1
+      do
+        timeout=$(expr $timeout - 1)
+        if [[ $timeout -eq 0 ]]; then
+          echo ""
+          echo "Could not connect to redis server. Aborting..."
+          return 1
+        fi
+        echo -n "."
+        sleep 1
+      done
+      echo
+  fi
 }
 
 gitlab_configure_redis() {
