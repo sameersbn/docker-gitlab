@@ -96,7 +96,8 @@ gitlab_finalize_database_parameters() {
 
   # Is a Heroku/Dokku style DSN Set?
   if [[ -n ${DATABASE_URL}} ]]; then
-        if [[ ${DATABASE_URL} =~ "([a-z0-9]+):\/\/([a-z0-9]+):([a-z0-9]+)@([a-z0-9-]+):([0-9]+)\/([a-zA-Z0-9]+)" ]]; then
+        DB_REG="([a-z0-9]+)://([a-z0-9]+):([a-z0-9]+)@([a-z0-9-]+):([0-9]+)/([a-zA-Z0-9]+)"
+        if [[ ${DATABASE_URL} =~  $DB_REG ]]; then
             if [[ ${BASH_REMATCH[1]} == "postgres" ]]; then
                 DB_ADAPTER="postgresql"
             elif [[ ${BASH_REMATCH[1]} == "mysql" ]]; then
@@ -252,7 +253,8 @@ gitlab_finalize_redis_parameters() {
     REDIS_HOST=${REDIS_HOST:-${REDISIO_PORT_6379_TCP_ADDR}}
     REDIS_PORT=${REDIS_PORT:-${REDISIO_PORT_6379_TCP_PORT}}
   elif [[ -n ${REDIS_URL} ]]; then
-    if [[ ${REDIS_URL} =~ "redis:\/\/([a-z0-9]+):([a-z0-9]+)@([a-z0-9-]+):([0-9]+)" ]]; then
+    REDIS_REG="redis://([a-z0-9]+):([a-z0-9]+)@([a-z0-9-]+):([0-9]+)"
+    if [[ ${REDIS_URL} =~ ${REDIS_REG} ]]; then
         REDIS_PASS=${BASH_REMATCH[2]}
         REDIS_HOST=${BASH_REMATCH[3]}
         REDIS_PORT=${BASH_REMATCH[4]}
