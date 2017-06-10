@@ -1451,7 +1451,7 @@ configure_gitlab() {
 configure_gitlab_shell() {
   echo "Configuring gitlab-shell..."
   if [[ -n ${REDIS_PASS} ]]; then
-      sed -i -e 's/# pass: redispass # Allows you to specify the password for Redis/pass: "{{REDIS_PASS}}"/'
+      sed -i -e 's/# pass: redispass # Allows you to specify the password for Redis/pass: "{{REDIS_PASS}}"/' ${GITLAB_SHELL_CONFIG}
       update_template ${GITLAB_SHELL_CONFIG} \
         GITLAB_RELATIVE_URL_ROOT \
         GITLAB_HOME \
