@@ -93,46 +93,72 @@ gitlab_finalize_database_parameters() {
   # is a mysql or postgresql database linked?
   # requires that the mysql or postgresql containers have exposed
   # port 3306 and 5432 respectively.
-  if [[ -n ${MYSQL_PORT_3306_TCP_ADDR} ]]; then
-    DB_ADAPTER=${DB_ADAPTER:-mysql2}
-    DB_HOST=${DB_HOST:-${MYSQL_PORT_3306_TCP_ADDR}}
-    DB_PORT=${DB_PORT:-${MYSQL_PORT_3306_TCP_PORT}}
 
-    # support for linked sameersbn/mysql image
-    DB_USER=${DB_USER:-${MYSQL_ENV_DB_USER}}
-    DB_PASS=${DB_PASS:-${MYSQL_ENV_DB_PASS}}
-    DB_NAME=${DB_NAME:-${MYSQL_ENV_DB_NAME}}
+  # Is a Heroku/Dokku style DSN Set?
+  if [[ -n ${DATABASE_URL}} ]]; then
+        if [[ ${DATABASE_URL} ~= "([a-z0-9]+):\/\/([a-z0-9]+):([a-z0-9]+)@([a-z0-9-]+):([0-9]+)\/([a-zA-Z0-9]+)" ]]; then
+            if [[ ${BASH_REMATCH[1]} == "postgres" ]]; then
+                DB_ADAPTER="postgresql"
+            elif [[ ${BASH_REMATCH[1]} == "mysql" ]]; then
+                DB_ADAPTER="mysql2"
+            else
+                echo "Unsupported database type"
+            fi
+            DB_USER=${BASH_REMATCH[2]}
+            DB_PASS=${BASH_REMATCH[3]}
+            DB_HOST=${BASH_REMATCH[4]}
+            DB_PORT=${BASH_REMATCH[5]}
+            DB_NAME=${BASH_REMATCH[6]}
+        else
+            echo
+            echo "ERROR: "
+            echo "  Could not parse database connection string."
+            echo "  Cannot continue without a database. Aborting..."
+            echo
+            return 1
+        fi
+  else
+      if [[ -n ${MYSQL_PORT_3306_TCP_ADDR} ]]; then
+        DB_ADAPTER=${DB_ADAPTER:-mysql2}
+        DB_HOST=${DB_HOST:-${MYSQL_PORT_3306_TCP_ADDR}}
+        DB_PORT=${DB_PORT:-${MYSQL_PORT_3306_TCP_PORT}}
 
-    # support for linked orchardup/mysql and enturylink/mysql image
-    # also supports official mysql image
-    DB_USER=${DB_USER:-${MYSQL_ENV_MYSQL_USER}}
-    DB_PASS=${DB_PASS:-${MYSQL_ENV_MYSQL_PASSWORD}}
-    DB_NAME=${DB_NAME:-${MYSQL_ENV_MYSQL_DATABASE}}
-  elif [[ -n ${POSTGRESQL_PORT_5432_TCP_ADDR} ]]; then
-    DB_ADAPTER=${DB_ADAPTER:-postgresql}
-    DB_HOST=${DB_HOST:-${POSTGRESQL_PORT_5432_TCP_ADDR}}
-    DB_PORT=${DB_PORT:-${POSTGRESQL_PORT_5432_TCP_PORT}}
+        # support for linked sameersbn/mysql image
+        DB_USER=${DB_USER:-${MYSQL_ENV_DB_USER}}
+        DB_PASS=${DB_PASS:-${MYSQL_ENV_DB_PASS}}
+        DB_NAME=${DB_NAME:-${MYSQL_ENV_DB_NAME}}
 
-    # support for linked official postgres image
-    DB_USER=${DB_USER:-${POSTGRESQL_ENV_POSTGRES_USER}}
-    DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_POSTGRES_PASSWORD}}
-    DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_POSTGRES_DB}}
-    DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_POSTGRES_USER}}
+        # support for linked orchardup/mysql and enturylink/mysql image
+        # also supports official mysql image
+        DB_USER=${DB_USER:-${MYSQL_ENV_MYSQL_USER}}
+        DB_PASS=${DB_PASS:-${MYSQL_ENV_MYSQL_PASSWORD}}
+        DB_NAME=${DB_NAME:-${MYSQL_ENV_MYSQL_DATABASE}}
+      elif [[ -n ${POSTGRESQL_PORT_5432_TCP_ADDR} ]]; then
+        DB_ADAPTER=${DB_ADAPTER:-postgresql}
+        DB_HOST=${DB_HOST:-${POSTGRESQL_PORT_5432_TCP_ADDR}}
+        DB_PORT=${DB_PORT:-${POSTGRESQL_PORT_5432_TCP_PORT}}
 
-    # support for linked sameersbn/postgresql image
-    DB_USER=${DB_USER:-${POSTGRESQL_ENV_DB_USER}}
-    DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_DB_PASS}}
-    DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_DB_NAME}}
+        # support for linked official postgres image
+        DB_USER=${DB_USER:-${POSTGRESQL_ENV_POSTGRES_USER}}
+        DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_POSTGRES_PASSWORD}}
+        DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_POSTGRES_DB}}
+        DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_POSTGRES_USER}}
 
-    # support for linked orchardup/postgresql image
-    DB_USER=${DB_USER:-${POSTGRESQL_ENV_POSTGRESQL_USER}}
-    DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_POSTGRESQL_PASS}}
-    DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_POSTGRESQL_DB}}
+        # support for linked sameersbn/postgresql image
+        DB_USER=${DB_USER:-${POSTGRESQL_ENV_DB_USER}}
+        DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_DB_PASS}}
+        DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_DB_NAME}}
 
-    # support for linked paintedfox/postgresql image
-    DB_USER=${DB_USER:-${POSTGRESQL_ENV_USER}}
-    DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_PASS}}
-    DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_DB}}
+        # support for linked orchardup/postgresql image
+        DB_USER=${DB_USER:-${POSTGRESQL_ENV_POSTGRESQL_USER}}
+        DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_POSTGRESQL_PASS}}
+        DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_POSTGRESQL_DB}}
+
+        # support for linked paintedfox/postgresql image
+        DB_USER=${DB_USER:-${POSTGRESQL_ENV_USER}}
+        DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_PASS}}
+        DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_DB}}
+      fi
   fi
 
   if [[ -z ${DB_HOST} ]]; then
@@ -225,6 +251,12 @@ gitlab_finalize_redis_parameters() {
   if [[ -n ${REDISIO_PORT_6379_TCP_ADDR} ]]; then
     REDIS_HOST=${REDIS_HOST:-${REDISIO_PORT_6379_TCP_ADDR}}
     REDIS_PORT=${REDIS_PORT:-${REDISIO_PORT_6379_TCP_PORT}}
+  elif [[ -n ${REDIS_URL} ]]; then
+    if [[ ${REDIS_URL} ~= "redis:\/\/([a-z0-9]+):([a-z0-9]+)@([a-z0-9-]+):([0-9]+)" ]]; then
+        REDIS_PASS=${BASH_REMATCH[2]}
+        REDIS_HOST=${BASH_REMATCH[3]}
+        REDIS_PORT=${BASH_REMATCH[4]}
+    fi
   fi
 
   # set default redis port if not specified
@@ -262,11 +294,16 @@ gitlab_configure_redis() {
 
   gitlab_finalize_redis_parameters
   gitlab_check_redis_connection
-
-  update_template ${GITLAB_RESQUE_CONFIG} \
-    REDIS_HOST \
-    REDIS_PORT \
-    REDIS_DB_NUMBER
+  if [[ -n ${REDIS_URL} ]]; then
+      sed -i -e 's/url: redis://{{REDIS_HOST}}:{{REDIS_PORT}}/{{REDIS_DB_NUMBER}}/url: {{REDIS_URL}}/g' ${GITLAB_RESQUE_CONFIG}
+      update_template ${GITLAB_RESQUE_CONFIG} \
+        REDIS_URL
+  else
+      update_template ${GITLAB_RESQUE_CONFIG} \
+        REDIS_HOST \
+        REDIS_PORT \
+        REDIS_DB_NUMBER
+  fi
 }
 
 gitlab_configure_gitlab_workhorse() {
