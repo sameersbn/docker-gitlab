@@ -18,6 +18,7 @@ GITLAB_SHELL_CONFIG="${GITLAB_SHELL_INSTALL_DIR}/config.yml"
 GITLAB_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab"
 GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
 GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
+GITLAB_REGISTRY_SSL_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
 GITLAB_PAGES_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-pages"
 
 # Compares two version strings `a` and `b`
@@ -1078,15 +1079,23 @@ nginx_configure_gitlab_ci() {
 }
 
 nginx_configure_gitlab_registry() {
-  if [[ $GITLAB_REGISTRY_ENABLED == true && -f ${SSL_REGISTRY_CERT_PATH} && -f ${SSL_REGISTRY_KEY_PATH} ]]; then
-    echo "Configuring nginx::gitlab-registry..."
-    update_template ${GITLAB_REGISTRY_NGINX_CONFIG} \
-      GITLAB_LOG_DIR \
-      GITLAB_REGISTRY_PORT \
-      GITLAB_REGISTRY_HOST \
-      GITLAB_REGISTRY_API_URL \
-      SSL_REGISTRY_KEY_PATH \
-      SSL_REGISTRY_CERT_PATH
+  if [[ $GITLAB_REGISTRY_ENABLED == true ]]; then
+    if [[ -f ${SSL_REGISTRY_CERT_PATH} && -f ${SSL_REGISTRY_KEY_PATH} && ! ${GITLAB_REGISTRY_USE_REVERSE_PROXY} ]]; then
+        echo "Configuring nginx::gitlab-registry-ssl..."
+        update_template ${GITLAB_REGISTRY_SSL_NGINX_CONFIG} \
+          GITLAB_LOG_DIR \
+          GITLAB_REGISTRY_PORT \
+          GITLAB_REGISTRY_HOST \
+          GITLAB_REGISTRY_API_URL \
+          SSL_REGISTRY_KEY_PATH \
+          SSL_REGISTRY_CERT_PATH
+    else
+        echo "Configuring nginx::gitlab-registry..."
+        update_template ${GITLAB_REGISTRY_NGINX_CONFIG} \
+          GITLAB_LOG_DIR \
+          GITLAB_REGISTRY_HOST \
+          GITLAB_REGISTRY_API_URL
+    fi
   fi
 }
 
