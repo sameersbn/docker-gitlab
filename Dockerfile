@@ -1,4 +1,4 @@
-FROM goodrainapps/ubuntu:14.04.20150323
+FROM goodrainapps/ubuntu:14.04.20170613
 MAINTAINER zhouyq@goodrain.com
 
 ENV GITLAB_VERSION=9.2.5 \
