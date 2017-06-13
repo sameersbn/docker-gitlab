@@ -1,5 +1,5 @@
-FROM sameersbn/ubuntu:14.04.20170503
-MAINTAINER sameer@damagehead.com
+FROM goodrainapps/ubuntu:14.04.20150323
+MAINTAINER zhouyq@goodrain.com
 
 ENV GITLAB_VERSION=9.2.5 \
     RUBY_VERSION=2.3 \
