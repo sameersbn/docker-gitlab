@@ -55,7 +55,7 @@ RUN chmod 755 /sbin/entrypoint.sh
 
 EXPOSE 22/tcp 80/tcp 443/tcp
 
-VOLUME ["${GITLAB_DATA_DIR}", "${GITLAB_LOG_DIR}"]
-WORKDIR ${GITLAB_INSTALL_DIR}
+VOLUME ["/home/git/data", "/var/log/gitlab"]
+WORKDIR /home/git/gitlab
 ENTRYPOINT ["/sbin/entrypoint.sh"]
 CMD ["app:start"]
