@@ -498,7 +498,7 @@ gitlab_configure_oauth_authentiq() {
       OAUTH_AUTHENTIQ_CLIENT_ID \
       OAUTH_AUTHENTIQ_CLIENT_SECRET \
       OAUTH_AUTHENTIQ_SCOPE \
-      OAUTH_AUTHENTIQ_REDIRECT_URI 
+      OAUTH_AUTHENTIQ_REDIRECT_URI
   else
     exec_as_git sed -i "/name: 'authentiq'/,/{{OAUTH_AUTHENTIQ_SCOPE}}/d" ${GITLAB_CONFIG}
   fi
@@ -693,6 +693,8 @@ gitlab_configure_secrets() {
   GITLAB_SECRETS_DB_KEY_BASE \
   GITLAB_SECRETS_SECRET_KEY_BASE \
   GITLAB_SECRETS_OTP_KEY_BASE
+  # backup secrets config
+  cp -f ${GITLAB_SECRETS_CONFIG} ${GITLAB_DATA_DIR}/
 }
 
 gitlab_configure_sidekiq() {
@@ -1054,7 +1056,7 @@ nginx_configure_pages(){
     else
       update_template ${GITLAB_PAGES_NGINX_CONFIG} \
         GITLAB_PAGES_DOMAIN \
-        GITLAB_LOG_DIR 
+        GITLAB_LOG_DIR
     fi
   fi
 }
