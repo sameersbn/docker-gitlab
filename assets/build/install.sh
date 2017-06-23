@@ -134,7 +134,7 @@ exec_as_git yarn install --production --pure-lockfile
 
 echo "Compiling assets. Please be patient, this could take a while..."
 #Adding webpack compile needed since 8.17
-exec_as_git bundle exec rake assets:clean assets:precompile webpack:compile USE_DB=false SKIP_STORAGE_VALIDATION=true >/dev/null 2>&1
+exec_as_git bundle exec rake assets:clean assets:precompile webpack:compile USE_DB=false SKIP_STORAGE_VALIDATION=true
 
 
 # remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
