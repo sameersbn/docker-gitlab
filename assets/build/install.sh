@@ -55,6 +55,11 @@ GITLAB_SHELL_VERSION=${GITLAB_SHELL_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_
 GITLAB_WORKHORSE_VERSION=${GITLAB_WORKHOUSE_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_WORKHORSE_VERSION)}
 GITLAB_PAGES_VERSION=${GITLAB_PAGES_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_PAGES_VERSION)}
 
+#download golang
+echo "Downloading Go ${GOLANG_VERSION}..."
+wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
+tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
+
 # install gitlab-shell
 echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
 mkdir -p ${GITLAB_SHELL_INSTALL_DIR}
@@ -65,6 +70,10 @@ chown -R ${GITLAB_USER}: ${GITLAB_SHELL_INSTALL_DIR}
 
 cd ${GITLAB_SHELL_INSTALL_DIR}
 exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+if [[ -x ./bin/compile ]]; then
+  echo "Compiling gitlab-shell golang executables..."
+  exec_as_git PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go ./bin/compile
+fi
 exec_as_git ./bin/install
 
 # remove unused repositories directory created by gitlab-shell install
@@ -74,11 +83,6 @@ exec_as_git rm -rf ${GITLAB_HOME}/repositories
 echo "Cloning gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_URL} ${GITLAB_WORKHORSE_INSTALL_DIR}
 chown -R ${GITLAB_USER}: ${GITLAB_WORKHORSE_INSTALL_DIR}
-
-#download golang
-echo "Downloading Go ${GOLANG_VERSION}..."
-wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
-tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
 
 #install gitlab-workhorse
 cd ${GITLAB_WORKHORSE_INSTALL_DIR}
