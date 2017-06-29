@@ -19,6 +19,7 @@ GITLAB_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab"
 GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
 GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
 GITLAB_PAGES_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-pages"
+GITLAB_GITALY_CONFIG="${GITLAB_GITALY_INSTALL_DIR}/config.toml"
 
 # Compares two version strings `a` and `b`
 # Returns
@@ -269,6 +270,19 @@ gitlab_configure_redis() {
     REDIS_DB_NUMBER
 }
 
+gitlab_configure_gitaly() {
+  echo "Configuring gitlab::gitaly..."
+  update_template /etc/supervisor/conf.d/gitaly.conf GITALY_ENABLED
+
+  update_template ${GITLAB_GITALY_CONFIG} \
+    GITALY_SOCKET_PATH \
+    GITLAB_REPOS_DIR
+
+  if [[ ${GITALY_ENABLED} != true ]]; then
+    exec_as_git sed -i "/{{GITALY_ADDRESS}}/d" ${GITLAB_CONFIG}
+  fi
+}
+
 gitlab_configure_gitlab_workhorse() {
   echo "Configuring gitlab::gitlab-workhorse..."
   update_template /etc/supervisor/conf.d/gitlab-workhorse.conf \
@@ -498,7 +512,7 @@ gitlab_configure_oauth_authentiq() {
       OAUTH_AUTHENTIQ_CLIENT_ID \
       OAUTH_AUTHENTIQ_CLIENT_SECRET \
       OAUTH_AUTHENTIQ_SCOPE \
-      OAUTH_AUTHENTIQ_REDIRECT_URI 
+      OAUTH_AUTHENTIQ_REDIRECT_URI
   else
     exec_as_git sed -i "/name: 'authentiq'/,/{{OAUTH_AUTHENTIQ_SCOPE}}/d" ${GITLAB_CONFIG}
   fi
@@ -1054,7 +1068,7 @@ nginx_configure_pages(){
     else
       update_template ${GITLAB_PAGES_NGINX_CONFIG} \
         GITLAB_PAGES_DOMAIN \
-        GITLAB_LOG_DIR 
+        GITLAB_LOG_DIR
     fi
   fi
 }
@@ -1369,6 +1383,7 @@ configure_gitlab() {
   gitlab_configure_redis
   gitlab_configure_secrets
   gitlab_configure_sidekiq
+  gitlab_configure_gitaly
   gitlab_configure_gitlab_workhorse
   gitlab_configure_relative_url
   gitlab_configure_trusted_proxies
