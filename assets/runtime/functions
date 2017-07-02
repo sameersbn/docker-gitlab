@@ -150,11 +150,13 @@ gitlab_finalize_database_parameters() {
   DB_ADAPTER=${DB_ADAPTER:-postgresql}
   case ${DB_ADAPTER} in
     mysql2)
+      DB_COLLATION=${DB_COLLATION:-utf8_general_ci}
       DB_ENCODING=${DB_ENCODING:-utf8}
       DB_COLLATION=${DB_COLLATION:-utf8_general_ci}
       DB_PORT=${DB_PORT:-3306}
       ;;
     postgresql)
+      DB_COLLATION=${DB_COLLATION:-utf8_general_ci}
       DB_ENCODING=${DB_ENCODING:-unicode}
       # DB_COLLATION: Not supported for postgresql and will be removed below.
       DB_PORT=${DB_PORT:-5432}
@@ -207,6 +209,7 @@ gitlab_configure_database() {
 
   update_template ${GITLAB_DATABASE_CONFIG} \
     DB_ADAPTER \
+    DB_COLLATION \
     DB_ENCODING \
     DB_COLLATION \
     DB_HOST \
