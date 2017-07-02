@@ -193,7 +193,7 @@ production: &base
       cron: "0 * * * *"
     # Execute scheduled triggers
     pipeline_schedule_worker:
-      cron: {{GITLAB_PIPELINE_SCHEDULE_WORKER_CRON}}
+      cron: "{{GITLAB_PIPELINE_SCHEDULE_WORKER_CRON}}"
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
