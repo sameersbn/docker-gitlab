@@ -193,7 +193,7 @@ production: &base
       cron: "0 * * * *"
     # Execute scheduled triggers
     pipeline_schedule_worker:
-      cron: "19 * * * *"
+      cron: {{GITLAB_PIPELINE_SCHEDULE_WORKER_CRON}}
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
@@ -204,7 +204,6 @@ production: &base
     # Send admin emails once a week
     admin_email_worker:
       cron: "0 0 * * 0"
-
     # Remove outdated repository archives
     repository_archive_cache_worker:
       cron: "0 * * * *"

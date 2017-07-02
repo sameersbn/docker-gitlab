@@ -151,10 +151,12 @@ gitlab_finalize_database_parameters() {
   case ${DB_ADAPTER} in
     mysql2)
       DB_ENCODING=${DB_ENCODING:-utf8}
+      DB_COLLATION=${DB_COLLATION:-utf8_general_ci}
       DB_PORT=${DB_PORT:-3306}
       ;;
     postgresql)
       DB_ENCODING=${DB_ENCODING:-unicode}
+      # DB_COLLATION: Not supported for postgresql and will be removed below.
       DB_PORT=${DB_PORT:-5432}
       ;;
     *)
@@ -206,6 +208,7 @@ gitlab_configure_database() {
   update_template ${GITLAB_DATABASE_CONFIG} \
     DB_ADAPTER \
     DB_ENCODING \
+    DB_COLLATION \
     DB_HOST \
     DB_PORT \
     DB_NAME \
@@ -839,6 +842,16 @@ gitlab_configure_gravatar() {
   fi
 }
 
+gitlab_configure_cron_jobs() {
+  echo "Configuring gitlab::cron_jobs..."
+  
+  if [[ -n ${GITLAB_PIPELINE_SCHEDULE_WORKER_CRON} ]]; then
+    update_template ${GITLAB_CONFIG} GITLAB_PIPELINE_SCHEDULE_WORKER_CRON
+  else
+    exec_as_git sed -i "/{{GITLAB_PIPELINE_SCHEDULE_WORKER_CRON}}/d" ${GITLAB_CONFIG}
+  fi
+}
+
 gitlab_configure_analytics_google() {
   if [[ -n ${GOOGLE_ANALYTICS_ID} ]]; then
   echo "Configuring gitlab::analytics:google..."
@@ -1400,6 +1413,7 @@ configure_gitlab() {
   gitlab_configure_oauth
   gitlab_configure_ldap
   gitlab_configure_gravatar
+  gitlab_configure_cron_jobs
   gitlab_configure_analytics
   gitlab_configure_backups
   gitlab_configure_registry
