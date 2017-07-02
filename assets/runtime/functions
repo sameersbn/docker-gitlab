@@ -1368,6 +1368,10 @@ install_configuration_templates() {
       echo "Assuming that the Registry is running behind a HTTPS enabled load balancer."
     fi
   fi
+
+  if [[ ${GITALY_ENABLED} == true ]]; then
+    install_template ${GITLAB_USER}: gitaly/config.toml ${GITLAB_GITALY_CONFIG}
+  fi
 }
 
 configure_gitlab() {
