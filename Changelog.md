@@ -5,6 +5,12 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 
 **9.3.0**
 - gitlab: upgrade to CE v9.3.0
+- update baseimage to `14.04.20170608`
+- Add `DB_COLLATION` (For MySQL related doesn't recognize by postgres)
+- Add `GITLAB_PIPELINE_SCHEDULE_WORKER_CRON` 
+- Add `GITALY_ENABLED`
+- Add `GITALY_SOCKET_PATH`
+- Add `GITALY_ADDRESS`
 
 **9.2.7**
 - gitlab: upgrade to CE v9.2.7
