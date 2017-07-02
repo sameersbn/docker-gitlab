@@ -3,6 +3,9 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**9.3.0-1**
+- Add the missing Gitaly config to let git commands over http/https working 
+
 **9.3.0**
 - gitlab: upgrade to CE v9.3.0
 - update baseimage to `14.04.20170608`
