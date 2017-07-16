@@ -156,6 +156,9 @@ exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VAL
 # remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
 rm -rf ${GITLAB_DATA_DIR}/config/secrets.yml
 
+# remove gitlab shell and workhorse secrets
+rm -f ${GITLAB_INSTALL_DIR}/.gitlab_shell_secret ${GITLAB_INSTALL_DIR}/.gitlab_workhorse_secret
+
 exec_as_git mkdir -p ${GITLAB_INSTALL_DIR}/tmp/pids/ ${GITLAB_INSTALL_DIR}/tmp/sockets/
 chmod -R u+rwX ${GITLAB_INSTALL_DIR}/tmp
 
