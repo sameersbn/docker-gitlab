@@ -28,6 +28,19 @@ exec_as_git() {
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -y ${BUILD_DEPENDENCIES}
 
+# Install RE2 library wich became dependencie since 9.3.8 version
+# https://gitlab.com/gitlab-org/gitlab-ce/issues/35342
+DEBIAN_FRONTEND=noninteractive apt-get install -y checkinstall
+cd /tmp
+git clone https://github.com/google/re2.git
+cd re2/ && make && make test
+checkinstall -D --install=no -y --pkgname=re2 --pkgversion=1-current
+dpkg -i re2_1-current-1_amd64.deb
+ldconfig
+cd -
+rm -rf /tmp/re2
+DEBIAN_FRONTEND=noninteractive apt-get purge -y --auto-remove checkinstall
+
 # https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
 paxctl -Cm `which nodejs`
 
