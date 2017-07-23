@@ -67,6 +67,14 @@ server {
   ssl_session_timeout 5m;
 
   ## See app/controllers/application_controller.rb for headers set
+
+  ## Real IP Module Config
+  ## http://nginx.org/en/docs/http/ngx_http_realip_module.html
+  real_ip_header X-Real-IP; ## X-Real-IP or X-Forwarded-For or proxy_protocol
+  real_ip_recursive {{NGINX_REAL_IP_RECURSIVE}};    ## If you enable 'on'
+  ## If you have a trusted IP address, uncomment it and set it
+  set_real_ip_from {{NGINX_REAL_IP_TRUSTED_ADDRESSES}}; ## Replace this with something like 192.168.1.0/24
+
   add_header X-Accel-Buffering {{NGINX_ACCEL_BUFFERING}};
   add_header Strict-Transport-Security "max-age={{NGINX_HSTS_MAXAGE}};";
 
