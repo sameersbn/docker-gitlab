@@ -3,6 +3,11 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**9.4.0**
+- gitlab: upgrade to CE v9.4.0
+- Added support for nginx_real_ip module ([#1137](https://github.com/sameersbn/docker-gitlab/pull/1137))
+- Added more security for regenarting certs ([#1288](https://github.com/sameersbn/docker-gitlab/pull/1288))
+
 **9.3.9**
 - gitlab: upgrade to CE v9.3.9
 
