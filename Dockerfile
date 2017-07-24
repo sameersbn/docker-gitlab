@@ -1,4 +1,4 @@
-FROM sameersbn/ubuntu:14.04.20170608
+FROM ubuntu:trusty
 MAINTAINER sameer@damagehead.com
 
 ENV GITLAB_VERSION=9.3.9 \
@@ -24,6 +24,11 @@ ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
     GITLAB_BUILD_DIR="${GITLAB_CACHE_DIR}/build" \
     GITLAB_RUNTIME_DIR="${GITLAB_CACHE_DIR}/runtime"
 
+RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
+ && echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends \
+ && apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y wget sudo net-tools ca-certificates apt-transport-https
+
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E6030699E45FA1715D88E1DF1F24 \
  && echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" >> /etc/apt/sources.list \
  && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 80F70E11F0F0D5F10CB20E62F5DA5F09C3173AA6 \
@@ -37,7 +42,7 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && wget --quiet -O - https://dl.yarnpkg.com/debian/pubkey.gpg  | apt-key add - \
  && echo 'deb https://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list.d/yarn.list \
  && apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor logrotate locales curl \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor logrotate locales curl unzip \
       nginx openssh-server mysql-client postgresql-client redis-tools \
       git-core ruby${RUBY_VERSION} python2.7 python-docutils nodejs yarn gettext-base \
       libmysqlclient18 libpq5 zlib1g libyaml-0-2 libssl1.0.0 \
