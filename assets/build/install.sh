@@ -13,7 +13,8 @@ BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
   libc6-dev ruby${RUBY_VERSION}-dev \
   libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
-  libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev"
+  libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
+  gettext"
 
 ## Execute a command as GITLAB_USER
 exec_as_git() {
@@ -162,6 +163,8 @@ exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.mysql ${GITLAB_INSTALL_
 
 # Installs nodejs packages required to compile webpack
 exec_as_git yarn install --production --pure-lockfile
+
+exec_as_git bundle exec rake gettext:compile SKIP_STORAGE_VALIDATION=true
 
 echo "Compiling assets. Please be patient, this could take a while..."
 exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true
