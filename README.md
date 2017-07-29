@@ -163,12 +163,19 @@ Start GitLab using:
 docker-compose up
 ```
 
-Alternatively, you can manually launch the `gitlab` container and the supporting `postgresql` and `redis` containers by following this three step guide.
+Alternatively, you can manually launch the `gitlab` container and the supporting `postgresql` and `redis` containers by following this four step guide.
 
-Step 1. Launch a postgresql container
+Step 1. Create a docker network (provides container discovery by DNS)
+
+```bash
+docker network create nw_gitlab
+```
+
+Step 2. Launch a postgresql container, attached to the "nw_gitlab" network
 
 ```bash
 docker run --name gitlab-postgresql -d \
+    --network=nw_gitlab \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --env 'DB_EXTENSION=pg_trgm' \
@@ -176,20 +183,23 @@ docker run --name gitlab-postgresql -d \
     sameersbn/postgresql:9.6-2
 ```
 
-Step 2. Launch a redis container
+Step 3. Launch a redis container, attached to the "nw_gitlab" network
 
 ```bash
 docker run --name gitlab-redis -d \
+    --network=nw_gitlab \
     --volume /srv/docker/gitlab/redis:/var/lib/redis \
     sameersbn/redis:latest
 ```
 
-Step 3. Launch the gitlab container
+Step 4. Launch the gitlab container, attached to the "nw_gitlab" network
 
 ```bash
 docker run --name gitlab -d \
-    --link gitlab-postgresql:postgresql --link gitlab-redis:redisio \
     --publish 10022:22 --publish 10080:80 \
+    --network=nw_gitlab \
+    --env 'REDIS_HOST'=gitlab-redis \
+    --env 'DB_HOST'=gitlab-postgresql \
     --env 'GITLAB_PORT=10080' --env 'GITLAB_SSH_PORT=10022' \
     --env 'GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alpha-numeric-string' \
     --env 'GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alpha-numeric-string' \
