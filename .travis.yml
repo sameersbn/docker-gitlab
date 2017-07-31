@@ -6,4 +6,4 @@ services:
   - docker
 
 script:
- - docker build -t sammeersbn/gitlab .
+ - docker build --build-arg GITLAB_VERSION=$(cat ./VERSION) -t sammeersbn/gitlab .
