@@ -1,8 +1,9 @@
 FROM sameersbn/ubuntu:14.04.20170724
-MAINTAINER sameer@damagehead.com
+LABEL maintainer sameer@damagehead.com
 
-ENV GITLAB_VERSION=9.4.1 \
-    RUBY_VERSION=2.3 \
+ARG GITLAB_VERSION
+
+ENV RUBY_VERSION=2.3 \
     GOLANG_VERSION=1.8.3 \
     GITLAB_SHELL_VERSION=5.3.1 \
     GITLAB_WORKHORSE_VERSION=2.3.0 \
