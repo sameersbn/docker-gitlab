@@ -1,3 +1,5 @@
+export VERSION:=$(shell cat VERSION)
+
 all: build
 
 help:
@@ -11,10 +13,10 @@ help:
 	@echo "   5. make purge        - stop and remove the container"
 
 build:
-	@docker build --build-arg GITLAB_VERSION=$(shell cat VERSION) --tag=sameersbn/gitlab .
+	@docker build --build-arg GITLAB_VERSION=$(VERSION) --tag=sameersbn/gitlab .
 
 release: build
-	@docker build --build-arg GITLAB_VERSION=$(shell cat VERSION) --tag=sameersbn/gitlab:$(shell cat VERSION) .
+	@docker build --build-arg GITLAB_VERSION=$(VERSION) --tag=sameersbn/gitlab:$(VERSION) .
 
 quickstart:
 	@echo "Starting postgresql container..."
