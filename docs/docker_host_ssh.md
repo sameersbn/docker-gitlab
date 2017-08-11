@@ -49,7 +49,15 @@ docker run --name gitlab -it --rm [options] \
     sameersbn/gitlab:8.11.3
 ```
 
-### (Optional) Use default UID/GID in the container
+## Access GitLab
+
+Use Docker host SSH server to access repositories:
+
+```bash
+git clone git@docker.host:group/project.git
+```
+
+## Advanced: Use default UID/GID in the container
 
 if you rely on the default `uid` and `git`, for example if you link GitLab to [sameersbn/redmine](https://github.com/sameersbn/docker-redmine) container, you can run the container without UID/GID mapping and use [incron](http://inotify.aiken.cz/?section=incron&page=about&lang=en) to keep `.ssh/authorized_keys` accessible by host `git` user:
 
@@ -58,7 +66,7 @@ docker run --name gitlab -it --rm [options] \
     sameersbn/gitlab:8.11.3
 ```
 
-Create the script at `/srv/docker/gitlab/data/fix_ssh_permissions.incron.sh`:
+Create the script at `/srv/docker/gitlab/fix_ssh_permissions.incron.sh`:
 
 ```bash
 #!/bin/bash
@@ -70,7 +78,7 @@ Create the script at `/srv/docker/gitlab/data/fix_ssh_permissions.incron.sh`:
 Make it executable:
 
 ```bash
-chmod +x /srv/docker/gitlab/data/fix_ssh_permissions.incron.sh
+chmod +x /srv/docker/gitlab/fix_ssh_permissions.incron.sh
 ```
 
 Install incron:
@@ -89,7 +97,7 @@ incrontab -e
 and paste this:
 
 ```
-/srv/docker/gitlab/data/.ssh IN_ATTRIB /srv/docker/gitlab/data/fix_ssh_permissions.incron.sh $@/$#
+/srv/docker/gitlab/data/.ssh IN_ATTRIB /srv/docker/gitlab/fix_ssh_permissions.incron.sh $@/$#
 ```
 
 Start incrond and touch `authorized_keys` to have the permissions fixed:
@@ -105,12 +113,4 @@ Ensure that OpenSSH is running without `StrictModes`:
 ```
 sed -i 's/StrictModes yes/StrictModes no/' /etc/ssh/sshd_config
 /etc/init.d/ssh reload
-```
-
-## Access GitLab
-
-Use Docker host to access repositories:
-
-```bash
-git clone git@docker.host:group/project.git
 ```
