@@ -5,13 +5,13 @@ It is possible to use the SSH daemon that runs on the docker host instead of usi
 
 ## Setup
 
-Create the system `git` user if necessary (make sure it is added to `docker` group and has a working shell):
+Create the system `git` user if necessary (make sure it has a working shell):
 
 ```bash
-useradd --system git --home-dir /srv/docker/gitlab/data --groups docker
+useradd --system git --home-dir /srv/docker/gitlab/data
 ```
 
-Note that the home directory must point to GitLab data directory, as it takes `.ssh/authorized_keys` from there.
+The home directory must point to GitLab data directory, as it takes `.ssh/authorized_keys` from there.
 
 Now create `gitlab-shell` home directory at the same location as in the container:
 
@@ -24,13 +24,19 @@ Create the shell proxy script at `/home/git/gitlab-shell/bin/gitlab-shell`:
 ```bash
 #!/bin/bash
 # Proxy SSH requests to docker container
-docker exec -i -u git gitlab sh -c "SSH_CONNECTION='$SSH_CONNECTION' SSH_ORIGINAL_COMMAND='$SSH_ORIGINAL_COMMAND' $0 $1"
+sudo docker exec -i -u git gitlab sh -c "SSH_CONNECTION='$SSH_CONNECTION' SSH_ORIGINAL_COMMAND='$SSH_ORIGINAL_COMMAND' $0 $1"
 ```
 
 Make it executable:
 
 ```bash
 chmod +x /home/git/gitlab-shell/bin/gitlab-shell
+```
+
+Allow `git` user limited sudo access to execute a command inside GitLab docker container:
+
+```bash
+echo "git ALL=NOPASSWD: /usr/bin/docker exec -i -u git gitlab *" > /etc/sudoers.d/docker-gitlab
 ```
 
 ## Run GitLab
