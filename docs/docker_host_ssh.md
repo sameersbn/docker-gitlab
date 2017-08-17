@@ -59,7 +59,7 @@ git clone git@docker.host:group/project.git
 
 ## Advanced: Use default UID/GID in the container
 
-if you rely on the default `uid` and `git`, for example if you link GitLab to [sameersbn/redmine](https://github.com/sameersbn/docker-redmine) container, you can run the container without UID/GID mapping and use [incron](http://inotify.aiken.cz/?section=incron&page=about&lang=en) to keep `.ssh/authorized_keys` accessible by host `git` user:
+If you rely on the default `uid` and `gid`, for example if you link GitLab to [sameersbn/redmine](https://github.com/sameersbn/docker-redmine) container, you can run the container without UID/GID mapping and use [incron](http://inotify.aiken.cz/?section=incron&page=about&lang=en) to keep `.ssh/authorized_keys` accessible by host `git` user:
 
 ```bash
 docker run --name gitlab -it --rm [options] \
