@@ -493,6 +493,10 @@ production: &base
       default:
         path: {{GITLAB_REPOS_DIR}}/
         gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
+        failure_count_threshold: 10 # number of failures before stopping attempts
+        failure_wait_time: 30 # Seconds after an access failure before allowing access again
+        failure_reset_time: 1800 # Time in seconds to expire failures
+        storage_timeout: 5 # Time in seconds to wait before aborting a storage access attempt
 
   ## Backup settings
   backup:
