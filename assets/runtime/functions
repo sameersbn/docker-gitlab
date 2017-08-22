@@ -783,6 +783,7 @@ gitlab_configure_backups_schedule() {
 gitlab_configure_backups_aws() {
     echo "Configuring gitlab::backups::aws..."
     exec_as_git sed -i "/#start-gcs/,/#end-gcs/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/#start-openstack/,/#end-openstack/d" ${GITLAB_CONFIG}
     exec_as_git sed -i "/#start-aws/d" ${GITLAB_CONFIG}
     exec_as_git sed -i "/#end-aws/d" ${GITLAB_CONFIG}
 
@@ -813,6 +814,7 @@ gitlab_configure_backups_aws() {
 gitlab_configure_backup_gcs() {
     echo "Configuring gitlab::backups::gcs..."
     exec_as_git sed -i "/#start-aws/,/#end-aws/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/#start-openstack/,/#end-openstack/d" ${GITLAB_CONFIG}
     exec_as_git sed -i "/#start-gcs/d" ${GITLAB_CONFIG}
     exec_as_git sed -i "/#end-gcs/d" ${GITLAB_CONFIG}
     if [[ -z ${GCS_BACKUP_ACCESS_KEY_ID} || -z ${GCS_BACKUP_SECRET_ACCESS_KEY} || -z ${GCS_BACKUP_BUCKET} ]]; then
@@ -825,6 +827,25 @@ gitlab_configure_backup_gcs() {
       GCS_BACKUP_BUCKET
 }
 
+gitlab_configure_backup_openstack() {
+    echo "Configuring gitlab::backups::openstack..."
+    exec_as_git sed -i "/#start-aws/,/#end-aws/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/#start-gcs/,/#end-gcs/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/#start-gcs/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/#end-gcs/d" ${GITLAB_CONFIG}
+    if [[ -z ${OPENSTACK_BACKUP_USERNAME} || -z ${OPENSTACK_BACKUP_PASSWORD} || -z ${OPENSTACK_BACKUP_AUTH_URL} || -z ${OPENSTACK_BACKUP_CONTAINER} ]]; then
+      printf "\nMissing OpenStack options. Aborting...\n"
+      return 1
+    fi
+    update_template ${GITLAB_CONFIG} \
+      OPENSTACK_BACKUP_USERNAME \
+      OPENSTACK_BACKUP_PASSWORD \
+      OPENSTACK_BACKUP_TENANT \
+      OPENSTACK_BACKUP_AUTH_URL \
+      OPENSTACK_BACKUP_REGION \
+      OPENSTACK_BACKUP_CONTAINER
+}
+
 gitlab_configure_backups() {
   echo "Configuring gitlab::backups..."
   update_template ${GITLAB_CONFIG} \
@@ -833,12 +854,12 @@ gitlab_configure_backups() {
     GITLAB_BACKUP_PG_SCHEMA \
     GITLAB_BACKUP_ARCHIVE_PERMISSIONS
   gitlab_configure_backups_schedule
-  if [[ ${AWS_BACKUPS} != true && ${GCS_BACKUPS} != true ]]; then
+  if [[ ${AWS_BACKUPS} != true && ${GCS_BACKUPS} != true && ${OPENSTACK_BACKUPS} != true ]]; then
     exec_as_git sed -i "/upload:/,/#end-gcs/d" ${GITLAB_CONFIG}
     return 0
   fi
-  if [[ ${AWS_BACKUPS} == true && ${GCS_BACKUPS} == true ]]; then
-    printf "\nAWS and GCE cannot be enabled together, please choose one...\n"
+  if [[ ( ${AWS_BACKUPS} == true && ${GCS_BACKUPS} == true ) || ( ${AWS_BACKUPS} == true && ${OPENSTACK_BACKUPS} == true ) || ( ${GCS_BACKUPS} == true && ${OPENSTACK_BACKUPS} == true ) ]]; then
+    printf "\nAWS, GCE and OpenStack cannot be enabled together, please choose one...\n"
     return 1
   fi
   if [[ ${AWS_BACKUPS} == true ]]; then
@@ -846,6 +867,9 @@ gitlab_configure_backups() {
   fi
   if [[ ${GCS_BACKUPS} == true ]]; then
     gitlab_configure_backup_gcs
+  fi
+  if [[ ${OPENSTACK_BACKUPS} == true ]]; then
+    gitlab_configure_backup_openstack
   fi
 }
 

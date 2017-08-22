@@ -507,6 +507,16 @@ production: &base
     pg_schema: {{GITLAB_BACKUP_PG_SCHEMA}}     # default: nil, it means that all schemas will be backed up
     upload:
       # Fog storage connection settings, see http://fog.io/storage/ .
+      #start-openstack
+      connection:
+        provider: OpenStack
+        openstack_username: {{OPENSTACK_BACKUP_USERNAME}}
+        openstack_api_key: {{OPENSTACK_BACKUP_PASSWORD}}
+        openstack_tenant: {{OPENSTACK_BACKUP_TENANT}}
+        openstack_auth_url: {{OPENSTACK_BACKUP_AUTH_URL}}
+        openstack_region: {{OPENSTACK_BACKUP_REGION}}
+      remote_directory: '{{OPENSTACK_BACKUP_CONTAINER}}'
+      #end-openstack
       #start-aws
       connection:
         provider: AWS
