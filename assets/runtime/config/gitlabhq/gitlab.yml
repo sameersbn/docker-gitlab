@@ -568,6 +568,19 @@ production: &base
     #   enabled: true
     #   host: localhost
     #   port: 3808
+    ## Monitoring
+  # Built in monitoring settings
+  monitoring:
+    # Time between sampling of unicorn socket metrics, in seconds
+    # unicorn_sampler_interval: 10
+    # IP whitelist to access monitoring endpoints
+    ip_whitelist:
+      - 127.0.0.0/8
+    # Sidekiq exporter is webserver built in to Sidekiq to expose Prometheus metrics
+    sidekiq_exporter:
+    #  enabled: true
+    #  address: localhost
+    #  port: 3807
 
   #
   # 5. Extra customization
