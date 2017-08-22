@@ -1033,6 +1033,13 @@ Below is the complete list of available options that can be used to customize yo
 | `GCS_BACKUP_ACCESS_KEY_ID` | GCS access key id. No defaults |
 | `GCS_BACKUP_SECRET_ACCESS_KEY` | GCS secret access key. No defaults |
 | `GCS_BACKUP_BUCKET` | GCS bucket for backup uploads. No defaults |
+| `OPENSTACK_BACKUPS` | Enables automatic uploads to an OpenStack Swift instance. Defaults to `false`. |
+| `OPENSTACK_BACKUP_USERNAME` | OpenStack username. No defaults |
+| `OPENSTACK_BACKUP_PASSWORD` | OpenStack password. No defaults |
+| `OPENSTACK_BACKUP_TENANT` | OpenStack tenant id. No defaults |
+| `OPENSTACK_BACKUP_AUTH_URL` | OpenStack auth url. No defaults |
+| `OPENSTACK_BACKUP_REGION` | OpenStack region. No defaults |
+| `OPENSTACK_BACKUP_CONTAINER` | OpenStack container to upload to. No defaults |
 | `GITLAB_ROBOTS_PATH` | Location of custom `robots.txt`. Uses GitLab's default `robots.txt` configuration by default. See [www.robotstxt.org](http://www.robotstxt.org) for examples. |
 | `RACK_ATTACK_ENABLED` | Enable/disable rack middleware for blocking & throttling abusive requests Defaults to `true`. |
 | `RACK_ATTACK_WHITELIST` | Always allow requests from whitelisted host. Defaults to `127.0.0.1` |
