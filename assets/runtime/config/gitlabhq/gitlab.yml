@@ -478,6 +478,7 @@ production: &base
     # introduced in 9.0). Eventually Gitaly use will become mandatory and
     # this option will disappear.
     enabled: {{GITALY_ENABLED}}
+    token:
 
   #
   # 4. Advanced settings
