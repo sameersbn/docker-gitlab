@@ -1151,6 +1151,13 @@ More details about the Cloud storage interoperability  properties can found on [
 
 GCS uploads are performed alongside normal backups, both through the appropriate `app:rake` command and when an automatic backup is performed.
 
+### OpenStack Swift Remote Backups
+
+The image can be configured to automatically upload the backups to an OpenStack Swift container. To enable automatic OpenStack backups first add `--env 'OPENSTACK_BACKUPS=true'` to the docker run command. In addition `OPENSTACK_BACKUP_CONTAINER` `OPENSTACK_BACKUP_REGION` must be properly configured to point to the desired OpenStack Swift container and region.
+Also authentication details must be specified through `OPENSTACK_BACKUP_USERNAME`, `OPENSTACK_BACKUP_PASSWORD`, `OPENSTACK_BACKUP_TENANT` and `OPENSTACK_BACKUP_AUTH_URL`.
+
+OpenStack Swift uploads are performed alongside normal backups, both through the appropriate `app:rake` command and when an automatic backup is performed.
+
 ## Rake Tasks
 
 The `app:rake` command allows you to run gitlab rake tasks. To run a rake task simply specify the task to be executed to the `app:rake` command. For example, if you want to gather information about GitLab and the system it runs on.
