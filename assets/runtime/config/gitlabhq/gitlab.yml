@@ -632,7 +632,9 @@ test:
     path: tmp/tests/pages
   repositories:
     storages:
-      default: tmp/tests/repositories/
+      default: 
+        path: tmp/tests/repositories/
+        gitaly_adress: unix:tmp/tests/gitaly/gitaly.socket
   backup:
     path: tmp/tests/backups
   gitlab_shell:
