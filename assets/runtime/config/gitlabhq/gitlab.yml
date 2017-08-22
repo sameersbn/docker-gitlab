@@ -264,7 +264,7 @@ production: &base
         host: '{{LDAP_HOST}}'
         port: {{LDAP_PORT}}
         uid: '{{LDAP_UID}}'
-        method: '{{LDAP_METHOD}}' # "tls" or "ssl" or "plain"
+        encryption: '{{LDAP_METHOD}}' # "tls" or "ssl" or "plain"
         bind_dn: '{{LDAP_BIND_DN}}'
         password: '{{LDAP_PASS}}'
 
