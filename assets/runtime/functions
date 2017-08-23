@@ -831,8 +831,8 @@ gitlab_configure_backup_openstack() {
     echo "Configuring gitlab::backups::openstack..."
     exec_as_git sed -i "/#start-aws/,/#end-aws/d" ${GITLAB_CONFIG}
     exec_as_git sed -i "/#start-gcs/,/#end-gcs/d" ${GITLAB_CONFIG}
-    exec_as_git sed -i "/#start-gcs/d" ${GITLAB_CONFIG}
-    exec_as_git sed -i "/#end-gcs/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/#start-openstack/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/#end-openstack/d" ${GITLAB_CONFIG}
     if [[ -z ${OPENSTACK_BACKUP_USERNAME} || -z ${OPENSTACK_BACKUP_PASSWORD} || -z ${OPENSTACK_BACKUP_AUTH_URL} || -z ${OPENSTACK_BACKUP_CONTAINER} ]]; then
       printf "\nMissing OpenStack options. Aborting...\n"
       return 1
