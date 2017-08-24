@@ -633,7 +633,7 @@ test:
     path: tmp/tests/pages
   repositories:
     storages:
-      default: 
+      default:
         path: tmp/tests/repositories/
         gitaly_adress: unix:tmp/tests/gitaly/gitaly.socket
   backup:
