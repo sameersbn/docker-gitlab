@@ -573,15 +573,15 @@ production: &base
   # Built in monitoring settings
   monitoring:
     # Time between sampling of unicorn socket metrics, in seconds
-    # unicorn_sampler_interval: 10
+    unicorn_sampler_interval: {{GITLAB_MONITORING_UNICORN_SAMPLER_INTERVAL}}
     # IP whitelist to access monitoring endpoints
     ip_whitelist:
-      - 127.0.0.0/8
+      - {{GITLAB_MONITORING_IP_WHITELIST}}
     # Sidekiq exporter is webserver built in to Sidekiq to expose Prometheus metrics
     sidekiq_exporter:
-    #  enabled: true
-    #  address: localhost
-    #  port: 3807
+      enabled: {{GITLAB_MONITORING_SIDEKIQ_EXPORTER_ENABLED}}
+      address: {{GITLAB_MONITORING_SIDEKIQ_EXPORTER_ADDRESS}}
+      port: {{GITLAB_MONITORING_SIDEKIQ_EXPORTER_PORT}}
 
   #
   # 5. Extra customization

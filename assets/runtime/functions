@@ -287,6 +287,18 @@ gitlab_configure_gitaly() {
   
 }
 
+gitlab_configure_monitoring() {
+  echo "Configuring gitlab::monitoring..."
+
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_MONITORING_UNICORN_SAMPLER_INTERVAL \
+    GITLAB_MONITORING_IP_WHITELIST \
+    GITLAB_MONITORING_SIDEKIQ_EXPORTER_ENABLED \
+    GITLAB_MONITORING_SIDEKIQ_EXPORTER_ADDRESS \
+    GITLAB_MONITORING_SIDEKIQ_EXPORTER_PORT
+
+}
+
 gitlab_configure_gitlab_workhorse() {
   echo "Configuring gitlab::gitlab-workhorse..."
   update_template /etc/supervisor/conf.d/gitlab-workhorse.conf \
@@ -1434,6 +1446,7 @@ configure_gitlab() {
   gitlab_configure_secrets
   gitlab_configure_sidekiq
   gitlab_configure_gitaly
+  gitlab_configure_monitoring
   gitlab_configure_gitlab_workhorse
   gitlab_configure_relative_url
   gitlab_configure_trusted_proxies
