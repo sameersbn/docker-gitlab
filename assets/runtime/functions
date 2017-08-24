@@ -282,8 +282,21 @@ gitlab_configure_gitaly() {
     GITLAB_REPOS_DIR
 
   update_template ${GITLAB_CONFIG} \
-    GITALY_ENABLED
-  
+    GITALY_ENABLED \
+    GITALY_TOKEN
+
+}
+
+gitlab_configure_monitoring() {
+  echo "Configuring gitlab::monitoring..."
+
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_MONITORING_UNICORN_SAMPLER_INTERVAL \
+    GITLAB_MONITORING_IP_WHITELIST \
+    GITLAB_MONITORING_SIDEKIQ_EXPORTER_ENABLED \
+    GITLAB_MONITORING_SIDEKIQ_EXPORTER_ADDRESS \
+    GITLAB_MONITORING_SIDEKIQ_EXPORTER_PORT
+
 }
 
 gitlab_configure_gitlab_workhorse() {
@@ -856,7 +869,7 @@ gitlab_configure_gravatar() {
 
 gitlab_configure_cron_jobs() {
   echo "Configuring gitlab::cron_jobs..."
-  
+
   if [[ -n "${GITLAB_PIPELINE_SCHEDULE_WORKER_CRON}" ]]; then
     update_template ${GITLAB_CONFIG} GITLAB_PIPELINE_SCHEDULE_WORKER_CRON
   else
@@ -1409,6 +1422,10 @@ configure_gitlab() {
     GITLAB_SHELL_INSTALL_DIR \
     GITLAB_DATA_DIR \
     GITLAB_REPOS_DIR \
+    GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_COUNT_THRESHOLD \
+    GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_WAIT_TIME \
+    GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_RESET_TIME \
+    GITLAB_REPOSITORIES_STORAGES_DEFAULT_STORAGE_TIMEOUT \
     GITLAB_DOWNLOADS_DIR \
     GITLAB_SHARED_DIR \
     GITLAB_HOST \
@@ -1429,6 +1446,7 @@ configure_gitlab() {
   gitlab_configure_secrets
   gitlab_configure_sidekiq
   gitlab_configure_gitaly
+  gitlab_configure_monitoring
   gitlab_configure_gitlab_workhorse
   gitlab_configure_relative_url
   gitlab_configure_trusted_proxies

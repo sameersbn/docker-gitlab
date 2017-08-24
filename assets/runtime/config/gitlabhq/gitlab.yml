@@ -264,7 +264,7 @@ production: &base
         host: '{{LDAP_HOST}}'
         port: {{LDAP_PORT}}
         uid: '{{LDAP_UID}}'
-        method: '{{LDAP_METHOD}}' # "tls" or "ssl" or "plain"
+        encryption: '{{LDAP_METHOD}}' # "tls" or "ssl" or "plain"
         bind_dn: '{{LDAP_BIND_DN}}'
         password: '{{LDAP_PASS}}'
 
@@ -478,6 +478,7 @@ production: &base
     # introduced in 9.0). Eventually Gitaly use will become mandatory and
     # this option will disappear.
     enabled: {{GITALY_ENABLED}}
+    token: {{GITALY_TOKEN}}
 
   #
   # 4. Advanced settings
@@ -493,6 +494,10 @@ production: &base
       default:
         path: {{GITLAB_REPOS_DIR}}/
         gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
+        failure_count_threshold: {{GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_COUNT_THRESHOLD}} # number of failures before stopping attempts
+        failure_wait_time: {{GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_WAIT_TIME}} # Seconds after an access failure before allowing access again
+        failure_reset_time: {{GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_RESET_TIME}} # Time in seconds to expire failures
+        storage_timeout: {{GITLAB_REPOSITORIES_STORAGES_DEFAULT_STORAGE_TIMEOUT}} # Time in seconds to wait before aborting a storage access attempt
 
   ## Backup settings
   backup:
@@ -564,6 +569,19 @@ production: &base
     #   enabled: true
     #   host: localhost
     #   port: 3808
+    ## Monitoring
+  # Built in monitoring settings
+  monitoring:
+    # Time between sampling of unicorn socket metrics, in seconds
+    unicorn_sampler_interval: {{GITLAB_MONITORING_UNICORN_SAMPLER_INTERVAL}}
+    # IP whitelist to access monitoring endpoints
+    ip_whitelist:
+      - {{GITLAB_MONITORING_IP_WHITELIST}}
+    # Sidekiq exporter is webserver built in to Sidekiq to expose Prometheus metrics
+    sidekiq_exporter:
+      enabled: {{GITLAB_MONITORING_SIDEKIQ_EXPORTER_ENABLED}}
+      address: {{GITLAB_MONITORING_SIDEKIQ_EXPORTER_ADDRESS}}
+      port: {{GITLAB_MONITORING_SIDEKIQ_EXPORTER_PORT}}
 
   #
   # 5. Extra customization
@@ -615,7 +633,9 @@ test:
     path: tmp/tests/pages
   repositories:
     storages:
-      default: tmp/tests/repositories/
+      default:
+        path: tmp/tests/repositories/
+        gitaly_adress: unix:tmp/tests/gitaly/gitaly.socket
   backup:
     path: tmp/tests/backups
   gitlab_shell:
@@ -639,7 +659,7 @@ test:
         host: 127.0.0.1
         port: 3890
         uid: 'uid'
-        method: 'plain' # "tls" or "ssl" or "plain"
+        encryption: 'plain' # "start_tls" or "simple_tls" or "plain"
         base: 'dc=example,dc=com'
         user_filter: ''
         group_base: 'ou=groups,dc=example,dc=com'
