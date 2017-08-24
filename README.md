@@ -884,6 +884,11 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_HTTPS` | Set to `true` to enable https support, disabled by default. |
 | `GITALY_ENABLED` | Set to `true` to enable gitaly, enabled by default. |
 | `GITALY_TOKEN` | Set a gitaly token, blank by default. |
+| `GITLAB_MONITORING_UNICORN_SAMPLER_INTERVAL` | Time between sampling of unicorn socket metrics, in seconds, defaults to `10` |
+| `GITLAB_MONITORING_IP_WHITELIST` | IP whitelist to access monitoring endpoints, defaults to `0.0.0.0/8` |
+| `GITLAB_MONITORING_SIDEKIQ_EXPORTER_ENABLED` | Set to `true` to enable the sidekiq exporter, enabled by default. |
+| `GITLAB_MONITORING_SIDEKIQ_EXPORTER_ADDRESS` | Sidekiq exporter address, defaults to `0.0.0.0` |
+| `GITLAB_MONITORING_SIDEKIQ_EXPORTER_PORT` | Sidekiq exporter port, defaults to `3807` |
 | `SSL_SELF_SIGNED` | Set to `true` when using self signed ssl certificates. `false` by default. |
 | `SSL_CERTIFICATE_PATH` | Location of the ssl certificate. Defaults to `/home/git/data/certs/gitlab.crt` |
 | `SSL_KEY_PATH` | Location of the ssl private key. Defaults to `/home/git/data/certs/gitlab.key` |
