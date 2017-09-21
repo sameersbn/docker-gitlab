@@ -438,6 +438,7 @@ production: &base
                     first_name: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME}}'],
                     last_name: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME}}'],
                     name: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME}}'],
+                    username: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME}}'],
                     email: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL}}'] },
                   name_identifier_format: '{{OAUTH_SAML_NAME_IDENTIFIER_FORMAT}}' } }
       - { name: 'crowd',

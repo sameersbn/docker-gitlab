@@ -575,15 +575,17 @@ gitlab_configure_oauth_bitbucket() {
 }
 
 gitlab_configure_oauth_saml_attribute_statements() {
-  if [[ -n ${OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL} && \
-        -n ${OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME} ]]; then
+  if [[ -n ${OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL} ]]; then
     echo "Configuring gitlab::oauth::saml::attribute_statements..."
     update_template ${GITLAB_CONFIG} \
+      OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME \
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL \
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME \
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME \
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME
     # Remove undefined optional attributes
+    exec_as_git sed -i "/\\<name: \\[''\\],/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/username: \\[''\\],/d" ${GITLAB_CONFIG}
     exec_as_git sed -i "/first_name: \\[''\\],/d" ${GITLAB_CONFIG}
     exec_as_git sed -i "/last_name: \\[''\\],/d" ${GITLAB_CONFIG}
   else
