@@ -768,7 +768,7 @@ For example, if your Client ID is `xxx`, the Client secret is `yyy` and the Tena
 
 ### External Issue Trackers
 
-Since version `7.10.0.0` support for external issue trackers can be enabled in the "Service Templates" section of the settings panel.
+Since version `7.10` support for external issue trackers can be enabled in the "Service Templates" section of the settings panel.
 
 If you are using the [docker-redmine](https://github.com/sameersbn/docker-redmine) image, you can *one up* the gitlab integration with redmine by adding `--volumes-from=gitlab` flag to the docker run command while starting the redmine container.
 
