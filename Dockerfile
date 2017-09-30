@@ -55,7 +55,6 @@ RUN bash ${GITLAB_BUILD_DIR}/install.sh
 COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/
 COPY entrypoint.sh /sbin/entrypoint.sh
 COPY Procfile ${GITLAB_INSTALL_DIR}/Procfile
-COPY CHECKS ${GITLAB_INSTALL_DIR}/CHECKS
 RUN chmod 755 /sbin/entrypoint.sh
 
 EXPOSE 22/tcp
