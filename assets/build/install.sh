@@ -5,6 +5,7 @@ GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
 GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz
 GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
 GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages/repository/archive.tar.gz
+GITLAB_GITALY_URL=https://gitlab.com/gitlab-org/gitaly/repository/archive.tar.gz
 
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
@@ -12,7 +13,8 @@ BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
   libc6-dev ruby${RUBY_VERSION}-dev \
   libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
-  libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev"
+  libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
+  gettext"
 
 ## Execute a command as GITLAB_USER
 exec_as_git() {
@@ -26,6 +28,19 @@ exec_as_git() {
 # install build dependencies for gem installation
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -y ${BUILD_DEPENDENCIES}
+
+# Install RE2 library wich became dependencie since 9.3.8 version
+# https://gitlab.com/gitlab-org/gitlab-ce/issues/35342
+DEBIAN_FRONTEND=noninteractive apt-get install -y checkinstall
+cd /tmp
+git clone https://github.com/google/re2.git
+cd re2/ && make && make test
+checkinstall -D --install=no -y --pkgname=re2 --pkgversion=1-current
+dpkg -i re2_1-current-1_amd64.deb
+ldconfig
+cd -
+rm -rf /tmp/re2
+DEBIAN_FRONTEND=noninteractive apt-get purge -y --auto-remove checkinstall
 
 # https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
 paxctl -Cm `which nodejs`
@@ -55,6 +70,11 @@ GITLAB_SHELL_VERSION=${GITLAB_SHELL_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_
 GITLAB_WORKHORSE_VERSION=${GITLAB_WORKHOUSE_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_WORKHORSE_VERSION)}
 GITLAB_PAGES_VERSION=${GITLAB_PAGES_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_PAGES_VERSION)}
 
+#download golang
+echo "Downloading Go ${GOLANG_VERSION}..."
+wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
+tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
+
 # install gitlab-shell
 echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
 mkdir -p ${GITLAB_SHELL_INSTALL_DIR}
@@ -65,20 +85,19 @@ chown -R ${GITLAB_USER}: ${GITLAB_SHELL_INSTALL_DIR}
 
 cd ${GITLAB_SHELL_INSTALL_DIR}
 exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+if [[ -x ./bin/compile ]]; then
+  echo "Compiling gitlab-shell golang executables..."
+  exec_as_git PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go ./bin/compile
+fi
 exec_as_git ./bin/install
 
 # remove unused repositories directory created by gitlab-shell install
 exec_as_git rm -rf ${GITLAB_HOME}/repositories
 
-# download gitlab-workhose
+# download gitlab-workhorse
 echo "Cloning gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_URL} ${GITLAB_WORKHORSE_INSTALL_DIR}
 chown -R ${GITLAB_USER}: ${GITLAB_WORKHORSE_INSTALL_DIR}
-
-#download golang
-echo "Downloading Go ${GOLANG_VERSION}..."
-wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
-tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
 
 #install gitlab-workhorse
 cd ${GITLAB_WORKHORSE_INSTALL_DIR}
@@ -101,6 +120,20 @@ cd "$GODIR"
 PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make gitlab-pages
 mv gitlab-pages /usr/local/bin/
 
+# download gitaly
+echo "Downloading gitaly v.${GITALY_SERVER_VERSION}..."
+mkdir -p ${GITLAB_GITALY_INSTALL_DIR}
+wget -cq ${GITLAB_GITALY_URL}?ref=v${GITALY_SERVER_VERSION} -O ${GITLAB_BUILD_DIR}/gitaly-${GITALY_SERVER_VERSION}.tar.gz
+tar xf ${GITLAB_BUILD_DIR}/gitaly-${GITALY_SERVER_VERSION}.tar.gz --strip 1 -C ${GITLAB_GITALY_INSTALL_DIR}
+rm -rf ${GITLAB_BUILD_DIR}/gitaly-${GITALY_SERVER_VERSION}.tar.gz
+chown -R ${GITLAB_USER}: ${GITLAB_GITALY_INSTALL_DIR}
+# copy default config for gitaly
+exec_as_git cp ${GITLAB_GITALY_INSTALL_DIR}/config.toml.example ${GITLAB_GITALY_INSTALL_DIR}/config.toml
+
+# install gitaly
+cd ${GITLAB_GITALY_INSTALL_DIR}
+PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make install && make clean
+
 # remove go
 rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz /tmp/go
 
@@ -118,7 +151,6 @@ if [[ -d ${GEM_CACHE_DIR} ]]; then
   chown -R ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/vendor/cache
 fi
 
-exec_as_git bundle lock --update=omniauth-google-oauth2
 exec_as_git bundle install -j$(nproc) --deployment --without development test aws
 
 # make sure everything in ${GITLAB_HOME} is owned by ${GITLAB_USER} user
@@ -133,12 +165,13 @@ exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.mysql ${GITLAB_INSTALL_
 exec_as_git yarn install --production --pure-lockfile
 
 echo "Compiling assets. Please be patient, this could take a while..."
-#Adding webpack compile needed since 8.17
-exec_as_git bundle exec rake assets:clean assets:precompile webpack:compile USE_DB=false SKIP_STORAGE_VALIDATION=true >/dev/null 2>&1
-
+exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true
 
 # remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
 rm -rf ${GITLAB_DATA_DIR}/config/secrets.yml
+
+# remove gitlab shell and workhorse secrets
+rm -f ${GITLAB_INSTALL_DIR}/.gitlab_shell_secret ${GITLAB_INSTALL_DIR}/.gitlab_workhorse_secret
 
 exec_as_git mkdir -p ${GITLAB_INSTALL_DIR}/tmp/pids/ ${GITLAB_INSTALL_DIR}/tmp/sockets/
 chmod -R u+rwX ${GITLAB_INSTALL_DIR}/tmp
@@ -293,6 +326,20 @@ autostart=true
 autorestart=true
 stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
 stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
+EOF
+
+# configure supervisord to start gitaly
+cat > /etc/supervisor/conf.d/gitaly.conf <<EOF
+[program:gitaly]
+priority=5
+directory=${GITLAB_GITALY_INSTALL_DIR}
+environment=HOME=${GITLAB_HOME}
+command=/usr/local/bin/gitaly ${GITLAB_GITALY_INSTALL_DIR}/config.toml
+user=git
+autostart={{GITALY_ENABLED}}
+autorestart=true
+stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 EOF
 
 # configure supervisord to start mail_room
