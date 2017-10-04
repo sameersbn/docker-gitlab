@@ -265,6 +265,7 @@ production: &base
         port: {{LDAP_PORT}}
         uid: '{{LDAP_UID}}'
         encryption: '{{LDAP_METHOD}}' # "tls" or "ssl" or "plain"
+        verify_certificates: '{{LDAP_VERIFY_SSL}}'
         bind_dn: '{{LDAP_BIND_DN}}'
         password: '{{LDAP_PASS}}'
 
