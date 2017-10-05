@@ -953,6 +953,8 @@ Below is the complete list of available options that can be used to customize yo
 | `LDAP_PORT` | LDAP Port. Defaults to `389` |
 | `LDAP_UID` | LDAP UID. Defaults to `sAMAccountName` |
 | `LDAP_METHOD` | LDAP method, Possible values are `ssl`, `tls` and `plain`. Defaults to `plain` |
+| `LDAP_CA_FILE` | Specifies the path to a file containing a PEM-format CA certificate. Defaults to `` |
+| `LDAP_SSL_VERSION` | Specifies the SSL version for OpenSSL to use, if the OpenSSL default is not appropriate. Example: 'TLSv1_1'. Defaults to `` |
 | `LDAP_BIND_DN` | No default. |
 | `LDAP_PASS` | LDAP password |
 | `LDAP_TIMEOUT` | Timeout, in seconds, for LDAP queries. Defaults to `10`. |
