@@ -268,6 +268,8 @@ production: &base
 
         encryption: '{{LDAP_METHOD}}' # "start_tls" or "simple_tls" or "plain"
         verify_certificates: {{LDAP_VERIFY_SSL}}
+        ca_file: '{{LDAP_CA_FILE}}'
+        ssl_version: '{{LDAP_SSL_VERSION}}'
 
         bind_dn: '{{LDAP_BIND_DN}}'
         password: '{{LDAP_PASS}}'
