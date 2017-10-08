@@ -1,4 +1,4 @@
-version: '2'
+version: '3.1'
 
 services:
   redis:
@@ -44,15 +44,15 @@ services:
     - REDIS_HOST=redis
     - REDIS_PORT=6379
 
-    - TZ=Asia/Kolkata
-    - GITLAB_TIMEZONE=Kolkata
+    - TZ=Asia/Bangkok
+    - GITLAB_TIMEZONE=Bangkok
 
-    - GITLAB_HTTPS=false
-    - SSL_SELF_SIGNED=false
+    - GITLAB_HTTPS=true
+    - SSL_SELF_SIGNED=true
 
-    - GITLAB_HOST=localhost
-    - GITLAB_PORT=10080
-    - GITLAB_SSH_PORT=10022
+    - GITLAB_HOST=gitlab.ddns.net
+    - GITLAB_PORT=443
+    - GITLAB_SSH_PORT=22
     - GITLAB_RELATIVE_URL_ROOT=
     - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
     - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alphanumeric-string
@@ -88,13 +88,13 @@ services:
     - IMAP_SSL=true
     - IMAP_STARTTLS=false
 
-    - OAUTH_ENABLED=false
+    - OAUTH_ENABLED=true
     - OAUTH_AUTO_SIGN_IN_WITH_PROVIDER=
     - OAUTH_ALLOW_SSO=
     - OAUTH_BLOCK_AUTO_CREATED_USERS=true
     - OAUTH_AUTO_LINK_LDAP_USER=false
     - OAUTH_AUTO_LINK_SAML_USER=false
-    - OAUTH_EXTERNAL_PROVIDERS=
+    - OAUTH_EXTERNAL_PROVIDERS=google_oauth2
 
     - OAUTH_CAS3_LABEL=cas3
     - OAUTH_CAS3_SERVER=
@@ -103,8 +103,8 @@ services:
     - OAUTH_CAS3_VALIDATE_URL=/cas/p3/serviceValidate
     - OAUTH_CAS3_LOGOUT_URL=/cas/logout
 
-    - OAUTH_GOOGLE_API_KEY=
-    - OAUTH_GOOGLE_APP_SECRET=
+    - OAUTH_GOOGLE_API_KEY=888635786844-uh25tl2algt26jlccp9rjpau0au7qk9t.apps.googleusercontent.com
+    - OAUTH_GOOGLE_APP_SECRET=X8atZbXOdOBVhL99-kYRlGV9
     - OAUTH_GOOGLE_RESTRICT_DOMAIN=
 
     - OAUTH_FACEBOOK_API_KEY=
@@ -148,3 +148,8 @@ services:
     - OAUTH_AZURE_API_KEY=
     - OAUTH_AZURE_API_SECRET=
     - OAUTH_AZURE_TENANT_ID=
+
+networks:
+  default:
+    external:
+      name: ex-network
