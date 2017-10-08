@@ -446,6 +446,7 @@ gitlab_configure_ldap() {
     LDAP_PORT \
     LDAP_UID \
     LDAP_METHOD \
+    LDAP_VERIFY_SSL \
     LDAP_BIND_DN \
     LDAP_PASS \
     LDAP_TIMEOUT \
