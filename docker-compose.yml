@@ -22,7 +22,7 @@ services:
 
   gitlab:
     restart: always
-    image: sameersbn/gitlab:9.4.4
+    image: sameersbn/gitlab:9.5.2
     depends_on:
     - redis
     - postgresql
@@ -89,8 +89,8 @@ services:
     - IMAP_STARTTLS=false
 
     - OAUTH_ENABLED=true
-    - OAUTH_AUTO_SIGN_IN_WITH_PROVIDER=google_oauth2
-    - OAUTH_ALLOW_SSO=google_oauth2
+    - OAUTH_AUTO_SIGN_IN_WITH_PROVIDER=
+    - OAUTH_ALLOW_SSO=
     - OAUTH_BLOCK_AUTO_CREATED_USERS=true
     - OAUTH_AUTO_LINK_LDAP_USER=false
     - OAUTH_AUTO_LINK_SAML_USER=false
