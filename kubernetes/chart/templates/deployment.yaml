@@ -1,0 +1,78 @@
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  labels:
+    app: {{ template "gitlab.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Values.name }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "gitlab.fullname" . }}
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+    {{- if .Values.gitlab.podAnnotations }}
+      annotations:
+{{ toYaml .Values.gitlab.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ template "gitlab.fullname" . }}
+        component: "{{ .Values.name }}"
+        release: {{ .Release.Name }}
+    spec:
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      containers:
+      - name: gitlab
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        - name: http
+          containerPort: 80
+        - name: ssh
+          containerPort: 22
+        envFrom:
+        - configMapRef:
+            name: {{ template "gitlab.fullname" . }}
+        - secretRef:
+            name: {{ template "gitlab.fullname" . }}
+        env:
+        {{- range $key, $value :=  .Values.env }}
+        - name: {{ $key | upper | replace "-" "_" }}
+          value: '{{ $value }}'
+        {{- end }}
+        volumeMounts:
+        - name: data
+          mountPath: /home/git/data
+          readOnly: false
+        livenessProbe:
+          httpGet:
+            path: /-/liveness
+            port: 80
+          initialDelaySeconds: 200
+          timeoutSeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 10
+        readinessProbe:
+          httpGet:
+            path: /-/readiness
+            port: 80
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+      volumes:
+        - name: data
+        {{- if .Values.persistentVolume.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ template "gitlab.fullname" . }}{{- end }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}

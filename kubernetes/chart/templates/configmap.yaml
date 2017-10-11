@@ -1,0 +1,47 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "gitlab.fullname" . }}
+  labels:
+    app: {{ template "gitlab.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Values.name }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+data:
+  GITLAB_EMAIL: "{{ .Values.gitlab.email }}"
+  GITLAB_EMAIL_REPLY_TO: "{{ .Values.gitlab.emailReplyTo }}"
+  GITLAB_HTTPS: "{{ .Values.gitlab.https }}"
+  GITLAB_PORT: "{{ .Values.gitlab.port }}"
+  GITLAB_PROJECTS_ISSUES: "{{ .Values.gitlab.projectsIssues }}"
+  GITLAB_HOST: "{{ .Values.gitlab.host }}"
+  GITLAB_SSH_PORT: "{{ .Values.gitlab.ssh_port }}"
+  TZ: "{{ .Values.timezone }}"
+  GITLAB_TIMEZONE: "{{ .Values.gitlab.timezone }}"
+  GITLAB_SECRETS_DB_KEY_BASE: "{{ .Values.gitlab.secretsDbKeyBase }}"
+  GITLAB_SECRETS_SECRET_KEY_BASE: "{{ .Values.gitlab.secretsKeyBase }}"
+  GITLAB_SECRETS_OTP_KEY_BASE: "{{ .Values.gitlab.secretsOtpKeyBase }}"
+  GITLAB_MONITORING_IP_WHITELIST: "{{ .Values.gitlab.monitoringIpWhitelist }}"
+
+  NGINX_MAX_UPLOAD_SIZE: "{{ .Values.nginx.max_upload_size }}"
+  NGINX_WORKERS: "{{ .Values.nginx.workers }}"
+
+  SMTP_ENABLED: "{{ .Values.smtp.enabled }}"
+  SMTP_DOMAIN: "{{ .Values.smtp.domain }}"
+  SMTP_HOST: "{{ .Values.smtp.host }}"
+  SMTP_PORT: "{{ .Values.smtp.port }}"
+  SMTP_USER: "{{ .Values.smtp.user }}"
+  SMTP_PASS: "{{ .Values.smtp.pass }}"
+  SMTP_STARTTLS: "{{ .Values.smtp.starttls }}"
+  SMTP_TLS: "{{ .Values.smtp.tls }}"
+  SMTP_OPENSSL_VERIFY_MODE: "{{ .Values.smtp.opensslVerifyMode }}"
+  SMTP_AUTHENTICATION: "{{ .Values.smtp.authentication }}"
+
+  DB_ADAPTER: "postgresql"
+  DB_HOST: "{{ template "postgresql.fullname" . }}"
+  DB_PORT: {{ .Values.postgresql.service.port | quote }}
+  DB_NAME: {{ .Values.postgresql.postgresDatabase | quote }}
+
+  REDIS_HOST: "{{ template "redis.fullname" . }}"
+  REDIS_PORT: "6379"

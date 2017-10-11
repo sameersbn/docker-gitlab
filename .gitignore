@@ -2,3 +2,6 @@
 *.tar.gz
 
 docker-compose.yml
+
+# Chart dependencies
+/kubernetes/**/charts/*.tgz

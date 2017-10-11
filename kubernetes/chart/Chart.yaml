@@ -1,0 +1,8 @@
+apiVersion: v1
+description: A Helm chart for Kubernetes
+name: docker-gitlab
+version: 0.0.1
+maintainers:
+  - name: OTSUKA, Yuanying
+    email: yuan-docker@fraction.jp
+engine: gotpl

@@ -1,0 +1,31 @@
+{{- if .Values.ingress.enabled -}}
+{{- $servicePort := .Values.service.httpPort -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+  {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  labels:
+    app: {{ template "gitlab.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Values.name }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "gitlab.fullname" . }}
+spec:
+  rules:
+    - host: {{ .Values.gitlab.host }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ template "gitlab.fullname" . }}
+              servicePort: {{ $servicePort }}
+  {{- if .Values.ingress.tls }}
+  tls:
+    - secretName: gitlab-server-tls
+      hosts:
+        - {{ .Values.gitlab.host }}
+  {{- end -}}
+{{- end -}}
