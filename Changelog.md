@@ -1,6 +1,168 @@
 # Changelog
 
-This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
+This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
+
+**10.0.3**
+- gitlab: upgrade to CE v10.0.3
+
+**10.0.2**
+- gitlab: upgrade to CE v10.0.2
+
+**10.0.1**
+- gitlab: upgrade to CE v10.0.1
+
+**10.0.0**
+- gitlab: upgrade to CE v10.0.0
+
+**9.5.5**
+- gitlab: upgrade to CE v9.5.5
+
+**9.5.4**
+- gitlab: upgrade to CE v9.5.4
+
+**9.5.3**
+- gitlab: upgrade to CE v9.5.3
+
+**9.5.2**
+- gitlab: upgrade to CE v9.5.2
+
+**9.5.1**
+- gitlab: upgrade to CE v9.5.1
+
+**9.5.0**
+- gitlab: upgrade to CE v9.5.0
+
+**9.4.5**
+- gitlab: upgrade to CE v9.4.5
+
+**9.4.4**
+- gitlab: upgrade to CE v9.4.4
+
+**9.4.3**
+- gitlab: upgrade to CE v9.4.3
+
+**9.4.2**
+- gitlab: upgrade to CE v9.4.2
+
+**9.4.1**
+- gitlab: upgrade to CE v9.4.1
+
+**9.4.0-1**
+- Fix asset compiling for missing translations
+
+**9.4.0**
+- gitlab: upgrade to CE v9.4.0
+- Added support for nginx_real_ip module ([#1137](https://github.com/sameersbn/docker-gitlab/pull/1137))
+- Added more security for regenarting certs ([#1288](https://github.com/sameersbn/docker-gitlab/pull/1288))
+
+**9.3.9**
+- gitlab: upgrade to CE v9.3.9
+
+**9.3.8**
+- gitlab: upgrade to CE v9.3.8
+- Added RE2 library to build dependencies ([issue 35342](https://gitlab.com/gitlab-org/gitlab-ce/issues/35342))
+
+**9.3.7**
+- gitlab: upgrade to CE v9.3.7
+
+**9.3.6**
+- gitlab: upgrade to CE v9.3.6
+
+**9.3.5**
+- gitlab: upgrade to CE v9.3.5
+
+**9.3.4**
+- gitlab: upgrade to CE v9.3.4
+
+**9.3.3**
+- gitlab: upgrade to CE v9.3.3
+
+**9.3.2**
+- gitlab: upgrade to CE v9.3.2
+
+**9.3.1**
+- gitlab: upgrade to CE v9.3.1
+
+**9.3.0-1**
+- Add the missing Gitaly config to let git commands over http/https working
+
+**9.3.0**
+- gitlab: upgrade to CE v9.3.0
+- update baseimage to `14.04.20170608`
+- Add `DB_COLLATION` (For MySQL related doesn't recognize by postgres)
+- Add `GITLAB_PIPELINE_SCHEDULE_WORKER_CRON`
+- Add `GITALY_ENABLED`
+- Add `GITALY_SOCKET_PATH`
+- Add `GITALY_ADDRESS`
+
+**9.2.7**
+- gitlab: upgrade to CE v9.2.7
+
+**9.2.6**
+- gitlab: upgrade to CE v9.2.6
+
+**9.2.5**
+- gitlab: upgrade to CE v9.2.5
+
+**9.2.2**
+- gitlab: upgrade to CE v9.2.2
+
+**9.2.1**
+- gitlab: upgrade to CE v9.2.1
+
+**9.2.0**
+- gilab: upgrade to CE v9.2.0
+- Add flexibility to use versions committed into gitlab-ce
+
+**9.1.4**
+- gitlab: upgrade to CE v9.1.4
+
+**9.1.3**
+- gitlab: upgrade to CE v9.1.3
+
+**9.1.2**
+- gitlab: upgrade to CE v9.1.2
+- update baseimage to `14.04.20170503`
+
+**9.1.1**
+- gitlab: upgrade to CE v9.1.1
+
+**9.1.0-1**
+- Fix gitlab-workhorse version display
+
+**9.1.0**
+- gitlab: upgrade to CE v9.1.0
+- gitlab-shell: upgrade to 5.0.2
+- gitlab-workhorse: upgrade to 1.4.3
+
+**9.0.6**
+- gitlab: upgrade to CE v9.0.6
+
+**9.0.5**
+- gitlab: upgrade to CE v9.0.5
+
+**9.0.4**
+- gitlab: upgrade to CE v9.0.4
+
+**9.0.3**
+- gitlab: upgrade to CE v9.0.3
+
+**9.0.2**
+- gitlab: upgrade to CE v9.0.2
+
+**9.0.1**
+- gitlab: upgrade to CE v9.0.1
+- gitlab-workhorse 1.4.2
+
+**9.0.0**
+- gitlab: upgrade to CE v9.0.0
+- gitlab-shell 5.0.0
+- gitlab-workhorse 1.4.1
+- gitlab-pages 0.4.0
+
+**8.17.4**
+- gitlab: upgrade to CE v8.17.4
 
 **8.17.3**
 - gitlab: upgrade to CE v8.17.3

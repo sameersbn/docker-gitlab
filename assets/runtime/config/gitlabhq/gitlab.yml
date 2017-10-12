@@ -180,7 +180,7 @@ production: &base
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
     enabled: {{GITLAB_GRAVATAR_ENABLED}}                 # Use user avatar image from Gravatar.com (default: true)
-    # gravatar urls: possible placeholders: %{hash} %{size} %{email}
+    # gravatar urls: possible placeholders: %{hash} %{size} %{email} %{username}
     plain_url: "{{GITLAB_GRAVATAR_HTTP_URL}}"     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     ssl_url:   "{{GITLAB_GRAVATAR_HTTPS_URL}}"    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
@@ -188,9 +188,12 @@ production: &base
   # Periodically executed jobs, to self-heal Gitlab, do external synchronizations, etc.
   # Please read here for more information: https://github.com/ondrejbartas/sidekiq-cron#adding-cron-job
   cron_jobs:
-    # Flag stuck CI builds as failed
-    stuck_ci_builds_worker:
-      cron: "0 0 * * *"
+    # Flag stuck CI jobs as failed
+    stuck_ci_jobs_worker:
+      cron: "0 * * * *"
+    # Execute scheduled triggers
+    pipeline_schedule_worker:
+      cron: "{{GITLAB_PIPELINE_SCHEDULE_WORKER_CRON}}"
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
@@ -201,7 +204,6 @@ production: &base
     # Send admin emails once a week
     admin_email_worker:
       cron: "0 0 * * 0"
-
     # Remove outdated repository archives
     repository_archive_cache_worker:
       cron: "0 * * * *"
@@ -262,7 +264,8 @@ production: &base
         host: '{{LDAP_HOST}}'
         port: {{LDAP_PORT}}
         uid: '{{LDAP_UID}}'
-        method: '{{LDAP_METHOD}}' # "tls" or "ssl" or "plain"
+        encryption: '{{LDAP_METHOD}}' # "tls" or "ssl" or "plain"
+        verify_certificates: '{{LDAP_VERIFY_SSL}}'
         bind_dn: '{{LDAP_BIND_DN}}'
         password: '{{LDAP_PASS}}'
 
@@ -344,6 +347,10 @@ production: &base
     # Uncomment this to automatically sign in with a specific omniauth provider's without
     # showing GitLab's sign-in page (default: show the GitLab sign-in page)
     auto_sign_in_with_provider: {{OAUTH_AUTO_SIGN_IN_WITH_PROVIDER}}
+
+    # Sync user's email address from the specified Omniauth provider every time the user logs
+    # in (default: nil). And consequently make this field read-only.
+    # sync_email_from_provider: cas3
 
     # CAUTION!
     # This allows users to login without having a user account first. Define the allowed providers
@@ -458,18 +465,25 @@ production: &base
   shared:
     path: {{GITLAB_SHARED_DIR}}
 
+  # Gitaly settings
+  gitaly:
+    # The socket_path setting is optional and obsolete. When this is set
+    # GitLab assumes it can reach a Gitaly services via a Unix socket at
+    # this path. When this is commented out GitLab will not use Gitaly.
+    #
+    # This setting is obsolete because we expect it to be moved under
+    # repositories/storages in GitLab 9.1.
+    #
+    # socket_path: tmp/sockets/gitaly.socket
+    # This setting controls whether GitLab uses Gitaly (new component
+    # introduced in 9.0). Eventually Gitaly use will become mandatory and
+    # this option will disappear.
+    enabled: {{GITALY_ENABLED}}
+    token: {{GITALY_TOKEN}}
 
   #
   # 4. Advanced settings
   # ==========================
-
-  # GitLab Satellites
-  #
-  # Note for maintainers: keep the satellites.path setting until GitLab 9.0 at
-  # least. This setting is fed to 'rm -rf' in
-  # db/migrate/20151023144219_remove_satellites.rb
-  satellites:
-    path: {{GITLAB_DATA_DIR}}/gitlab-satellites/
 
   ## Repositories settings
   repositories:
@@ -478,7 +492,13 @@ production: &base
     # gitlab-shell invokes Dir.pwd inside the repository path and that results
     # real path not the symlink.
     storages: # You must have at least a `default` storage path.
-      default: {{GITLAB_REPOS_DIR}}/
+      default:
+        path: {{GITLAB_REPOS_DIR}}/
+        gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
+        failure_count_threshold: {{GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_COUNT_THRESHOLD}} # number of failures before stopping attempts
+        failure_wait_time: {{GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_WAIT_TIME}} # Seconds after an access failure before allowing access again
+        failure_reset_time: {{GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_RESET_TIME}} # Time in seconds to expire failures
+        storage_timeout: {{GITLAB_REPOSITORIES_STORAGES_DEFAULT_STORAGE_TIMEOUT}} # Time in seconds to wait before aborting a storage access attempt
 
   ## Backup settings
   backup:
@@ -492,6 +512,8 @@ production: &base
       connection:
         provider: AWS
         region: {{AWS_BACKUP_REGION}}
+        endpoint: {{AWS_BACKUP_ENDPOINT}}
+        path_style: {{AWS_BACKUP_PATH_STYLE}}
         aws_access_key_id: {{AWS_BACKUP_ACCESS_KEY_ID}}
         aws_secret_access_key: '{{AWS_BACKUP_SECRET_ACCESS_KEY}}'
       # The remote 'directory' to store your backups. For S3, this would be the bucket name.
@@ -539,6 +561,29 @@ production: &base
     # Git timeout to read a commit, in seconds
     timeout: {{GITLAB_TIMEOUT}}
 
+  ## Webpack settings
+  # If enabled, this will tell rails to serve frontend assets from the webpack-dev-server running
+  # on a given port instead of serving directly from /assets/webpack. This is only indended for use
+  # in development.<Paste>
+  webpack:
+    # dev_server:
+    #   enabled: true
+    #   host: localhost
+    #   port: 3808
+    ## Monitoring
+  # Built in monitoring settings
+  monitoring:
+    # Time between sampling of unicorn socket metrics, in seconds
+    unicorn_sampler_interval: {{GITLAB_MONITORING_UNICORN_SAMPLER_INTERVAL}}
+    # IP whitelist to access monitoring endpoints
+    ip_whitelist:
+      - {{GITLAB_MONITORING_IP_WHITELIST}}
+    # Sidekiq exporter is webserver built in to Sidekiq to expose Prometheus metrics
+    sidekiq_exporter:
+      enabled: {{GITLAB_MONITORING_SIDEKIQ_EXPORTER_ENABLED}}
+      address: {{GITLAB_MONITORING_SIDEKIQ_EXPORTER_ADDRESS}}
+      port: {{GITLAB_MONITORING_SIDEKIQ_EXPORTER_PORT}}
+
   #
   # 5. Extra customization
   # ==========================
@@ -585,11 +630,13 @@ test:
     # In order to setup it correctly you need to specify
     # your system username you use to run GitLab
     # user: YOUR_USERNAME
-  satellites:
-    path: tmp/tests/gitlab-satellites/
+  pages:
+    path: tmp/tests/pages
   repositories:
     storages:
-      default: tmp/tests/repositories/
+      default:
+        path: tmp/tests/repositories/
+        gitaly_adress: unix:tmp/tests/gitaly/gitaly.socket
   backup:
     path: tmp/tests/backups
   gitlab_shell:
@@ -613,7 +660,7 @@ test:
         host: 127.0.0.1
         port: 3890
         uid: 'uid'
-        method: 'plain' # "tls" or "ssl" or "plain"
+        encryption: 'plain' # "start_tls" or "simple_tls" or "plain"
         base: 'dc=example,dc=com'
         user_filter: ''
         group_base: 'ou=groups,dc=example,dc=com'

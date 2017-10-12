@@ -65,14 +65,6 @@ log_level: INFO
 # incurs an extra API call on every gitlab-shell command.
 audit_usernames: false
 
-# Enable git-annex support
-# git-annex allows managing files with git, without checking the file contents into git
-# See https://git-annex.branchable.com/ for documentation
-# If enabled, git-annex needs to be installed on the server where gitlab-shell is setup
-# For Debian and Ubuntu systems this can be done with: sudo apt-get install git-annex
-# For CentOS: sudo yum install epel-release && sudo yum install git-annex
-git_annex_enabled: false
-
 # Git trace log file.
 # If set, git commands receive GIT_TRACE* environment variables
 # See https://git-scm.com/book/es/v2/Git-Internals-Environment-Variables#Debugging for documentation
