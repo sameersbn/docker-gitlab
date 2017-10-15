@@ -952,8 +952,8 @@ Below is the complete list of available options that can be used to customize yo
 | `LDAP_HOST` | LDAP Host |
 | `LDAP_PORT` | LDAP Port. Defaults to `389` |
 | `LDAP_UID` | LDAP UID. Defaults to `sAMAccountName` |
-| `LDAP_METHOD` | LDAP method, Possible values are `ssl`, `tls` and `plain`. Defaults to `plain` |
-| `LDAP_VERIFY_SSL` | LDAP verify ssl certificate for installations that are using `start_tls` or `simple_tls`. Defaults to `true` |
+| `LDAP_METHOD` | LDAP method, Possible values are `simple_tls`, `start_tls` and `plain`. Defaults to `plain` |
+| `LDAP_VERIFY_SSL` | LDAP verify ssl certificate for installations that are using `LDAP_METHOD: 'simple_tls'` or `LDAP_METHOD: 'start_tls'`. Defaults to `true` |
 | `LDAP_BIND_DN` | No default. |
 | `LDAP_PASS` | LDAP password |
 | `LDAP_TIMEOUT` | Timeout, in seconds, for LDAP queries. Defaults to `10`. |
