@@ -264,8 +264,10 @@ production: &base
         host: '{{LDAP_HOST}}'
         port: {{LDAP_PORT}}
         uid: '{{LDAP_UID}}'
+
         encryption: '{{LDAP_METHOD}}' # "start_tls" or "simple_tls" or "plain"
-        verify_certificates: '{{LDAP_VERIFY_SSL}}'
+        verify_certificates: {{LDAP_VERIFY_SSL}}
+
         bind_dn: '{{LDAP_BIND_DN}}'
         password: '{{LDAP_PASS}}'
 
