@@ -4,7 +4,7 @@ set -e
 GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
 GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz
 GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
-GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages/repository/archive.tar.gz
+GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages.git
 GITLAB_GITALY_URL=https://gitlab.com/gitlab-org/gitaly/repository/archive.tar.gz
 
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
@@ -105,20 +105,13 @@ PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make install
 
 #download pages
 echo "Downloading gitlab-pages v.${GITLAB_PAGES_VERSION}..."
-mkdir -p ${GITLAB_PAGES_INSTALL_DIR}
-wget -cq ${GITLAB_PAGES_URL}?ref=v${GITLAB_PAGES_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-pages-${GITLAB_PAGES_VERSION}.tar.gz
-tar xf ${GITLAB_BUILD_DIR}/gitlab-pages-${GITLAB_PAGES_VERSION}.tar.gz --strip 1 -C ${GITLAB_PAGES_INSTALL_DIR}
-rm -rf ${GITLAB_BUILD_DIR}/gitlab-pages-${GITLAB_PAGES_VERSION}.tar.gz
+exec_as_git git clone -q -b v${GITLAB_PAGES_VERSION} --depth 1 ${GITLAB_PAGES_URL} ${GITLAB_PAGES_INSTALL_DIR}
 chown -R ${GITLAB_USER}: ${GITLAB_PAGES_INSTALL_DIR}
 
 #install gitlab-pages
 cd ${GITLAB_PAGES_INSTALL_DIR}
-GODIR=/tmp/go/src/gitlab.com/gitlab-org/gitlab-pages
-mkdir -p "$(dirname "$GODIR")"
-ln -sfv "$(pwd -P)" "$GODIR"
-cd "$GODIR"
-PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make gitlab-pages
-mv gitlab-pages /usr/local/bin/
+PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make
+cp -f gitlab-pages /usr/local/bin/
 
 # download gitaly
 echo "Downloading gitaly v.${GITALY_SERVER_VERSION}..."
