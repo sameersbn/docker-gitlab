@@ -480,7 +480,6 @@ production: &base
     # This setting controls whether GitLab uses Gitaly (new component
     # introduced in 9.0). Eventually Gitaly use will become mandatory and
     # this option will disappear.
-    enabled: {{GITALY_ENABLED}}
     token: {{GITALY_TOKEN}}
 
   #

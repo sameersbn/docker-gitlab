@@ -275,14 +275,11 @@ gitlab_configure_redis() {
 
 gitlab_configure_gitaly() {
   echo "Configuring gitlab::gitaly..."
-  update_template /etc/supervisor/conf.d/gitaly.conf GITALY_ENABLED
-
   update_template ${GITLAB_GITALY_CONFIG} \
     GITALY_SOCKET_PATH \
     GITLAB_REPOS_DIR
 
   update_template ${GITLAB_CONFIG} \
-    GITALY_ENABLED \
     GITALY_TOKEN
 
 }
@@ -1411,9 +1408,7 @@ install_configuration_templates() {
     fi
   fi
 
-  if [[ ${GITALY_ENABLED} == true ]]; then
-    install_template ${GITLAB_USER}: gitaly/config.toml ${GITLAB_GITALY_CONFIG}
-  fi
+  install_template ${GITLAB_USER}: gitaly/config.toml ${GITLAB_GITALY_CONFIG}
 }
 
 configure_gitlab() {
