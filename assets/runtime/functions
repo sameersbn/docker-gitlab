@@ -982,7 +982,8 @@ gitlab_configure_pages(){
     GITLAB_PAGES_ENABLED \
     GITLAB_PAGES_DOMAIN \
     GITLAB_PAGES_PORT \
-    GITLAB_PAGES_HTTPS
+    GITLAB_PAGES_HTTPS \
+    GITLAB_PAGES_ARTIFACTS_SERVER
 
   if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTP} ]]; then
     update_template ${GITLAB_CONFIG} \
