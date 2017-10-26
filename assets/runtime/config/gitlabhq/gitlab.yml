@@ -91,7 +91,7 @@ production: &base
     # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
     # Tip: you can test your closing pattern at http://rubular.com.
-    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing))(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)'
+    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)|[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)'
 
     ## Default project features settings
     default_projects_features:
@@ -166,6 +166,7 @@ production: &base
     host: {{GITLAB_PAGES_DOMAIN}}
     port: {{GITLAB_PAGES_PORT}} # Set to 443 if you serve the pages with HTTPS
     https: {{GITLAB_PAGES_HTTPS}} # Set to true if you serve the pages with HTTPS
+    artifacts_server: {{GITLAB_PAGES_ARTIFACTS_SERVER}}
     external_http: {{GITLAB_PAGES_EXTERNAL_HTTP}} # If defined, enables custom domain support in GitLab Pages
     external_https: {{GITLAB_PAGES_EXTERNAL_HTTPS}} # If defined, enables custom domain and certificate support in GitLab Pages
 
@@ -469,18 +470,11 @@ production: &base
 
   # Gitaly settings
   gitaly:
-    # The socket_path setting is optional and obsolete. When this is set
-    # GitLab assumes it can reach a Gitaly services via a Unix socket at
-    # this path. When this is commented out GitLab will not use Gitaly.
-    #
-    # This setting is obsolete because we expect it to be moved under
-    # repositories/storages in GitLab 9.1.
-    #
-    # socket_path: tmp/sockets/gitaly.socket
-    # This setting controls whether GitLab uses Gitaly (new component
-    # introduced in 9.0). Eventually Gitaly use will become mandatory and
-    # this option will disappear.
-    enabled: {{GITALY_ENABLED}}
+    # Path to the directory containing Gitaly client executables.
+    client_path: {{GITALY_CLIENT_PATH}}
+    # Default Gitaly authentication token. Can be overriden per storage. Can
+    # be left blank when Gitaly is running locally on a Unix socket, which
+    # is the normal way to deploy Gitaly.
     token: {{GITALY_TOKEN}}
 
   #
