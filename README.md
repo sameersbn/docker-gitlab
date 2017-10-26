@@ -879,10 +879,11 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_PAGES_DIR` | Sets GitLab Pages directory where all pages will be stored. Defaults to `$GITLAB_SHARED_DIR/pages` |
 | `GITLAB_PAGES_PORT`| Sets GitLab Pages Port that will be used in NGINX. Defaults to `80` |
 | `GITLAB_PAGES_HTTPS` | Sets GitLab Pages to HTTPS and the gitlab-pages-ssl config will be used. Defaults to `false` |
+| `GITALY_ARTIFACTS_SERVER` | Set to `true` to enable pages artifactsserver, enabled by default. |
 | `GITLAB_PAGES_EXTERNAL_HTTP` | Sets GitLab Pages external http to receive request on an independen port. Disabled by default |
 | `GITLAB_PAGES_EXTERNAL_HTTPS` | Sets GitLab Pages external https to receive request on an independen port. Disabled by default |
 | `GITLAB_HTTPS` | Set to `true` to enable https support, disabled by default. |
-| `GITALY_ENABLED` | Set to `true` to enable gitaly, enabled by default. |
+| `GITALY_CLIENT_PATH` | Set default path for gitaly. defaults to `/home/git/gitaly` |
 | `GITALY_TOKEN` | Set a gitaly token, blank by default. |
 | `GITLAB_MONITORING_UNICORN_SAMPLER_INTERVAL` | Time between sampling of unicorn socket metrics, in seconds, defaults to `10` |
 | `GITLAB_MONITORING_IP_WHITELIST` | IP whitelist to access monitoring endpoints, defaults to `0.0.0.0/8` |
