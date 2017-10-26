@@ -469,17 +469,11 @@ production: &base
 
   # Gitaly settings
   gitaly:
-    # The socket_path setting is optional and obsolete. When this is set
-    # GitLab assumes it can reach a Gitaly services via a Unix socket at
-    # this path. When this is commented out GitLab will not use Gitaly.
-    #
-    # This setting is obsolete because we expect it to be moved under
-    # repositories/storages in GitLab 9.1.
-    #
-    # socket_path: tmp/sockets/gitaly.socket
-    # This setting controls whether GitLab uses Gitaly (new component
-    # introduced in 9.0). Eventually Gitaly use will become mandatory and
-    # this option will disappear.
+    # Path to the directory containing Gitaly client executables.
+    client_path: {{GITALY_CLIENT_PATH}}
+    # Default Gitaly authentication token. Can be overriden per storage. Can
+    # be left blank when Gitaly is running locally on a Unix socket, which
+    # is the normal way to deploy Gitaly.
     token: {{GITALY_TOKEN}}
 
   #

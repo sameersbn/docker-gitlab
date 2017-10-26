@@ -280,6 +280,7 @@ gitlab_configure_gitaly() {
     GITLAB_REPOS_DIR
 
   update_template ${GITLAB_CONFIG} \
+    GITALY_CLIENT_PATH \
     GITALY_TOKEN
 
 }
