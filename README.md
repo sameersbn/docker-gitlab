@@ -879,7 +879,7 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_PAGES_DIR` | Sets GitLab Pages directory where all pages will be stored. Defaults to `$GITLAB_SHARED_DIR/pages` |
 | `GITLAB_PAGES_PORT`| Sets GitLab Pages Port that will be used in NGINX. Defaults to `80` |
 | `GITLAB_PAGES_HTTPS` | Sets GitLab Pages to HTTPS and the gitlab-pages-ssl config will be used. Defaults to `false` |
-| `GITALY_ARTIFACTS_SERVER` | Set to `true` to enable pages artifactsserver, enabled by default. |
+| `GITLAB_PAGES_ARTIFACTS_SERVER` | Set to `true` to enable pages artifactsserver, enabled by default. |
 | `GITLAB_PAGES_EXTERNAL_HTTP` | Sets GitLab Pages external http to receive request on an independen port. Disabled by default |
 | `GITLAB_PAGES_EXTERNAL_HTTPS` | Sets GitLab Pages external https to receive request on an independen port. Disabled by default |
 | `GITLAB_HTTPS` | Set to `true` to enable https support, disabled by default. |
