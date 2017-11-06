@@ -461,6 +461,33 @@ production: &base
             client_id: '{{OAUTH_AZURE_API_KEY}}',
             client_secret: '{{OAUTH_AZURE_API_SECRET}}',
             tenant_id: '{{OAUTH_AZURE_TENANT_ID}}' } }
+      - { name: 'oauth2_generic',
+          args: {
+            client_id: '{{OAUTH_GENERIC_CLIENT_ID}}',
+            client_secret: '{{OAUTH_GENERIC_CLIENT_SECRET}}',
+            client_options: {
+              site: '{{OAUTH_GENERIC_SITE}}',
+              user_info_url: '{{OAUTH_GENERIC_USER_INFO_URL}}',
+              authorize_url: '{{OAUTH_GENERIC_AUTHORIZE_URL}}',
+              token_url: '{{OAUTH_GENERIC_TOKEN_URL}}'},
+            user_response_structure: {
+              root_path: ['{{OAUTH_GENERIC_ROOT_PATH}}'],
+              id_path: ['{{OAUTH_GENERIC_ID_PATH}}'],
+              attributes: {
+                name: '{{OAUTH_GENERIC_USER_NAME}}',
+                email: '{{OAUTH_GENERIC_USER_EMAIL}}',
+                nickname: '{{OAUTH_GENERIC_USER_NICKNAME}}',
+                first_name: '{{OAUTH_GENERIC_USER_FIRST_NAME}}',
+                last_name: '{{OAUTH_GENERIC_USER_LAST_NAME}}',
+                location: '{{OAUTH_GENERIC_USER_LOCATION}}',
+                descriptioin: '{{OAUTH_GENERIC_USER_DESC}}',
+                image: '{{OAUTH_GENERIC_USER_IMAGE}}',
+                phone: '{{OAUTH_GENERIC_USER_PHONE}}',
+                urls: '{{OAUTH_GENERIC_USER_URLS}}'
+                },
+              },
+            redirect_url: '{{OAUTH_GENERIC_REDIRECT_URL}}'
+            }}
 
     # SSO maximum session duration in seconds. Defaults to CAS default of 8 hours.
     # cas3:

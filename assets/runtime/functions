@@ -662,6 +662,38 @@ gitlab_configure_oauth_azure() {
   fi
 }
 
+gitlab_configure_oauth_generic(){
+  if [[ -n ${OAUTH_GENERIC_CLIENT_ID} && \
+        -n ${OAUTH_GENERIC_CLIENT_SECRET} && \
+        -n ${OAUTH_GENERIC_SITE} && \
+        -n ${OAUTH_GENERIC_USER_INFO_URL} && \
+        -n ${OAUTH_GENERIC_AUTHORIZE_URL} && \
+        -n ${OAUTH_GENERIC_TOKEN_URL} ]]; then
+    echo "Configuring gitlab::oauth::generic"
+    OAUTH_ENABLED=${OAUTH_ENABLED:-true}
+    update_template ${GITLAB_CONFIG} \
+    OAUTH_GENERIC_CLIENT_ID \
+    OAUTH_GENERIC_CLIENT_SECRET \
+    OAUTH_GENERIC_SITE \
+    OAUTH_GENERIC_USER_INFO_URL \
+    OAUTH_GENERIC_AUTHORIZE_URL \
+    OAUTH_GENERIC_TOKEN_URL \
+    OAUTH_GENERIC_ROOT_PATH \
+    OAUTH_GENERIC_ID_PATH \
+    OAUTH_GENERIC_USER_NAME \
+    OAUTH_GENERIC_USER_EMAIL \
+    OAUTH_GENERIC_USER_NICKNAME \
+    OAUTH_GENERIC_USER_FIRST_NAME \
+    OAUTH_GENERIC_USER_LAST_NAME \
+    OAUTH_GENERIC_USER_LOCATION \
+    OAUTH_GENERIC_USER_DESC \
+    OAUTH_GENERIC_USER_IMAGE \
+    OAUTH_GENERIC_USER_PHONE \
+    OAUTH_GENERIC_USER_URLS \
+    OAUTH_GENERIC_REDIRECT_URL
+  fi
+}
+
 gitlab_configure_oauth() {
   echo "Configuring gitlab::oauth..."
 
@@ -677,6 +709,7 @@ gitlab_configure_oauth() {
   gitlab_configure_oauth_crowd
   gitlab_configure_oauth_auth0
   gitlab_configure_oauth_azure
+  gitlab_configure_oauth_generic
 
   OAUTH_ENABLED=${OAUTH_ENABLED:-false}
   update_template ${GITLAB_CONFIG} \
@@ -688,7 +721,7 @@ gitlab_configure_oauth() {
     OAUTH_EXTERNAL_PROVIDERS
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
-    cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2)
+    cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2|oauth2_generic)
       update_template ${GITLAB_CONFIG} OAUTH_AUTO_SIGN_IN_WITH_PROVIDER
       ;;
     *)

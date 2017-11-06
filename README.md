@@ -766,6 +766,14 @@ Once you have the Client ID, Client secret and Tenant ID generated, configure th
 
 For example, if your Client ID is `xxx`, the Client secret is `yyy` and the Tenant ID is `zzz`, then adding `--env 'OAUTH_AZURE_API_KEY=xxx' --env 'OAUTH_AZURE_API_SECRET=yyy' --env 'OAUTH_AZURE_TENANT_ID=zzz'` to the docker run command enables support for Microsoft Azure OAuth.
 
+#### Generic OAuth2 OmniAuth
+
+To enable the Generic OAuth2 OmniAuth provider you must register your application with your provider.And you need to confirm OAuth2 provider site,Userinfo URL,Authorize URL,Token URL and the structure of the response of UserInfo.
+
+At least you need to configure the following environment variables `OAUTH_GENERIC_CLIENT_ID`, `OAUTH_GENERIC_CLIENT_SECRET`, `OAUTH_GENERIC_SITE`, `OAUTH_GENERIC_USER_INFO_URL`, `OAUTH_GENERIC_AUTHORIZE_URL`, `OAUTH_GENERIC_TOKEN_URL`, `OAUTH_GENERIC_ROOT_PATH`, `OAUTH_GENERIC_ID_PATH`, `OAUTH_GENERIC_USER_NAME` and `OAUTH_GENERIC_USER_EMAIL`.
+
+See [GitLab documentation](https://docs.gitlab.com/ee/integration/oauth2_generic.html#sign-into-gitlab-with-almost-any-oauth2-provider) and [Omniauth-oauth2-generic documentation](https://gitlab.com/satorix/omniauth-oauth2-generic) for more details.
+
 ### External Issue Trackers
 
 Since version `7.10.0` support for external issue trackers can be enabled in the "Service Templates" section of the settings panel.
@@ -1018,6 +1026,24 @@ Below is the complete list of available options that can be used to customize yo
 | `OAUTH_AZURE_API_KEY` | Azure Client ID. No defaults. |
 | `OAUTH_AZURE_API_SECRET` | Azure Client secret. No defaults. |
 | `OAUTH_AZURE_TENANT_ID` | Azure Tenant ID. No defaults. |
+| `OAUTH_GENERIC_CLIENT_ID` | Your own OAuth2 Client ID. No defaults. |
+| `OAUTH_GENERIC_CLIENT_SECRET` | Your own OAuth2 Client secret. No defaults. |
+| `OAUTH_GENERIC_SITE` | The URL for your OAuth 2 server(eg. https://your_oauth_server).Including port if necessary. No defaults. |
+| `OAUTH_GENERIC_USER_INFO_URL` | The endpoint on your OAuth 2 server that provides user info for the current user. No defaults. |
+| `OAUTH_GENERIC_AUTHORIZE_URL` | The authorization endpoint for your OAuth server. No defaults. |
+| `OAUTH_GENERIC_TOKEN_URL` | The token request endpoint for your OAuth server. No defaults. |
+| `OAUTH_GENERIC_ROOT_PATH` | An Array containing each key in the path to the node that contains the user attributes (i.e. `['data', 'attributes']` for a JsonAPI-formatted response).You need to set value like `data','attributes','user`. No defaults. |
+| `OAUTH_GENERIC_ID_PATH` | The name or path to the user ID (i.e. `['data', 'id']`).  Scalars are considered relative to `root_path`, Arrays are absolute paths. You need to set value like `data','attribute','id`. No defaults. |
+| `OAUTH_GENERIC_USER_NAME` | Scalars are treated as relative (i.e. 'username' would point to response`['data']['attributes']['username']`, given a root_path of `['data', 'attributes']`). Must needed. No defaults. |
+| `OAUTH_GENERIC_USER_EMAIL` | Arrays are treated as absolute paths (i.e. `['included', 'contacts', 0, 'email']` would point to response`['included']['contacts'][0]['email']`, regardless of root_path). Must needed. No defaults. |
+| `OAUTH_GENERIC_USER_NICKNAME` | User Nickname. No defaults. |
+| `OAUTH_GENERIC_USER_FIRST_NAME` | User's First Name. No defaults. |
+| `OAUTH_GENERIC_USER_LAST_NAME` | User's Last Name. No defaults. |
+| `OAUTH_GENERIC_USER_LOCATION` | User's Location. No defaults. |
+| `OAUTH_GENERIC_USER_DESC` | User's Description. No defaults. |
+| `OAUTH_GENERIC_USER_IMAGE` | User's Image. No defaults. |
+| `OAUTH_GENERIC_USER_PHONE` | User's Phone number. No defaults. |
+| `OAUTH_GENERIC_USER_URLS` | User's URL. No defaults. |
 | `GITLAB_GRAVATAR_ENABLED` | Enables gravatar integration. Defaults to `true`. |
 | `GITLAB_GRAVATAR_HTTP_URL` | Sets a custom gravatar url. Defaults to `http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`. This can be used for [Libravatar integration](http://doc.gitlab.com/ce/customization/libravatar.html). |
 | `GITLAB_GRAVATAR_HTTPS_URL` | Same as above, but for https. Defaults to `https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`. |
