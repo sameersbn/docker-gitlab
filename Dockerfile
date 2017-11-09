@@ -1,5 +1,5 @@
 FROM sameersbn/ubuntu:14.04.20171024
-MAINTAINER sameer@damagehead.com
+LABEL maintainer="sameer@damagehead.com"
 
 ENV GITLAB_VERSION=10.1.1 \
     RUBY_VERSION=2.3 \
