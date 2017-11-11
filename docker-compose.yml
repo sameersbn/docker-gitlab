@@ -71,7 +71,7 @@ services:
     - GITLAB_BACKUP_SCHEDULE=daily
     - GITLAB_BACKUP_TIME=01:00
 
-    - GITLAB_USE_LATEST_EE_LOCALES=true
+    - GITLAB_USE_LATEST_EE_LOCALES=false
 
     - SMTP_ENABLED=false
     - SMTP_DOMAIN=www.example.com
