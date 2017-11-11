@@ -1467,6 +1467,7 @@ configure_gitlab() {
   gitlab_configure_backups
   gitlab_configure_registry
   gitlab_configure_pages
+  gitlab_download_locales
 
   # remove stale gitlab.socket
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
@@ -1485,6 +1486,27 @@ configure_gitlab_shell() {
     REDIS_DB_NUMBER
 }
 
+# https://gist.github.com/hrwgc/7455343
+# simple function to check http response code before downloading a remote file
+# example usage:
+# if `validate_url $url >/dev/null`; then dosomething; else echo "does not exist"; fi
+function validate_url(){
+  if [[ `wget -S --spider $1  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then echo "true"; fi
+}
+
+gitlab_download_locales() {
+  EE_MASTER_I18N_RAWBRANCH="https://gitlab.com/gitlab-org/gitlab-ee/raw/master-i18n"
+  if [[ ${GITLAB_USE_LATEST_EE_LOCALES} == true ]]; then
+    echo "Downloading latest EE locales from EE master..."
+     for locale_dir in $GITLAB_INSTALL_DIR/locale/*/; do 
+      [ -d "${locale_dir}" ] && 
+        curlocale=`basename ${locale_dir}` && echo $curlocale &&
+          if `validate_url $EE_MASTER_I18N_RAWBRANCH/locale/$curlocale/gitlab.po >/dev/null`; then exec_as_git wget --quiet -O ${GITLAB_INSTALL_DIR}/locale/$curlocale/gitlab.po $EE_MASTER_I18N_RAWBRANCH/locale/$curlocale/gitlab.po; else echo "Locale $locale_dir missing on server"; fi &&
+          if `validate_url $EE_MASTER_I18N_RAWBRANCH/locale/$curlocale/gitlab.po.time_stamp >/dev/null`; then exec_as_git wget --quiet -O ${GITLAB_INSTALL_DIR}/locale/$curlocale/gitlab.po.time_stamp $EE_MASTER_I18N_RAWBRANCH/locale/$curlocale/gitlab.po.time_stamp; else echo "Timestamp for $locale_dir missing on server"; fi &&
+            timestamp_locale=`stat -c %y ${locale_dir}gitlab.po` && echo "Timestamp for ${curlocale} is ${timestamp_locale}" ;
+     done
+  fi
+}
 
 configure_gitlab_pages() {
   if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
