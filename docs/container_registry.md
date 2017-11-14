@@ -69,7 +69,7 @@ First add the configuration for the registry container to your `docker-compose.y
         environment:
             - REGISTRY_LOG_LEVEL=info
             - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/registry
-            - REGISTRY_AUTH_TOKEN_REALM=https://git.example.de/jwt/auth
+            - REGISTRY_AUTH_TOKEN_REALM=https://git.example.com/jwt/auth
             - REGISTRY_AUTH_TOKEN_SERVICE=container_registry
             - REGISTRY_AUTH_TOKEN_ISSUER=gitlab-issuer
             - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/certs/registry.crt
@@ -93,7 +93,7 @@ Then update the `volumes` and `environment` sections of your `gitlab` container:
             # ...
             # Registry
             - GITLAB_REGISTRY_ENABLED=true
-            - GITLAB_REGISTRY_HOST=registry.example.de
+            - GITLAB_REGISTRY_HOST=registry.example.com
             - GITLAB_REGISTRY_PORT=443
             - GITLAB_REGISTRY_API_URL=http://registry:5000
             - GITLAB_REGISTRY_KEY_PATH=/certs/registry.key
@@ -108,15 +108,15 @@ Then update the `volumes` and `environment` sections of your `gitlab` container:
 ```nginx
 server {
     root /dev/null;
-    server_name registry.example.de;
+    server_name registry.example.com;
     charset UTF-8;
-    access_log /var/log/nginx/registry.example.de.access.log;
-    error_log /var/log/nginx/registry.example.de.error.log;
+    access_log /var/log/nginx/registry.example.com.access.log;
+    error_log /var/log/nginx/registry.example.com.error.log;
 
     # Set up SSL only connections:
     listen *:443 ssl http2;
-    ssl_certificate             /etc/letsencrypt/live/registry.example.de/fullchain.pem;
-    ssl_certificate_key         /etc/letsencrypt/live/registry.example.de/privkey.pem;
+    ssl_certificate             /etc/letsencrypt/live/registry.example.com/fullchain.pem;
+    ssl_certificate_key         /etc/letsencrypt/live/registry.example.com/privkey.pem;
 
     ssl_ciphers 'ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4';
     ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
