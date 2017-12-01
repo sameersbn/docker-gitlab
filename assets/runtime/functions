@@ -455,7 +455,8 @@ gitlab_configure_ldap() {
     LDAP_BLOCK_AUTO_CREATED_USERS \
     LDAP_BASE \
     LDAP_USER_FILTER \
-    LDAP_LABEL
+    LDAP_LABEL \
+    LDAP_SYNC_SSH_KEYS
 }
 
 gitlab_configure_oauth_cas3() {

@@ -335,6 +335,12 @@ production: &base
           first_name: 'givenName'
           last_name:  'sn'
 
+        # The LDAP attribute containing a user's public SSH key
+        #
+        #   Ex. ssh_public_key
+        #
+        sync_ssh_keys: '{{LDAP_SYNC_SSH_KEYS}}'
+
       # GitLab EE only: add more LDAP servers
       # Choose an ID made of a-z and 0-9 . This ID will be stored in the database
       # so that GitLab can remember which LDAP server a user belongs to.
