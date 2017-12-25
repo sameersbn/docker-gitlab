@@ -894,7 +894,7 @@ Below is the complete list of available options that can be used to customize yo
 | `SSL_CERTIFICATE_PATH` | Location of the ssl certificate. Defaults to `/home/git/data/certs/gitlab.crt` |
 | `SSL_KEY_PATH` | Location of the ssl private key. Defaults to `/home/git/data/certs/gitlab.key` |
 | `SSL_DHPARAM_PATH` | Location of the dhparam file. Defaults to `/home/git/data/certs/dhparam.pem` |
-| `SSL_VERIFY_CLIENT` | Enable verification of client certificates using the `SSL_CA_CERTIFICATES_PATH` file. Defaults to `false` |
+| `SSL_VERIFY_CLIENT` | Enable verification of client certificates using the `SSL_CA_CERTIFICATES_PATH` file or setting this variable to `on`. Defaults to `off` |
 | `SSL_CA_CERTIFICATES_PATH` | List of SSL certificates to trust. Defaults to `/home/git/data/certs/ca.crt`. |
 | `SSL_REGISTRY_KEY_PATH` | Location of the ssl private key for gitlab container registry. Defaults to `/home/git/data/certs/registry.key` |
 | `SSL_REGISTRY_CERT_PATH` | Location of the ssl certificate for the gitlab container registry. Defaults to `/home/git/data/certs/registry.crt` |
