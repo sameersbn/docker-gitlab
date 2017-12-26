@@ -5,6 +5,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 
 **10.3.0**
 - gitlab: upgrade CE to v10.3.0
+- REMOVED `GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_COUNT_THRESHOLD`
 
 **10.2.5**
 - gitlab: upgrade CE to v10.2.5
