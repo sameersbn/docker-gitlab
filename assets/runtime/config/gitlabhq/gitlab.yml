@@ -493,7 +493,6 @@ production: &base
       default:
         path: {{GITLAB_REPOS_DIR}}/
         gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
-        storage_timeout: {{GITLAB_REPOSITORIES_STORAGES_DEFAULT_STORAGE_TIMEOUT}} # Time in seconds to wait before aborting a storage access attempt
 
   ## Backup settings
   backup:
