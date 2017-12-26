@@ -786,6 +786,14 @@ gitlab_configure_backups_aws() {
     exec_as_git sed -i "/#start-aws/d" ${GITLAB_CONFIG}
     exec_as_git sed -i "/#end-aws/d" ${GITLAB_CONFIG}
 
+    if [[ -z ${AWS_BACKUP_MULTIPART_CHUNK_SIZE} ]]; then
+      exec_as_git sed -i "/#start-multipart/,/#end-multipart/d" ${GITLAB_CONFIG}
+    fi
+
+    if [[ -z ${AWS_BACKUP_MULTIPART_CHUNK_SIZE} ]]; then
+      exec_as_git sed -i "/#start-multipart/,/#end-multipart/d" ${GITLAB_CONFIG}
+    fi
+
     if [[ -z ${AWS_BACKUP_REGION} && -z ${AWS_BACKUP_ENDPOINT} ]]; then
       echo "\nMissing AWS region or endpoint. Aborting...\n"
       return 1
