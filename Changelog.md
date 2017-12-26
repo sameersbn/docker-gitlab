@@ -3,6 +3,15 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**10.3.0**
+- gitlab: upgrade CE to v10.3.0
+- REMOVED `GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_COUNT_THRESHOLD`
+- REMOVED `GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_WAIT_TIME`
+- REMOVED `GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_RESET_TIME`
+- REMOVED `GITLAB_REPOSITORIES_STORAGES_DEFAULT_STORAGE_TIMEOUT`
+- REMOVED `GITLAB_MAX_OBJECT_SIZE`
+- REMOVED `GITLAB_TIMEOUT`
+
 **10.2.5**
 - gitlab: upgrade CE to v10.2.5
 

@@ -493,10 +493,6 @@ production: &base
       default:
         path: {{GITLAB_REPOS_DIR}}/
         gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
-        failure_count_threshold: {{GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_COUNT_THRESHOLD}} # number of failures before stopping attempts
-        failure_wait_time: {{GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_WAIT_TIME}} # Seconds after an access failure before allowing access again
-        failure_reset_time: {{GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_RESET_TIME}} # Time in seconds to expire failures
-        storage_timeout: {{GITLAB_REPOSITORIES_STORAGES_DEFAULT_STORAGE_TIMEOUT}} # Time in seconds to wait before aborting a storage access attempt
 
   ## Backup settings
   backup:
@@ -544,6 +540,9 @@ production: &base
     upload_pack: true
     receive_pack: true
 
+    # Git import/fetch timeout, in seconds. Defaults to 3 hours.
+    # git_timeout: 10800
+
     # If you use non-standard ssh port you need to specify it
     ssh_port: {{GITLAB_SSH_PORT}}
 
@@ -552,12 +551,6 @@ production: &base
   # Use the default values unless you really know what you are doing
   git:
     bin_path: /usr/bin/git
-    # The next value is the maximum memory size grit can use
-    # Given in number of bytes per git object (e.g. a commit)
-    # This value can be increased if you have very large commits
-    max_size: {{GITLAB_MAX_OBJECT_SIZE}} # 20.megabytes
-    # Git timeout to read a commit, in seconds
-    timeout: {{GITLAB_TIMEOUT}}
 
   ## Webpack settings
   # If enabled, this will tell rails to serve frontend assets from the webpack-dev-server running
@@ -630,6 +623,8 @@ test:
     # user: YOUR_USERNAME
   pages:
     path: tmp/tests/pages
+  artifacts:
+    path: tmp/tests/artifacts
   repositories:
     storages:
       default:
