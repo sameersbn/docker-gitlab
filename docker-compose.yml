@@ -1,4 +1,4 @@
-version: '2'
+version: '2.2'
 
 services:
   redis:
@@ -7,13 +7,13 @@ services:
     command:
     - --loglevel warning
     volumes:
-    - /srv/docker/gitlab/redis:/var/lib/redis:Z
+    - /srv/docker/gitlab/redis/:/var/lib/redis:Z
 
   postgresql:
     restart: always
     image: sameersbn/postgresql:9.6-2
     volumes:
-    - /srv/docker/gitlab/postgresql:/var/lib/postgresql:Z
+    - /srv/docker/gitlab/postgresql/:/var/lib/postgresql:Z
     environment:
     - DB_USER=gitlab
     - DB_PASS=password
@@ -23,6 +23,9 @@ services:
   gitlab:
     restart: always
     image: sameersbn/gitlab:10.3.2
+    build:
+      context: ./
+      cache_from: ["sameersbn/gitlab:10.3.2"]
     depends_on:
     - redis
     - postgresql
@@ -31,6 +34,7 @@ services:
     - "10022:22"
     volumes:
     - /srv/docker/gitlab/gitlab:/home/git/data:Z
+    - ./assets/runtime/:/etc/docker-gitlab/runtime:Z
     environment:
     - DEBUG=false
 
@@ -148,3 +152,13 @@ services:
     - OAUTH_AZURE_API_KEY=
     - OAUTH_AZURE_API_SECRET=
     - OAUTH_AZURE_TENANT_ID=
+
+    - AWS_BACKUPS=false
+    - AWS_BACKUP_MULTIPART_CHUNK_SIZE=5000
+    - AWS_BACKUP_ENCRYPTION=false
+    - AWS_BACKUP_REGION=foo
+    - AWS_BACKUP_ENDPOINT=foo
+    - AWS_BACKUP_ACCESS_KEY_ID=ffff
+    - AWS_BACKUP_SECRET_ACCESS_KEY=ffff
+    - AWS_BACKUP_BUCKET=fdf
+    - AWS_BACKUP_STORAGE_CLASS=STANDARD_IA
