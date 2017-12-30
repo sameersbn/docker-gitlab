@@ -42,6 +42,11 @@ cd -
 rm -rf /tmp/re2
 DEBIAN_FRONTEND=noninteractive apt-get purge -y --auto-remove checkinstall
 
+# PaX-mark ruby
+# Applying the mark late here does make the build usable on PaX kernels, but
+# still the build itself must be executed on a non-PaX kernel. It's done here
+# only for simplicity.
+paxctl -Cm `which ruby${RUBY_VERSION}`
 # https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
 paxctl -Cm `which nodejs`
 
