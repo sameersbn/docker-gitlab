@@ -782,9 +782,6 @@ gitlab_configure_backups_schedule() {
 
 gitlab_configure_backups_aws() {
     echo "Configuring gitlab::backups::aws..."
-    exec_as_git sed -i "/#start-gcs/,/#end-gcs/d" ${GITLAB_CONFIG}
-    exec_as_git sed -i "/#start-aws/d" ${GITLAB_CONFIG}
-    exec_as_git sed -i "/#end-aws/d" ${GITLAB_CONFIG}
 
     if [[ -z ${AWS_BACKUP_REGION} && -z ${AWS_BACKUP_ENDPOINT} ]]; then
       echo "\nMissing AWS region or endpoint. Aborting...\n"
@@ -799,30 +796,14 @@ gitlab_configure_backups_aws() {
       echo "\nMissing AWS options. Aborting...\n"
       return 1
     fi
-
-    update_template ${GITLAB_CONFIG} \
-      AWS_BACKUP_REGION \
-      AWS_BACKUP_ENDPOINT \
-      AWS_BACKUP_PATH_STYLE \
-      AWS_BACKUP_ACCESS_KEY_ID \
-      AWS_BACKUP_SECRET_ACCESS_KEY \
-      AWS_BACKUP_BUCKET \
-      AWS_BACKUP_MULTIPART_CHUNK_SIZE
 }
 
 gitlab_configure_backup_gcs() {
     echo "Configuring gitlab::backups::gcs..."
-    exec_as_git sed -i "/#start-aws/,/#end-aws/d" ${GITLAB_CONFIG}
-    exec_as_git sed -i "/#start-gcs/d" ${GITLAB_CONFIG}
-    exec_as_git sed -i "/#end-gcs/d" ${GITLAB_CONFIG}
     if [[ -z ${GCS_BACKUP_ACCESS_KEY_ID} || -z ${GCS_BACKUP_SECRET_ACCESS_KEY} || -z ${GCS_BACKUP_BUCKET} ]]; then
       printf "\nMissing GCS options. Aborting...\n"
       return 1
     fi
-    update_template ${GITLAB_CONFIG} \
-      GCS_BACKUP_ACCESS_KEY_ID \
-      GCS_BACKUP_SECRET_ACCESS_KEY \
-      GCS_BACKUP_BUCKET
 }
 
 gitlab_configure_backups() {
