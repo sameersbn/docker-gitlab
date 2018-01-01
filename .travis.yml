@@ -6,4 +6,5 @@ services:
   - docker
 
 script:
- - docker build -t sammeersbn/gitlab .
+ - docker pull sameersbn/gitlab:latest
+ - docker build --cache-from sameersbn/gitlab:latest -t sameersbn/gitlab .
