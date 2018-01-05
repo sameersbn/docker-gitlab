@@ -31,8 +31,8 @@ server {
   ## or delete the /etc/nginx/sites-enabled/default file. This will cause gitlab
   ## to be served if you visit any address that your server responds to, eg.
   ## the ip address of the server (http://x.x.x.x/)n 0.0.0.0:80 default_server;
-  listen 0.0.0.0:80 default_server;
-  listen [::]:80 default_server;
+  listen 0.0.0.0:{{GITLAB_PORT}} default_server;
+  listen [::]:{{GITLAB_PORT}} default_server;
   server_name {{GITLAB_HOST}}; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
 

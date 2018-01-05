@@ -1,6 +1,6 @@
 # GITLAB CI
 server {
-  listen 80;                        # e.g., listen 192.168.1.1:80;
+  listen {{GITLAB_PORT}};                        # e.g., listen 192.168.1.1:80;
   server_name {{GITLAB_CI_HOST}};   # e.g., server_name source.example.com;
 
   access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_ci_access.log;
