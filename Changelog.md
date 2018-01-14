@@ -5,6 +5,10 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 
 **10.3.3**
 - gitlab: upgrade CE to v10.3.3
+- ADDED `AWS_BACKUP_ENCRYPTION` [1449](https://github.com/sameersbn/docker-gitlab/pull/1449/)
+- ADDED `AWS_BACKUP_STORAGE_CLASS` [1449](https://github.com/sameersbn/docker-gitlab/pull/1449/)
+- FIXED `AWS_BACKUP_MULTIPART_CHUNK_SIZE` [1449](https://github.com/sameersbn/docker-gitlab/pull/1449/)
+- Apply PaX mark to ruby [1458](https://github.com/sameersbn/docker-gitlab/pull/1458)
 
 **10.3.2**
 - gitlab: upgrade CE to v10.3.2
