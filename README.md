@@ -1097,18 +1097,18 @@ docker run --name gitlab -it --rm [OPTIONS] \
 
 The list of all available backups will be displayed in reverse chronological order. Select the backup you want to restore and continue.
 
-To avoid user interaction in the restore operation, specify the timestamp of the backup using the `BACKUP` argument to the rake task.
+To avoid user interaction in the restore operation, specify the timestamp, date and version of the backup using the `BACKUP` argument to the rake task.
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:10.3.3 app:rake gitlab:backup:restore BACKUP=1417624827
+    sameersbn/gitlab:10.3.3 app:rake gitlab:backup:restore BACKUP=1515629493_2018_01_11_10.3.3
 ```
 
 When using `docker-compose` you may use the following command to execute the restore.
 
 ```bash
 docker-compose run --rm gitlab app:rake gitlab:backup:restore # List available backups
-docker-compose run --rm gitlab app:rake gitlab:backup:restore BACKUP=1417624827 # Choose to restore from 1417624827
+docker-compose run --rm gitlab app:rake gitlab:backup:restore BACKUP=1515629493_2018_01_11_10.3.3 # Choose to restore from 1515629493
 ```
 
 ## Host Key Backups (ssh)
