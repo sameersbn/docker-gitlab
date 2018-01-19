@@ -135,10 +135,18 @@ You can also pull the `latest` tag which is built from the repository *HEAD*
 docker pull sameersbn/gitlab:latest
 ```
 
-Alternatively you can build the image locally.
+Alternatively you can build the images locally.
+
+## Community Edition
 
 ```bash
 docker build -t sameersbn/gitlab github.com/sameersbn/docker-gitlab
+```
+
+## Enterprise Edition
+
+```bash
+docker build --build-arg GITLAB_EDITION=ee -t sameersbn/gitlab-ee github.com/sameersbn/docker-gitlab
 ```
 
 # Quick Start
