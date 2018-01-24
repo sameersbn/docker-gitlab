@@ -1,4 +1,4 @@
-FROM sameersbn/ubuntu:14.04.20171024
+FROM sameersbn/ubuntu:14.04.20180124
 LABEL maintainer="sameer@damagehead.com"
 
 ENV GITLAB_VERSION=10.3.6 \
