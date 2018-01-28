@@ -37,7 +37,6 @@ custom_hooks_dir: "{{GITLAB_SHELL_INSTALL_DIR}}/hooks"
 
 # Redis settings used for pushing commit notices to gitlab
 redis:
-  bin: /usr/bin/redis-cli
   host: "{{REDIS_HOST}}"
   port: {{REDIS_PORT}}
   # pass: redispass # Allows you to specify the password for Redis

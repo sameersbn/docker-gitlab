@@ -3,6 +3,11 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**10.4.0**
+- gitlab: upgrade CE to v10.4.0
+- docker: upgrade to ubuntu xenial as baseimage
+- golang: update to 1.9.3
+
 **10.3.6**
 - gitlab: upgrade CE to v10.3.6
 
