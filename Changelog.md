@@ -3,6 +3,93 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**10.4.2-1**
+- FIXED SSH Host Key generation through droping the support for rsa1
+
+**10.4.2**
+- gitlab: upgrade CE to v10.4.2
+
+**10.4.1**
+- gitlab: upgrade CE to v10.4.1
+
+**10.4.0**
+- gitlab: upgrade CE to v10.4.0
+- docker: upgrade to ubuntu xenial as baseimage
+- golang: update to 1.9.3
+
+**10.3.6**
+- gitlab: upgrade CE to v10.3.6
+
+**10.3.5**
+- gitlab: upgrade CE to v10.3.5
+
+**10.3.4**
+- gitlab: upgrade CE to v10.3.4
+
+**10.3.3**
+- gitlab: upgrade CE to v10.3.3
+- ADDED `AWS_BACKUP_ENCRYPTION` [1449](https://github.com/sameersbn/docker-gitlab/pull/1449/)
+- ADDED `AWS_BACKUP_STORAGE_CLASS` [1449](https://github.com/sameersbn/docker-gitlab/pull/1449/)
+- FIXED `AWS_BACKUP_MULTIPART_CHUNK_SIZE` [1449](https://github.com/sameersbn/docker-gitlab/pull/1449/)
+- Apply PaX mark to ruby [1458](https://github.com/sameersbn/docker-gitlab/pull/1458)
+
+**10.3.2**
+- gitlab: upgrade CE to v10.3.2
+
+**10.3.1**
+- gitlab: upgrade CE to v10.3.1
+
+**10.3.0**
+- gitlab: upgrade CE to v10.3.0
+- REMOVED `GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_COUNT_THRESHOLD`
+- REMOVED `GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_WAIT_TIME`
+- REMOVED `GITLAB_REPOSITORIES_STORAGES_DEFAULT_FAILURE_RESET_TIME`
+- REMOVED `GITLAB_REPOSITORIES_STORAGES_DEFAULT_STORAGE_TIMEOUT`
+- REMOVED `GITLAB_MAX_OBJECT_SIZE`
+- REMOVED `GITLAB_TIMEOUT`
+
+**10.2.5**
+- gitlab: upgrade CE to v10.2.5
+
+**10.2.4**
+- gitlab: upgrade to CE v10.2.4
+
+**10.2.3**
+- gitlab: upgrade to CE v10.2.3
+
+**10.2.2**
+- gitlab: upgrade to CE v10.2.2
+
+**10.2.1**
+- gitlab: upgrade to CE v10.2.1
+
+**10.2.0**
+- gitlab: upgrade to CE v10.2.0
+
+**10.1.4**
+- gitlab: upgrade to CE v10.1.4
+
+**10.1.3**
+- gitlab: upgrade to CE v10.1.3
+
+**10.1.2**
+- gitlab: upgrade to CE v10.1.2
+
+**10.1.1**
+- gitlab: upgrade to CE v10.1.1
+
+**10.1.0**
+- gitlab: upgrade to CE v10.1.0
+- REMOVED `GITALY_ENABLED``
+- ADDED `GITALY_ARTIFACTS_SERVER`
+- ADDED `GITALY_CLIENT_PATH`
+
+**10.0.4**
+- gitlab: upgrade to CE v10.0.4
+
+**10.0.3**
+- gitlab: upgrade to CE v10.0.3
+
 **10.0.2**
 - gitlab: upgrade to CE v10.0.2
 
