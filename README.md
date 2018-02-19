@@ -65,6 +65,7 @@
     - [Shell Access](#shell-access)
 - [Features](#features)
  - [Container Registry](docs/container_registry.md)
+ - [Deploy from scratch with Docker Swarm mode, HTTPS handled by Traefik proxy and Docker Registry](docs/docker-swarm-traefik-registry.md)
 - [References](#references)
 
 # Introduction
