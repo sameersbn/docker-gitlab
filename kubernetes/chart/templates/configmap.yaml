@@ -23,6 +23,8 @@ data:
   GITLAB_SECRETS_SECRET_KEY_BASE: "{{ .Values.gitlab.secretsKeyBase }}"
   GITLAB_SECRETS_OTP_KEY_BASE: "{{ .Values.gitlab.secretsOtpKeyBase }}"
   GITLAB_MONITORING_IP_WHITELIST: "{{ .Values.gitlab.monitoringIpWhitelist }}"
+  GITLAB_PROMETHEUS_METRICS_ENABLED: "{{ .Values.gitlab.prometheusMetricsEnabled }}"
+  prometheus_multiproc_dir: "{{ .Values.gitlab.prometheusMultiprocDir }}"
 
   NGINX_MAX_UPLOAD_SIZE: "{{ .Values.nginx.max_upload_size }}"
   NGINX_WORKERS: "{{ .Values.nginx.workers }}"

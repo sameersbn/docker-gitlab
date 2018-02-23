@@ -41,6 +41,8 @@ gitlab:
   secretsOtpKeyBase: dtbbvPsFhJCr4q9z4NKzjFh3zWXXnRVqJsTMv3HrdkvkR39LgxHXK3PbMKvnwCFR
   gitlabRootPassword: "5iveL!fe"
   monitoringIpWhitelist: "10.0.0.0/8"
+  prometheusMetricsEnabled: "false"
+  prometheusMultiprocDir: "tmp/prometheus_multiproc_dir"
   ## GitLab Pod annotations
   ##
   # podAnnotations:
