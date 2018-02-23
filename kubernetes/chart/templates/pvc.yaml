@@ -20,11 +20,11 @@ spec:
   resources:
     requests:
       storage: "{{ .Values.persistentVolume.size }}"
-{{- if .Values.persistence.storageClass }}
-{{- if (eq "-" .Values.persistence.storageClass) }}
+{{- if .Values.persistentVolume.storageClass }}
+{{- if (eq "-" .Values.persistentVolume.storageClass) }}
   storageClassName: ""
 {{- else }}
-  storageClassName: "{{ .Values.persistence.storageClass }}"
+  storageClassName: "{{ .Values.persistentVolume.storageClass }}"
 {{- end }}
 {{- end }}
 {{- end -}}
