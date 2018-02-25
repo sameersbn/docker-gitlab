@@ -455,6 +455,7 @@ gitlab_configure_ldap() {
     LDAP_BLOCK_AUTO_CREATED_USERS \
     LDAP_BASE \
     LDAP_USER_FILTER \
+    LDAP_LOWERCASE_USERNAMES \
     LDAP_LABEL
 }
 
@@ -947,6 +948,13 @@ gitlab_configure_lfs() {
   update_template ${GITLAB_CONFIG} \
     GITLAB_LFS_ENABLED \
     GITLAB_LFS_OBJECTS_DIR
+}
+
+gitlab_configure_uploads() {
+  echo "Configuring gitlab::uploads..."
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_UPLOADS_STORAGE_PATH \
+    GITLAB_UPLOADS_BASE_DIR
 }
 
 gitlab_configure_mattermost() {
@@ -1461,6 +1469,7 @@ configure_gitlab() {
   gitlab_configure_ci
   gitlab_configure_artifacts
   gitlab_configure_lfs
+  gitlab_configure_uploads
   gitlab_configure_mattermost
   gitlab_configure_project_features
   gitlab_configure_mail_delivery
