@@ -949,6 +949,13 @@ gitlab_configure_lfs() {
     GITLAB_LFS_OBJECTS_DIR
 }
 
+gitlab_configure_uploads() {
+  echo "Configuring gitlab::uploads..."
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_UPLOADS_STORAGE_PATH \
+    GITLAB_UPLOADS_BASE_DIR
+}
+
 gitlab_configure_mattermost() {
   echo "Configuring gitlab::mattermost..."
   update_template ${GITLAB_CONFIG} \
@@ -1461,6 +1468,7 @@ configure_gitlab() {
   gitlab_configure_ci
   gitlab_configure_artifacts
   gitlab_configure_lfs
+  gitlab_configure_uploads
   gitlab_configure_mattermost
   gitlab_configure_project_features
   gitlab_configure_mail_delivery

@@ -155,6 +155,13 @@ production: &base
     # The location where LFS objects are stored (default: shared/lfs-objects).
     storage_path: {{GITLAB_LFS_OBJECTS_DIR}}
 
+  ## Uploads (attachments, avatars, etc...)
+  uploads:
+    # The location where uploads objects are stored (default: public/).
+    storage_path: {{GITLAB_UPLOADS_STORAGE_PATH}}
+    base_dir: {{GITLAB_UPLOADS_BASE_DIR}}
+
+
   ## GitLab Pages
   pages:
     enabled: {{GITLAB_PAGES_ENABLED}}
