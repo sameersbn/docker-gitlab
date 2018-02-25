@@ -7,6 +7,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 - gitlab: upgrade CE to v10.5.0
 - Add `GITLAB_UPLOADS_STORAGE_PATH`
 - Add `GITLAB_UPLOADS_BASE_DIR`
+- Add `LDAP_LOWERCASE_USERNAMES`
 
 **10.4.4**
 - gitlab: upgrade CE to v10.4.4
