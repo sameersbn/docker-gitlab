@@ -35,23 +35,6 @@ secret_file: "{{GITLAB_SHELL_INSTALL_DIR}}/.gitlab_shell_secret"
 # Default is hooks in the gitlab-shell directory.
 custom_hooks_dir: "{{GITLAB_SHELL_INSTALL_DIR}}/hooks"
 
-# Redis settings used for pushing commit notices to gitlab
-redis:
-  host: "{{REDIS_HOST}}"
-  port: {{REDIS_PORT}}
-  # pass: redispass # Allows you to specify the password for Redis
-  database: {{REDIS_DB_NUMBER}}
-  # socket: /var/run/redis/redis.sock # Comment out this line if you want to use TCP or Sentinel
-  namespace: resque:gitlab
-  # sentinels:
-  #   -
-  #     host: 127.0.0.1
-  #     port: 26380
-  #   -
-  #     host: 127.0.0.1
-  #     port: 26381
-
-
 # Log file.
 # Default is gitlab-shell.log in the root directory.
 log_file: "{{GITLAB_LOG_DIR}}/gitlab-shell/gitlab-shell.log"
