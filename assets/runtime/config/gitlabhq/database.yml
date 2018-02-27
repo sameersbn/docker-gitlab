@@ -12,4 +12,4 @@ production:
   username: {{DB_USER}}
   password: "{{DB_PASS}}"
   pool: {{DB_POOL}}
-
+  ssl_mode: disabled

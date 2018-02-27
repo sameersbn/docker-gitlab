@@ -185,7 +185,7 @@ gitlab_finalize_database_parameters() {
 gitlab_check_database_connection() {
   case ${DB_ADAPTER} in
     mysql2)
-      prog="mysqladmin -h ${DB_HOST} -P ${DB_PORT} -u ${DB_USER} ${DB_PASS:+-p$DB_PASS} status"
+      prog="mysqladmin -h ${DB_HOST} -P ${DB_PORT} -u ${DB_USER} ${DB_PASS:+-p$DB_PASS} --ssl-mode DISABLED status"
       ;;
     postgresql)
       prog=$(find /usr/lib/postgresql/ -name pg_isready)
@@ -228,6 +228,7 @@ gitlab_configure_database() {
     exec_as_git sed -i \
       -e "/reconnect: /d" \
       -e "/collation: /d" \
+      -e "/ssl_mode: /d" \
       ${GITLAB_DATABASE_CONFIG}
   fi
 }
@@ -1726,7 +1727,7 @@ migrate_database() {
   case ${DB_ADAPTER} in
     mysql2)
       QUERY="SELECT count(*) FROM information_schema.tables WHERE table_schema = '${DB_NAME}';"
-      COUNT=$(mysql -h ${DB_HOST} -P ${DB_PORT} -u ${DB_USER} ${DB_PASS:+-p$DB_PASS} -ss -e "${QUERY}")
+      COUNT=$(mysql -h ${DB_HOST} -P ${DB_PORT} -u ${DB_USER} ${DB_PASS:+-p$DB_PASS} --ssl-mode DISABLED -ss -e "${QUERY}")
       ;;
     postgresql)
       QUERY="SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public';"
