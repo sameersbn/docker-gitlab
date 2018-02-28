@@ -52,7 +52,8 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && rm -rf /var/lib/apt/lists/*
 
 COPY assets/build/ ${GITLAB_BUILD_DIR}/
-RUN bash ${GITLAB_BUILD_DIR}/install.sh
+RUN bash ${GITLAB_BUILD_DIR}/install.sh \
+ && rm -rf ${GITLAB_CACHE_DIR}
 
 COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/
 COPY entrypoint.sh /sbin/entrypoint.sh
