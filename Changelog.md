@@ -5,6 +5,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 
 **10.5.2**
 - gitlab: upgrade CE to v10.5.2
+- Fix `GITLAB_UPLOADS_STORAGE_PATH`
 
 **10.5.1**
 - gitlab: upgrade CE to v10.5.1
