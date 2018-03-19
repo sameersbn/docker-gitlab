@@ -99,6 +99,9 @@ spec:
           value: "true"
         - name: IMAP_STARTTLS
           value: "false"
+          
+        - name: GITLAB_UPLOADS_STORAGE_PATH
+          value: /home/git/data/shared/public
         ports:
         - name: http
           containerPort: 80
