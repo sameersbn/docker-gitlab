@@ -14,7 +14,7 @@ BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
   libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
   libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
-  gettext"
+  gettext libkrb5-dev"
 
 ## Execute a command as GITLAB_USER
 exec_as_git() {
@@ -29,19 +29,11 @@ exec_as_git() {
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -y ${BUILD_DEPENDENCIES}
 
-# Install RE2 library wich became dependencie since 9.3.8 version
-# https://gitlab.com/gitlab-org/gitlab-ce/issues/35342
-DEBIAN_FRONTEND=noninteractive apt-get install -y checkinstall
-cd /tmp
-git clone https://github.com/google/re2.git
-cd re2/ && make && make test
-checkinstall -D --install=no -y --pkgname=re2 --pkgversion=1-current
-dpkg -i re2_1-current-1_amd64.deb
-ldconfig
-cd -
-rm -rf /tmp/re2
-DEBIAN_FRONTEND=noninteractive apt-get purge -y --auto-remove checkinstall
-
+# PaX-mark ruby
+# Applying the mark late here does make the build usable on PaX kernels, but
+# still the build itself must be executed on a non-PaX kernel. It's done here
+# only for simplicity.
+paxctl -Cm `which ruby${RUBY_VERSION}`
 # https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
 paxctl -Cm `which nodejs`
 
