@@ -3,6 +3,9 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**10.5.6**
+- gitlab: security upgrade CE to v10.5.6
+
 **10.5.5**
 - gitlab: upgrade CE to v10.5.5
 
