@@ -206,6 +206,9 @@ sed -i \
   -e "s|error_log /var/log/nginx/error.log;|error_log ${GITLAB_LOG_DIR}/nginx/error.log;|" \
   /etc/nginx/nginx.conf
 
+# fix "unknown group 'syslog'" error preventing logrotate from functioning
+sed -i "s|^su root syslog$|su root root|" /etc/logrotate.conf
+
 # configure supervisord log rotation
 cat > /etc/logrotate.d/supervisord <<EOF
 ${GITLAB_LOG_DIR}/supervisor/*.log {
