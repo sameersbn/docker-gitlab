@@ -22,7 +22,7 @@ services:
 
   gitlab:
     restart: always
-    image: sameersbn/gitlab:10.6.3
+    image: sameersbn/gitlab:10.6.4
     depends_on:
     - redis
     - postgresql
