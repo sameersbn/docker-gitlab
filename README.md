@@ -1043,6 +1043,8 @@ Below is the complete list of available options that can be used to customize yo
 | `RACK_ATTACK_FINDTIME` | Number of seconds before resetting the per IP auth attempt counter. Defaults to `60`. |
 | `RACK_ATTACK_BANTIME` | Number of seconds an IP should be banned after too many auth attempts. Defaults to `3600`. |
 | `GITLAB_WORKHORSE_TIMEOUT` | Timeout for gitlab workhorse http proxy. Defaults to `5m0s`. |
+| `GITLAB_LOG_ROTATE_FREQUENCY` | Logrotate frequency for gitlab logs. Available options are daily, weekly, monthly, and yearly Defaults to `weekly`. |
+| `GITLAB_LOG_ROTATE_RETENTION` | Keep x files before deleting old log files. Defaults to `52`. |
 
 # Maintenance
 

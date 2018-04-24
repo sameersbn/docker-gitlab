@@ -6,6 +6,8 @@ GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.t
 GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
 GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages.git
 GITLAB_GITALY_URL=https://gitlab.com/gitlab-org/gitaly.git
+GITLAB_LOG_ROTATE_FREQUENCY=weekly
+GITLAB_LOG_ROTATE_RETENTION=52
 
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
@@ -212,9 +214,9 @@ sed -i "s|^su root syslog$|su root root|" /etc/logrotate.conf
 # configure supervisord log rotation
 cat > /etc/logrotate.d/supervisord <<EOF
 ${GITLAB_LOG_DIR}/supervisor/*.log {
-  weekly
+  ${GITLAB_LOG_ROTATE_FREQUENCY}
   missingok
-  rotate 52
+  rotate ${GITLAB_LOG_ROTATE_RETENTION}
   compress
   delaycompress
   notifempty
@@ -225,9 +227,9 @@ EOF
 # configure gitlab log rotation
 cat > /etc/logrotate.d/gitlab <<EOF
 ${GITLAB_LOG_DIR}/gitlab/*.log {
-  weekly
+  ${GITLAB_LOG_ROTATE_FREQUENCY}
   missingok
-  rotate 52
+  rotate ${GITLAB_LOG_ROTATE_RETENTION}
   compress
   delaycompress
   notifempty
@@ -238,9 +240,9 @@ EOF
 # configure gitlab-shell log rotation
 cat > /etc/logrotate.d/gitlab-shell <<EOF
 ${GITLAB_LOG_DIR}/gitlab-shell/*.log {
-  weekly
+  ${GITLAB_LOG_ROTATE_FREQUENCY}
   missingok
-  rotate 52
+  rotate ${GITLAB_LOG_ROTATE_RETENTION}
   compress
   delaycompress
   notifempty
@@ -251,9 +253,9 @@ EOF
 # configure gitlab vhost log rotation
 cat > /etc/logrotate.d/gitlab-nginx <<EOF
 ${GITLAB_LOG_DIR}/nginx/*.log {
-  weekly
+  ${GITLAB_LOG_ROTATE_FREQUENCY}
   missingok
-  rotate 52
+  rotate ${GITLAB_LOG_ROTATE_RETENTION}
   compress
   delaycompress
   notifempty
