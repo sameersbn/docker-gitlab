@@ -194,6 +194,11 @@ production: &base
     plain_url: "{{GITLAB_GRAVATAR_HTTP_URL}}"     # default: https://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     ssl_url:   "{{GITLAB_GRAVATAR_HTTPS_URL}}"    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
+
+  ## Sidekiq
+  sidekiq:
+    log_format: {{GITLAB_SIDEKIQ_LOG_FORMAT}} # (json is also supported)
+
   ## Auxiliary jobs
   # Periodically executed jobs, to self-heal GitLab, do external synchronizations, etc.
   # Please read here for more information: https://github.com/ondrejbartas/sidekiq-cron#adding-cron-job

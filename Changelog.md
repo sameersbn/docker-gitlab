@@ -5,6 +5,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 
 **10.7.0**
 - gitlab: upgrade CE to v10.7.0
+- ADD `GITLAB_SIDEKIQ_LOG_FORMAT`
 
 **10.6.4**
 - gitlab: upgrade CE to v10.6.4

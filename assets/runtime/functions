@@ -294,7 +294,6 @@ gitlab_configure_monitoring() {
     GITLAB_MONITORING_SIDEKIQ_EXPORTER_ENABLED \
     GITLAB_MONITORING_SIDEKIQ_EXPORTER_ADDRESS \
     GITLAB_MONITORING_SIDEKIQ_EXPORTER_PORT
-
 }
 
 gitlab_configure_gitlab_workhorse() {
@@ -741,6 +740,10 @@ gitlab_configure_secrets() {
 
 gitlab_configure_sidekiq() {
   echo "Configuring gitlab::sidekiq..."
+
+  # configure gitlab sidekiq log format
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_SIDEKIQ_LOG_FORMAT
 
   # configure sidekiq
   update_template /etc/supervisor/conf.d/sidekiq.conf \
