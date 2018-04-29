@@ -846,6 +846,17 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_SHARED_DIR` | The directory to store the build artifacts. Defaults to `/home/git/data/shared` |
 | `GITLAB_ARTIFACTS_ENABLED` | Enable/Disable GitLab artifacts support. Defaults to `true`. |
 | `GITLAB_ARTIFACTS_DIR` | Directory to store the artifacts. Defaults to `$GITLAB_SHARED_DIR/artifacts` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED` | Enables Object Store for Artifacts that will be remote stored. Defaults to `false` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_REMOTE_DIRECTORY` | Bucket name to store the artifacts. Defaults to `artifacts` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_BACKGROUND_UPLOAD` | Temporary option to limit automatic upload. Defaults to `false` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_PROXY_DOWNLOAD` | Passthrough all downloads via GitLab instead of using Redirects to Object Storage. Defaults to `false` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_PROVIDER` | Connection Provider for the Object Store. Currently only AWS is supported. Defaults to `AWS` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID` | AWS Access Key ID for the Bucket. Defaults to `AWS_ACCESS_KEY_ID` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY` | AWS Secret Access Key. Defaults to `AWS_SECRET_ACCESS_KEY` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_REGION` | AWS Region. Defaults to `us-east-1` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_HOST` | Configure this for an compatible AWS host like minio. Defaults to `s3.amazonaws.com` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT` | AWS Endpoint like `http://127.0.0.1:9000`. Defaults to `nil` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE` | Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `true` |
 | `GITLAB_PIPELINE_SCHEDULE_WORKER_CRON` | Cron notation for the Gitlab pipeline schedule worker. Defaults to `'0 */12 * * *'` |
 | `GITLAB_LFS_ENABLED` | Enable/Disable Git LFS support. Defaults to `true`. |
 | `GITLAB_LFS_OBJECTS_DIR` | Directory to store the lfs-objects. Defaults to `$GITLAB_SHARED_DIR/lfs-objects` |
