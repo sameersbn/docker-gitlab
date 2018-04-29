@@ -168,6 +168,21 @@ production: &base
     enabled: {{GITLAB_LFS_ENABLED}}
     # The location where LFS objects are stored (default: shared/lfs-objects).
     storage_path: {{GITLAB_LFS_OBJECTS_DIR}}
+    object_store:
+      enabled: {{GITLAB_LFS_OBJECT_STORE_ENABLED}}
+      remote_directory: {{GITLAB_LFS_OBJECT_STORE_REMOTE_DIRECTORY}} # The bucket name
+      direct_upload: {{GITLAB_LFS_OBJECT_STORE_DIRECT_UPLOAD}} # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
+      background_upload: {{GITLAB_LFS_OBJECT_STORE_BACKGROUND_UPLOAD}} # Temporary option to limit automatic upload (Default: true)
+      proxy_download: {{GITLAB_LFS_OBJECT_STORE_PROXY_DOWNLOAD}} # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
+      connection:
+        provider: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_PROVIDER}} # Only AWS supported at the moment
+        aws_access_key_id: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID}}
+        aws_secret_access_key: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY}}
+        region: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_REGION}}
+        host: '{{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_HOST}}' # default: s3.amazonaws.com
+        endpoint: '{{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT}}' # default: nil
+        path_style: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE}} # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
+
 
   ## Uploads (attachments, avatars, etc...)
   uploads:
