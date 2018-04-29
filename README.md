@@ -873,6 +873,17 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE` | Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `true` |
 | `GITLAB_UPLOADS_STORAGE_PATH` | The location where uploads objects are stored. Defaults to `$GITLAB_SHARED_DIR/public`. |
 | `GITLAB_UPLOADS_BASE_DIR` | Mapping for the `GITLAB_UPLOADS_STORAGE_PATH`. Defaults to `uploads/-/system` |
+| `GITLAB_UPLOADS_OBJECT_STORE_ENABLED` | Enables Object Store for UPLOADS that will be remote stored. Defaults to `false` |
+| `GITLAB_UPLOADS_OBJECT_STORE_REMOTE_DIRECTORY` | Bucket name to store the UPLOADS. Defaults to `uploads` |
+| `GITLAB_UPLOADS_OBJECT_STORE_BACKGROUND_UPLOAD` | Temporary option to limit automatic upload. Defaults to `false` |
+| `GITLAB_UPLOADS_OBJECT_STORE_PROXY_DOWNLOAD` | Passthrough all downloads via GitLab instead of using Redirects to Object Storage. Defaults to `false` |
+| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_PROVIDER` | Connection Provider for the Object Store. Currently only AWS is supported. Defaults to `AWS` |
+| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID` | AWS Access Key ID for the Bucket. Defaults to `AWS_ACCESS_KEY_ID` |
+| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY` | AWS Secret Access Key. Defaults to `AWS_SECRET_ACCESS_KEY` |
+| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_REGION` | AWS Region. Defaults to `us-east-1` |
+| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_HOST` | Configure this for an compatible AWS host like minio. Defaults to `s3.amazonaws.com` |
+| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT` | AWS Endpoint like `http://127.0.0.1:9000`. Defaults to `nil` |
+| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE` | Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `true` |
 | `GITLAB_MATTERMOST_ENABLED` | Enable/Disable GitLab Mattermost for *Add Mattermost button*. Defaults to `false`. |
 | `GITLAB_MATTERMOST_URL` | Sets Mattermost URL. Defaults to `https://mattermost.example.com`. |
 | `GITLAB_BACKUP_SCHEDULE` | Setup cron job to automatic backups. Possible values `disable`, `daily`, `weekly` or `monthly`. Disabled by default |
