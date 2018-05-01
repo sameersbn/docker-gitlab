@@ -1,13 +1,13 @@
 FROM sameersbn/ubuntu:16.04.20180124
 LABEL maintainer="sameer@damagehead.com"
 
-ENV GITLAB_VERSION=10.7.1 \
+ENV GITLAB_VERSION=10.7.2 \
     RUBY_VERSION=2.3 \
     GOLANG_VERSION=1.9.5 \
     GITLAB_SHELL_VERSION=7.1.2 \
     GITLAB_WORKHORSE_VERSION=4.1.0 \
     GITLAB_PAGES_VERSION=0.8.0 \
-    GITALY_SERVER_VERSION=0.95.0 \
+    GITALY_SERVER_VERSION=0.96.1 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
