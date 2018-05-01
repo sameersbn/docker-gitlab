@@ -1013,10 +1013,7 @@ gitlab_configure_uploads() {
   echo "Configuring gitlab::uploads..."
   update_template ${GITLAB_CONFIG} \
     GITLAB_UPLOADS_STORAGE_PATH \
-    GITLAB_UPLOADS_BASE_DIR
-
-}
-  
+    GITLAB_UPLOADS_BASE_DIR  
 }
 
 gitlab_configure_mattermost() {
