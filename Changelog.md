@@ -5,6 +5,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 
 **10.7.4**
 - gitlab: upgrade CE to v10.7.4
+- FIX `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT`
 
 **10.7.3**
 - gitlab: upgrade CE to v10.7.3
