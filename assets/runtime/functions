@@ -776,7 +776,7 @@ gitlab_configure_backups_schedule() {
           weekly) day_of_week=0 ;;
           monthly) day_of_month=01 ;;
         esac
-        echo "$min $hour $day_of_month $month $day_of_week /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create SKIP=${GITLAB_BACKUP_SKIP} STRATEGY=${GITLAB_BACKUP_STRATEGY} RAILS_ENV=${RAILS_ENV}'" >> /tmp/cron.${GITLAB_USER}
+        echo "$min $hour $day_of_month $month $day_of_week /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create SKIP=${GITLAB_BACKUP_SKIP} STRATEGY=${GITLAB_BACKUP_STRATEGY} RAILS_ENV=${RAILS_ENV} CRON=1'" >> /tmp/cron.${GITLAB_USER}
         crontab -u ${GITLAB_USER} /tmp/cron.${GITLAB_USER}
       fi
       rm -rf /tmp/cron.${GITLAB_USER}
