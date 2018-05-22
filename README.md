@@ -887,7 +887,7 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_MATTERMOST_ENABLED` | Enable/Disable GitLab Mattermost for *Add Mattermost button*. Defaults to `false`. |
 | `GITLAB_MATTERMOST_URL` | Sets Mattermost URL. Defaults to `https://mattermost.example.com`. |
 | `GITLAB_BACKUP_SCHEDULE` | Setup cron job to automatic backups. Possible values `disable`, `daily`, `weekly` or `monthly`. Disabled by default |
-| `GITLAB_BACKUP_STRATEGY` | Set GitLab backup strategy. No defaults, which means it uses stream strategy [See](https://docs.gitlab.com/ee/raketasks/backup_restore.html#backup-strategy-option) |
+| `GITLAB_BACKUP_STRATEGY` | Set GitLab backup strategy. No defaults, which means it uses stream strategy [See](https://docs.gitlab.com/ce/raketasks/backup_restore.html#backup-strategy-option) |
 | `GITLAB_BACKUP_EXPIRY` | Configure how long (in seconds) to keep backups before they are deleted. By default when automated backups are disabled backups are kept forever (0 seconds), else the backups expire in 7 days (604800 seconds). |
 | `GITLAB_BACKUP_PG_SCHEMA` | Specify the PostgreSQL schema for the backups. No defaults, which means that all schemas will be backed up. see #524 |
 | `GITLAB_BACKUP_ARCHIVE_PERMISSIONS` | Sets the permissions of the backup archives. Defaults to `0600`. [See](http://doc.gitlab.com/ce/raketasks/backup_restore.html#backup-archive-permissions) |
