@@ -3,6 +3,9 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**10.8.1**
+- gitlab: upgrade CE to v10.8.1
+
 **10.8.0**
 - gitlab: upgrade CE to v10.8.0
 - Add support for swarm mode with docker-configs and docker secrets ([#1540](https://github.com/sameersbn/docker-gitlab/pull/1540))
