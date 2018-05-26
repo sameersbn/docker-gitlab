@@ -3,6 +3,9 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**10.8.0**
+- gitlab: upgrade CE to v10.8.0
+
 **10.7.4**
 - gitlab: upgrade CE to v10.7.4
 - FIX `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT`
