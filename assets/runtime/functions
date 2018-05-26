@@ -1,5 +1,13 @@
 #!/bin/bash
 set -e
+
+for file in /gitlab-configs /run/secrets/gitlab-secrets; do
+	if [[ -e "$file" ]]; then
+		echo "Loading $file"
+		source "$file"
+	fi
+done
+echo "Loading ${GITLAB_RUNTIME_DIR}/env-defaults"
 source ${GITLAB_RUNTIME_DIR}/env-defaults
 
 SYSCONF_TEMPLATES_DIR="${GITLAB_RUNTIME_DIR}/config"
