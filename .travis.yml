@@ -1,0 +1,23 @@
+sudo: required
+language: bash
+services:
+  - docker
+env:
+  matrix:
+    - GITLAB_EDITION=ce DOCKER_TAG=latest DOCKER_SUFFIX=
+    - GITLAB_EDITION=ee DOCKER_TAG=ee DOCKER_SUFFIX=-ee
+  global:
+    - DOCKER_CACHE_DIR=/home/travis/docker/
+    - secure: b5LCs3GtIydwINq6mByb/YOT1Ypj7nNAAD3uEM6fdRvmypUV3ydiPt+OGcdYsmOWk5C4ArLXrV7duHP2Se/nmzWVI/joRLZPeJy/ZPIBZ5akFEvBYkYAKoeEwhGHq0JAFgTIYHKWideupQJsofSyMjKdXjPWrYEPlUigYJSDnOXbU6WEhV0r50IEnDulASoyyiZrWMVep7Zoth0eGZmMdLP7HA5QrflqBUMqftNexuIdJvAMJAnabVv0uef61sxW/FP5AVKssxd4/Luvd46J/4ZckuK4QYAzOfX0S0Kla9rcqyyV/s0LDzfH/FIsp2/WN0Czyepp1Lga+csuy27omaC0Ufv2JNVEKZ7lCH0/Rax4A0lW1FsjtOJyFQVgvhtfjd9NSegDXQNx/D8VqaVJ5wbzCWrHHA8dVRS3Qlxhcu+WEA/56vajlb+Ca1LU3VS6s7q2ALVWjyXefamg9dxp4W+o3w9YxdHhSa5T2zJmSL/zCpYlzbJS8e3xSYzyv6XE5YcffdUuxeYBqAXITaLGHZwJZgwzYpCJIXUJyp9eKbx94Hhku5GTTWrV1ZAMRcKv3pSwiyP4TYUAQKomh5p42em83eo1jKqbcb2FlB1gDreeEf43FIV2t2yBOrZXparzndXwn1e9GjaCU3iYP+Bsx5aIhmtBZemyRQAZKMkZ4Zo=
+    - secure: MwrJfvOJBLrclYveSa3W6ZIq+pgfKh9e0O+Ma5bY2MTykV6yAXjVyvHwKp8TnKHOLRPW+bynkqEhbpA33OtlGNOS1V53euUegoRJY8OoXjMPW50JuIFzUDaMiOjYCNcbcAayPqOBTkKqbM8EJtkjpENiePCYO9ptpmj2r8aIp7XyExt36HNgZoBxwr9BR2qCT+6Q/JXqHsqgDeG/BjKk6TVcx5LdkFRoBk1DkPU2zsXfIEQGRUAd2zoXJcZjt0f2ojjf3fnshWgRd5qFdM9PKOuKr+IW7aGjitScaUQS5OwwiG8oxJx93Obl/XiGyS4+Irl6AYK1fWm9m30si62OpIP8dz/BS75+4+BxZlYwQs5LR5uujrS86smfBjMaYYxYhnWgsPwbxm966WovrAhhyTe/oiY+wIAFnsMzLpKd+ORD02F0N9QZk7RJLMlJKAkIz5LrJHZfKS1/USWdCaKPxwNKha+Ukyg/VR6qfbQjn8dVIDVvOjcsdgT3/EmlW3CCN4TvZwMGNkbJKIodazzu4nvLiIfT3Q6EcTn5BWtYLgGroCkRU7cKBamSDbzEPbBeWYKV3bDwPBGknyFTCslNKob3pZyS44WbMOH7OCDSTf+MAblghiDbKwKi2IahyCnv9r0DqA7Ymj2i6/4TlqyWaPbbTnX2SqvvwxQdzAXW68M=
+before_install:
+  - if [ -f ${DOCKER_CACHE_DIR}/cache${DOCKER_SUFFIX}.tgz ]; then gunzip -c ${DOCKER_CACHE_DIR}/cache${DOCKER_SUFFIX}.tgz | docker load; fi
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+script:
+  - docker build --build-arg GITLAB_EDITION=${GITLAB_EDITION} -t fmauneko/gitlab:${DOCKER_TAG} .
+  - mkdir -p ${DOCKER_CACHE_DIR}; docker save $(docker history -q fmauneko/gitlab:${DOCKER_TAG} | grep -v '<missing>') | gzip > ${DOCKER_CACHE_DIR}/cache${DOCKER_SUFFIX}.tgz
+
+after_success:
+  - docker tag fmauneko/gitlab:${DOCKER_TAG} fmauneko/gitlab:$(cat VERSION)${DOCKER_SUFFIX}
+  - docker push fmauneko/gitlab:${DOCKER_TAG}
+  - docker push fmauneko/gitlab:$(cat VERSION)${DOCKER_SUFFIX}
