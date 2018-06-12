@@ -119,6 +119,8 @@ server {
     proxy_set_header    Upgrade             $http_upgrade;
     proxy_set_header    Connection          $connection_upgrade_gitlab_ssl;
     
+	proxy_request_buffering off;
+
     proxy_pass http://gitlab-workhorse;
   }
 
