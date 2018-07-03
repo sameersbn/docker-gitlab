@@ -26,6 +26,20 @@ production: &base
   # 1. GitLab app settings
   # ==========================
 
+  ## Lets Encrypt Settings
+  letsencrypt:
+    enable: {{LETSENCRYPT_ENABLED}}
+    contact_emails:
+      - {{LETSENCRYPT_CONTACT_MAIL}}
+    group: {{LETSENCRYPT_GROUP}}
+    key_size: {{LETSENCRYPT_KEY_SIZE}}
+    owner: {{LETSENCRYPT_OWNER}}
+    auto_renew: {{LETSENCRYPT_AUTO_RENEW}}
+    auto_renew_day_of_month: {{LETSENCRYPT_RENEW_DAYOFMONTH}}
+    wwwroot: '/var/opt/gitlab/nginx/www'
+    auto_renew_hour: 0
+    auto_renew_minute: 10
+
   ## GitLab settings
   gitlab:
     ## Web server settings (note: host is the FQDN, do not include http://)
@@ -81,7 +95,7 @@ production: &base
     ##   4 - Gray
     ##   5 - Violet
     ##   6 - Blue
-    # default_theme: 2 # default: 2
+    default_theme: {{GITLAB_DEFAULT_THEME}}
 
     # Enable or disable user signups (first run only)
     signup_enabled: {{GITLAB_SIGNUP_ENABLED}}
