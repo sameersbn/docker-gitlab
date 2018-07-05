@@ -1,4 +1,4 @@
-with#!/bin/bash
+#!/bin/bash
 set -e
 
 for file in /gitlab-configs /run/secrets/gitlab-secrets; do
