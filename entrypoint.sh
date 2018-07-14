@@ -1,5 +1,52 @@
 #!/bin/bash
 set -e
+
+file_env() {
+  local var="$1"
+  local fileVar="${var}_FILE"
+  local def="${2:-}"
+  if [ "${!var:-}" ] && [ "${!fileVar:-}" ]; then
+    echo >&2 "error: both $var and $fileVar are set (but are exclusive)"
+    exit 1
+  fi
+  local val="$def"
+  if [ "${!var:-}" ]; then
+    val="${!var}"
+    echo >&2 "info: setting $var from environment to ${val}"
+  elif [ "${!fileVar:-}" ]; then
+    val="$(< "${!fileVar}")"
+    echo >&2 "info: setting ${var} from ${fileVar} to ***REDACTED***"
+  else
+    echo >&2 "warn: ${var} and ${fileVar} not found in environment"
+  fi
+  export "$var"="$val"
+  unset "$fileVar"
+}
+
+file_env 'DB_PASS'
+file_env 'GITLAB_SECRETS_DB_KEY_BASE'
+file_env 'GITLAB_SECRETS_SECRET_KEY_BASE'
+file_env 'GITLAB_SECRETS_OTP_KEY_BASE'
+file_env 'GITLAB_ROOT_PASSWORD'
+file_env 'IMAP_PASS'
+file_env 'SMTP_PASS'
+file_env 'OAUTH_GOOGLE_API_KEY'
+file_env 'OAUTH_GOOGLE_APP_SECRET'
+file_env 'OAUTH_FACEBOOK_API_KEY'
+file_env 'OAUTH_FACEBOOK_APP_SECRET'
+file_env 'OAUTH_TWITTER_API_KEY'
+file_env 'OAUTH_TWITTER_APP_SECRET'
+file_env 'OAUTH_GITHUB_API_KEY'
+file_env 'OAUTH_GITHUB_APP_SECRET'
+file_env 'OAUTH_GITLAB_API_KEY'
+file_env 'OAUTH_GITLAB_APP_SECRET'
+file_env 'OAUTH_BITBUCKET_API_KEY'
+file_env 'OAUTH_BITBUCKET_APP_SECRET'
+file_env 'OAUTH_AUTH0_CLIENT_ID'
+file_env 'OAUTH_AUTH0_CLIENT_SECRET'
+file_env 'OAUTH_AZURE_API_KEY'
+file_env 'OAUTH_AZURE_API_S'ECRET
+
 source ${GITLAB_RUNTIME_DIR}/functions
 
 [[ $DEBUG == true ]] && set -x
