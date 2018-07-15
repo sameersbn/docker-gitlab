@@ -23,6 +23,8 @@ file_env() {
   unset "$fileVar"
 }
 
+file_env 'GITLAB_AWS_ACCESS_KEY_ID'
+file_env 'GITLAB_AWS_SECRET_KEY'
 file_env 'DB_PASS'
 file_env 'GITLAB_SECRETS_DB_KEY_BASE'
 file_env 'GITLAB_SECRETS_SECRET_KEY_BASE'
