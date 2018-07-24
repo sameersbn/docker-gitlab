@@ -6,6 +6,7 @@ services:
     image: sameersbn/redis:3.0.6
     command:
     - --loglevel warning
+    - --protected-mode no
     volumes:
     - /srv/docker/gitlab/redis:/var/lib/redis:Z
 
