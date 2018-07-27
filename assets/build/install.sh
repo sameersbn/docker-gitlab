@@ -386,3 +386,6 @@ EOF
 # purge build dependencies and cleanup apt
 DEBIAN_FRONTEND=noninteractive apt-get purge -y --auto-remove ${BUILD_DEPENDENCIES}
 rm -rf /var/lib/apt/lists/*
+
+# clean up caches
+exec_as_git rm -rf ${GITLAB_HOME}/.cache
