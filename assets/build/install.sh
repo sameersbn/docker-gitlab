@@ -27,7 +27,7 @@ exec_as_git() {
 
 # install build dependencies for gem installation
 apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install -y ${BUILD_DEPENDENCIES}
+DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ${BUILD_DEPENDENCIES}
 
 # PaX-mark ruby
 # Applying the mark late here does make the build usable on PaX kernels, but
