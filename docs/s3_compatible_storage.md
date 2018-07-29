@@ -72,7 +72,7 @@ version: '2'
 services:
   redis:
     restart: always
-    image: sameersbn/redis:3.0.6
+    image: sameersbn/redis:4.0.9-1
     command:
     - --loglevel warning
     volumes:
