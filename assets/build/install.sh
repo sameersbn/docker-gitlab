@@ -62,10 +62,14 @@ GITLAB_SHELL_VERSION=${GITLAB_SHELL_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_
 GITLAB_WORKHORSE_VERSION=${GITLAB_WORKHOUSE_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_WORKHORSE_VERSION)}
 GITLAB_PAGES_VERSION=${GITLAB_PAGES_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_PAGES_VERSION)}
 
-#download golang
+# download golang
 echo "Downloading Go ${GOLANG_VERSION}..."
 wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
 tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
+
+# setup go toolchain path
+export GOROOT=/tmp/go
+export PATH=${GOROOT}/bin:$PATH
 
 # install gitlab-shell
 echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
@@ -76,47 +80,53 @@ rm -rf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz
 chown -R ${GITLAB_USER}: ${GITLAB_SHELL_INSTALL_DIR}
 
 cd ${GITLAB_SHELL_INSTALL_DIR}
-exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+exec_as_git cp -a config.yml.example config.yml
 if [[ -x ./bin/compile ]]; then
   echo "Compiling gitlab-shell golang executables..."
-  exec_as_git PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go ./bin/compile
+  ./bin/compile
+  rm -rf go_build
 fi
-exec_as_git ./bin/install
+./bin/install
 
 # remove unused repositories directory created by gitlab-shell install
-exec_as_git rm -rf ${GITLAB_HOME}/repositories
+rm -rf ${GITLAB_HOME}/repositories
 
 # download gitlab-workhorse
 echo "Cloning gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_URL} ${GITLAB_WORKHORSE_INSTALL_DIR}
 chown -R ${GITLAB_USER}: ${GITLAB_WORKHORSE_INSTALL_DIR}
 
-#install gitlab-workhorse
-cd ${GITLAB_WORKHORSE_INSTALL_DIR}
-PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make install
+# install gitlab-workhorse
+make -C ${GITLAB_WORKHORSE_INSTALL_DIR} install
+
+# we don't need to keep the sources around
+rm -rf ${GITLAB_WORKHORSE_INSTALL_DIR}
 
 #download pages
 echo "Downloading gitlab-pages v.${GITLAB_PAGES_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_PAGES_VERSION} --depth 1 ${GITLAB_PAGES_URL} ${GITLAB_PAGES_INSTALL_DIR}
 chown -R ${GITLAB_USER}: ${GITLAB_PAGES_INSTALL_DIR}
 
-#install gitlab-pages
-cd ${GITLAB_PAGES_INSTALL_DIR}
-PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make
-cp -f gitlab-pages /usr/local/bin/
+# install gitlab-pages
+make -C ${GITLAB_PAGES_INSTALL_DIR}
+cp -f ${GITLAB_PAGES_INSTALL_DIR}/gitlab-pages /usr/local/bin/
+
+# we don't need to keep the sources around
+rm -rf ${GITLAB_PAGES_INSTALL_DIR}
 
 # download gitaly
 echo "Downloading gitaly v.${GITALY_SERVER_VERSION}..."
 exec_as_git git clone -q -b v${GITALY_SERVER_VERSION} --depth 1 ${GITLAB_GITALY_URL} ${GITLAB_GITALY_INSTALL_DIR}
+cp ${GITLAB_GITALY_INSTALL_DIR}/config.toml.example ${GITLAB_GITALY_INSTALL_DIR}/config.toml
 chown -R ${GITLAB_USER}: ${GITLAB_GITALY_INSTALL_DIR}
-# copy default config for gitaly
-exec_as_git cp ${GITLAB_GITALY_INSTALL_DIR}/config.toml.example ${GITLAB_GITALY_INSTALL_DIR}/config.toml
 
 # install gitaly
 cd ${GITLAB_GITALY_INSTALL_DIR}
-ln -sf /tmp/go /usr/local/go
-PATH=/tmp/go/bin:$PATH make install && make clean
-rm -f /usr/local/go
+make install
+
+# cleanup unwanted stuff
+rm -rf gitaly gitaly-ssh ruby/vendor/bundle/ruby/**/cache
+make clean
 
 # remove go
 rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz /tmp/go
