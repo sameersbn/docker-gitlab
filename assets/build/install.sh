@@ -2,7 +2,7 @@
 set -e
 
 GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
-GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz
+GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/-/archive/v${GITLAB_SHELL_VERSION}/gitlab-shell-v${GITLAB_SHELL_VERSION}.tar.bz2
 GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
 GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages.git
 GITLAB_GITALY_URL=https://gitlab.com/gitlab-org/gitaly.git
@@ -74,9 +74,9 @@ export PATH=${GOROOT}/bin:$PATH
 # install gitlab-shell
 echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
 mkdir -p ${GITLAB_SHELL_INSTALL_DIR}
-wget -cq ${GITLAB_SHELL_URL}?ref=v${GITLAB_SHELL_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz
-tar xf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz --strip 1 -C ${GITLAB_SHELL_INSTALL_DIR}
-rm -rf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz
+wget -cq ${GITLAB_SHELL_URL} -O ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2
+tar xf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2 --strip 1 -C ${GITLAB_SHELL_INSTALL_DIR}
+rm -rf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2
 chown -R ${GITLAB_USER}: ${GITLAB_SHELL_INSTALL_DIR}
 
 cd ${GITLAB_SHELL_INSTALL_DIR}
