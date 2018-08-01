@@ -7,6 +7,8 @@ GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
 GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages.git
 GITLAB_GITALY_URL=https://gitlab.com/gitlab-org/gitaly.git
 
+GITLAB_WORKHORSE_BUILD_DIR=/tmp/gitlab-workhorse
+
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
 GOROOT=/tmp/go
@@ -94,14 +96,11 @@ rm -rf ${GITLAB_HOME}/repositories
 
 # download gitlab-workhorse
 echo "Cloning gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
-exec_as_git git clone -q -b v${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_URL} ${GITLAB_WORKHORSE_INSTALL_DIR}
-chown -R ${GITLAB_USER}: ${GITLAB_WORKHORSE_INSTALL_DIR}
+git clone -q -b v${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_URL} ${GITLAB_WORKHORSE_BUILD_DIR}
+make -C ${GITLAB_WORKHORSE_BUILD_DIR} install
 
-# install gitlab-workhorse
-make -C ${GITLAB_WORKHORSE_INSTALL_DIR} install
-
-# we don't need to keep the sources around
-rm -rf ${GITLAB_WORKHORSE_INSTALL_DIR}
+# clean up
+rm -rf ${GITLAB_WORKHORSE_BUILD_DIR}
 
 #download pages
 echo "Downloading gitlab-pages v.${GITLAB_PAGES_VERSION}..."
