@@ -9,6 +9,7 @@ GITLAB_GITALY_URL=https://gitlab.com/gitlab-org/gitaly.git
 
 GITLAB_WORKHORSE_BUILD_DIR=/tmp/gitlab-workhorse
 GITLAB_PAGES_BUILD_DIR=/tmp/gitlab-pages
+GITLAB_GITALY_BUILD_DIR=/tmp/gitaly
 
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
@@ -114,19 +115,20 @@ cp -a ${GITLAB_PAGES_BUILD_DIR}/gitlab-pages /usr/local/bin/
 # clean up
 rm -rf ${GITLAB_PAGES_BUILD_DIR}
 
-# download gitaly
+# download and build gitaly
 echo "Downloading gitaly v.${GITALY_SERVER_VERSION}..."
-exec_as_git git clone -q -b v${GITALY_SERVER_VERSION} --depth 1 ${GITLAB_GITALY_URL} ${GITLAB_GITALY_INSTALL_DIR}
-cp ${GITLAB_GITALY_INSTALL_DIR}/config.toml.example ${GITLAB_GITALY_INSTALL_DIR}/config.toml
-chown -R ${GITLAB_USER}: ${GITLAB_GITALY_INSTALL_DIR}
+git clone -q -b v${GITALY_SERVER_VERSION} --depth 1 ${GITLAB_GITALY_URL} ${GITLAB_GITALY_BUILD_DIR}
 
 # install gitaly
-cd ${GITLAB_GITALY_INSTALL_DIR}
-make install
+make -C ${GITLAB_GITALY_BUILD_DIR} install
+mkdir -p ${GITLAB_GITALY_INSTALL_DIR}
+cp -a ${GITLAB_GITALY_BUILD_DIR}/ruby ${GITLAB_GITALY_INSTALL_DIR}/
+cp -a ${GITLAB_GITALY_BUILD_DIR}/config.toml.example ${GITLAB_GITALY_INSTALL_DIR}/config.toml
+rm -rf ${GITLAB_GITALY_INSTALL_DIR}/ruby/vendor/bundle/ruby/**/cache
+chown -R ${GITLAB_USER}: ${GITLAB_GITALY_INSTALL_DIR}
 
-# cleanup unwanted stuff
-rm -rf gitaly gitaly-ssh ruby/vendor/bundle/ruby/**/cache
-make clean
+# clean up
+rm -rf ${GITLAB_GITALY_BUILD_DIR}
 
 # remove go
 rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz ${GOROOT}
