@@ -8,6 +8,7 @@ GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages.git
 GITLAB_GITALY_URL=https://gitlab.com/gitlab-org/gitaly.git
 
 GITLAB_WORKHORSE_BUILD_DIR=/tmp/gitlab-workhorse
+GITLAB_PAGES_BUILD_DIR=/tmp/gitlab-pages
 
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
@@ -102,17 +103,16 @@ make -C ${GITLAB_WORKHORSE_BUILD_DIR} install
 # clean up
 rm -rf ${GITLAB_WORKHORSE_BUILD_DIR}
 
-#download pages
+# download gitlab-pages
 echo "Downloading gitlab-pages v.${GITLAB_PAGES_VERSION}..."
-exec_as_git git clone -q -b v${GITLAB_PAGES_VERSION} --depth 1 ${GITLAB_PAGES_URL} ${GITLAB_PAGES_INSTALL_DIR}
-chown -R ${GITLAB_USER}: ${GITLAB_PAGES_INSTALL_DIR}
+git clone -q -b v${GITLAB_PAGES_VERSION} --depth 1 ${GITLAB_PAGES_URL} ${GITLAB_PAGES_BUILD_DIR}
 
 # install gitlab-pages
-make -C ${GITLAB_PAGES_INSTALL_DIR}
-cp -f ${GITLAB_PAGES_INSTALL_DIR}/gitlab-pages /usr/local/bin/
+make -C ${GITLAB_PAGES_BUILD_DIR}
+cp -a ${GITLAB_PAGES_BUILD_DIR}/gitlab-pages /usr/local/bin/
 
-# we don't need to keep the sources around
-rm -rf ${GITLAB_PAGES_INSTALL_DIR}
+# clean up
+rm -rf ${GITLAB_PAGES_BUILD_DIR}
 
 # download gitaly
 echo "Downloading gitaly v.${GITALY_SERVER_VERSION}..."
