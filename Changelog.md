@@ -3,6 +3,9 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**11.1.4**
+- gitlab: upgrade CE to v11.1.4
+
 **11.1.3**
 - gitlab: upgrade CE to v11.1.3
 - Upgrade redis to 4.0.9-1
