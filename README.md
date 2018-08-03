@@ -235,9 +235,7 @@ docker run --name gitlab -d \
 
 ## Database
 
-GitLab uses a database backend to store its data. You can configure this image to use either MySQL or PostgreSQL.
-
-*Note: GitLab HQ recommends using PostgreSQL over MySQL*
+GitLab uses a database backend to store its data. You can configure this image to use either MySQL or PostgreSQL. Although GitLab will still work when MySQL is used, there will be some limitations as outlined in the [database requirements documentation](https://docs.gitlab.com/ce/install/requirements.html#database).
 
 ### PostgreSQL
 
@@ -245,13 +243,16 @@ GitLab uses a database backend to store its data. You can configure this image t
 
 The image also supports using an external PostgreSQL Server. This is also controlled via environment variables.
 
+The database can be created with the following commands.
+
 ```sql
 CREATE ROLE gitlab with LOGIN CREATEDB PASSWORD 'password';
 CREATE DATABASE gitlabhq_production;
 GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
+CREATE EXTENSION pg_trgm;
 ```
 
-Additionally since GitLab `8.6.0` the `pg_trgm` extension should also be loaded for the `gitlabhq_production` database.
+*Note: Since GitLab `8.6.0` the `pg_trgm` extension must be loaded for the `gitlabhq_production` database.*
 
 We are now ready to start the GitLab application.
 
@@ -1150,14 +1151,14 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:11.1.4 app:rake gitlab:backup:restore BACKUP=1417624827
+    sameersbn/gitlab:11.1.4 app:rake gitlab:backup:restore BACKUP=$EPOCH_YYYY_MM_DD_GitLab_version
 ```
 
 When using `docker-compose` you may use the following command to execute the restore.
 
 ```bash
 docker-compose run --rm gitlab app:rake gitlab:backup:restore # List available backups
-docker-compose run --rm gitlab app:rake gitlab:backup:restore BACKUP=1417624827 # Choose to restore from 1417624827
+docker-compose run --rm gitlab app:rake gitlab:backup:restore BACKUP=$EPOCH_YYYY_MM_DD_GitLab_version
 ```
 
 ## Host Key Backups (ssh)
@@ -1219,6 +1220,12 @@ Or
 
 ```bash
 docker exec -it gitlab sudo -HEu git bundle exec rake gitlab:import:repos RAILS_ENV=production
+```
+
+OR, if attached to the container
+
+```bash
+. /sbin/entrypoint.sh app:help
 ```
 
 For a complete list of available rake tasks please refer https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks or the help section of your gitlab installation.
