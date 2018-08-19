@@ -1,0 +1,71 @@
+version: 2
+jobs:
+  build:
+    working_directory: /workdir
+    docker:
+      - image: docker:17.06.0-ce-git
+        environment:
+          IMAGE_NAME: "sameersbn/gitlab"
+
+    steps:
+      - checkout
+
+      - setup_remote_docker:
+          version: 17.06.0-ce
+
+      - run:
+          name: Docker info
+          command: |
+            docker version
+            docker info
+
+      - restore_cache:
+          keys:
+            - cache-{{ .Branch }}
+          paths:
+            - /cache/layers.tar
+
+      - run:
+          name: Loading docker cache
+          command: |
+            if [[ -f /cache/layers.tar ]]; then
+              docker load -i /cache/layers.tar
+            fi
+
+      - run:
+          name: Build docker image
+          command: |
+            docker build --cache-from=${IMAGE_NAME} -t ${IMAGE_NAME} .
+
+      - run:
+          name: Launching container for testing
+          command: |
+            docker network create testnet
+            docker run --name gitlab -d --net testnet ${IMAGE_NAME}
+
+      - run:
+          name: Testing image
+          command: |
+            echo "TODO"
+
+      - run:
+          name: Generate docker build image cache
+          command: |
+            mkdir -p /cache
+            docker save -o /cache/layers.tar ${IMAGE_NAME}
+
+      - save_cache:
+          key: cache-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /cache/layers.tar
+
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /.*/
