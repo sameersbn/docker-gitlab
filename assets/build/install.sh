@@ -2,12 +2,21 @@
 set -e
 
 GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
-GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz
+GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/-/archive/v${GITLAB_SHELL_VERSION}/gitlab-shell-v${GITLAB_SHELL_VERSION}.tar.bz2
 GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
 GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages.git
 GITLAB_GITALY_URL=https://gitlab.com/gitlab-org/gitaly.git
 
+GITLAB_WORKHORSE_BUILD_DIR=/tmp/gitlab-workhorse
+GITLAB_PAGES_BUILD_DIR=/tmp/gitlab-pages
+GITLAB_GITALY_BUILD_DIR=/tmp/gitaly
+
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
+
+GOROOT=/tmp/go
+PATH=${GOROOT}/bin:$PATH
+
+export GOROOT PATH
 
 BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
   libc6-dev ruby${RUBY_VERSION}-dev \
@@ -62,7 +71,7 @@ GITLAB_SHELL_VERSION=${GITLAB_SHELL_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_
 GITLAB_WORKHORSE_VERSION=${GITLAB_WORKHOUSE_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_WORKHORSE_VERSION)}
 GITLAB_PAGES_VERSION=${GITLAB_PAGES_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_PAGES_VERSION)}
 
-#download golang
+# download golang
 echo "Downloading Go ${GOLANG_VERSION}..."
 wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
 tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
@@ -70,56 +79,59 @@ tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
 # install gitlab-shell
 echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
 mkdir -p ${GITLAB_SHELL_INSTALL_DIR}
-wget -cq ${GITLAB_SHELL_URL}?ref=v${GITLAB_SHELL_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz
-tar xf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz --strip 1 -C ${GITLAB_SHELL_INSTALL_DIR}
-rm -rf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz
+wget -cq ${GITLAB_SHELL_URL} -O ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2
+tar xf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2 --strip 1 -C ${GITLAB_SHELL_INSTALL_DIR}
+rm -rf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2
 chown -R ${GITLAB_USER}: ${GITLAB_SHELL_INSTALL_DIR}
 
 cd ${GITLAB_SHELL_INSTALL_DIR}
-exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+exec_as_git cp -a config.yml.example config.yml
 if [[ -x ./bin/compile ]]; then
   echo "Compiling gitlab-shell golang executables..."
-  exec_as_git PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go ./bin/compile
+  ./bin/compile
+  rm -rf go_build
 fi
-exec_as_git ./bin/install
+./bin/install
 
 # remove unused repositories directory created by gitlab-shell install
-exec_as_git rm -rf ${GITLAB_HOME}/repositories
+rm -rf ${GITLAB_HOME}/repositories
 
 # download gitlab-workhorse
 echo "Cloning gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
-exec_as_git git clone -q -b v${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_URL} ${GITLAB_WORKHORSE_INSTALL_DIR}
-chown -R ${GITLAB_USER}: ${GITLAB_WORKHORSE_INSTALL_DIR}
+git clone -q -b v${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_URL} ${GITLAB_WORKHORSE_BUILD_DIR}
+make -C ${GITLAB_WORKHORSE_BUILD_DIR} install
 
-#install gitlab-workhorse
-cd ${GITLAB_WORKHORSE_INSTALL_DIR}
-PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make install
+# clean up
+rm -rf ${GITLAB_WORKHORSE_BUILD_DIR}
 
-#download pages
+# download gitlab-pages
 echo "Downloading gitlab-pages v.${GITLAB_PAGES_VERSION}..."
-exec_as_git git clone -q -b v${GITLAB_PAGES_VERSION} --depth 1 ${GITLAB_PAGES_URL} ${GITLAB_PAGES_INSTALL_DIR}
-chown -R ${GITLAB_USER}: ${GITLAB_PAGES_INSTALL_DIR}
+git clone -q -b v${GITLAB_PAGES_VERSION} --depth 1 ${GITLAB_PAGES_URL} ${GITLAB_PAGES_BUILD_DIR}
 
-#install gitlab-pages
-cd ${GITLAB_PAGES_INSTALL_DIR}
-PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make
-cp -f gitlab-pages /usr/local/bin/
+# install gitlab-pages
+make -C ${GITLAB_PAGES_BUILD_DIR}
+cp -a ${GITLAB_PAGES_BUILD_DIR}/gitlab-pages /usr/local/bin/
 
-# download gitaly
+# clean up
+rm -rf ${GITLAB_PAGES_BUILD_DIR}
+
+# download and build gitaly
 echo "Downloading gitaly v.${GITALY_SERVER_VERSION}..."
-exec_as_git git clone -q -b v${GITALY_SERVER_VERSION} --depth 1 ${GITLAB_GITALY_URL} ${GITLAB_GITALY_INSTALL_DIR}
-chown -R ${GITLAB_USER}: ${GITLAB_GITALY_INSTALL_DIR}
-# copy default config for gitaly
-exec_as_git cp ${GITLAB_GITALY_INSTALL_DIR}/config.toml.example ${GITLAB_GITALY_INSTALL_DIR}/config.toml
+git clone -q -b v${GITALY_SERVER_VERSION} --depth 1 ${GITLAB_GITALY_URL} ${GITLAB_GITALY_BUILD_DIR}
 
 # install gitaly
-cd ${GITLAB_GITALY_INSTALL_DIR}
-ln -sf /tmp/go /usr/local/go
-PATH=/tmp/go/bin:$PATH make install && make clean
-rm -f /usr/local/go
+make -C ${GITLAB_GITALY_BUILD_DIR} install
+mkdir -p ${GITLAB_GITALY_INSTALL_DIR}
+cp -a ${GITLAB_GITALY_BUILD_DIR}/ruby ${GITLAB_GITALY_INSTALL_DIR}/
+cp -a ${GITLAB_GITALY_BUILD_DIR}/config.toml.example ${GITLAB_GITALY_INSTALL_DIR}/config.toml
+rm -rf ${GITLAB_GITALY_INSTALL_DIR}/ruby/vendor/bundle/ruby/**/cache
+chown -R ${GITLAB_USER}: ${GITLAB_GITALY_INSTALL_DIR}
+
+# clean up
+rm -rf ${GITLAB_GITALY_BUILD_DIR}
 
 # remove go
-rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz /tmp/go
+rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz ${GOROOT}
 
 # remove HSTS config from the default headers, we configure it in nginx
 exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
