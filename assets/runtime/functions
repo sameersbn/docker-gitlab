@@ -1519,6 +1519,7 @@ configure_gitlab() {
     GITLAB_SIGNUP_ENABLED \
     GITLAB_PROJECTS_LIMIT \
     GITLAB_USERNAME_CHANGE \
+    GITLAB_DEFAULT_THEME \
     GITLAB_CREATE_GROUP 
 
   gitlab_configure_database

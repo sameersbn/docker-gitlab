@@ -26,6 +26,8 @@ production: &base
   # 1. GitLab app settings
   # ==========================
 
+
+
   ## GitLab settings
   gitlab:
     ## Web server settings (note: host is the FQDN, do not include http://)
@@ -81,7 +83,8 @@ production: &base
     ##   4 - Gray
     ##   5 - Violet
     ##   6 - Blue
-    # default_theme: 2 # default: 2
+    default_theme: {{GITLAB_DEFAULT_THEME}}
+
 
     # Enable or disable user signups (first run only)
     signup_enabled: {{GITLAB_SIGNUP_ENABLED}}
