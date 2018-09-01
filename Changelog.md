@@ -5,6 +5,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 
 **11.2.0**
 - gitlab: upgrade CE to v11.2.0
+- ADD `GITLAB_DEFAULT_THEME`
 
 **11.1.4**
 - gitlab: upgrade CE to v11.1.4
