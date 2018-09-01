@@ -2,7 +2,7 @@ FROM ubuntu:xenial-20180808
 
 LABEL maintainer="sameer@damagehead.com"
 
-ENV GITLAB_VERSION=11.2.2 \
+ENV GITLAB_VERSION=11.2.3 \
     RUBY_VERSION=2.4 \
     GOLANG_VERSION=1.10.3 \
     GITLAB_SHELL_VERSION=8.1.1 \
