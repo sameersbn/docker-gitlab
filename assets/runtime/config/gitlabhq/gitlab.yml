@@ -26,6 +26,8 @@ production: &base
   # 1. GitLab app settings
   # ==========================
 
+
+
   ## GitLab settings
   gitlab:
     ## Web server settings (note: host is the FQDN, do not include http://)
@@ -75,13 +77,18 @@ production: &base
     default_can_create_group: {{GITLAB_CREATE_GROUP}}  # default: true
     username_changing_enabled: {{GITLAB_USERNAME_CHANGE}} # default: true - User can change her username/namespace
     ## Default theme ID
-    ##   1 - Graphite
-    ##   2 - Charcoal
-    ##   3 - Green
-    ##   4 - Gray
-    ##   5 - Violet
-    ##   6 - Blue
-    # default_theme: 2 # default: 2
+    ##   1 - Indigo
+    ##   2 - Dark
+    ##   3 - Light
+    ##   4 - Blue
+    ##   5 - Green
+    ##   6 - Light Indigo
+    ##   7 - Light Blue
+    ##   8 - Light Green
+    ##   9 - Red
+    ##   10 - Light Red
+    default_theme: {{GITLAB_DEFAULT_THEME}}
+
 
     # Enable or disable user signups (first run only)
     signup_enabled: {{GITLAB_SIGNUP_ENABLED}}
