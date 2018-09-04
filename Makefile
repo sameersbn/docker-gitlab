@@ -11,10 +11,18 @@ help:
 	@echo "   5. make purge        - stop and remove the container"
 
 build:
-	@docker build --tag=sameersbn/gitlab .
+	@docker build -t fmauneko/gitlab:latest .
+	@docker build --build-arg GITLAB_EDITION=ee -t fmauneko/gitlab:ee .
 
 release: build
-	@docker build --tag=sameersbn/gitlab:$(shell cat VERSION) .
+	@docker tag fmauneko/gitlab:latest fmauneko/gitlab:$(shell cat VERSION)
+	@docker tag fmauneko/gitlab:ee fmauneko/gitlab:$(shell cat VERSION)-ee
+
+push: release
+	@docker push fmauneko/gitlab:latest
+	@docker push fmauneko/gitlab:$(shell cat VERSION)
+	@docker push fmauneko/gitlab:ee
+	@docker push fmauneko/gitlab:$(shell cat VERSION)-ee
 
 quickstart:
 	@echo "Starting postgresql container..."
