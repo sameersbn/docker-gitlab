@@ -1,5 +1,9 @@
 #!/bin/bash
 set -e
+if [[ $GITLAB_REGISTRY_GENERATE_INTERNAL_CERTIFICATES == 'true' ]]; then
+  source /sbin/generate-registry-certificates.sh
+fi
+
 source ${GITLAB_RUNTIME_DIR}/functions
 
 [[ $DEBUG == true ]] && set -x
