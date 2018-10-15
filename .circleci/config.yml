@@ -1,9 +1,8 @@
 version: 2
 jobs:
   build:
-    working_directory: /workdir
     docker:
-      - image: docker:17.06.0-ce-git
+      - image: circleci/golang:1-stretch-browsers-legacy
         environment:
           IMAGE_NAME: "sameersbn/gitlab"
 
