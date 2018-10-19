@@ -5,6 +5,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 
 **11.4.0**
 - gitlab: upgrade CE to v11.4.0
+- baseimage: upgrade to xenial-20181005
 
 **11.3.6**
 - gitlab: upgrade CE to v11.3.6
