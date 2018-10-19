@@ -39,7 +39,7 @@ jobs:
       - run:
           name: Build docker image
           command: |
-            docker build --cache-from=${IMAGE_NAME} -t ${IMAGE_NAME} .
+            docker build --cache-from=${IMAGE_NAME} -t ${IMAGE_NAME} -t ${IMAGE_NAME}:$(cat VERSION) .
 
       - run:
           name: Launching container for testing
