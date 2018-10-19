@@ -1,9 +1,8 @@
 version: 2
 jobs:
   build:
-    working_directory: /workdir
     docker:
-      - image: docker:17.06.0-ce-git
+      - image: circleci/golang:1-stretch-browsers-legacy
         environment:
           IMAGE_NAME: "sameersbn/gitlab"
 
@@ -11,7 +10,7 @@ jobs:
       - checkout
 
       - setup_remote_docker:
-          version: 17.06.0-ce
+          version: 18.03.1-ce
 
       - run:
           name: Docker info
@@ -19,17 +18,22 @@ jobs:
             docker version
             docker info
 
+
       - restore_cache:
           keys:
             - cache-{{ .Branch }}
           paths:
-            - /cache/layers.tar
+            - /tmp/cache/layers.tar
 
       - run:
           name: Loading docker cache
           command: |
-            if [[ -f /cache/layers.tar ]]; then
-              docker load -i /cache/layers.tar
+            if [[ -f /tmp/cache/layers.tar ]]; then
+              echo "Loading cache ..."
+              docker load -i /tmp/cache/layers.tar
+              docker image ls
+            else
+              echo "Couldn't find any caches"
             fi
 
       - run:
@@ -40,32 +44,28 @@ jobs:
       - run:
           name: Launching container for testing
           command: |
-            docker network create testnet
-            docker run --name gitlab -d --net testnet ${IMAGE_NAME}
+            docker-compose up -d
+            sleep 10
 
       - run:
           name: Testing image
           command: |
-            echo "TODO"
+            docker run --network container:$(docker-compose ps -q gitlab) \
+              appropriate/curl --retry 12 --retry-delay 5 --retry-connrefused http://localhost/explore
 
       - run:
           name: Generate docker build image cache
           command: |
-            mkdir -p /cache
-            docker save -o /cache/layers.tar ${IMAGE_NAME}
+            mkdir -p /tmp/cache/
+            docker save -o /tmp/cache/layers.tar ${IMAGE_NAME}
 
       - save_cache:
           key: cache-{{ .Branch }}-{{ epoch }}
           paths:
-            - /cache/layers.tar
+            - /tmp/cache/layers.tar
 
 workflows:
   version: 2
   build-and-test:
     jobs:
-      - build:
-          filters:
-            branches:
-              only: /.*/
-            tags:
-              only: /.*/
+      - build
