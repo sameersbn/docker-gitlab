@@ -5,6 +5,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 
 **11.4.1**
 - gitlab: upgrade CE to v11.4.1
+- Add docs how to reuse ssh port [#1731](https://github.com/sameersbn/docker-gitlab/pull/1731)
 
 **11.4.0**
 - gitlab: upgrade CE to v11.4.0
