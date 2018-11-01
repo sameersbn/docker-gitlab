@@ -4,6 +4,7 @@ This file only reflects the changes that are made in this image. Please refer to
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
 **11.4.4**
+- gitlab: upgrade CE to v11.4.4
 - golang: update to 1.10.4
 
 **11.4.3**
