@@ -157,6 +157,7 @@ production: &base
     path: {{GITLAB_ARTIFACTS_DIR}}
     object_store:
       enabled: {{GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED}}
+      direct_upload: {{GITLAB_ARTIFACTS_OBJECT_STORE_DIRECT_UPLOAD}} # Use Object Storage directly for uploads without the need of local shared storage (Default: false)
       remote_directory: {{GITLAB_ARTIFACTS_OBJECT_STORE_REMOTE_DIRECTORY}} # The bucket name
       background_upload: {{GITLAB_ARTIFACTS_OBJECT_STORE_BACKGROUND_UPLOAD}} # Temporary option to limit automatic upload (Default: true)
       proxy_download: {{GITLAB_ARTIFACTS_OBJECT_STORE_PROXY_DOWNLOAD}} # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
