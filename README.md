@@ -850,6 +850,7 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_ARTIFACTS_ENABLED` | Enable/Disable GitLab artifacts support. Defaults to `true`. |
 | `GITLAB_ARTIFACTS_DIR` | Directory to store the artifacts. Defaults to `$GITLAB_SHARED_DIR/artifacts` |
 | `GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED` | Enables Object Store for Artifacts that will be remote stored. Defaults to `false` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_DIRECT_UPLOAD` | Set to true to enable direct upload of Artifacts without the need of local shared storage. Option may be removed once we decide to support only single storage for all files. Defaults to `false` |
 | `GITLAB_ARTIFACTS_OBJECT_STORE_REMOTE_DIRECTORY` | Bucket name to store the artifacts. Defaults to `artifacts` |
 | `GITLAB_ARTIFACTS_OBJECT_STORE_BACKGROUND_UPLOAD` | Temporary option to limit automatic upload. Defaults to `false` |
 | `GITLAB_ARTIFACTS_OBJECT_STORE_PROXY_DOWNLOAD` | Passthrough all downloads via GitLab instead of using Redirects to Object Storage. Defaults to `false` |
