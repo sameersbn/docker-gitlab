@@ -158,6 +158,7 @@ production: &base
     object_store:
       enabled: {{GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED}}
       remote_directory: {{GITLAB_ARTIFACTS_OBJECT_STORE_REMOTE_DIRECTORY}} # The bucket name
+      direct_upload: {{GITLAB_ARTIFACTS_OBJECT_STORE_DIRECT_UPLOAD}} # Set to true to enable direct upload of Artifacts without the need of local shared storage. 
       background_upload: {{GITLAB_ARTIFACTS_OBJECT_STORE_BACKGROUND_UPLOAD}} # Temporary option to limit automatic upload (Default: true)
       proxy_download: {{GITLAB_ARTIFACTS_OBJECT_STORE_PROXY_DOWNLOAD}} # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
