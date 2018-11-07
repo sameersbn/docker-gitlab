@@ -1329,7 +1329,9 @@ initialize_datadir() {
 
   # create the backups directory
   mkdir -p ${GITLAB_BACKUP_DIR}
-  chown ${GITLAB_USER}: ${GITLAB_BACKUP_DIR}
+  if [[ ${GITLAB_BACKUP_DIR_CHOWN} == true ]]; then
+    chown ${GITLAB_USER}: ${GITLAB_BACKUP_DIR}
+  fi
 
   # create the uploads directory
   mkdir -p ${GITLAB_DATA_DIR}/uploads
