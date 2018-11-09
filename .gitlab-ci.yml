@@ -21,9 +21,11 @@ docker:build:
   script:
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASS} ${CI_REGISTRY}
     - docker build
-      --build-arg VCS_REF=`git rev-parse --short HEAD`
-      --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`
-      --build-arg VERSION=${VERSION}
+      --pull
+      --cache-from=${DOCKER_IMAGE}
+      --build-arg=VCS_REF=$(git rev-parse --short HEAD)
+      --build-arg=BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"
+      --build-arg=VERSION=${VERSION}
       --tag ${DOCKER_IMAGE} .
     - docker push ${DOCKER_IMAGE}
 
@@ -34,11 +36,13 @@ docker:build:branches:
   script:
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASS} ${CI_REGISTRY}
     - docker build
-      --build-arg VCS_REF=`git rev-parse --short HEAD`
-      --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`
-      --build-arg VERSION=${VERSION}
-      --tag ${DOCKER_IMAGE}:${CI_COMMIT_REF_NAME/\//-} .
-    - docker push ${DOCKER_IMAGE}:${CI_COMMIT_REF_NAME/\//-}
+      --pull
+      --cache-from=${DOCKER_IMAGE}:${CI_COMMIT_REF_SLUG}
+      --build-arg=VCS_REF=$(git rev-parse --short HEAD)
+      --build-arg=BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"
+      --build-arg=VERSION=${VERSION}
+      --tag ${DOCKER_IMAGE}:${CI_COMMIT_REF_SLUG} .
+    - docker push ${DOCKER_IMAGE}:${CI_COMMIT_REF_SLUG}
 
 docker:build:release:
   stage: build
@@ -47,8 +51,10 @@ docker:build:release:
   script:
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASS} ${CI_REGISTRY}
     - docker build
-      --build-arg VCS_REF=`git rev-parse --short HEAD`
-      --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`
-      --build-arg VERSION=${VERSION}
+      --pull
+      --cache-from=${DOCKER_IMAGE}:${VERSION}
+      --build-arg=VCS_REF=$(git rev-parse --short HEAD)
+      --build-arg=BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"
+      --build-arg=VERSION=${VERSION}
       --tag ${DOCKER_IMAGE}:${VERSION} .
     - docker push ${DOCKER_IMAGE}:${VERSION}

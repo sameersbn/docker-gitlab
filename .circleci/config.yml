@@ -18,7 +18,6 @@ jobs:
             docker version
             docker info
 
-
       - restore_cache:
           keys:
             - cache-{{ .Branch }}
@@ -40,9 +39,10 @@ jobs:
           name: Build docker image
           command: |
             docker build \
+              --pull \
               --cache-from=${IMAGE_NAME} \
-              --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
-              --build-arg VCS_REF=`git rev-parse --short HEAD` \
+              --build-arg BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")" \
+              --build-arg VCS_REF=$(git rev-parse --short HEAD) \
               --build-arg VERSION=$(cat VERSION) \
               -t ${IMAGE_NAME}:$(cat VERSION) .
 
@@ -50,13 +50,13 @@ jobs:
           name: Launching container for testing
           command: |
             docker-compose up -d
-            sleep 10
+            sleep 120
 
       - run:
           name: Testing image
           command: |
             docker run --network container:$(docker-compose ps -q gitlab) \
-              appropriate/curl --retry 12 --retry-delay 5 --retry-connrefused http://localhost/explore
+              appropriate/curl --retry 15 --retry-delay 5 --retry-connrefused http://localhost/explore
 
       - run:
           name: Generate docker build image cache
