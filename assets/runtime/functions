@@ -1121,22 +1121,24 @@ nginx_configure_gitlab_hsts() {
   fi
 }
 
- nginx_configure_gitlab_ipv6() {
-   if [[ ! -f /proc/net/if_inet6 ]]; then
-     # disable ipv6 support in nginx for gitlab
-     sed -i \
-       -e "/listen \[::\]:80/d" \
-       -e "/listen \[::\]:443/d" \
-       ${GITLAB_NGINX_CONFIG}
-     # disable ipv6 support in nginx for pages
-     if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
-       sed -i \
-         -e "/listen \[::\]:80/d" \
-         -e "/listen \[::\]:443/d" \
-         ${GITLAB_PAGES_NGINX_CONFIG}
-     fi
-   fi
- }
+nginx_configure_gitlab_ipv6() {
+  if [[ ! -f /proc/net/if_inet6 ]]; then
+    # disable ipv6 support in nginx for gitlab
+    sed -i \
+      -e "/listen \[::\]:80/d" \
+      -e "/listen \[::\]:443/d" \
+      ${GITLAB_NGINX_CONFIG}
+    # disable ipv6 support in nginx for pages
+    if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
+      if [[ ${GITLAB_PAGES_NGINX_PROXY} == true ]]; then
+        sed -i \
+          -e "/listen \[::\]:80/d" \
+          -e "/listen \[::\]:443/d" \
+          ${GITLAB_PAGES_NGINX_CONFIG}
+      fi
+    fi
+  fi
+}
 
 nginx_configure_gitlab_real_ip() {
   if [[ ${NGINX_REAL_IP_RECURSIVE} == on && \
@@ -1199,21 +1201,26 @@ nginx_configure_pages(){
   local GITLAB_PAGES_DOMAIN=$(echo $GITLAB_PAGES_DOMAIN | sed 's/\./\\\\./g')
   if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
     echo "Configuring nginx::gitlab-pages..."
-    if [[ ${GITLAB_PAGES_HTTPS} == true ]]; then
-      update_template ${GITLAB_PAGES_NGINX_CONFIG} \
-        GITLAB_PORT \
-        GITLAB_PAGES_DOMAIN \
-        GITLAB_PAGES_PORT \
-        GITLAB_LOG_DIR \
-        GITLAB_PAGES_DOMAIN \
-        SSL_PAGES_CERT_PATH \
-        SSL_PAGES_KEY_PATH \
-        SSL_DHPARAM_PATH \
-        GITLAB_LOG_DIR
-    else
-      update_template ${GITLAB_PAGES_NGINX_CONFIG} \
-        GITLAB_PAGES_DOMAIN \
-        GITLAB_LOG_DIR
+    if [[ ${GITLAB_PAGES_NGINX_PROXY} == true ]]; then
+      if [[ ${GITLAB_PAGES_HTTPS} == true ]]; then
+        update_template ${GITLAB_PAGES_NGINX_CONFIG} \
+          GITLAB_PORT \
+          GITLAB_PAGES_DOMAIN \
+          GITLAB_PAGES_PORT \
+          GITLAB_LOG_DIR \
+          GITLAB_PAGES_DOMAIN \
+          SSL_PAGES_CERT_PATH \
+          SSL_PAGES_KEY_PATH \
+          SSL_DHPARAM_PATH \
+          GITLAB_LOG_DIR
+      else
+        update_template ${GITLAB_PAGES_NGINX_CONFIG} \
+          GITLAB_PAGES_DOMAIN \
+          GITLAB_LOG_DIR
+      fi
+    else 
+      echo "Gitlab pages nginx proxy disabled"
+      echo "Assuming custom domain setup with own HTTP(S) load balancer'"
     fi
   fi
 }
@@ -1479,11 +1486,21 @@ install_configuration_templates() {
   ## ${GITLAB_PAGES_NGINX_CONFIG}
   if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
     if [[ ${GITLAB_PAGES_HTTPS} == true && -f ${SSL_PAGES_CERT_PATH} && -f ${SSL_PAGES_KEY_PATH} ]]; then
-      install_template root: nginx/gitlab-pages-ssl ${GITLAB_PAGES_NGINX_CONFIG}
+      if [[ ${GITLAB_PAGES_NGINX_PROXY} == true ]]; then
+        install_template root: nginx/gitlab-pages-ssl ${GITLAB_PAGES_NGINX_CONFIG}
+      else
+        echo "Gitlab pages nginx proxy disabled"
+        echo "Assuming custom domain setup with own HTTP(S) load balancer'"
+      fi
     else
-      echo "SSL Key, SSL Certificate were not found."
-      echo "Assuming that the container is running behind a HTTPS enabled load balancer."
-      install_template root: nginx/gitlab-pages ${GITLAB_PAGES_NGINX_CONFIG}
+      if [[ ${GITLAB_PAGES_NGINX_PROXY} == true ]]; then
+        echo "SSL Key, SSL Certificate were not found."
+        echo "Assuming that the container is running behind a HTTPS enabled load balancer."
+        install_template root: nginx/gitlab-pages ${GITLAB_PAGES_NGINX_CONFIG}
+      else
+        echo "Gitlab pages nginx proxy disabled"
+        echo "Assuming custom domain setup with own HTTP(S) load balancer'"
+      fi
     fi
   fi
 

@@ -917,6 +917,7 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_PAGES_EXTERNAL_HTTP` | Sets GitLab Pages external http to receive request on an independen port. Disabled by default |
 | `GITLAB_PAGES_EXTERNAL_HTTPS` | Sets GitLab Pages external https to receive request on an independen port. Disabled by default |
 | `GITLAB_PAGES_ACCESS_CONTROL` | Set to `true` to enable access control for pages. Allows access to a Pages site to be controlled based on a user’s membership to that project. Disabled by default. |
+| `GITLAB_PAGES_NGINX_PROXY` | Disable the nginx proxy for gitlab pages, defaults to `true`. When set to `false` this will turn off the nginx proxy to the gitlab pages daemon, used when the user provides their own http load balancer in combination with a gitlab pages custom domain setup. |
 | `GITLAB_HTTPS` | Set to `true` to enable https support, disabled by default. |
 | `GITALY_CLIENT_PATH` | Set default path for gitaly. defaults to `/home/git/gitaly` |
 | `GITALY_TOKEN` | Set a gitaly token, blank by default. |
