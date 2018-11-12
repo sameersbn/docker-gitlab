@@ -226,9 +226,9 @@ production: &base
     port: {{GITLAB_PAGES_PORT}} # Set to 443 if you serve the pages with HTTPS
     https: {{GITLAB_PAGES_HTTPS}} # Set to true if you serve the pages with HTTPS
     artifacts_server: {{GITLAB_PAGES_ARTIFACTS_SERVER}}
+    access_control: {{GITLAB_PAGES_ACCESS_CONTROL}} # If true, allows access to a Pages site to be controlled based on a user’s membership to that project
     external_http: {{GITLAB_PAGES_EXTERNAL_HTTP}} # If defined, enables custom domain support in GitLab Pages
     external_https: {{GITLAB_PAGES_EXTERNAL_HTTPS}} # If defined, enables custom domain and certificate support in GitLab Pages
-
 
   ## Mattermost
   ## For enabling Add to Mattermost button
