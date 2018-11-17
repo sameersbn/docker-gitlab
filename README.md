@@ -844,6 +844,7 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_NOTIFY_PUSHER` | Add pusher to recipients list of broken build notification emails. Defaults to `false` |
 | `GITLAB_REPOS_DIR` | The git repositories folder in the container. Defaults to `/home/git/data/repositories` |
 | `GITLAB_BACKUP_DIR` | The backup folder in the container. Defaults to `/home/git/data/backups` |
+| `GITLAB_BACKUP_DIR_CHOWN` | Optionally change ownership of backup files on start-up | Defaults to `true` |
 | `GITLAB_BUILDS_DIR` | The build traces directory. Defaults to `/home/git/data/builds` |
 | `GITLAB_DOWNLOADS_DIR` | The repository downloads directory. A temporary zip is created in this directory when users click **Download Zip** on a project. Defaults to `/home/git/data/tmp/downloads`. |
 | `GITLAB_SHARED_DIR` | The directory to store the build artifacts. Defaults to `/home/git/data/shared` |
