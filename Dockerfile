@@ -1,8 +1,21 @@
 FROM ubuntu:xenial-20181005
 
-LABEL maintainer="sameer@damagehead.com"
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION=11.4.5
 
-ENV GITLAB_VERSION=11.4.5 \
+LABEL \
+    maintainer="sameer@damagehead.com" \
+    org.label-schema.schema-version="1.0" \
+    org.label-schema.build-date=${BUILD_DATE} \
+    org.label-schema.name=gitlab \
+    org.label-schema.vendor=damagehead \
+    org.label-schema.url="https://github.com/sameersbn/docker-gitlab" \
+    org.label-schema.vcs-url="https://github.com/sameersbn/docker-gitlab.git" \
+    org.label-schema.vcs-ref=${VCS_REF} \
+    com.damagehead.gitlab.license=MIT
+
+ENV GITLAB_VERSION=${VERSION} \
     RUBY_VERSION=2.4 \
     GOLANG_VERSION=1.10.4 \
     GITLAB_SHELL_VERSION=8.3.3 \

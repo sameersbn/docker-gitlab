@@ -1,0 +1,12 @@
+!/bin/bash
+
+# Docker Daemon Build Hook
+# $IMAGE_NAME var is injected into the build so the tag is correct.
+
+docker build \
+		--pull \
+		--cache-from=${IMAGE_NAME} \
+		--build-arg=BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")" \
+		--build-arg=VCS_REF=$(git rev-parse --short HEAD) \
+		--build-arg=VERSION=$(cat VERSION) \
+		-t ${IMAGE_NAME} .
