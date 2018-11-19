@@ -20,7 +20,7 @@ jobs:
 
       - restore_cache:
           keys:
-            - cache-{{ .Branch }}
+            - cache-v2-{{ .Branch }}
           paths:
             - /tmp/cache/layers.tar
 
@@ -65,7 +65,7 @@ jobs:
             docker save -o /tmp/cache/layers.tar ${IMAGE_NAME}
 
       - save_cache:
-          key: cache-{{ .Branch }}-{{ epoch }}
+          key: cache-v2-{{ .Branch }}
           paths:
             - /tmp/cache/layers.tar
 
