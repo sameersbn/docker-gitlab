@@ -33,6 +33,8 @@ docker:build:branches:
   stage: build
   only:
     - branches
+  except:
+    - master
   script:
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASS} ${CI_REGISTRY}
     - docker build
