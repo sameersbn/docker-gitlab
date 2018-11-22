@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! which -s kubectl; then
+if ! which kubectl > /dev/null; then
   echo "kubectl command not installed"
   exit 1
 fi
