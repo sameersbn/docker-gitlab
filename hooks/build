@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 # Docker Daemon Build Hook
 # $IMAGE_NAME var is injected into the build so the tag is correct.
