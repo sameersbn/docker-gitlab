@@ -1,5 +1,21 @@
 version: 2
 jobs:
+  shellcheck:
+    docker:
+      - image: nlknguyen/alpine-shellcheck:v0.4.6
+    steps:
+      - checkout
+      - run:
+          name: Check Docker Hub Hooks
+          command: |
+            find hooks -type f | wc -l
+            find hooks -type f | xargs shellcheck -e SC2086 --external-sources
+      - run:
+          name: Check Scripts
+          command: |
+            find . -type f -name '*.sh' | wc -l
+            find . -type f -name '*.sh' | xargs shellcheck -e SC2086 -e SC1090 --external-sources
+
   build:
     docker:
       - image: circleci/golang:1-stretch-browsers-legacy
@@ -73,4 +89,5 @@ workflows:
   version: 2
   build-and-test:
     jobs:
+      - shellcheck
       - build
