@@ -1,6 +1,8 @@
 #!/bin/bash
+set -e 
+set -o pipefail
 
-if ! which kubectl > /dev/null; then
+if ! command -v kubectl > /dev/null; then
   echo "kubectl command not installed"
   exit 1
 fi

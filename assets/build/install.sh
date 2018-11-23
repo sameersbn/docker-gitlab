@@ -27,8 +27,8 @@ BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
 
 ## Execute a command as GITLAB_USER
 exec_as_git() {
-  if [[ $(whoami) == ${GITLAB_USER} ]]; then
-    $@
+  if [[ $(whoami) == "${GITLAB_USER}" ]]; then
+    "$@"
   else
     sudo -HEu ${GITLAB_USER} "$@"
   fi
@@ -42,9 +42,9 @@ DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ${BUIL
 # Applying the mark late here does make the build usable on PaX kernels, but
 # still the build itself must be executed on a non-PaX kernel. It's done here
 # only for simplicity.
-paxctl -Cm `which ruby${RUBY_VERSION}`
+paxctl -Cm "$(command -v ruby${RUBY_VERSION})"
 # https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
-paxctl -Cm `which nodejs`
+paxctl -Cm "$(command -v nodejs)"
 
 # remove the host keys generated during openssh-server installation
 rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
@@ -134,8 +134,8 @@ rm -rf ${GITLAB_GITALY_BUILD_DIR}
 rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz ${GOROOT}
 
 # Fix for rebase in forks 
-echo "Linking $(which gitaly-ssh) to /"
-ln -s $(which gitaly-ssh) /
+echo "Linking $(command -v gitaly-ssh) to /"
+ln -s "$(command -v gitaly-ssh)" /
 
 # remove HSTS config from the default headers, we configure it in nginx
 exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
@@ -151,7 +151,7 @@ if [[ -d ${GEM_CACHE_DIR} ]]; then
   chown -R ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/vendor/cache
 fi
 
-exec_as_git bundle install -j$(nproc) --deployment --without development test aws
+exec_as_git bundle install -j"$(nproc)" --deployment --without development test aws
 
 # make sure everything in ${GITLAB_HOME} is owned by ${GITLAB_USER} user
 chown -R ${GITLAB_USER}: ${GITLAB_HOME}
