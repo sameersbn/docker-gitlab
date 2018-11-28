@@ -2,7 +2,7 @@ FROM ubuntu:xenial-20181113
 
 ARG BUILD_DATE
 ARG VCS_REF
-ARG VERSION=11.5.0
+ARG VERSION=11.5.1
 
 LABEL \
     maintainer="sameer@damagehead.com" \
