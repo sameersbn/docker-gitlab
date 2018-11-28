@@ -49,6 +49,7 @@
         - [SAML](#saml)
         - [Crowd](#crowd)
         - [Microsoft Azure](#microsoft-azure)
+    - [Gitlab Pages](#gitlab-pages)
     - [External Issue Trackers](#external-issue-trackers)
     - [Host UID / GID Mapping](#host-uid--gid-mapping)
     - [Piwik](#piwik)
@@ -767,6 +768,51 @@ Once you have the Client ID, Client secret and Tenant ID generated, configure th
 
 For example, if your Client ID is `xxx`, the Client secret is `yyy` and the Tenant ID is `zzz`, then adding `--env 'OAUTH_AZURE_API_KEY=xxx' --env 'OAUTH_AZURE_API_SECRET=yyy' --env 'OAUTH_AZURE_TENANT_ID=zzz'` to the docker run command enables support for Microsoft Azure OAuth.
 
+### Gitlab Pages
+
+Gitlab Pages allows a user to host static websites from a project. Gitlab pages can be enabled with setting the envrionment variable `GITLAB_PAGES_ENABLED` to `true`.
+
+### Gitlab Pages Access Control
+
+Since version `11.5.0` Gitlab pages supports access control. This allows only access to a published website if you are a project member, or have access to a certain project.
+
+Gitlab pages access control requires additional configuration before activating it through the variable `GITLAB_PAGES_ACCESS_CONTROL`.
+
+Gitab pages access control makes use of the Gitlab OAuth Module.
+
+ - Goto the Gitlab Admin area
+ - Select `Applications` in the menu
+ - Create `New Application`
+   - Name: `Gitlab Pages`
+   - Scopes:
+     - api
+   - Trusted: NO (Do not select)
+   - Redirect URI: https://projects.<GITLAB_PAGES_DOMAIN>/auth
+
+Note about the `Redirect URI`; this can be tricky to configure or figure out, What needs to be achieved is to following, the redirect URI needs to end up at the `gitlab-pages` daemon with the `/auth` endpoint.
+
+This means that if you run your gitlab pages at domain `pages.example.io` this will be a wilcard domain where your projects are created based on their namespace. The best trick is to enter a NON-Existing gitlab project pages URI as the redirect URI.
+
+In the example above; the pages domain `projects` has been chosen. This will cause the nginx, either the built in or your own loadbalancer to redirect `*.<GITLAB_PAGES_DOMAIN>` to the `gitlab-pages` daemon. Which will trigger the pages endpoint.
+
+Make sure to choose own which does not exist and make sure that the request is routed to the `gitlab-pages` daemon if you are using your own HTTP load balancer in front of Gitlab.
+
+After creating the OAuth application endpoint for the Gitlab Pages Daemon. Gitlab pages access control can now be enabled.
+
+Add to following environment variables to your Gitlab Container.
+
+| Variable | R/O | Description |
+|----------|-----|-------------|
+| GITLAB_PAGES_ACCESS_CONTROL | Required | Set to `true` to enable access control. |
+| GITLAB_PAGES_ACCESS_SECRET | Optional | Secret Hash, minimal 32 characters, if omitted, it will be auto generated. |
+| GITLAB_PAGES_ACCESS_CONTROL_SERVER | Required | Gitlab instance URI, example: `https://gitlab.example.io` |
+| GITLAB_PAGES_ACCESS_CLIENT_ID | Required | Client ID from earlier generated OAuth application |
+| GITLAB_PAGES_ACCESS_CLIENT_SECRET | Required | Client Secret from earlier genereated OAuth application |
+| GITLAB_PAGES_ACCESS_REDIRECT_URI | Required | Redirect URI, non existing pages domain to redirect to pages daemon, `https://projects.example.io` |
+
+After you have enabled the gitlab pages access control. When you go to a project `General Settings` -> `Permissions` you can choose the pages persmission level for the project.
+
+
 ### External Issue Trackers
 
 Since version `7.10.0` support for external issue trackers can be enabled in the "Service Templates" section of the settings panel.
@@ -919,6 +965,11 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_PAGES_EXTERNAL_HTTPS` | Sets GitLab Pages external https to receive request on an independen port. Disabled by default |
 | `GITLAB_PAGES_ACCESS_CONTROL` | Set to `true` to enable access control for pages. Allows access to a Pages site to be controlled based on a user’s membership to that project. Disabled by default. |
 | `GITLAB_PAGES_NGINX_PROXY` | Disable the nginx proxy for gitlab pages, defaults to `true`. When set to `false` this will turn off the nginx proxy to the gitlab pages daemon, used when the user provides their own http load balancer in combination with a gitlab pages custom domain setup. |
+| `GITLAB_PAGES_ACCESS_SECRET` | Secret Hash, minimal 32 characters, if omitted, it will be auto generated. |
+| `GITLAB_PAGES_ACCESS_CONTROL_SERVER` | Gitlab instance URI, example: `https://gitlab.example.io` |
+| `GITLAB_PAGES_ACCESS_CLIENT_ID` | Client ID from earlier generated OAuth application |
+| `GITLAB_PAGES_ACCESS_CLIENT_SECRET` | Client Secret from earlier genereated OAuth application |
+| `GITLAB_PAGES_ACCESS_REDIRECT_URI` | Redirect URI, non existing pages domain to redirect to pages daemon, `https://projects.example.io` |
 | `GITLAB_HTTPS` | Set to `true` to enable https support, disabled by default. |
 | `GITALY_CLIENT_PATH` | Set default path for gitaly. defaults to `/home/git/gitaly` |
 | `GITALY_TOKEN` | Set a gitaly token, blank by default. |

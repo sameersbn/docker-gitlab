@@ -1631,6 +1631,20 @@ cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
 EOF
 fi
 
+if [[ ${GITLAB_PAGES_ACCESS_CONTROL} == true ]]; then
+  if [[ -z ${GITLAB_PAGES_ACCESS_SECRET} ]]; then
+    GITLAB_PAGES_ACCESS_SECRET=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 40 ; echo '')
+  fi
+
+cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
+  -auth-server ${GITLAB_PAGES_ACCESS_CONTROL_SERVER}
+  -auth-secret ${GITLAB_PAGES_ACCESS_SECRET}
+  -auth-client-id ${GITLAB_PAGES_ACCESS_CLIENT_ID}
+  -auth-client-secret ${GITLAB_PAGES_ACCESS_CLIENT_SECRET}
+  -auth-redirect-uri ${GITLAB_PAGES_ACCESS_REDIRECT_URI}
+EOF
+fi
+
 cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
 user=git
 autostart=true
