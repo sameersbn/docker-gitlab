@@ -862,7 +862,7 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_HOST` | Configure this for an compatible AWS host like minio. Defaults to `s3.amazonaws.com` |
 | `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT` | AWS Endpoint like `http://127.0.0.1:9000`. Defaults to `nil` |
 | `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE` | Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `true` |
-| `GITLAB_PIPELINE_SCHEDULE_WORKER_CRON` | Cron notation for the Gitlab pipeline schedule worker. Defaults to `'0 */12 * * *'` |
+| `GITLAB_PIPELINE_SCHEDULE_WORKER_CRON` | Cron notation for the GitLab pipeline schedule worker. Defaults to `'0 */12 * * *'` |
 | `GITLAB_LFS_ENABLED` | Enable/Disable Git LFS support. Defaults to `true`. |
 | `GITLAB_LFS_OBJECTS_DIR` | Directory to store the lfs-objects. Defaults to `$GITLAB_SHARED_DIR/lfs-objects` |
 | `GITLAB_LFS_OBJECT_STORE_ENABLED` | Enables Object Store for LFS that will be remote stored. Defaults to `false` |
