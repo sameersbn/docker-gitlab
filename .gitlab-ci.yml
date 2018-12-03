@@ -25,7 +25,6 @@ docker:build:
       --cache-from=${DOCKER_IMAGE}
       --build-arg=VCS_REF=$(git rev-parse --short HEAD)
       --build-arg=BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"
-      --build-arg=VERSION=${VERSION}
       --tag ${DOCKER_IMAGE} .
     - docker push ${DOCKER_IMAGE}
 
@@ -42,7 +41,6 @@ docker:build:branches:
       --cache-from=${DOCKER_IMAGE}:${CI_COMMIT_REF_SLUG}
       --build-arg=VCS_REF=$(git rev-parse --short HEAD)
       --build-arg=BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"
-      --build-arg=VERSION=${VERSION}
       --tag ${DOCKER_IMAGE}:${CI_COMMIT_REF_SLUG} .
     - docker push ${DOCKER_IMAGE}:${CI_COMMIT_REF_SLUG}
 
@@ -57,6 +55,5 @@ docker:build:release:
       --cache-from=${DOCKER_IMAGE}:${VERSION}
       --build-arg=VCS_REF=$(git rev-parse --short HEAD)
       --build-arg=BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"
-      --build-arg=VERSION=${VERSION}
       --tag ${DOCKER_IMAGE}:${VERSION} .
     - docker push ${DOCKER_IMAGE}:${VERSION}
