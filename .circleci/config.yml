@@ -59,7 +59,6 @@ jobs:
               --cache-from=${IMAGE_NAME} \
               --build-arg BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")" \
               --build-arg VCS_REF=$(git rev-parse --short HEAD) \
-              --build-arg VERSION=$(cat VERSION) \
               -t ${IMAGE_NAME}:$(cat VERSION) .
 
       - run:
