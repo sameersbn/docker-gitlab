@@ -1,9 +1,7 @@
 .git
 .gitignore
+.gitattributes
+CHANGELOG.md
+CONTRIBUTING.md
 LICENSE
-VERSION
 README.md
-Changelog.md
-Makefile
-docker-compose.yml
-docs

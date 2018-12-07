@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# install gitlab-shell
+echo "Downloading gitlab-shell ${GITLAB_SHELL_VERSION}..."
+mkdir -p ${GITLAB_BUILD}
+mkdir -p ${GITLAB_SHELL_INSTALL}
+wget -cq ${GITLAB_SHELL_URL} -O ${GITLAB_BUILD}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2
+tar xf ${GITLAB_BUILD}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2 --strip 1 -C ${GITLAB_SHELL_INSTALL}
+rm -rf ${GITLAB_BUILD}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2
+chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_SHELL_INSTALL}
+
+cd ${GITLAB_SHELL_INSTALL}
+exec_as_git cp -a config.yml.example config.yml
+if [[ -x ./bin/compile ]]; then
+  echo "Compiling gitlab-shell golang executables..."
+  ./bin/compile
+  rm -rf go_build
+fi
+./bin/install

@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+PROJECT_DIR="$1"
+
+# Load YAML parsing
+source ${PROJECT_DIR}/scripts/yaml
+
+# Variables
+BUILD_DATE=$(date +"%Y%m%d-%H:%M:%S%:z")
+GIT_COMMIT=$(git rev-parse --short HEAD)
+GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+DOCKER_ARGS=${DOCKER_ARGS:-}
+IMAGE_NAME=${IMAGE_NAME:-}
+
+# Build Arguments
+declare -a BUILD_ARGS
+declare -a ARGS
+
+BUILD_ARGS+=(--build-arg=BUILD_DATE=${BUILD_DATE})
+BUILD_ARGS+=(--build-arg=GIT_COMMIT=${GIT_COMMIT})
+BUILD_ARGS+=(--build-arg=GIT_BRANCH=${GIT_BRANCH})
+BUILD_ARGS+=(${DOCKER_ARGS})
+if [[ -n ${BASE_IMAGE} ]]; then
+   BUILD_ARGS+=(--build-arg=BASE_IMAGE=${BASE_IMAGE})
+fi
+
+#eval $(parse_yaml ${PROJECT_DIR}/config.yml "")
+for v in $(parse_yaml ${PROJECT_DIR}/config.yml "")
+do
+    # echo $(eval echo ${v})
+    export $(eval echo ${v})
+    ARGS+=(${v})
+done
+
+for v in $(IFS=$' '; echo "${ARGS[*]}")
+do
+    # echo $(eval echo ${v})
+    export $(eval echo ${v})
+    BUILD_ARGS+=(--build-arg=\"$(eval echo ${v})\")
+done
+
+export BUILD_ARGS=$(IFS=$' '; echo "${BUILD_ARGS[*]}")
+

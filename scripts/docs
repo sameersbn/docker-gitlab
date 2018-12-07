@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+PROJECT_DIR="$1"
+
+# Load Environment
+source ${PROJECT_DIR}/scripts/env
+
+# Replace placeholders with values
+# $1: file with placeholders to replace
+# $x: placeholders to replace
+update_template() {
+  local FILE=${1?missing argument}
+  shift
+
+  [[ ! -f ${FILE} ]] && return 1
+
+  local VARIABLES=($@)
+  local USR=$(stat -c %U ${FILE})
+  local tmp_file=$(mktemp)
+  cp -a "${FILE}" ${tmp_file}
+
+  local variable
+  for variable in ${VARIABLES[@]}; do
+    # Keep the compatibilty: {{VAR}} => ${VAR}
+    sed -ri "s/[{]{2}$variable[}]{2}/\${$variable}/g" ${tmp_file}
+  done
+
+  # Replace placeholders
+  (
+    export ${VARIABLES[@]}
+    local IFS=":"; sudo -HEu ${USR} envsubst "${VARIABLES[*]/#/$}" < ${tmp_file} > ${FILE}
+  )
+  rm -f ${tmp_file}
+}
+
+generate_docs_config() {
+    # Generate Hugo config.yml
+    cp ${PROJECT_DIR}/docs/config.template ${PROJECT_DIR}/docs/config.yml
+    update_template ${PROJECT_DIR}/docs/config.yml \
+        GITLAB_VERSION \
+        DOCS_REPO \
+        DOCS_EDIT
+}
+
+case "$2" in
+    build)
+        generate_docs_config
+        cd ${PROJECT_DIR}/docs/
+        hugo -v
+    ;;
+
+    server)
+        export DOCS_URL=""
+        generate_docs_config
+        cd ${PROJECT_DIR}/docs/
+        hugo server
+    ;;
+
+    deploy)
+        generate_docs_config
+        cd ${PROJECT_DIR}/docs/
+        hugo -v
+    ;;
+esac

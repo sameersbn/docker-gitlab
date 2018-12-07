@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+PROJECT_DIR="$1"
+STACK=gitlab-test
+
+# Load Environment
+source ${PROJECT_DIR}/scripts/env
+
+case "$2" in
+    start)
+        docker-compose -f ${PROJECT_DIR}/docker/quickstart.yml -p ${STACK} up -d
+    ;;
+
+    stop)
+        docker-compose -f ${PROJECT_DIR}/docker/quickstart.yml -p ${STACK} stop
+    ;;
+
+    purge)
+        docker-compose -f ${PROJECT_DIR}/docker/quickstart.yml -p ${STACK} down -v
+    ;;
+esac

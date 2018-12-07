@@ -6,21 +6,19 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Check Docker Hub Hooks
-          command: |
-            find hooks -type f | wc -l
-            find hooks -type f | xargs shellcheck -e SC2086 --external-sources
-      - run:
           name: Check Scripts
           command: |
-            find . -type f -name '*.sh' | wc -l
-            find . -type f -name '*.sh' | xargs shellcheck -e SC2086 -e SC1090 --external-sources
-
+            find ./build -type f | xargs shellcheck -e SC2086 -e SC1090 --external-sources
+            find ./rootfs/usr/ -type f | xargs shellcheck -e SC2086 -e SC1090 --external-sources
+            find ./rootfs/sbin/ -type f | xargs shellcheck -e SC2086 -e SC1090 --external-sources
+            shellcheck -e SC2086 -e SC1090 --external-sources rootfs/etc/docker-gitlab/configure
+            shellcheck -e SC2086 -e SC1090 --external-sources rootfs/etc/docker-gitlab/env-defaults
+    
   build:
     docker:
       - image: circleci/golang:1-stretch-browsers-legacy
         environment:
-          IMAGE_NAME: "sameersbn/gitlab"
+          IMAGE_NAME: "gjrtimmer/gitlab"
 
     steps:
       - checkout
@@ -54,25 +52,24 @@ jobs:
       - run:
           name: Build docker image
           command: |
-            docker build \
-              --pull \
-              --cache-from=${IMAGE_NAME} \
-              --build-arg BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")" \
-              --build-arg VCS_REF=$(git rev-parse --short HEAD) \
-              --build-arg VERSION=$(cat VERSION) \
-              -t ${IMAGE_NAME}:$(cat VERSION) .
+            make all
 
       - run:
           name: Launching container for testing
           command: |
-            docker-compose up -d
+            DOCKER_IMAGE=${IMAGE_NAME} docker-compose -f ./docker/quickstart.yml up -d
             sleep 120
 
       - run:
           name: Testing image
           command: |
-            docker run --network container:$(docker-compose ps -q gitlab) \
-              appropriate/curl --retry 15 --retry-delay 5 --retry-connrefused http://localhost/explore
+            docker run --network container:$(docker-compose ps -q gitlab-test) \
+              appropriate/curl --retry 120 --retry-delay 15 --retry-connrefused http://localhost/explore
+
+      - run:
+          name: Teardown
+          command: |
+            DOCKER_IMAGE=${IMAGE_NAME} docker-compose -f ./docker/quickstart.yml down
 
       - run:
           name: Generate docker build image cache

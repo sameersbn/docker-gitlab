@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+PROJECT_DIR="$1"
+FILE="$2"
+
+# Load Environment
+source ${PROJECT_DIR}/scripts/env
+
+if [ $(basename ${FILE}) == "Dockerfile.base" ]; then
+    if [ -n ${DOCKER_IMAGE} ]; then
+        export DOCKER_IMAGE=${DOCKER_BASE:-${DOCKER_IMAGE}}
+    else
+        export DOCKER_IMAGE=${DOCKER_BASE:-${DOCKER_IMAGE}:base}
+    fi
+fi
+
+if [ $(basename ${FILE}) == "Dockerfile.builder" ]; then
+    if [ -n ${DOCKER_IMAGE} ]; then
+        export DOCKER_IMAGE=${DOCKER_BUILDER:-${DOCKER_IMAGE}}
+    else
+        export DOCKER_IMAGE=${DOCKER_BUILDER:-${DOCKER_IMAGE}:builder}
+    fi
+fi
+
+# Build docker base image
+eval $(echo docker build ${DOCKER_ARGS} ${BUILD_ARGS} --tag ${DOCKER_IMAGE} --file "${FILE}" ${PROJECT_DIR})

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+echo "Cloning gitlab-workhorse ${GITLAB_WORKHORSE_VERSION}..."
+git clone -q -b v${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_URL} ${GITLAB_WORKHORSE_BUILD}
+make -C ${GITLAB_WORKHORSE_BUILD} install

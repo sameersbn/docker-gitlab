@@ -1,0 +1,126 @@
+#!/usr/bin/env bash
+
+# move supervisord.log file to ${GITLAB_LOG_DIR}/supervisor/
+sed -i "s|^[#]*logfile=.*|logfile=${GITLAB_LOG_DIR}/supervisor/supervisord.log ;|" /etc/supervisor/supervisord.conf
+
+# configure supervisord to start unicorn
+cat > /etc/supervisor/conf.d/unicorn.conf <<EOF
+[program:unicorn]
+priority=10
+directory=${GITLAB_INSTALL_DIR}
+environment=HOME=${GITLAB_HOME}
+command=bundle exec unicorn_rails -c ${GITLAB_INSTALL_DIR}/config/unicorn.rb -E ${RAILS_ENV}
+user=git
+autostart=true
+autorestart=true
+stopsignal=QUIT
+stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+EOF
+
+# configure supervisord to start sidekiq
+cat > /etc/supervisor/conf.d/sidekiq.conf <<EOF
+[program:sidekiq]
+priority=10
+directory=${GITLAB_INSTALL_DIR}
+environment=HOME=${GITLAB_HOME}
+command=bundle exec sidekiq -c {{SIDEKIQ_CONCURRENCY}}
+  -C ${GITLAB_INSTALL_DIR}/config/sidekiq_queues.yml
+  -e ${RAILS_ENV}
+  -t {{SIDEKIQ_SHUTDOWN_TIMEOUT}}
+  -P ${GITLAB_INSTALL_DIR}/tmp/pids/sidekiq.pid
+  -L ${GITLAB_INSTALL_DIR}/log/sidekiq.log
+user=git
+autostart=true
+autorestart=true
+stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+EOF
+
+# configure supervisord to start gitlab-workhorse
+cat > /etc/supervisor/conf.d/gitlab-workhorse.conf <<EOF
+[program:gitlab-workhorse]
+priority=20
+directory=${GITLAB_INSTALL_DIR}
+environment=HOME=${GITLAB_HOME}
+command=/usr/local/bin/gitlab-workhorse
+  -listenUmask 0
+  -listenNetwork tcp
+  -listenAddr ":8181"
+  -authBackend http://127.0.0.1:8080{{GITLAB_RELATIVE_URL_ROOT}}
+  -authSocket ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
+  -documentRoot ${GITLAB_INSTALL_DIR}/public
+  -proxyHeadersTimeout {{GITLAB_WORKHORSE_TIMEOUT}}
+user=git
+autostart=true
+autorestart=true
+stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
+stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
+EOF
+
+# configure supervisord to start gitaly
+cat > /etc/supervisor/conf.d/gitaly.conf <<EOF
+[program:gitaly]
+priority=5
+directory=${GITLAB_GITALY_INSTALL_DIR}
+environment=HOME=${GITLAB_HOME}
+command=/usr/local/bin/gitaly ${GITLAB_GITALY_INSTALL_DIR}/config.toml
+user=git
+autostart=true
+autorestart=true
+stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+EOF
+
+# configure supervisord to start mail_room
+cat > /etc/supervisor/conf.d/mail_room.conf <<EOF
+[program:mail_room]
+priority=20
+directory=${GITLAB_INSTALL_DIR}
+environment=HOME=${GITLAB_HOME}
+command=bundle exec mail_room -c ${GITLAB_INSTALL_DIR}/config/mail_room.yml
+user=git
+autostart={{GITLAB_INCOMING_EMAIL_ENABLED}}
+autorestart=true
+stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
+stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
+EOF
+
+# configure supervisor to start sshd
+mkdir -p /var/run/sshd
+cat > /etc/supervisor/conf.d/sshd.conf <<EOF
+[program:sshd]
+directory=/
+command=/usr/sbin/sshd -D -E ${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+user=root
+autostart=true
+autorestart=true
+stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+EOF
+
+# configure supervisord to start nginx
+cat > /etc/supervisor/conf.d/nginx.conf <<EOF
+[program:nginx]
+priority=20
+directory=/tmp
+command=/usr/sbin/nginx -g "daemon off;"
+user=root
+autostart=true
+autorestart=true
+stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+EOF
+
+# configure supervisord to start crond
+cat > /etc/supervisor/conf.d/cron.conf <<EOF
+[program:cron]
+priority=20
+directory=/tmp
+command=/usr/sbin/cron -f
+user=root
+autostart=true
+autorestart=true
+stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+EOF

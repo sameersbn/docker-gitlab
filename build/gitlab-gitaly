@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# download and build gitaly
+echo "Downloading gitaly ${GITLAB_GITALY_VERSION}..."
+git clone -q -b v${GITLAB_GITALY_VERSION} --depth 1 ${GITLAB_GITALY_URL} ${GITLAB_GITALY_BUILD}
+
+# install gitaly
+make -C ${GITLAB_GITALY_BUILD} install
+mkdir -p ${GITLAB_GITALY_INSTALL}
+cp -a ${GITLAB_GITALY_BUILD}/ruby ${GITLAB_GITALY_INSTALL}/
+cp -a ${GITLAB_GITALY_BUILD}/config.toml.example ${GITLAB_GITALY_INSTALL}/config.toml
+rm -rf ${GITLAB_GITALY_INSTALL}/ruby/vendor/bundle/ruby/**/cache
+chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_GITALY_INSTALL}

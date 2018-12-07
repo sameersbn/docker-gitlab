@@ -1,0 +1,72 @@
+---
+# Documentation
+Docs:
+  Url: https://gjrtimmer.github.io/docker-gitlab/
+  Repo: https://github.com/GJRTimmer/docker-gitlab
+  Edit: https://github.com/GJRTimmer/docker-gitlab/edit/master/exampleSite/content/
+
+# Container Configuration
+Container:
+  Maintainer: GJRTimmer
+  Name: gitlab
+  Vendor: timmertech
+  url: https://gitlab.timmertech.nl/docker/gitlab
+  vcs: https://gitlab.timmertech.nl/docker/gitlab.git
+
+Docker:
+  Image: ${DOCKER_IMAGE:-gjrtimmer/gitlab}
+  Base: ${DOCKER_BASE:-${DOCKER_IMAGE%%:*}:base}
+  Builder: ${DOCKER_BUILDER:-${DOCKER_IMAGE%%:*}:builder}
+
+Ubuntu:
+  Version: xenial
+
+Ruby:
+  Home: ${GITLAB_HOME}/ruby
+  Version: 2.5
+
+Python:
+  Version: 2.7
+
+Golang:
+  Version: 1.10.5
+
+Rails:
+  Env: production
+
+Node:
+  Env: production
+
+Build:
+  Dependencies: gcc;g++;make;patch;pkg-config;cmake;paxctl;libc6-dev;ruby${RUBY_VERSION}-dev;libmysqlclient-dev;libpq-dev;zlib1g-dev;libyaml-dev;libssl-dev;libgdbm-dev;libreadline-dev;libncurses5-dev;libffi-dev;libxml2-dev;libxslt-dev;libcurl4-openssl-dev;libicu-dev;gettext;libkrb5-dev
+
+# Gilab Configuration
+Gitlab:
+  Version: 11.5.3
+  Home: /home/git
+  User: git
+  Build: /build
+  Cache: /cache
+  Data: ${GITLAB_HOME}/data
+  Logs: /var/log/gitlab
+  Runtime: /etc/docker-gitlab
+  Install:
+    Url: https://gitlab.com/gitlab-org/gitlab-ce.git
+    Dir: ${GITLAB_HOME}/gitlab
+  Workhorse:
+    Version: 7.1.3
+    Url: https://gitlab.com/gitlab-org/gitlab-workhorse.git
+    Build: /tmp/gitlab-workhorse
+  Pages:
+    Version: 1.3.1
+    Url: https://gitlab.com/gitlab-org/gitlab-pages.git
+    Build: /tmp/gitlab-pages
+  Gitaly: 
+    Version: 0.125.1
+    Url: https://gitlab.com/gitlab-org/gitaly.git
+    Install: ${GITLAB_HOME}/gitaly
+    Build: /tmp/gitaly
+  Shell: 
+    Version: 8.4.1
+    Url: https://gitlab.com/gitlab-org/gitlab-shell/-/archive/v${GITLAB_SHELL_VERSION}/gitlab-shell-v${GITLAB_SHELL_VERSION}.tar.bz2
+    Install: ${GITLAB_HOME}/gitlab-shell

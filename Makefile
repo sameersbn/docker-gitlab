@@ -1,53 +1,48 @@
-all: build
+PROJECT_DIR		= $(CURDIR)
+SCRIPT_DIR		= $(CURDIR)/scripts
+DOCKER_DIR		= $(CURDIR)/docker
 
-help:
-	@echo ""
-	@echo "-- Help Menu"
-	@echo ""
-	@echo "   1. make build        - build the gitlab image"
-	@echo "   2. make quickstart   - start gitlab"
-	@echo "   3. make stop         - stop gitlab"
-	@echo "   4. make logs         - view logs"
-	@echo "   5. make purge        - stop and remove the container"
+.PHONY: all
+all: base builder docker
 
-build:
-	@docker build --tag=sameersbn/gitlab .
+.PHONY: base
+base:
+	@${SCRIPT_DIR}/build ${PROJECT_DIR} ${DOCKER_DIR}/Dockerfile.base
 
-release: build
-	@docker build --tag=sameersbn/gitlab:$(shell cat VERSION) .
+.PHONY: builder
+builder:
+	@${SCRIPT_DIR}/build ${PROJECT_DIR} ${DOCKER_DIR}/Dockerfile.builder
 
-quickstart:
-	@echo "Starting postgresql container..."
-	@docker run --name=gitlab-postgresql -d \
-		--env='DB_NAME=gitlabhq_production' \
-		--env='DB_USER=gitlab' --env='DB_PASS=password' \
-		sameersbn/postgresql:latest
-	@echo "Starting redis container..."
-	@docker run --name=gitlab-redis -d \
-		sameersbn/redis:latest
-	@echo "Starting gitlab container..."
-	@docker run --name='gitlab-demo' -d \
-		--link=gitlab-postgresql:postgresql --link=gitlab-redis:redisio \
-		--publish=10022:22 --publish=10080:80 \
-		--env='GITLAB_PORT=10080' --env='GITLAB_SSH_PORT=10022' \
-		sameersbn/gitlab:latest
-	@echo "Please be patient. This could take a while..."
-	@echo "GitLab will be available at http://localhost:10080"
-	@echo "Type 'make logs' for the logs"
+.PHONY: docker
+docker:
+	@${SCRIPT_DIR}/build ${PROJECT_DIR} ${DOCKER_DIR}/Dockerfile
 
+.PHONY: gitlab
+gitlab: docker
+
+.PHONY: test
+test:
+	@${SCRIPT_DIR}/test ${PROJECT_DIR} start
+
+.PHONY: stop
 stop:
-	@echo "Stopping gitlab..."
-	@docker stop gitlab-demo >/dev/null
-	@echo "Stopping redis..."
-	@docker stop gitlab-redis >/dev/null
-	@echo "Stopping postgresql..."
-	@docker stop gitlab-postgresql >/dev/null
+	@${SCRIPT_DIR}/test ${PROJECT_DIR} stop
 
-purge: stop
-	@echo "Removing stopped containers..."
-	@docker rm -v gitlab-demo >/dev/null
-	@docker rm -v gitlab-redis >/dev/null
-	@docker rm -v gitlab-postgresql >/dev/null
+.PHONY: purge
+purge:
+	@${SCRIPT_DIR}/test ${PROJECT_DIR} purge
 
-logs:
-	@docker logs -f gitlab-demo
+.PHONY: logs
+	@docker logs -f gitlab-test
+
+.PHONY: docs
+docs-test:
+	${SCRIPT_DIR}/docs ${PROJECT_DIR} build
+
+.PHONY: docs-server
+docs-server:
+	${SCRIPT_DIR}/docs ${PROJECT_DIR} server
+
+.PHONY: docs-deploy
+docs-deploy:
+	${SCRIPT_DIR}/docs ${PROJECT_DIR} deploy

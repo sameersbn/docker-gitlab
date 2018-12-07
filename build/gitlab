@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+echo "Cloning gitlab-ce ${GITLAB_VERSION}..."
+exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_INSTALL_URL} ${GITLAB_INSTALL_DIR}
+
+# remove HSTS config from the default headers, we configure it in nginx
+exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
+
+# revert `rake gitlab:setup` changes from gitlabhq/gitlabhq@a54af831bae023770bf9b2633cc45ec0d5f5a66a
+exec_as_git sed -i 's/db:reset/db:setup/' ${GITLAB_INSTALL_DIR}/lib/tasks/gitlab/setup.rake
+
+cd ${GITLAB_INSTALL_DIR}
+
+# install gems, use local cache if available
+if [[ -d ${GITLAB_CACHE} ]]; then
+  mv ${GITLAB_CACHE} ${GITLAB_INSTALL_DIR}/vendor/cache
+  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_INSTALL_DIR}/vendor/cache
+fi
+
+exec_as_git bundle install -j"$(nproc)" --deployment --without development test aws
+
+# make sure everything in ${GITLAB_HOME} is owned by ${GITLAB_USER} user
+chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_HOME}
+
+# gitlab.yml and database.yml are required for `assets:precompile`
+exec_as_git cp ${GITLAB_INSTALL_DIR}/config/resque.yml.example ${GITLAB_INSTALL_DIR}/config/resque.yml
+exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.mysql ${GITLAB_INSTALL_DIR}/config/database.yml
+
+# Installs nodejs packages required to compile webpack
+exec_as_git yarn install --production --pure-lockfile
+exec_as_git yarn add ajv@^4.0.0
+
+echo "Compiling assets. Please be patient, this could take a while..."
+exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true
+
+# Remove auto generated secret.yml
+rm -f ${GITLAB_INSTALL_DIR}/config/secrets.yml
+
+# Remove gitlab-shell secrets
+rm -f ${GITLAB_INSTALL_DIR}/.gitlab_shell_secret 
+
+# Remove Workhorse secrets
+rm -f ${GITLAB_INSTALL_DIR}/.gitlab_workhorse_secret
+
+# Create temp directory
+exec_as_git mkdir -p ${GITLAB_INSTALL_DIR}/tmp/pids/ ${GITLAB_INSTALL_DIR}/tmp/sockets/
+chmod -R u+rwX ${GITLAB_INSTALL_DIR}/tmp
+
+# WORKAROUND for https://github.com/sameersbn/docker-gitlab/issues/509
+rm -rf ${GITLAB_INSTALL_DIR}/builds
+rm -rf ${GITLAB_INSTALL_DIR}/shared

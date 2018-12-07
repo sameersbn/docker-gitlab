@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+  gitlab-test-pqsql:
+    container_name: gitlab-test-pqsql
+    image: sameersbn/postgresql:latest
+    environment:
+      DB_NAME: gitlabhq_production
+      DB_USER: gitlab
+      DB_PASS: password
+      DB_EXTENSION: pg_trgm
+
+  gitlab-test-redis:
+    container_name: gitlab-test-redis
+    image: sameersbn/redis:latest
+
+  gitlab-test:
+    container_name: gitlab-test
+    image: ${DOCKER_IMAGE}
+    depends_on:
+      - gitlab-test-pqsql
+      - gitlab-test-redis
+    links:
+      - gitlab-test-pqsql:postgresql
+      - gitlab-test-redis:redis
+    environment:
+      DB_HOST: postgresql
+      DB_USER: gitlab
+      DB_PASS: password
+      DB_NAME: gitlabhq_production
+      REDIS_HOST: redis
+      GITLAB_PORT: 10080
+      GITLAB_SSH_PORT: 10022
+      GITLAB_SECRETS_DB_KEY_BASE: test
+      GITLAB_SECRETS_SECRET_KEY_BASE: test
+      GITLAB_SECRETS_OTP_KEY_BASE: test
+    ports:
+      - '10022:22'
+      - '10080:80'

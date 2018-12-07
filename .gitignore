@@ -1,3 +1,5 @@
 *.gem
 *.tar.gz
-
+docs/config.yml
+/docs/public/*
+!/docs/public/.gitkeep

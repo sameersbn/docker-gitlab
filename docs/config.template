@@ -1,0 +1,51 @@
+baseURL: {{DOCS_URL}}
+languageCode: en-us
+DefaultContentLanguage: en
+title: Dockerized Gitlab
+theme: docdock
+pygmentsCodeFences: true
+pygmentsStyle: monokailight
+toc: true
+taxonomies:
+  category: categories
+  tag: tags
+
+defaultContentLanguage: en
+defaultContentLanguageInSubdir: false
+enableMissingTranslationPlaceholders: false
+
+params:
+  editURL: {{DOCS_REPO}}
+  showVisitedLinks: true # default is false
+  themeStyle: flex # "original" or "flex" # default "flex"
+  themeVariant:  # choose theme variant "green", "gold" , "gray", "blue" (default)
+  ordersectionsby: weight # ordersectionsby: "title"
+  disableHomeIcon: false # default is false
+  disableSearch: false # default is false
+  disableNavChevron: false # set true to hide next/prev chevron, default is false
+  highlightClientSide: false # set true to use highlight.pack.js instead of the default hugo chroma highlighter
+  menushortcutsnewtab: false # set true to open shortcuts links to a new tab/window
+  enableGitInfo: true
+  Gitlab:
+    Version: {{GITLAB_VERSION}}
+
+outputs:
+  home: [ "HTML", "RSS", "JSON"]
+
+menu:
+  shortcuts:
+    - pre: "<h3>More</h3>"
+      name: "<i class='fa fa-github'></i> <label>Github repo</label>"
+      identifier: "ds"
+      url: {{DOCS_REPO}}
+      weight: 10
+
+    - name: "<i class='fa fa-gitlab'></i> <label>Gitlab Documentation</label>"
+      identifier: "gitlabdoc"
+      url: "https://about.gitlab.com/"
+      weight: 20
+
+    - name: "<i class='fa fa-gitlab'></i> <label>Gitlab Installation Guide</label>"
+      identifier: "gitlabinstall"
+      url: "https://about.gitlab.com/installation/"
+      weight: 30

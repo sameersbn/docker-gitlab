@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# download gitlab-pages
+echo "Downloading gitlab-pages ${GITLAB_PAGES_VERSION}..."
+git clone -q -b v${GITLAB_PAGES_VERSION} --depth 1 ${GITLAB_PAGES_URL} ${GITLAB_PAGES_BUILD}
+
+# install gitlab-pages
+make -C ${GITLAB_PAGES_BUILD}
+cp -a ${GITLAB_PAGES_BUILD}/gitlab-pages /usr/local/bin/

@@ -1,0 +1,53 @@
+ARG UBUNTU_VERSION=${UBUNTU_VERSION:-xenial}
+ARG BASE_IMAGE=${BASE_IMAGE:-ubuntu:${UBUNTU_VERSION}}
+
+FROM ${BASE_IMAGE} AS BASE
+ARG UBUNTU_VERSION
+ARG RUBY_VERSION
+ARG RUBY_HOME
+ARG PYTHON_VERSION
+ARG GITLAB_HOME
+ARG GITLAB_USER
+
+# Container Config
+ENV UBUNTU_VERSION=${UBUNTU_VERSION} \
+    RUBY_VERSION=${RUBY_VERSION} \
+    RUBY_HOME=${RUBY_HOME} \
+    PYTHON_VERSION=${PYTHON_VERSION} \
+    DEBIAN_FRONTEND=noninteractive \
+    GITLAB_HOME=${GITLAB_HOME} \
+    GITLAB_USER=${GITLAB_USER}
+
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y \
+        wget \
+        ca-certificates \
+        apt-transport-https && \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E6030699E45FA1715D88E1DF1F24 && \
+    echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu ${UBUNTU_VERSION} main" >> /etc/apt/sources.list && \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 80F70E11F0F0D5F10CB20E62F5DA5F09C3173AA6 && \
+    echo "deb http://ppa.launchpad.net/brightbox/ruby-ng/ubuntu ${UBUNTU_VERSION} main" >> /etc/apt/sources.list && \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 8B3981E7A6852F782CC4951600A6F0A3C300EE8C && \
+    echo "deb http://ppa.launchpad.net/nginx/stable/ubuntu ${UBUNTU_VERSION} main" >> /etc/apt/sources.list && \
+    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
+    echo "deb http://apt.postgresql.org/pub/repos/apt/ ${UBUNTU_VERSION}-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+    wget --quiet -O - https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
+    echo "deb https://deb.nodesource.com/node_8.x ${UBUNTU_VERSION} main" > /etc/apt/sources.list.d/nodesource.list && \
+    wget --quiet -O - https://dl.yarnpkg.com/debian/pubkey.gpg  | apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
+    apt-get update && \
+    apt-get install --no-install-recommends -y \
+        sudo supervisor logrotate locales curl \
+        nginx openssh-server mysql-client postgresql-client redis-tools \
+        git-core gnupg2 ruby${RUBY_VERSION} python${PYTHON_VERSION} python-docutils nodejs yarn gettext-base \
+        libmysqlclient20 libpq5 zlib1g libyaml-0-2 libssl1.0.0 \
+        libgdbm3 libreadline6 libncurses5 libffi6 \
+        libxml2 libxslt1.1 libcurl3 libicu55 libre2-dev tzdata unzip && \
+    update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX && \
+    locale-gen en_US.UTF-8 && \
+    dpkg-reconfigure locales && \
+    adduser --disabled-login --gecos 'GitLab' --home ${GITLAB_HOME} ${GITLAB_USER} && \
+    passwd -d ${GITLAB_USER} && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub && \
+    rm -rf /etc/nginx/sites-enabled/default

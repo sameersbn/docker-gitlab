@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+echo "Finalizing Permissions ..."
+mkdir -p ${GITLAB_DATA_DIR}
+mkdir -p ${GITLAB_LOG_DIR}
+chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}
+chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_HOME}
+chmod -R u+rwX ${GITLAB_HOME}/gitlab/tmp
+
+# Symlink ${GITLAB_HOME}/.ssh -> ${GITLAB_DATA_DIR}/.ssh
+rm -rf ${GITLAB_HOME}/.ssh
+exec_as_git ln -sf ${GITLAB_DATA_DIR}/.ssh ${GITLAB_HOME}/.ssh
+
+# symlink ${GITLAB_INSTALL_DIR}/log -> ${GITLAB_LOG_DIR}/gitlab
+rm -rf ${GITLAB_INSTALL_DIR}/log
+ln -sf ${GITLAB_LOG_DIR}/gitlab ${GITLAB_INSTALL_DIR}/log
+
+# symlink ${GITLAB_INSTALL_DIR}/public/uploads -> ${GITLAB_DATA_DIR}/uploads
+rm -rf ${GITLAB_INSTALL_DIR}/public/uploads
+exec_as_git ln -sf ${GITLAB_DATA_DIR}/uploads ${GITLAB_INSTALL_DIR}/public/uploads
+
+# symlink ${GITLAB_INSTALL_DIR}/.secret -> ${GITLAB_DATA_DIR}/.secret
+rm -rf ${GITLAB_INSTALL_DIR}/.secret
+exec_as_git ln -sf ${GITLAB_DATA_DIR}/.secret ${GITLAB_INSTALL_DIR}/.secret
+
+# install gitlab bootscript, to silence gitlab:check warnings
+cp ${GITLAB_INSTALL_DIR}/lib/support/init.d/gitlab /etc/init.d/gitlab
+chmod +x /etc/init.d/gitlab
+
+# configure sshd
+sed -i \
+  -e "s|^[#]*UsePAM yes|UsePAM no|" \
+  -e "s|^[#]*UsePrivilegeSeparation yes|UsePrivilegeSeparation no|" \
+  -e "s|^[#]*PasswordAuthentication yes|PasswordAuthentication no|" \
+  -e "s|^[#]*LogLevel INFO|LogLevel VERBOSE|" \
+  -e "s|^[#]*AuthorizedKeysFile.*|AuthorizedKeysFile %h/.ssh/authorized_keys %h/.ssh/authorized_keys_proxy|" \
+  /etc/ssh/sshd_config
+echo "UseDNS no" >> /etc/ssh/sshd_config
+
+
+# move nginx logs to ${GITLAB_LOG_DIR}/nginx
+sed -i \
+  -e "s|access_log /var/log/nginx/access.log;|access_log ${GITLAB_LOG_DIR}/nginx/access.log;|" \
+  -e "s|error_log /var/log/nginx/error.log;|error_log ${GITLAB_LOG_DIR}/nginx/error.log;|" \
+  /etc/nginx/nginx.conf
+
+# fix "unknown group 'syslog'" error preventing logrotate from functioning
+sed -i "s|^su root syslog$|su root root|" /etc/logrotate.conf
+
+# configure supervisord log rotation
+cat > /etc/logrotate.d/supervisord <<EOF
+${GITLAB_LOG_DIR}/supervisor/*.log {
+  weekly
+  missingok
+  rotate 52
+  compress
+  delaycompress
+  notifempty
+  copytruncate
+}
+EOF
+
+# configure gitlab log rotation
+cat > /etc/logrotate.d/gitlab <<EOF
+${GITLAB_LOG_DIR}/gitlab/*.log {
+  weekly
+  missingok
+  rotate 52
+  compress
+  delaycompress
+  notifempty
+  copytruncate
+}
+EOF
+
+# configure gitlab-shell log rotation
+cat > /etc/logrotate.d/gitlab-shell <<EOF
+${GITLAB_LOG_DIR}/gitlab-shell/*.log {
+  weekly
+  missingok
+  rotate 52
+  compress
+  delaycompress
+  notifempty
+  copytruncate
+}
+EOF
+
+# configure gitlab vhost log rotation
+cat > /etc/logrotate.d/gitlab-nginx <<EOF
+${GITLAB_LOG_DIR}/nginx/*.log {
+  weekly
+  missingok
+  rotate 52
+  compress
+  delaycompress
+  notifempty
+  copytruncate
+}
+EOF

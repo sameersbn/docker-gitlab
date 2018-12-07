@@ -1,32 +1,61 @@
 image: docker:18-git
 
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
 stages:
+  - base
+  - builder
   - build
+  - docs
 
 before_script:
-  - export VERSION=$(cat VERSION)
+  - apk add --update bash make
   - export CI_REGISTRY=${CI_REGISTRY:-hub.docker.com}
   - export CI_REGISTRY_USER=${CI_REGISTRY_USER:-gitlab-ci-token}
   - export CI_REGISTRY_PASS=${CI_REGISTRY_PASS:-${CI_JOB_TOKEN}}
-  - export DOCKER_IMAGE=${DOCKER_IMAGE:-${CI_REGISTRY}/${CI_PROJECT_PATH}}
-  - |
-    if [ "${DOCKER_IMAGE}" = "/" ]; then
-      export DOCKER_IMAGE=sameersbn/gitlab
-    fi
+  - export DOCKER_ARGS=${DOCKER_ARGS:-}
+  - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASS} ${CI_REGISTRY}
 
-docker:build:
+docker:base:
+  stage: base
+  only:
+    - schedules
+    - manual
+  script:
+    - export DOCKER_IMAGE=${CI_REGISTRY}/${CI_PROJECT_PATH}:base
+    - make base
+    - docker push ${DOCKER_IMAGE}
+
+docker:builder:
+  stage: builder
+  only:
+    - schedules
+    - manual
+  script:
+    - export DOCKER_IMAGE=${CI_REGISTRY}/${CI_PROJECT_PATH}:builder
+    - make builder
+    - docker push ${DOCKER_IMAGE}
+
+docker:build:quick:
   stage: build
   only:
+    - schedules
+    - manual
+  script:
+    - export DOCKER_IMAGE=${CI_REGISTRY}/${CI_PROJECT_PATH}
+    - make docker
+    - docker push ${DOCKER_IMAGE}
+
+docker:build:master:
+  stage: build
+  only:
+    - schedules
+    - manual
     - master
   script:
-    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASS} ${CI_REGISTRY}
-    - docker build
-      --pull
-      --cache-from=${DOCKER_IMAGE}
-      --build-arg=VCS_REF=$(git rev-parse --short HEAD)
-      --build-arg=BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"
-      --build-arg=VERSION=${VERSION}
-      --tag ${DOCKER_IMAGE} .
+    - export DOCKER_IMAGE=${CI_REGISTRY}/${CI_PROJECT_PATH}
+    - make all
     - docker push ${DOCKER_IMAGE}
 
 docker:build:branches:
@@ -36,27 +65,29 @@ docker:build:branches:
   except:
     - master
   script:
-    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASS} ${CI_REGISTRY}
-    - docker build
-      --pull
-      --cache-from=${DOCKER_IMAGE}:${CI_COMMIT_REF_SLUG}
-      --build-arg=VCS_REF=$(git rev-parse --short HEAD)
-      --build-arg=BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"
-      --build-arg=VERSION=${VERSION}
-      --tag ${DOCKER_IMAGE}:${CI_COMMIT_REF_SLUG} .
-    - docker push ${DOCKER_IMAGE}:${CI_COMMIT_REF_SLUG}
+    - export DOCKER_IMAGE=${CI_REGISTRY}/${CI_PROJECT_PATH}:${CI_COMMIT_REF_SLUG}
+    - make all
+    - docker push ${DOCKER_IMAGE}
 
 docker:build:release:
   stage: build
   only:
     - tags
   script:
-    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASS} ${CI_REGISTRY}
-    - docker build
-      --pull
-      --cache-from=${DOCKER_IMAGE}:${VERSION}
-      --build-arg=VCS_REF=$(git rev-parse --short HEAD)
-      --build-arg=BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"
-      --build-arg=VERSION=${VERSION}
-      --tag ${DOCKER_IMAGE}:${VERSION} .
-    - docker push ${DOCKER_IMAGE}:${VERSION}
+    - export DOCKER_IMAGE=${CI_REGISTRY}/${CI_PROJECT_PATH}:${CI_COMMIT_REF_NAME}
+    - make all
+    - docker push ${DOCKER_IMAGE}
+
+pages:
+  image: registry.gitlab.com/pages/hugo:latest
+  stage: docs
+  before_script:
+    - apk add --update bash make
+  script:
+    - make docs
+  artifacts:
+    paths:
+      - docs/public
+  only:
+    - master
+    - manual
