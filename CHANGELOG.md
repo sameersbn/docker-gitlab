@@ -8,20 +8,16 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 - Update build to multi-stage docker build
 - Updated build to use a base image
   - Allow nightly scheduled base image to speed up builds
-- Allow user to override base image
-- Updated build to use a builder image
-- Implemented Re-usage of builder image
-- Implemented global configuration
-- Allow user to override base,builder image with environment variables
-  for faster builds
+  - Allow nightly scheduled builder image to speed up build
+- Allow user to override base image for faster builds
+- Allow user to override builder image for faster builds
+- Implemented global configuration (config.yml)
 - Implemented new setup for quickstart/testing of image
 - Repository refactoring
-- Rewrite documentation for Pages
+- Rewrite documentation for Pages (Github & Gitlab)
 - Update format of CHANGELOG for pages generation
 - Renamed Changelog.md -> CHANGELOG.md for Gitlab compliancy
 - CI
-  - Docker Hook
-    - Update Docker hook to allow user arguments
   - Gitlab-CI
     - Update Gitlab-CI to build Pages
     - Update Gitlab-CI to allow user arguments
