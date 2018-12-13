@@ -35,12 +35,12 @@ To avoid user interaction in the restore operation, specify the timestamp, date 
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:{{< param "Gitlab.Version" >}} app:rake gitlab:backup:restore BACKUP=1417624827_2018_01_11_10.3.6
+    sameersbn/gitlab:{{< param "Gitlab.Version" >}} app:rake gitlab:backup:restore BACKUP=$EPOCH_YYYY_MM_DD_GitLab_version
 ```
 
 When using `docker-compose` you may use the following command to execute the restore.
 
 ```bash
 docker-compose run --rm gitlab app:rake gitlab:backup:restore # List available backups
-docker-compose run --rm gitlab app:rake gitlab:backup:restore BACKUP=1417624827_2018_01_11_10.3.6 # Choose to restore from 1417624827
+docker-compose run --rm gitlab app:rake gitlab:backup:restore BACKUP=$EPOCH_YYYY_MM_DD_GitLab_version
 ```

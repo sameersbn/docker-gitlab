@@ -9,13 +9,16 @@ tags = ["configuration", "database", "db", "postgresql", "postgres"]
 
 The image also supports using an external PostgreSQL Server. This is also controlled via environment variables.
 
+The database can be created with the following commands.
+
 ```sql
 CREATE ROLE gitlab with LOGIN CREATEDB PASSWORD 'password';
 CREATE DATABASE gitlabhq_production;
 GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
+CREATE EXTENSION pg_trgm;
 ```
 
-Additionally since GitLab `8.6.0` the `pg_trgm` extension should also be loaded for the `gitlabhq_production` database.
+{{%panel header="note" %}}Since GitLab `8.6.0` the `pg_trgm` extension must be loaded for the `gitlabhq_production` database.{{%/panel%}}
 
 We are now ready to start the GitLab application.
 

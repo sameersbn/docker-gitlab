@@ -35,6 +35,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
   - Fixes #1569 (Implemented pre / post config hook)
   - Fixes #1636 (LFS Uploads)
   - Fixes #1637 (LFS Uploads)
+  - Fixes #1695 (Update documentation)
   - Fixes #1768 (Container Timezone)
   - Fixes #1791 (Gitlab Pages Custom Domain Setup)
   - Fixes #1792 (Backup Subdirectory)

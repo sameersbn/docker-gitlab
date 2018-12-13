@@ -31,6 +31,11 @@ Or
 docker exec -it gitlab sudo -HEu git bundle exec rake gitlab:import:repos RAILS_ENV=production
 ```
 
+OR, if attached to the container
+ ```bash
+. /sbin/entrypoint.sh app:help
+```
+
 For a complete list of available rake tasks please refer https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks or the help section of your gitlab installation.
 
 *P.S. Please avoid running the rake tasks for backup and restore operations on a running gitlab instance.*
