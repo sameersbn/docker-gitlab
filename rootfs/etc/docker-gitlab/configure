@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Remove .gitkeep from /etc/docker-gitlab/init.*.d/
+rm /etc/docker-gitlab/init.pre.d/.gitkeep
+rm /etc/docker-gitlab/init.post.d/.gitkeep
+
 echo "Finalizing Permissions ..."
 mkdir -p ${GITLAB_DATA_DIR}
 mkdir -p ${GITLAB_LOG_DIR}

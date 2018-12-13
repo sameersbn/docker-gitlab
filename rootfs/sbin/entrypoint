@@ -13,11 +13,31 @@ case ${1} in
   ;;
   app:init|app:start|app:sanitize|app:rake)
 
+    # Run user init overrides (pre)
+    if [ -d "${GITLAB_RUNTIME_DIR}/init.pre.d" ]; then
+      echo "Loading user init overrides (pre)"
+      for f in $(find ${GITLAB_RUNTIME_DIR}/init.pre.d/ -type f); do
+        chmod +x ${f} || # Set execute bit in case user forgot it, continue if fails
+        echo "Loading ${f}"
+        source ${f} || continue # Continue on error
+      done
+    fi
+
     initialize_system
     configure_gitlab
     configure_gitlab_shell
     configure_gitlab_pages
     configure_nginx
+
+    # Run user init overrides (post)
+    if [ -d "${GITLAB_RUNTIME_DIR}/init.post.d" ]; then
+      echo "Loading user init overrides (post)"
+      for f in $(find ${GITLAB_RUNTIME_DIR}/init.post.d/ -type f); do
+        echo "Loading ${f}"
+        chmod +x ${f} || continue # Set execute bit in case user forgot it, continue if fails
+        source ${f} || continue # Continue on error
+      done
+    fi
 
     case ${1} in
       app:start)
