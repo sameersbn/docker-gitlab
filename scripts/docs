@@ -44,6 +44,9 @@ generate_docs_config() {
         CONTAINER_MAINTAINER
 }
 
+# Copy CHANGELOG -> docs
+cp ${PROJECT_DIR}/CHANGELOG.md ${PROJECT_DIR}/docs/content/changelog/
+
 case "$2" in
     build)
         generate_docs_config
