@@ -7,6 +7,7 @@ stages:
   - base
   - builder
   - build
+  - docs
 
 before_script:
   - apk add --update bash make
@@ -68,7 +69,7 @@ docker:build:release:
     - docker push ${DOCKER_IMAGE}
 
 pages:
-  stage: build
+  stage: docs
   image: registry.gitlab.com/pages/hugo:latest
   before_script:
     - apk add --update bash make sudo gettext
