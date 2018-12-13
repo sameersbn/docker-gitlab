@@ -1,5 +1,6 @@
 *.gem
 *.tar.gz
 docs/config.yml
+docs/content/changelog/CHANGELOG.md
 /docs/public/*
 !/docs/public/.gitkeep
