@@ -1,7 +1,7 @@
 +++
 title = "Getting Started"
 description = "Getting Started"
-weight = 2
+weight = 1
 category = ["getting started"]
 tags = ["getting started"]
 +++

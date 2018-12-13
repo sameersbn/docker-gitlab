@@ -26,7 +26,6 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
   - Circle-CI
     - TODO: Update Circle-CI to build Pages and deploy to github pages
 - Issues / Merge Requests
-  - Fixes #690  (Explain [Options])
   - Fixes #1636 (LFS Uploads)
   - Fixes #1637 (LFS Uploads)
   - Fixes #1768 (Container Timezone)

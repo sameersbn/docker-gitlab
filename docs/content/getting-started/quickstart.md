@@ -3,6 +3,7 @@ title = "Quickstart"
 description = "Quickstart"
 category = ["getting started"]
 tags = ["getting started", "installation", "prerequisites", "requirements"]
+weight = 4
 +++
 
 The quickest way to get started is using [docker-compose](https://docs.docker.com/compose/).
