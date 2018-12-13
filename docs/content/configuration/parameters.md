@@ -12,6 +12,7 @@ Below is the complete list of available options that can be used to customize yo
 | Parameter | Description |
 |-----------|-------------|
 | `DEBUG` | Set this to `true` to enable entrypoint debugging. |
+| `TZ` | Set the container timezone. Defaults to `UTC`. Values are expected to be in Canonical format. Example: `Europe/Amsterdam`  See the list of [acceptable values](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). For configuring the timezone of gitlab see variable `GITLAB_TIMEZONE`. |
 | `GITLAB_HOST` | The hostname of the GitLab server. Defaults to `localhost` |
 | `GITLAB_CI_HOST` | If you are migrating from GitLab CI use this parameter to configure the redirection to the GitLab service so that your existing runners continue to work without any changes. No defaults. |
 | `GITLAB_PORT` | The port of the GitLab server. This value indicates the public port on which the GitLab application will be accessible on the network and appropriately configures GitLab to generate the correct urls. It does not affect the port on which the internal nginx server will be listening on. Defaults to `443` if `GITLAB_HTTPS=true`, else defaults to `80`. |

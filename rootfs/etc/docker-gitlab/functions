@@ -1429,12 +1429,26 @@ generate_ssh_host_keys() {
   chmod 0644 ${GITLAB_DATA_DIR}/ssh/*.pub
 }
 
+configure_container_timezone() {
+  TIMEZONE=${TZ:-UTC}
+   # Preform sanity check of provided timezone value
+  if [ -e /usr/share/zoneinfo/${TIMEZONE} ]; then
+    # Configured timezone is available
+     # Set localtime
+    ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
+     # Set timezone
+    echo ${TIMEZONE} > /etc/timezone
+     echo "Container TimeZone -> ${TIMEZONE}"
+  fi
+}
+
 initialize_system() {
   map_uidgid
   initialize_logdir
   initialize_datadir
   update_ca_certificates
   generate_ssh_host_keys
+  configure_container_timezone
   install_configuration_templates
   rm -rf /var/run/supervisor.sock
 }
