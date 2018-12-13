@@ -186,6 +186,7 @@ LABEL \
     org.label-schema.vcs-url="${CONTAINER_VCS}" \
     org.label-schema.vcs-ref=${GIT_COMMIT} \
     org.label-schema.vcs-branch=${GIT_BRANCH} \
+    org.label-schema.vcs-type="git" \
     org.label-schema.license=MIT
 
 EXPOSE 22/tcp 80/tcp 443/tcp
