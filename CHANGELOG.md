@@ -15,6 +15,8 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 - Implemented new setup for quickstart/testing of image
 - Repository refactoring
 - Rewrite documentation for Pages (Github & Gitlab)
+  - Automatic documentation generation with [Hugo](https://gohugo.io/)
+  - Documentation uses the global configuration (config.yml) image version numbers are not automatically updated in documentation on new release
 - Update format of CHANGELOG for pages generation
 - Renamed Changelog.md -> CHANGELOG.md for Gitlab compliancy
 - CI
@@ -22,7 +24,15 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
     - Update Gitlab-CI to build Pages
     - Update Gitlab-CI to allow user arguments
   - Circle-CI
-    - Update Circle-CI to build Pages
+    - TODO: Update Circle-CI to build Pages and deploy to github pages
+- Issues / Merge Requests
+  - Fixes #1636 (LFS Uploads)
+  - Fixes #1637 (LFS Uploads)
+  - Fixes #1768 (Container Timezone)
+  - Fixes #1791 (Gitlab Pages Custom Domain Setup)
+  - Fixes #1792 (Backup Subdirectory)
+  - Fixes #1793 (Gitlab Pages Access Control)
+  - Fixes #1794 (Gitlab Pages Access Control)
 
 ## 11.5.3
 
