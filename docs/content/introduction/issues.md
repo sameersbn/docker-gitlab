@@ -1,6 +1,8 @@
 +++
 title = "Issues"
 description = "Issues"
+category = ["introduction"]
+tags = ["introduction", "issues"]
 +++
 
 Docker is a relatively new project and is active being developed and tested by a thriving community of developers and testers and every release of docker features many enhancements and bugfixes.

@@ -2,6 +2,8 @@
 title = "Creating Backups"
 description = "Creating backups"
 weight = 311
+category = ["maintenance", "backup"]
+tags = ["maintenance", "backup", "create"]
 +++
 
 GitLab defines a rake task to take a backup of your gitlab installation. The backup consists of all git repositories, uploaded files and as you might expect, the sql database.

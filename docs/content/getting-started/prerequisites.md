@@ -1,6 +1,8 @@
 +++
 title = "Prerequisites"
 description = "Prerequisites"
+category = ["getting started"]
+tags = ["getting started", "installation", "prerequisites", "requirements"]
 weight = 2
 +++
 

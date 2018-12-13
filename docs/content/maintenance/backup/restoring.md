@@ -2,6 +2,8 @@
 title = "Restoring Backups"
 description = "Restoring backups"
 weight = 312
+category = ["maintenance", "backup"]
+tags = ["maintenance", "backup", "restore", "restoring"]
 +++
 
 GitLab also defines a rake task to restore a backup.

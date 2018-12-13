@@ -1,6 +1,8 @@
 +++
 title = "Team"
 description = "Team"
+category = ["introduction"]
+tags = ["introduction", "team"]
 +++
 
 - Niclas Mietz ([solidnerd](https://github.com/solidnerd))

@@ -1,9 +1,9 @@
 ---
 # Documentation
 Docs:
-  Url: https://gjrtimmer.github.io/docker-gitlab/
-  Repo: https://github.com/GJRTimmer/docker-gitlab
-  Edit: https://github.com/GJRTimmer/docker-gitlab/edit/master/exampleSite/content/
+  Url: ${DOCS_URL:-https://gjrtimmer.github.io/docker-gitlab/}
+  Repo: ${DOCS_REPO:-https://github.com/GJRTimmer/docker-gitlab}
+  Edit: ${DOCS_EDIT:-https://github.com/GJRTimmer/docker-gitlab/edit/master/docs/content/}
 
 # Container Configuration
 Container:

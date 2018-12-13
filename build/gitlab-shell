@@ -9,7 +9,7 @@ tar xf ${GITLAB_BUILD}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2 --strip 1 -C
 rm -rf ${GITLAB_BUILD}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2
 chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_SHELL_INSTALL}
 
-cd ${GITLAB_SHELL_INSTALL}
+cd ${GITLAB_SHELL_INSTALL} || exit 1
 exec_as_git cp -a config.yml.example config.yml
 if [[ -x ./bin/compile ]]; then
   echo "Compiling gitlab-shell golang executables..."

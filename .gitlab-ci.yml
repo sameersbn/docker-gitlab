@@ -7,7 +7,6 @@ stages:
   - base
   - builder
   - build
-  - docs
 
 before_script:
   - apk add --update bash make
@@ -20,8 +19,8 @@ before_script:
 docker:base:
   stage: base
   only:
-    - schedules
-    - manual
+    changes:
+      - docker/Dockerfile.base
   script:
     - export DOCKER_IMAGE=${CI_REGISTRY}/${CI_PROJECT_PATH}:base
     - make base
@@ -30,21 +29,11 @@ docker:base:
 docker:builder:
   stage: builder
   only:
-    - schedules
-    - manual
+    changes:
+      - docker/Dockerfile.builder
   script:
     - export DOCKER_IMAGE=${CI_REGISTRY}/${CI_PROJECT_PATH}:builder
     - make builder
-    - docker push ${DOCKER_IMAGE}
-
-docker:build:quick:
-  stage: build
-  only:
-    - schedules
-    - manual
-  script:
-    - export DOCKER_IMAGE=${CI_REGISTRY}/${CI_PROJECT_PATH}
-    - make docker
     - docker push ${DOCKER_IMAGE}
 
 docker:build:master:
@@ -54,7 +43,7 @@ docker:build:master:
     - manual
     - master
   script:
-    - export DOCKER_IMAGE=${CI_REGISTRY}/${CI_PROJECT_PATH}
+    - export DOCKER_IMAGE=${CI_REGISTRY}/${CI_PROJECT_PATH}:latest
     - make all
     - docker push ${DOCKER_IMAGE}
 
@@ -79,15 +68,17 @@ docker:build:release:
     - docker push ${DOCKER_IMAGE}
 
 pages:
+  stage: build
   image: registry.gitlab.com/pages/hugo:latest
-  stage: docs
   before_script:
-    - apk add --update bash make
+    - apk add --update bash make sudo gettext
   script:
     - make docs
+    - cp -R docs/public/ public/
   artifacts:
     paths:
-      - docs/public
+      - public
   only:
     - master
     - manual
+    - schedules

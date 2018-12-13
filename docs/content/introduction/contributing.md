@@ -1,6 +1,8 @@
 +++
 title = "Contributing"
 description = "Contributing"
+category = ["introduction"]
+tags = ["introduction", "contributing"]
 +++
 
 If you find this image useful here's how you can help:

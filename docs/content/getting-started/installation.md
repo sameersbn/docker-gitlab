@@ -1,6 +1,8 @@
 +++
 title = "Installation"
 description = "Installation"
+category = ["getting started"]
+tags = ["getting started", "installation"]
 +++
 
 # Installation

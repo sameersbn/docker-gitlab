@@ -36,7 +36,7 @@ purge:
 	@docker logs -f gitlab-test
 
 .PHONY: docs
-docs-test:
+docs:
 	${SCRIPT_DIR}/docs ${PROJECT_DIR} build
 
 .PHONY: docs-server

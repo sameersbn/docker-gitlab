@@ -38,8 +38,10 @@ generate_docs_config() {
     cp ${PROJECT_DIR}/docs/config.template ${PROJECT_DIR}/docs/config.yml
     update_template ${PROJECT_DIR}/docs/config.yml \
         GITLAB_VERSION \
+        DOCS_URL \
         DOCS_REPO \
-        DOCS_EDIT
+        DOCS_EDIT \
+        CONTAINER_MAINTAINER
 }
 
 case "$2" in

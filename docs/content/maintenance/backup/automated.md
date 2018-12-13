@@ -2,6 +2,8 @@
 title = "Automated Backups"
 description = "Configure automated backups"
 weight = 314
+category = ["maintenance", "backup"]
+tags = ["maintenance", "backup", "automated"]
 +++
 
 The image can be configured to automatically take backups `daily`, `weekly` or `monthly` using the `GITLAB_BACKUP_SCHEDULE` configuration option.
