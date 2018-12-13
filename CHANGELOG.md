@@ -26,6 +26,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
   - Circle-CI
     - TODO: Update Circle-CI to build Pages and deploy to github pages
 - Issues / Merge Requests
+  - Add CRON=1 to backup cron command
   - Fixes #690  (Explain [Options])
   - Fixes #737  (Add guide on how to use docker host ssh daemon)
   - Fixes #738  (Implemented Labels from org.label-schema)
