@@ -16,7 +16,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 - Repository refactoring
 - Rewrite documentation for Pages (Github & Gitlab)
   - Automatic documentation generation with [Hugo](https://gohugo.io/)
-  - Documentation uses the global configuration (config.yml) image version numbers are not automatically updated in documentation on new release
+  - Documentation uses the global configuration (config.yml)
 - Update format of CHANGELOG for pages generation
 - Renamed Changelog.md -> CHANGELOG.md for Gitlab compliancy
 - CI
