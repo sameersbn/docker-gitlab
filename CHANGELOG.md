@@ -28,6 +28,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 - Issues / Merge Requests
   - Add CRON=1 to backup cron command
   - Fixes #690  (Explain [Options])
+  - Fixes #699  (LDAP Attributes)
   - Fixes #737  (Add guide on how to use docker host ssh daemon)
   - Fixes #738  (Implemented Labels from org.label-schema)
   - Fixes #1468 (Auto build script)
@@ -36,11 +37,13 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
   - Fixes #1636 (LFS Uploads)
   - Fixes #1637 (LFS Uploads)
   - Fixes #1695 (Update documentation)
+  - Fixes #1746 (LDAP Attributes)
   - Fixes #1768 (Container Timezone)
   - Fixes #1791 (Gitlab Pages Custom Domain Setup)
   - Fixes #1792 (Backup Subdirectory)
   - Fixes #1793 (Gitlab Pages Access Control)
   - Fixes #1794 (Gitlab Pages Access Control)
+  - Fixes #1814 (LDAP Attributes)
 
 ## 11.5.3
 
