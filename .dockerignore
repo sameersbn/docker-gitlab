@@ -1,6 +1,7 @@
 .git
 .gitignore
 .gitattributes
+docs/
 CHANGELOG.md
 CONTRIBUTING.md
 LICENSE
