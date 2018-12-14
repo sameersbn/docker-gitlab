@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 
-echo "Cloning gitlab-ce ${GITLAB_VERSION}..."
+# Set default gitlab edition, allow override from build-arg
+GITLAB_EDITION=${GITLAB_EDITION:-ce}
+
+# if we're using the enterprise edition suffix the version with -ee
+if [ "${GITLAB_EDITION}" = "ee" ]; then
+  GITLAB_VERSION="${GITLAB_VERSION}-ee"
+fi
+
+echo "Cloning gitlab-${GITLAB_EDITION} ${GITLAB_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_INSTALL_URL} ${GITLAB_INSTALL_DIR}
 
 # remove HSTS config from the default headers, we configure it in nginx

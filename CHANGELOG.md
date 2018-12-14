@@ -33,6 +33,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
   - Fixes #738  (Implemented Labels from org.label-schema)
   - Fixes #1468 (Auto build script)
   - Fixes #1472 (Backup restore documentation)
+  - Fixes #1477 (Add support for building enterprise edition)
   - Fixes #1569 (Implemented pre / post config hook)
   - Fixes #1636 (LFS Uploads)
   - Fixes #1637 (LFS Uploads)

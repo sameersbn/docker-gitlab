@@ -42,6 +42,7 @@ Build:
 
 # Gilab Configuration
 Gitlab:
+  Edition: ${GITLAB_EDITION:-ce}
   Version: 11.5.3
   Home: /home/git
   User: git
@@ -51,7 +52,7 @@ Gitlab:
   Logs: /var/log/gitlab
   Runtime: /etc/docker-gitlab
   Install:
-    Url: https://gitlab.com/gitlab-org/gitlab-ce.git
+    Url: https://gitlab.com/gitlab-org/gitlab-${GITLAB_EDITION}.git
     Dir: ${GITLAB_HOME}/gitlab
   Workhorse:
     Version: 7.1.3
