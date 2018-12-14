@@ -10,7 +10,7 @@ jobs:
           command: |
             find ./build -type f | xargs shellcheck -e SC2086 -e SC1090 --external-sources
             find ./rootfs/usr/ -type f | xargs shellcheck -e SC2086 -e SC1090 --external-sources
-            find ./rootfs/sbin/ -type f | xargs shellcheck -e SC2086 -e SC1090 --external-sources
+            find ./rootfs/sbin/ -type f | xargs shellcheck -e SC2086 -e SC1090 -e SC2044 --external-sources
             shellcheck -e SC2086 -e SC1090 --external-sources rootfs/etc/docker-gitlab/configure
             shellcheck -e SC2086 -e SC1090 --external-sources rootfs/etc/docker-gitlab/env-defaults
     
