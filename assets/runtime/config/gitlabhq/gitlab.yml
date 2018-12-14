@@ -401,7 +401,7 @@ production: &base
           # If no full name could be found at the attribute specified for `name`,
           # the full name is determined using the attributes specified for
           # `first_name` and `last_name`.
-          name:       'cn'
+          name:       '{{LDAP_NAME}}'
           first_name: 'givenName'
           last_name:  'sn'
 
