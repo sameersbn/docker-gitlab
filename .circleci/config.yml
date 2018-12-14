@@ -63,7 +63,7 @@ jobs:
       - run:
           name: Testing image
           command: |
-            docker run --network container:$(docker-compose -f ./docker/quickstart.yml ps -q gitlab-test) \
+            docker run --network container:$(DOCKER_IMAGE=${IMAGE_NAME} docker-compose -f ./docker/quickstart.yml ps -q gitlab-test) \
               appropriate/curl --retry 120 --retry-delay 15 --retry-connrefused http://localhost/explore
 
       - run:
