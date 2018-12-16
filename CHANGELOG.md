@@ -28,6 +28,10 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 - Issues / Merge Requests
   - Add CRON=1 to backup cron command
   - Do not send documentation to docker daemon
+  - Update Components
+    - Workhorse: 8.0.0
+    - Gitaly: 1.7.0
+    - Shell: 8.4.3
   - Fixes #690  (Explain [Options])
   - Fixes #699  (LDAP Attributes)
   - Fixes #737  (Add guide on how to use docker host ssh daemon)

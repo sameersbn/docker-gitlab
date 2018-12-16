@@ -55,7 +55,7 @@ Gitlab:
     Url: https://gitlab.com/gitlab-org/gitlab-${GITLAB_EDITION}.git
     Dir: ${GITLAB_HOME}/gitlab
   Workhorse:
-    Version: 7.1.3
+    Version: 8.0.0
     Url: https://gitlab.com/gitlab-org/gitlab-workhorse.git
     Build: /tmp/gitlab-workhorse
   Pages:
@@ -63,11 +63,11 @@ Gitlab:
     Url: https://gitlab.com/gitlab-org/gitlab-pages.git
     Build: /tmp/gitlab-pages
   Gitaly: 
-    Version: 0.125.1
+    Version: 1.7.0
     Url: https://gitlab.com/gitlab-org/gitaly.git
     Install: ${GITLAB_HOME}/gitaly
     Build: /tmp/gitaly
   Shell: 
-    Version: 8.4.1
+    Version: 8.4.3
     Url: https://gitlab.com/gitlab-org/gitlab-shell/-/archive/v${GITLAB_SHELL_VERSION}/gitlab-shell-v${GITLAB_SHELL_VERSION}.tar.bz2
     Install: ${GITLAB_HOME}/gitlab-shell
