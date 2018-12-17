@@ -13,6 +13,8 @@ Container:
   url: https://gitlab.timmertech.nl/docker/gitlab
   vcs: https://gitlab.timmertech.nl/docker/gitlab.git
 
+Debug: ${DEBUG:-false}
+
 Docker:
   Image: ${DOCKER_IMAGE:-gjrtimmer/gitlab}
   Base: ${DOCKER_BASE:-${DOCKER_IMAGE%%:*}:base}

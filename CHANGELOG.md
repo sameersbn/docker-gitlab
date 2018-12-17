@@ -28,6 +28,13 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 - Issues / Merge Requests
   - Add CRON=1 to backup cron command
   - Do not send documentation to docker daemon
+  - Update build scripts suppress
+    - Add variable `DEBUG`
+    - Suppress DEBUG logging by default
+    - Allow override of DEBUG variable from command line `DEBUG=true make docker`
+    - Suppress GIT Detached HEAD advice
+    - Add forced docker fail on failed command
+      - Added `|| exit 1` to non build commands
   - Formatted exec_as_git to 2 spaces ident
   - Fix `Makefile` target `logs`
   - Update Components

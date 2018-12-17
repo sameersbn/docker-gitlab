@@ -1,9 +1,25 @@
 #!/usr/bin/env bash
 
+DEBUG=${DEBUG:-false}
+
+if [ ${DEBUG,,} = "true" ] || [ ${DEBUG} = 1 ]; then
+  DEBUG=true
+  set -x
+fi
+
 # download gitlab-pages
 echo "Downloading gitlab-pages ${GITLAB_PAGES_VERSION}..."
-git clone -q -b v${GITLAB_PAGES_VERSION} --depth 1 ${GITLAB_PAGES_URL} ${GITLAB_PAGES_BUILD}
+if [ ${DEBUG} = true ]; then
+  exec_as_git git clone -q -b v${GITLAB_PAGES_VERSION} --depth 1 ${GITLAB_PAGES_URL} ${GITLAB_PAGES_BUILD} || exit 1
+else
+  exec_as_git git clone -q -b v${GITLAB_PAGES_VERSION} --depth 1 ${GITLAB_PAGES_URL} ${GITLAB_PAGES_BUILD} > /dev/null 2>&1 || exit 1
+fi
 
 # install gitlab-pages
-make -C ${GITLAB_PAGES_BUILD}
-cp -a ${GITLAB_PAGES_BUILD}/gitlab-pages /usr/local/bin/
+echo "Building gitlab-pages ${GITLAB_PAGES_VERSION}..."
+if [ ${DEBUG} = true ]; then
+  make -C ${GITLAB_PAGES_BUILD} || exit 1
+else
+  make -C ${GITLAB_PAGES_BUILD} > /dev/null 2>&1 || exit 1
+fi
+cp -a ${GITLAB_PAGES_BUILD}/gitlab-pages /usr/local/bin/ || exit 1

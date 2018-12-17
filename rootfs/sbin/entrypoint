@@ -4,7 +4,12 @@ set -o pipefail
 
 source "${GITLAB_RUNTIME_DIR}/functions"
 
-[[ $DEBUG == true ]] && set -x
+DEBUG=${DEBUG:-false}
+
+if [ ${DEBUG,,} = "true" ] || [ ${DEBUG} = 1 ]; then
+  DEBUG=true
+  set -x
+fi
 
 case ${1} in
   configure)

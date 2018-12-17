@@ -25,4 +25,5 @@ COPY rootfs/usr/local/bin/exec_as_git /usr/local/bin/exec_as_git
 
 RUN exec_as_git git config --global core.autocrlf input && \
     exec_as_git git config --global gc.auto 0 && \
-    exec_as_git git config --global repack.writeBitmaps true
+    exec_as_git git config --global repack.writeBitmaps true && \
+    exec_as_git git config --global advice.detachedHead false

@@ -1,19 +1,44 @@
 #!/usr/bin/env bash
 
+DEBUG=${DEBUG:-false}
+
+if [ ${DEBUG,,} = "true" ] || [ ${DEBUG} = 1 ]; then
+  DEBUG=true
+  set -x
+fi
+
 # install gitlab-shell
 echo "Downloading gitlab-shell ${GITLAB_SHELL_VERSION}..."
-mkdir -p ${GITLAB_BUILD}
-mkdir -p ${GITLAB_SHELL_INSTALL}
-wget -cq ${GITLAB_SHELL_URL} -O ${GITLAB_BUILD}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2
-tar xf ${GITLAB_BUILD}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2 --strip 1 -C ${GITLAB_SHELL_INSTALL}
-rm -rf ${GITLAB_BUILD}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2
-chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_SHELL_INSTALL}
+mkdir -p ${GITLAB_BUILD} || exit 1
+mkdir -p ${GITLAB_SHELL_INSTALL} || exit 1
+wget -cq ${GITLAB_SHELL_URL} -O ${GITLAB_BUILD}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2 || exit 1
+tar xf ${GITLAB_BUILD}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2 --strip 1 -C ${GITLAB_SHELL_INSTALL} || exit 1
+rm -rf ${GITLAB_BUILD}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2 || exit 1
+chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_SHELL_INSTALL} || exit 1
 
+echo "Building gitlab-shell ${GITLAB_SHELL_VERSION}..."
 cd ${GITLAB_SHELL_INSTALL} || exit 1
-exec_as_git cp -a config.yml.example config.yml
-if [[ -x ./bin/compile ]]; then
-  echo "Compiling gitlab-shell golang executables..."
-  ./bin/compile
-  rm -rf go_build
+
+if [ ${DEBUG} = true ]; then
+  # Show command output
+  exec_as_git cp -a config.yml.example config.yml || exit 1
+else
+  # Suppress output
+  exec_as_git cp -a config.yml.example config.yml > /dev/null 2>&1 || exit 1
 fi
-./bin/install
+
+if [[ -x ./bin/compile ]]; then
+  echo "Compiling gitlab-shell ${GITLAB_SHELL_VERSION}..."
+  if [ ${DEBUG} = true ]; then
+    ./bin/compile || exit 1
+  else
+    ./bin/compile > /dev/null 2>&1 || exit 1
+  fi
+  rm -rf go_build || exit 1
+fi
+
+if [ ${DEBUG} = true ]; then
+  ./bin/install || exit 1
+else
+  ./bin/install > /dev/null 2>&1 || exit 1
+fi

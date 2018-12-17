@@ -1,13 +1,32 @@
 #!/usr/bin/env bash
 
+DEBUG=${DEBUG:-false}
+
+if [ ${DEBUG,,} = "true" ] || [ ${DEBUG} = 1 ]; then
+  DEBUG=true
+  set -x
+fi
+
 # download and build gitaly
 echo "Downloading gitaly ${GITLAB_GITALY_VERSION}..."
-git clone -q -b v${GITLAB_GITALY_VERSION} --depth 1 ${GITLAB_GITALY_URL} ${GITLAB_GITALY_BUILD}
+if [ ${DEBUG} = true ]; then
+  exec_as_git git clone -q -b v${GITLAB_GITALY_VERSION} --depth 1 ${GITLAB_GITALY_URL} ${GITLAB_GITALY_BUILD} || exit 1
+else
+  exec_as_git git clone -q -b v${GITLAB_GITALY_VERSION} --depth 1 ${GITLAB_GITALY_URL} ${GITLAB_GITALY_BUILD} > /dev/null 2>&1 || exit 1
+fi
 
 # install gitaly
-make -C ${GITLAB_GITALY_BUILD} install
-mkdir -p ${GITLAB_GITALY_INSTALL}
-cp -a ${GITLAB_GITALY_BUILD}/ruby ${GITLAB_GITALY_INSTALL}/
-cp -a ${GITLAB_GITALY_BUILD}/config.toml.example ${GITLAB_GITALY_INSTALL}/config.toml
-rm -rf ${GITLAB_GITALY_INSTALL}/ruby/vendor/bundle/ruby/**/cache
-chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_GITALY_INSTALL}
+echo "Building gitlay ${GITLAB_GITALY_VERSION}..."
+if [ ${DEBUG} = true ]; then
+  make -C ${GITLAB_GITALY_BUILD} install || exit 1
+else
+  make -C ${GITLAB_GITALY_BUILD} install > /dev/null 2>&1 || exit 1
+fi
+
+mkdir -p ${GITLAB_GITALY_INSTALL} || exit 1
+cp -a ${GITLAB_GITALY_BUILD}/ruby ${GITLAB_GITALY_INSTALL}/ || exit 1
+cp -a ${GITLAB_GITALY_BUILD}/config.toml.example ${GITLAB_GITALY_INSTALL}/config.toml || exit 1
+rm -rf ${GITLAB_GITALY_INSTALL}/ruby/vendor/bundle/ruby/**/cache || exit 1
+
+echo "Applying Permissions..."
+chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_GITALY_INSTALL} || exit 1

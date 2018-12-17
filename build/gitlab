@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+DEBUG=${DEBUG:-false}
+
+if [ ${DEBUG,,} = "true" ] || [ ${DEBUG} = 1 ]; then
+  DEBUG=true
+  set -x
+fi
+
 # Set default gitlab edition, allow override from build-arg
 GITLAB_EDITION=${GITLAB_EDITION:-ce}
 
@@ -9,52 +16,73 @@ if [ "${GITLAB_EDITION}" = "ee" ]; then
 fi
 
 echo "Cloning gitlab-${GITLAB_EDITION} ${GITLAB_VERSION}..."
-exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_INSTALL_URL} ${GITLAB_INSTALL_DIR}
+if [ ${DEBUG} = true ]; then
+  exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_INSTALL_URL} ${GITLAB_INSTALL_DIR} || exit 1
+else
+  exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_INSTALL_URL} ${GITLAB_INSTALL_DIR} > /dev/null 2>&1 || exit 1
+fi
 
 # remove HSTS config from the default headers, we configure it in nginx
-exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
+exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb || exit 1
 
 # revert `rake gitlab:setup` changes from gitlabhq/gitlabhq@a54af831bae023770bf9b2633cc45ec0d5f5a66a
-exec_as_git sed -i 's/db:reset/db:setup/' ${GITLAB_INSTALL_DIR}/lib/tasks/gitlab/setup.rake
+exec_as_git sed -i 's/db:reset/db:setup/' ${GITLAB_INSTALL_DIR}/lib/tasks/gitlab/setup.rake || exit 1
 
 cd ${GITLAB_INSTALL_DIR} || exit 1
 
 # install gems, use local cache if available
 if [[ -d ${GITLAB_CACHE} ]]; then
-  mv ${GITLAB_CACHE} ${GITLAB_INSTALL_DIR}/vendor/cache
-  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_INSTALL_DIR}/vendor/cache
+  mv ${GITLAB_CACHE} ${GITLAB_INSTALL_DIR}/vendor/cache || exit 1
+  chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_INSTALL_DIR}/vendor/cache || exit 1
 fi
 
-exec_as_git bundle install -j"$(nproc)" --deployment --without development test aws
+echo "Building gitlab-${GITLAB_EDITION} ${GITLAB_VERSION}..."
+if [ ${DEBUG} = true ]; then
+  exec_as_git bundle install -j"$(nproc)" --deployment --without development test aws || exit 1
+else
+  exec_as_git bundle install -j"$(nproc)" --deployment --without development test aws > /dev/null 2>&1 || exit 1
+fi
 
 # make sure everything in ${GITLAB_HOME} is owned by ${GITLAB_USER} user
-chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_HOME}
+echo "Applying Permissions..."
+chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_HOME} || exit 1
 
 # gitlab.yml and database.yml are required for `assets:precompile`
-exec_as_git cp ${GITLAB_INSTALL_DIR}/config/resque.yml.example ${GITLAB_INSTALL_DIR}/config/resque.yml
-exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.mysql ${GITLAB_INSTALL_DIR}/config/database.yml
+exec_as_git cp ${GITLAB_INSTALL_DIR}/config/resque.yml.example ${GITLAB_INSTALL_DIR}/config/resque.yml || exit 1
+exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml || exit 1
+exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.mysql ${GITLAB_INSTALL_DIR}/config/database.yml || exit 1
 
 # Installs nodejs packages required to compile webpack
-exec_as_git yarn install --production --pure-lockfile
-exec_as_git yarn add ajv@^4.0.0
+echo "Installing nodejs packages..."
+if [ ${DEBUG} = true ]; then
+  exec_as_git yarn install --production --pure-lockfile || exit 1
+  exec_as_git yarn add ajv@^4.0.0 || exit 1
+else
+  exec_as_git yarn install --production --pure-lockfile > /dev/null 2>&1 || exit 1
+  exec_as_git yarn add ajv@^4.0.0 > /dev/null 2>&1 || exit 1
+fi
 
 echo "Compiling assets. Please be patient, this could take a while..."
-exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true
+if [ ${DEBUG} = true ]; then
+  exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true || exit 1
+else
+  exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true > /dev/null 2>&1 || exit 1
+fi
 
 # Remove auto generated secret.yml
-rm -f ${GITLAB_INSTALL_DIR}/config/secrets.yml
+rm -f ${GITLAB_INSTALL_DIR}/config/secrets.yml || exit 1
 
 # Remove gitlab-shell secrets
-rm -f ${GITLAB_INSTALL_DIR}/.gitlab_shell_secret 
+rm -f ${GITLAB_INSTALL_DIR}/.gitlab_shell_secret || exit 1
 
 # Remove Workhorse secrets
-rm -f ${GITLAB_INSTALL_DIR}/.gitlab_workhorse_secret
+rm -f ${GITLAB_INSTALL_DIR}/.gitlab_workhorse_secret || exit 1
 
 # Create temp directory
-exec_as_git mkdir -p ${GITLAB_INSTALL_DIR}/tmp/pids/ ${GITLAB_INSTALL_DIR}/tmp/sockets/
-chmod -R u+rwX ${GITLAB_INSTALL_DIR}/tmp
+echo "Applying Permissions"
+exec_as_git mkdir -p ${GITLAB_INSTALL_DIR}/tmp/pids/ ${GITLAB_INSTALL_DIR}/tmp/sockets/ || exit 1
+chmod -R u+rwX ${GITLAB_INSTALL_DIR}/tmp || exit 1
 
 # WORKAROUND for https://github.com/sameersbn/docker-gitlab/issues/509
-rm -rf ${GITLAB_INSTALL_DIR}/builds
-rm -rf ${GITLAB_INSTALL_DIR}/shared
+rm -rf ${GITLAB_INSTALL_DIR}/builds || exit 1
+rm -rf ${GITLAB_INSTALL_DIR}/shared || exit 1
