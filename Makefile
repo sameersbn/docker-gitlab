@@ -33,6 +33,7 @@ purge:
 	@${SCRIPT_DIR}/test ${PROJECT_DIR} purge
 
 .PHONY: logs
+logs:
 	@docker logs -f gitlab-test
 
 .PHONY: docs
