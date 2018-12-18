@@ -26,7 +26,7 @@ fi
 mkdir -p ${GITLAB_GITALY_INSTALL} || exit 1
 cp -a ${GITLAB_GITALY_BUILD}/ruby ${GITLAB_GITALY_INSTALL}/ || exit 1
 cp -a ${GITLAB_GITALY_BUILD}/config.toml.example ${GITLAB_GITALY_INSTALL}/config.toml || exit 1
-rm -rf ${GITLAB_GITALY_INSTALL}/ruby/vendor/bundle/ruby/**/cache || exit 1
+rm -rf ${GITLAB_GITALY_INSTALL}/ruby/vendor/bundle/ruby/*/cache || exit 1
 
 echo "Applying Permissions..."
 chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_GITALY_INSTALL} || exit 1

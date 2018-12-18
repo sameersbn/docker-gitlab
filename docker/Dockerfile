@@ -20,6 +20,7 @@ ENV DEBUG=${DEBUG} \
 
 RUN gem install --no-document bundler
 
+
 #-------------------------------------------------------------------------------
 # Image: Shell
 #
@@ -39,6 +40,7 @@ ENV DEBUG=${DEBUG} \
 COPY /build/gitlab-shell /
 RUN /gitlab-shell
 
+
 #-------------------------------------------------------------------------------
 # Image: Workhorse
 #
@@ -56,6 +58,7 @@ ENV DEBUG=${DEBUG} \
 COPY /build/gitlab-workhorse /
 RUN /gitlab-workhorse
 
+
 #-------------------------------------------------------------------------------
 # Image: Pages
 #
@@ -72,6 +75,7 @@ ENV DEBUG=${DEBUG} \
 
 COPY /build/gitlab-pages /
 RUN /gitlab-pages
+
 
 #-------------------------------------------------------------------------------
 # Image: Gitaly
@@ -93,6 +97,7 @@ ENV DEBUG=${DEBUG} \
 
 COPY /build/gitlab-gitaly /
 RUN /gitlab-gitaly
+
 
 #-------------------------------------------------------------------------------
 # Image: Gitlab
@@ -117,6 +122,7 @@ ENV DEBUG=${DEBUG} \
 COPY /build/gitlab /
 RUN /gitlab
 
+
 #-------------------------------------------------------------------------------
 # Image: Supervisor
 #
@@ -135,6 +141,49 @@ ENV GITLAB_LOG_DIR=${GITLAB_LOGS} \
 
 COPY build/supervisor /supervisor
 RUN /supervisor
+
+
+#-------------------------------------------------------------------------------
+# Image: Combine COPY statements into single layer
+#
+# Combined data layer will set chmod 775 to all files of gitlab
+# This will allow anyone including the GIT user to change the files
+# Required because the COPY --chown option does currently not support the usage
+# of a variable ${GITLAB_USER} only hardcoded values.
+# When this fixed this command can be removed and replaced by adding the COPY option
+# --chown to the final RUNTIME image.
+#
+# Please note current fix we save over 1.3GB of data on the layers.
+# When running the required chmod in the final image (RUNTIME), the layer of 1.3GB gets duplicated.
+#
+FROM ${DOCKER_BASE} AS GITLAB_RUNTIME
+ARG RUBY_HOME
+ARG GITLAB_SHELL_INSTALL
+ARG GITLAB_INSTALL_DIR
+ARG GITLAB_GITALY_INSTALL
+
+ENV RUBY_HOME=${RUBY_HOME} \
+    GITLAB_HOME=${GITLAB_HOME} \
+    GITLAB_INSTALL_DIR=${GITLAB_INSTALL_DIR} \
+    GITLAB_GITALY_INSTALL_DIR=${GITLAB_GITALY_INSTALL} \
+    GITLAB_SHELL_INSTALL_DIR=${GITLAB_SHELL_INSTALL}
+
+COPY --from=GITLAB_SHELL        ${GITLAB_SHELL_INSTALL_DIR}/    ${GITLAB_SHELL_INSTALL_DIR}/
+COPY --from=RUBY                ${RUBY_HOME}/bin/bundle*        ${GITLAB_HOME}/.bin/
+COPY --from=GITLAB_WORKHORSE    /usr/local/bin/gitlab*          ${GITLAB_HOME}/.bin/
+COPY --from=GITLAB_PAGES        /usr/local/bin/gitlab-pages     ${GITLAB_HOME}/.bin/
+COPY --from=GITLAB_GITALY       /usr/local/bin/gitaly*          ${GITLAB_HOME}/.bin/
+COPY --from=GITLAB_GITALY       ${GITLAB_GITALY_INSTALL_DIR}/   ${GITLAB_GITALY_INSTALL}/
+COPY --from=GITLAB_GITALY       ${RUBY_HOME}/                   ${RUBY_HOME}/
+COPY --from=GITLAB              ${RUBY_HOME}/                   ${RUBY_HOME}/
+COPY --from=GITLAB              ${GITLAB_INSTALL_DIR}/          ${GITLAB_INSTALL_DIR}/
+COPY --from=SUPERVISOR          /etc/supervisor/                ${GITLAB_HOME}/.supervisor/
+
+RUN rm -rf ${GITLAB_INSTALL_DIR}/.git && \
+    rm -rf ${GITLAB_INSTALL_DIR}/.github && \
+    rm -rf ${GITLAB_INSTALL_DIR}/.gitlab && \
+    chmod -R 777 ${GITLAB_HOME}
+
 
 #-------------------------------------------------------------------------------
 # Image: Runtime
@@ -166,9 +215,9 @@ ARG NODE_ENV
 ENV DEBUG=${DEBUG} \
     RAILS_ENV=${RAILS_ENV} \
     NODE_ENV=${NODE_ENV} \
+    RUBY_HOME=${RUBY_HOME} \
     GEM_HOME=${RUBY_HOME} \
     GEM_PATH=${RUBY_HOME} \
-    PATH=${RUBY_HOME}/bin:${PATH} \
     GITLAB_EDITION=${GITLAB_EDITION} \
     GITLAB_VERSION=${GITLAB_VERSION} \
     GITLAB_HOME=${GITLAB_HOME} \
@@ -179,17 +228,8 @@ ENV DEBUG=${DEBUG} \
     GITLAB_INSTALL_DIR=${GITLAB_INSTALL_DIR} \
     GITLAB_GITALY_INSTALL_DIR=${GITLAB_GITALY_INSTALL} \
     GITLAB_SHELL_INSTALL_DIR=${GITLAB_SHELL_INSTALL}
-    
-COPY --from=GITLAB_SHELL ${GITLAB_SHELL_INSTALL_DIR} ${GITLAB_SHELL_INSTALL_DIR}/
-COPY --from=GITLAB_WORKHORSE /usr/local/bin/gitlab* /usr/local/bin/
-COPY --from=GITLAB_PAGES /usr/local/bin/gitlab-pages /usr/local/bin/
-COPY --from=GITLAB_GITALY ${GITLAB_GITALY_INSTALL_DIR} ${GITLAB_GITALY_INSTALL}
-COPY --from=GITLAB_GITALY /usr/local/bin/gitaly* /usr/local/bin/
-COPY --from=RUBY ${RUBY_HOME} ${RUBY_HOME}/
-COPY --from=GITLAB_GITALY ${RUBY_HOME} ${RUBY_HOME} /
-COPY --from=GITLAB ${RUBY_HOME} ${RUBY_HOME}/
-COPY --from=GITLAB ${GITLAB_INSTALL_DIR} ${GITLAB_INSTALL_DIR}
-COPY --from=SUPERVISOR /etc/supervisor/ /etc/supervisor/
+
+COPY --from=GITLAB_RUNTIME ${GITLAB_HOME} ${GITLAB_HOME}
 
 COPY rootfs/ /
 RUN /sbin/entrypoint configure

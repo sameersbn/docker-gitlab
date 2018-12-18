@@ -21,7 +21,7 @@ RUN echo "Downloading Go ${GOLANG_VERSION}..." && \
     wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD}/ && \
     tar -xf ${GITLAB_BUILD}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
 
-COPY rootfs/usr/local/bin/exec_as_git /usr/local/bin/exec_as_git
+COPY rootfs/sbin/exec_as_git /sbin/exec_as_git
 
 RUN exec_as_git git config --global core.autocrlf input && \
     exec_as_git git config --global gc.auto 0 && \

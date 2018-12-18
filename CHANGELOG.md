@@ -6,6 +6,9 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 ## Repository Refactor
 
 - Update build to multi-stage docker build
+  - Layer compression due to multistage build
+  - TODO: Strip Gitlab of unnecessary files
+  - TODO: When COPY --chown option supports env / arg variables, update Dockerfile
 - Updated build to use a base image
   - Allow nightly scheduled base image to speed up builds
   - Allow nightly scheduled builder image to speed up build
@@ -19,13 +22,22 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
   - Documentation uses the global configuration (config.yml)
 - Update format of CHANGELOG for pages generation
 - Renamed Changelog.md -> CHANGELOG.md for Gitlab compliancy
+- Moved `exec_as_git` from function to script
+- Moved `exec_as_git` => /sbin because of symlinks / layer compression
+- Formatted exec_as_git to 2 spaces ident
 - CI
   - Gitlab-CI
     - Update Gitlab-CI to build Pages
     - Update Gitlab-CI to allow user arguments
   - Circle-CI
     - TODO: Update Circle-CI to build Pages and deploy to github pages
-- Issues / Merge Requests
+    - Switched to `docker_layer_caching: true` instead of manually saving layers
+    - Update image name
+    - Added support for build `tag`
+    - Add deploy to DockerHub
+      - Add CI-ENV: DOCKERHUB_USERNAME
+      - Add CI-ENV: DOCKERHUB_PASSWORD
+    - Deploy to Dockerhub is now optional based on presence of DOCKERHUB_* variables
   - Add CRON=1 to backup cron command
   - Do not send documentation to docker daemon
   - Update build scripts suppress
@@ -35,7 +47,6 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
     - Suppress GIT Detached HEAD advice
     - Add forced docker fail on failed command
       - Added `|| exit 1` to non build commands
-  - Formatted exec_as_git to 2 spaces ident
   - Fix `Makefile` target `logs`
   - Update Components
     - Workhorse: 8.0.0

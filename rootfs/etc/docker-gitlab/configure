@@ -1,35 +1,38 @@
 #!/usr/bin/env bash
 
 # Remove .gitkeep from /etc/docker-gitlab/init.*.d/
-rm /etc/docker-gitlab/init.pre.d/.gitkeep
-rm /etc/docker-gitlab/init.post.d/.gitkeep
+rm -f /etc/docker-gitlab/init.pre.d/.gitkeep || exit 1
+rm -f /etc/docker-gitlab/init.post.d/.gitkeep || exit 1
+
+# Fix Cron
+# set PATH (fixes cron job PATH issues)
+cat >> ${GITLAB_HOME}/.profile <<EOF
+export PATH=${RUBY_HOME}/bin:/usr/local/sbin:/usr/local/bin:\$PATH
+EOF
 
 echo "Finalizing Permissions ..."
-mkdir -p ${GITLAB_DATA_DIR}
-mkdir -p ${GITLAB_LOG_DIR}
-chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_DATA_DIR}
-chown -R ${GITLAB_USER}:${GITLAB_USER} ${GITLAB_HOME}
-chmod -R u+rwX ${GITLAB_HOME}/gitlab/tmp
+mkdir -p ${GITLAB_DATA_DIR} || exit 1
+mkdir -p ${GITLAB_LOG_DIR} || exit 1
 
 # Symlink ${GITLAB_HOME}/.ssh -> ${GITLAB_DATA_DIR}/.ssh
-rm -rf ${GITLAB_HOME}/.ssh
-exec_as_git ln -sf ${GITLAB_DATA_DIR}/.ssh ${GITLAB_HOME}/.ssh
+rm -rf ${GITLAB_HOME}/.ssh || exit 1
+exec_as_git ln -sf ${GITLAB_DATA_DIR}/.ssh ${GITLAB_HOME}/.ssh || exit 1
 
 # symlink ${GITLAB_INSTALL_DIR}/log -> ${GITLAB_LOG_DIR}/gitlab
-rm -rf ${GITLAB_INSTALL_DIR}/log
-ln -sf ${GITLAB_LOG_DIR}/gitlab ${GITLAB_INSTALL_DIR}/log
+rm -rf ${GITLAB_INSTALL_DIR}/log || exit 1
+ln -sf ${GITLAB_LOG_DIR}/gitlab ${GITLAB_INSTALL_DIR}/log || exit 1
 
 # symlink ${GITLAB_INSTALL_DIR}/public/uploads -> ${GITLAB_DATA_DIR}/uploads
-rm -rf ${GITLAB_INSTALL_DIR}/public/uploads
-exec_as_git ln -sf ${GITLAB_DATA_DIR}/uploads ${GITLAB_INSTALL_DIR}/public/uploads
+rm -rf ${GITLAB_INSTALL_DIR}/public/uploads || exit 1
+exec_as_git ln -sf ${GITLAB_DATA_DIR}/uploads ${GITLAB_INSTALL_DIR}/public/uploads || exit 1
 
 # symlink ${GITLAB_INSTALL_DIR}/.secret -> ${GITLAB_DATA_DIR}/.secret
-rm -rf ${GITLAB_INSTALL_DIR}/.secret
-exec_as_git ln -sf ${GITLAB_DATA_DIR}/.secret ${GITLAB_INSTALL_DIR}/.secret
+rm -rf ${GITLAB_INSTALL_DIR}/.secret || exit 1
+exec_as_git ln -sf ${GITLAB_DATA_DIR}/.secret ${GITLAB_INSTALL_DIR}/.secret || exit 1
 
 # install gitlab bootscript, to silence gitlab:check warnings
-cp ${GITLAB_INSTALL_DIR}/lib/support/init.d/gitlab /etc/init.d/gitlab
-chmod +x /etc/init.d/gitlab
+cp ${GITLAB_INSTALL_DIR}/lib/support/init.d/gitlab /etc/init.d/gitlab || exit 1
+chmod +x /etc/init.d/gitlab || exit 1
 
 # configure sshd
 sed -i \
@@ -102,3 +105,11 @@ ${GITLAB_LOG_DIR}/nginx/*.log {
   copytruncate
 }
 EOF
+
+# Link /usr/local/bin
+rm -rf /usr/local/bin || exit 1
+ln -sf ${GITLAB_HOME}/.bin /usr/local/bin || exit 1
+
+# Link Supervisor
+rm -rf /etc/supervisor || exit 1
+ln -sf ${GITLAB_HOME}/.supervisor /etc/supervisor || exit 1

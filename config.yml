@@ -16,7 +16,7 @@ Container:
 Debug: ${DEBUG:-false}
 
 Docker:
-  Image: ${DOCKER_IMAGE:-gjrtimmer/gitlab}
+  Image: ${DOCKER_IMAGE:-datacore/gitlab}
   Base: ${DOCKER_BASE:-${DOCKER_IMAGE%%:*}:base}
   Builder: ${DOCKER_BUILDER:-${DOCKER_IMAGE%%:*}:builder}
 

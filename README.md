@@ -2,7 +2,14 @@
 
 # Dockerized Gitlab
 
-This repository provides a Dockerized Gitlab environment with Gitlab CE (Community Edition).
+This repository provides a Dockerized Gitlab environment with Gitlab.
+
+* Supported Editions
+  * CE (Community Edition)
+  * EE (Enterprise Edition)
+
+Please note that the community edition is `default`.
+To build the enterprise edition, either change the global configuration or build the image with: `GITLAB_EDITION=ee make all`.
 
 This repository is forked from `sameersbn/docker-gitlab`.
 

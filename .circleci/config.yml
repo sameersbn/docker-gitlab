@@ -9,7 +9,6 @@ jobs:
           name: Check Scripts
           command: |
             find ./build -type f | xargs shellcheck -e SC2086 -e SC1090 --external-sources
-            find ./rootfs/usr/ -type f | xargs shellcheck -e SC2086 -e SC1090 --external-sources
             find ./rootfs/sbin/ -type f | xargs shellcheck -e SC2086 -e SC1090 -e SC2044 --external-sources
             shellcheck -e SC2086 -e SC1090 --external-sources rootfs/etc/docker-gitlab/configure
             shellcheck -e SC2086 -e SC1090 --external-sources rootfs/etc/docker-gitlab/env-defaults
@@ -18,13 +17,14 @@ jobs:
     docker:
       - image: circleci/golang:1-stretch-browsers-legacy
         environment:
-          IMAGE_NAME: "gjrtimmer/gitlab"
+          IMAGE_NAME: "datacore/gitlab"
 
     steps:
       - checkout
 
       - setup_remote_docker:
           version: 18.03.1-ce
+          docker_layer_caching: true
 
       - run:
           name: Docker info
@@ -51,32 +51,41 @@ jobs:
 
       - run:
           name: Build docker image
+          no_output_timeout: 1h
           command: |
             make all
 
       - run:
           name: Launching container for testing
           command: |
-            DOCKER_IMAGE=${IMAGE_NAME} docker-compose -f ./docker/quickstart.yml up -d
-            sleep 120
+            DOCKER_IMAGE=${IMAGE_NAME}:${TAG:-latest} docker-compose -f ./docker/quickstart.yml up -d
+            sleep 60
 
       - run:
           name: Testing image
           command: |
-            docker run --network container:$(DOCKER_IMAGE=${IMAGE_NAME} docker-compose -f ./docker/quickstart.yml ps -q gitlab-test) \
-              appropriate/curl --retry 120 --retry-delay 15 --retry-connrefused http://localhost/explore
+            docker run --network container:$(DOCKER_IMAGE=${IMAGE_NAME}:${TAG:-latest} docker-compose -f ./docker/quickstart.yml ps -q gitlab-test) \
+              appropriate/curl --retry 240 --retry-delay 10 --retry-connrefused http://localhost/explore
 
       - run:
           name: Teardown
           command: |
-            DOCKER_IMAGE=${IMAGE_NAME} docker-compose -f ./docker/quickstart.yml down
+            DOCKER_IMAGE=${IMAGE_NAME}:${TAG:-latest} docker-compose -f ./docker/quickstart.yml down
+
+      - run:
+          name: Deploy to DockerHub
+          command: |
+            if [ -n "${DOCKERHUB_USERNAME}" ] && [ -n "${DOCKERHUB_PASSWORD}" ]; then
+              echo ${DOCKERHUB_PASSWORD} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
+              docker push ${IMAGE_NAME}:${TAG:-latest}
+            fi
 
       - run:
           name: Generate docker build image cache
           command: |
             mkdir -p /tmp/cache/
             docker save -o /tmp/cache/layers.tar ${IMAGE_NAME}
-
+            
       - save_cache:
           key: cache-v2-{{ .Branch }}
           paths:

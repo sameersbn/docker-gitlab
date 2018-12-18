@@ -15,7 +15,7 @@ before_script:
   - export CI_REGISTRY_USER=${CI_REGISTRY_USER:-gitlab-ci-token}
   - export CI_REGISTRY_PASS=${CI_REGISTRY_PASS:-${CI_JOB_TOKEN}}
   - export DOCKER_ARGS=${DOCKER_ARGS:-}
-  - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASS} ${CI_REGISTRY}
+  - echo ${CI_REGISTRY_PASS} | docker login -u ${CI_REGISTRY_USER} --password-stdin ${CI_REGISTRY}
 
 docker:base:
   stage: base
