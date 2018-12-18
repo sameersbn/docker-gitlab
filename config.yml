@@ -45,7 +45,7 @@ Build:
 # Gilab Configuration
 Gitlab:
   Edition: ${GITLAB_EDITION:-ce}
-  Version: 11.5.3
+  Version: 11.5.4
   Home: /home/git
   User: git
   Build: /build
@@ -65,11 +65,11 @@ Gitlab:
     Url: https://gitlab.com/gitlab-org/gitlab-pages.git
     Build: /tmp/gitlab-pages
   Gitaly: 
-    Version: 1.7.0
+    Version: 1.9.0
     Url: https://gitlab.com/gitlab-org/gitaly.git
     Install: ${GITLAB_HOME}/gitaly
     Build: /tmp/gitaly
   Shell: 
-    Version: 8.4.3
+    Version: 8.4.4
     Url: https://gitlab.com/gitlab-org/gitlab-shell/-/archive/v${GITLAB_SHELL_VERSION}/gitlab-shell-v${GITLAB_SHELL_VERSION}.tar.bz2
     Install: ${GITLAB_HOME}/gitlab-shell

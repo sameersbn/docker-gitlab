@@ -21,6 +21,11 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
   - Automatic documentation generation with [Hugo](https://gohugo.io/)
   - Documentation uses the global configuration (config.yml)
 - Update format of CHANGELOG for pages generation
+- Update Components
+  - Gitlab: 11.5.4
+  - Workhorse: 8.0.0
+  - Gitaly: 1.9.0
+  - Shell: 8.4.4
 - Renamed Changelog.md -> CHANGELOG.md for Gitlab compliancy
 - Moved `exec_as_git` from function to script
 - Moved `exec_as_git` => /sbin because of symlinks / layer compression
@@ -38,20 +43,17 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
       - Add CI-ENV: DOCKERHUB_USERNAME
       - Add CI-ENV: DOCKERHUB_PASSWORD
     - Deploy to Dockerhub is now optional based on presence of DOCKERHUB_* variables
-  - Add CRON=1 to backup cron command
-  - Do not send documentation to docker daemon
-  - Update build scripts suppress
-    - Add variable `DEBUG`
-    - Suppress DEBUG logging by default
-    - Allow override of DEBUG variable from command line `DEBUG=true make docker`
-    - Suppress GIT Detached HEAD advice
-    - Add forced docker fail on failed command
-      - Added `|| exit 1` to non build commands
-  - Fix `Makefile` target `logs`
-  - Update Components
-    - Workhorse: 8.0.0
-    - Gitaly: 1.7.0
-    - Shell: 8.4.3
+- Add CRON=1 to backup cron command
+- Do not send documentation to docker daemon
+- Update build scripts suppress
+  - Add variable `DEBUG`
+  - Suppress DEBUG logging by default
+  - Allow override of DEBUG variable from command line `DEBUG=true make docker`
+  - Suppress GIT Detached HEAD advice
+  - Add forced docker fail on failed command
+    - Added `|| exit 1` to non build commands
+- Fix `Makefile` target `logs`
+- Issues / Merge Requests
   - Fixes #690  (Explain [Options])
   - Fixes #699  (LDAP Attributes)
   - Fixes #737  (Add guide on how to use docker host ssh daemon)
