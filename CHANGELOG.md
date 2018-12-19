@@ -43,6 +43,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
       - Add CI-ENV: DOCKERHUB_USERNAME
       - Add CI-ENV: DOCKERHUB_PASSWORD
     - Deploy to Dockerhub is now optional based on presence of DOCKERHUB_* variables
+    - Only deploy master and tags to DockerHub
 - Add CRON=1 to backup cron command
 - Do not send documentation to docker daemon
 - Update build scripts suppress

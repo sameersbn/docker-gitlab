@@ -6,12 +6,17 @@ FILE="$2"
 # Load Environment
 source ${PROJECT_DIR}/scripts/env
 
-# Build docker base image
+# Build docker
+TAG=${CIRCLE_TAG:-${TAG}}
 TAG=${TAG:-latest}
 DOCKER_TAG=${DOCKER_TAG:-${TAG}}
 
+if [ "${DOCKER_TAG}" != "latest" ]; then
+    export DOCKER_IMAGE=${DOCKER_IMAGE}:${DOCKER_TAG}
+fi
+
 if [ $(basename ${FILE}) == "Dockerfile.base" ]; then
-    if [ -n ${DOCKER_IMAGE} ]; then
+    if [ -n "${DOCKER_IMAGE}" ]; then
         export DOCKER_IMAGE=${DOCKER_BASE:-${DOCKER_IMAGE}:${DOCKER_TAG}}
     else
         export DOCKER_IMAGE=${DOCKER_BASE:-${DOCKER_IMAGE}:base}
@@ -19,7 +24,7 @@ if [ $(basename ${FILE}) == "Dockerfile.base" ]; then
 fi
 
 if [ $(basename ${FILE}) == "Dockerfile.builder" ]; then
-    if [ -n ${DOCKER_IMAGE} ]; then
+    if [ -n "${DOCKER_IMAGE}" ]; then
         export DOCKER_IMAGE=${DOCKER_BUILDER:-${DOCKER_IMAGE}:${DOCKER_TAG}}
     else
         export DOCKER_IMAGE=${DOCKER_BUILDER:-${DOCKER_IMAGE}:builder}

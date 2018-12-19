@@ -19,6 +19,8 @@ jobs:
         environment:
           IMAGE_NAME: "datacore/gitlab"
 
+    environment:
+      CACHE_VERSION: v3
     steps:
       - checkout
 
@@ -34,7 +36,7 @@ jobs:
 
       - restore_cache:
           keys:
-            - cache-v2-{{ .Branch }}
+            - cache-${CACHE_VERSION}-{{ .Branch }}
           paths:
             - /tmp/cache/layers.tar
 
@@ -58,27 +60,19 @@ jobs:
       - run:
           name: Launching container for testing
           command: |
-            DOCKER_IMAGE=${IMAGE_NAME}:${TAG:-latest} docker-compose -f ./docker/quickstart.yml up -d
+            DOCKER_IMAGE=${IMAGE_NAME}:${CIRCLE_TAG:-latest} docker-compose -f ./docker/quickstart.yml up -d
             sleep 60
 
       - run:
           name: Testing image
           command: |
-            docker run --network container:$(DOCKER_IMAGE=${IMAGE_NAME}:${TAG:-latest} docker-compose -f ./docker/quickstart.yml ps -q gitlab-test) \
+            docker run --network container:$(DOCKER_IMAGE=${IMAGE_NAME}:${CIRCLE_TAG:-latest} docker-compose -f ./docker/quickstart.yml ps -q gitlab-test) \
               appropriate/curl --retry 240 --retry-delay 10 --retry-connrefused http://localhost/explore
 
       - run:
           name: Teardown
           command: |
-            DOCKER_IMAGE=${IMAGE_NAME}:${TAG:-latest} docker-compose -f ./docker/quickstart.yml down
-
-      - run:
-          name: Deploy to DockerHub
-          command: |
-            if [ -n "${DOCKERHUB_USERNAME}" ] && [ -n "${DOCKERHUB_PASSWORD}" ]; then
-              echo ${DOCKERHUB_PASSWORD} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
-              docker push ${IMAGE_NAME}:${TAG:-latest}
-            fi
+            DOCKER_IMAGE=${IMAGE_NAME}:${CIRCLE_TAG:-latest} docker-compose -f ./docker/quickstart.yml down
 
       - run:
           name: Generate docker build image cache
@@ -87,13 +81,30 @@ jobs:
             docker save -o /tmp/cache/layers.tar ${IMAGE_NAME}
             
       - save_cache:
-          key: cache-v2-{{ .Branch }}
+          key: cache-${CACHE_VERSION}-{{ .Branch }}
           paths:
             - /tmp/cache/layers.tar
+
+      - run:
+          name: Deploy to DockerHub
+          command: |
+            CIRCLE_TAG=${CIRCLE_TAG:-latest}
+            if [ "${CIRCLE_BRANCH}" = "master" ] || [ "${CIRCLE_TAG}" != "latest" ]; then
+              if [ -n "${DOCKERHUB_USERNAME}" ] && [ -n "${DOCKERHUB_PASSWORD}" ]; then
+                echo ${DOCKERHUB_PASSWORD} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
+                docker push ${IMAGE_NAME}:${CIRCLE_TAG:-latest}
+              fi
+            fi
 
 workflows:
   version: 2
   build-and-test:
     jobs:
-      - shellcheck
-      - build
+      - shellcheck:
+          filters:
+            tags:
+              only: /.*/
+      - build:
+          filters:
+            tags:
+              only: /.*/
