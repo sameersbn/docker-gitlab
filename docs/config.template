@@ -35,6 +35,11 @@ outputs:
 
 menu:
   shortcuts:
+    - name: "<i class='fa fa-circle-thin'></i> <label>Circle-CI</label>"
+      identifier: "circleci"
+      url: "https://circleci.com/gh/GJRTimmer/docker-gitlab/tree/master"
+      weight: 5
+
     - pre: "<h3>More</h3>"
       name: "<i class='fa fa-github'></i> <label>Github repo</label>"
       identifier: "ds"

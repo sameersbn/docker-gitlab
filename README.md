@@ -1,4 +1,5 @@
 [![pipeline status](https://gitlab.timmertech.nl/docker/gitlab/badges/master/pipeline.svg)](https://gitlab.timmertech.nl/docker/gitlab/commits/master)
+[![CircleCI](https://circleci.com/gh/GJRTimmer/docker-gitlab/tree/master.svg?style=svg)](https://circleci.com/gh/GJRTimmer/docker-gitlab/tree/master)
 
 # Dockerized Gitlab
 
