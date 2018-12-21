@@ -21,10 +21,10 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
   - Automatic documentation generation with [Hugo](https://gohugo.io/)
   - Documentation uses the global configuration (config.yml)
 - Update format of CHANGELOG for pages generation
-- Update Components
-  - Gitlab: 11.5.4
+- Upgrade Gitlab: 11.5.5
+- Upgrade Components
   - Workhorse: 8.0.0
-  - Gitaly: 1.9.0
+  - Gitaly: 1.10.0
   - Shell: 8.4.4
 - Renamed Changelog.md -> CHANGELOG.md for Gitlab compliancy
 - Moved `exec_as_git` from function to script
@@ -73,6 +73,20 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
   - Fixes #1793 (Gitlab Pages Access Control)
   - Fixes #1794 (Gitlab Pages Access Control)
   - Fixes #1814 (LDAP Attributes)
+
+## 11.5.5
+
+- Upgrade Gitlab: 11.5.5
+- Upgrade Components
+  - Gitlay: 1.10.0
+
+## 11.5.4
+
+- Upgrade Gitlab: 11.5.4
+- Upgrade Components
+  - Workhorse: 8.0.0
+  - Gitaly: 1.9.0
+  - Shell: 8.4.4
 
 ## 11.5.3
 
