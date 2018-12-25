@@ -19,8 +19,6 @@ jobs:
         environment:
           IMAGE_NAME: "datacore/gitlab"
 
-    environment:
-      CACHE_VERSION: v4
     steps:
       - checkout
 
@@ -36,7 +34,7 @@ jobs:
 
       - restore_cache:
           keys:
-            - cache-${CACHE_VERSION}-{{ .Branch }}
+            - cache-v11.6.0-{{ .Branch }}
           paths:
             - /tmp/cache/layers.tar
 
@@ -81,7 +79,7 @@ jobs:
             docker save -o /tmp/cache/layers.tar ${IMAGE_NAME}
             
       - save_cache:
-          key: cache-${CACHE_VERSION}-{{ .Branch }}
+          key: cache-v11.6.0-{{ .Branch }}
           paths:
             - /tmp/cache/layers.tar
 
