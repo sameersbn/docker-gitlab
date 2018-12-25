@@ -1,8 +1,8 @@
 .git
 .gitignore
 .gitattributes
+.gitlab-ci.yml
 docs/
 CHANGELOG.md
-CONTRIBUTING.md
 LICENSE
 README.md

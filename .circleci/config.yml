@@ -20,7 +20,7 @@ jobs:
           IMAGE_NAME: "datacore/gitlab"
 
     environment:
-      CACHE_VERSION: v3
+      CACHE_VERSION: v4
     steps:
       - checkout
 
