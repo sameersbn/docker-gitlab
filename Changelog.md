@@ -5,6 +5,10 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 
 **11.6.0**
 - gitlab: upgrade CE to v11.6.0
+- Update gitaly to 1.7.1
+- Update gitlab-shell to 8.4.3
+- Update gitlab-workhorse to 7.6.0
+- Update golang to 1.11.4
 
 **11.5.5**
 - gitlab: upgrade CE to v11.5.5
