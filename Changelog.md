@@ -9,6 +9,14 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 - Update gitlab-shell to 8.4.3
 - Update gitlab-workhorse to 7.6.0
 - Update golang to 1.11.4
+- Added `LDAP_USER_ATTRIBUTE_USERNAME`
+- Added `LDAP_USER_ATTRIBUTE_MAIL`
+- Added `LDAP_USER_ATTRIBUTE_NAME`
+- Added `LDAP_USER_ATTRIBUTE_FIRSTNAME`
+- Added `LDAP_USER_ATTRIBUTE_LASTNAME`
+- Added `GITLAB_BACKUP_DIR_CHOWN`
+- Added `GITLAB_BACKUP_DIR_GROUP`
+- Added `GITLAB_PAGES_NGINX_PROXY`
 
 **11.5.5**
 - gitlab: upgrade CE to v11.5.5
