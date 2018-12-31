@@ -118,6 +118,9 @@ production: &base
     # The default is 'shared/cache/archive/' relative to the root of the Rails app.
     repository_downloads_path: {{GITLAB_DOWNLOADS_DIR}}
 
+    ## Impersonation settings
+    impersonation_enabled: {{GITLAB_IMPERSONATION_ENABLED}}
+
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
   # For documentation on how to set this up, see http://doc.gitlab.com/ce/administration/reply_by_email.html
