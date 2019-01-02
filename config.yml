@@ -45,7 +45,7 @@ Build:
 # Gilab Configuration
 Gitlab:
   Edition: ${GITLAB_EDITION:-ce}
-  Version: 11.6.0
+  Version: 11.6.1
   Home: /home/git
   User: git
   Build: /build
