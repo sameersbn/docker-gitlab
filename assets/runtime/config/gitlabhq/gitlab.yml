@@ -158,7 +158,7 @@ production: &base
     object_store:
       enabled: {{GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED}}
       remote_directory: {{GITLAB_ARTIFACTS_OBJECT_STORE_REMOTE_DIRECTORY}} # The bucket name
-      direct_upload: {{GITLAB_ARTIFACTS_OBJECT_STORE_DIRECT_UPLOAD}} # Set to true to enable direct upload of Artifacts without the need of local shared storage. 
+      direct_upload: {{GITLAB_ARTIFACTS_OBJECT_STORE_DIRECT_UPLOAD}} # Set to true to enable direct upload of Artifacts without the need of local shared storage.
       background_upload: {{GITLAB_ARTIFACTS_OBJECT_STORE_BACKGROUND_UPLOAD}} # Temporary option to limit automatic upload (Default: true)
       proxy_download: {{GITLAB_ARTIFACTS_OBJECT_STORE_PROXY_DOWNLOAD}} # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
@@ -516,6 +516,7 @@ production: &base
                   attribute_statements: {
                     first_name: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME}}'],
                     last_name: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME}}'],
+                    username: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME}}'],
                     name: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME}}'],
                     email: ['{{OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL}}'] },
                   name_identifier_format: '{{OAUTH_SAML_NAME_IDENTIFIER_FORMAT}}' } }

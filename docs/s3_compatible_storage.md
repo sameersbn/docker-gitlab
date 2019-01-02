@@ -184,6 +184,7 @@ services:
     - OAUTH_SAML_EXTERNAL_GROUPS=
     - OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL=
     - OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME=
     - OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME=
     - OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME=
     - OAUTH_CROWD_SERVER_URL=
@@ -236,4 +237,3 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 docker run --name gitlab -it --rm [OPTIONS] \
     sameersbn/gitlab:8.16.4 app:rake gitlab:backup:restore BACKUP=1417624827
 ```
-
