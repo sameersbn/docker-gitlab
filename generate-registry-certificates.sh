@@ -10,7 +10,7 @@ echo "Registry internal certificates will be generated in directory: $DIRECTORY"
 # Make certs directory if it doesn't exists
 mkdir -p $DIRECTORY
 # Go to the temporary directory
-cd $DIRECTORY
+cd $DIRECTORY || exit
 # Get key filename
 KEY_FILENAME=$(basename $GITLAB_REGISTRY_KEY_PATH)
 echo "Registry internal key filename: $KEY_FILENAME"
