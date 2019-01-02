@@ -59,9 +59,7 @@ RUN bash ${GITLAB_BUILD_DIR}/install.sh
 
 COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/
 COPY entrypoint.sh /sbin/entrypoint.sh
-COPY generate-registry-certificates.sh /sbin/generate-registry-certificates.sh
 RUN chmod 755 /sbin/entrypoint.sh
-RUN chmod 755 /sbin/generate-registry-certificates.sh
 
 LABEL \
     maintainer="sameer@damagehead.com" \
