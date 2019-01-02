@@ -52,7 +52,7 @@ services:
       - default
   gitlab:
     restart: always
-    image: sameersbn/gitlab:10.4.2-1
+    image: sameersbn/gitlab:11.3.0
     depends_on:
     - redis
     - postgresql
@@ -200,6 +200,8 @@ services:
     - OAUTH_AZURE_API_KEY=
     - OAUTH_AZURE_API_SECRET=
     - OAUTH_AZURE_TENANT_ID=
+
+    -RACK_ATTACK_ENABLED=false
 
 volumes:
   gitlab-redis:
