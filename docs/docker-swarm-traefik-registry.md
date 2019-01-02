@@ -33,7 +33,7 @@ apt-get upgrade -y
 # Download Docker
 curl -fsSL get.docker.com -o get-docker.sh
 # Install Docker
-sh get-docker.sh
+CHANNEL=stable sh get-docker.sh
 # Remove Docker install script
 rm get-docker.sh
 ```
@@ -124,15 +124,102 @@ docker swarm join-token worker
 docker swarm join --token SWMTKN-1-5tl7ya98erd9qtasdfml4lqbosbhfqv3asdf4p13-dzw6ugasdfk0arn0 172.173.174.175:2377
 ```
 
-## Traefik
+## Clone this repository
 
-Set up a main load balancer with Traefik that handles the public connections and Let's encrypt HTTPS certificates.
-
-* Create a network that will be shared with Traefik and the containers that should be accessible from the outside, with:
+* Create a directory to clone this repository, for example:
 
 ```bash
-docker network create --driver=overlay traefik-public
+mkdir /root/code
 ```
+
+* Go to that directory:
+
+```bash
+cd /root/code
+```
+
+* Clone this repository there:
+
+```bash
+git clone https://github.com/sameersbn/docker-gitlab.git
+```
+
+* Enter into the directory for this repository:
+
+```bash
+cd /root/code/docker-gitlab
+```
+
+
+## Edit files
+
+* Using a text editor, modify the file `.env`.
+
+For example, using `nano`:
+
+```bash
+nano .env
+```
+
+It contains something like:
+
+```
+GITLAB_HOST=git.example.com
+REGISTRY_HOST=registry.example.com
+TRAEFIK_HOST=traefik.example.com
+TRAEFIK_USERNAME_PASSWORD=
+```
+
+* Update `GITLAB_HOST` to the domain where you want to access GitLab with your browser and Git.
+* Update `REGISTRY_HOST` to the domain where you want to have the Docker Registry.
+    * E.g. if your `REGISTRY_HOST` is `registry.example.com`, at some point you would use Docker commands like:
+
+```bash
+docker pull registry.example.com/mygroup/myproject/imagename:sometag
+```
+
+* Update `TRAEFIK_HOST` to be the domain where you want to access the Traefik web user interface. You would rarely access it, but it might be useful to debug the deployment if anything goes wrong.
+
+
+## Traefik HTTP Basic Auth
+
+* To secure Traefik with HTTP Basic authentication, create a variable `TRAEFIK_USERNAME`, for example:
+
+```bash
+export TRAEFIK_USERNAME=admin
+```
+
+* Also create a password:
+
+```bash
+export TRAEFIK_PASSWORD=changethis
+```
+
+* Use `openssl` to generate the "hashed" version of the password and store it in an environment variable:
+
+```bash
+export $TRAEFIK_HASHED_PASSWORD=$(openssl passwd -apr1 $TRAEFIK_PASSWORD)
+```
+
+* Create an environment variable with the username and password in "`htpasswd`" format:
+
+```bash
+export TRAEFIK_USERNAME_PASSWORD=$TRAEFIK_USERNAME:$TRAEFIK_HASHED_PASSWORD
+```
+
+* You can check the contents with:
+
+```bash
+echo $TRAEFIK_USERNAME_PASSWORD
+```
+
+It will look like:
+
+```
+admin:$apr1$89eqM5Ro$CxaFELthUKV21DpI3UTQO.
+```
+
+## Traefik
 
 * Create an environment variable with your email, to be used for the generation of Let's Encrypt certificates:
 
@@ -140,72 +227,18 @@ docker network create --driver=overlay traefik-public
 export EMAIL=admin@example.com
 ```
 
-* Create a Traefik service:
+* Deploy Traefik using the included stack file, it will use the environment variables created above and the ones in the file `.env`:
 
 ```bash
-docker service create \
-    --name traefik \
-    --constraint=node.role==manager \
-    --publish 80:80 \
-    --publish 8080:8080 \
-    --publish 443:443 \
-    --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
-    --mount type=volume,source=traefik-public-certificates,target=/certificates \
-    --network traefik-public \
-    traefik:v1.5 \
-    --docker \
-    --docker.swarmmode \
-    --docker.watch \
-    --docker.exposedbydefault=false \
-    --constraints=tag==traefik-public \
-    --entrypoints='Name:http Address::80' \
-    --entrypoints='Name:https Address::443 TLS' \
-    --acme \
-    --acme.email=$EMAIL \
-    --acme.storage=/certificates/acme.json \
-    --acme.entryPoint=https \
-    --acme.httpChallenge.entryPoint=http\
-    --acme.onhostrule=true \
-    --acme.acmelogging=true \
-    --logLevel=DEBUG \
-    --accessLog \
-    --web
+docker stack --compose-file docker-compose.traefik.stack.yml traefik
 ```
-
-The previous command explained:
-
-* `docker service create`: create a Docker Swarm mode service
-* `--name traefik`: name the service "traefik"
-* `--constraint=node.role==manager` make it run on a Swarm Manager node
-* `--publish 80:80`: listen on ports 80 - HTTP
-* `--publish 8080:8080`: listen on port 8080 - HTTP for Traefik web UI
-* `--publish 443:443`: listen on port 443 - HTTPS
-* `--mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock`: communicate with Docker, to read labels, etc.
-* `--mount type=volume,source=traefik-public-certificates,target=/certificates`: create a volume to store TLS certificates
-* `--network traefik-public`: listen to the specific network traefik-public
-* `traefik`: use the image traefik:latest
-* `--docker`: enable Docker
-* `--docker.swarmmode`: enable Docker Swarm Mode
-* `--docker.watch`: enable "watch", so it reloads its config based on new stacks and labels
-* `--docker.exposedbydefault=false`: don't expose all the services, only services with traefik.enable=true
-* `--constraints=tag==traefik-public`: only show services with traefik.tag=traefik-public, to isolate from possible intra-stack traefik instances
-* `--entrypoints='Name:http Address::80'`: create an entrypoint http, on port 80
-* `--entrypoints='Name:https Address::443 TLS'`: create an entrypoint https, on port 443 with TLS enabled
-* `--acme`: enable Let's encrypt
-* `--acme.email=$EMAIL`: let's encrypt email, using the environment variable
-* `--acme.storage=/certificates/acme.json`: where to store the Let's encrypt TLS certificates - in the mapped volume
-* `--acme.entryPoint=https`: the entrypoint for Let's encrypt - created above
-* `--acme.onhostrule=true`: get new certificates automatically with host rules: "traefik.frontend.rule=Host:web.example.com"
-* `--acme.acmelogging=true`: log Let's encrypt activity - to debug when and if it gets certificates
-* `--logLevel=DEBUG`: log everything, to debug configurations and config reloads
-* `--web`: enable the web UI, at port 8080
 
 To check if it worked, check the logs:
 
 ```bash
-docker service logs traefik
+docker service logs traefik_traefik
 # To make it scrollable with `less`, run:
-# docker service logs traefik | less
+# docker service logs traefik_traefik | less
 ```
 
 ## Deploy GitLab
@@ -214,46 +247,20 @@ docker service logs traefik
 
 Open the file `docker-compose.swarm-stack.yml` and modify the variables that you need to configure.
 
+You can do it in the command line with a program like `nano`, e.g.:
+
+```bash
+nano docker-compose.swarm-stack.yml
+```
+
 Read the [main README](https://github.com/sameersbn/docker-gitlab) for all the options.
 
-For Registry specific options and details, check the previous [GitLab Registry documentation](https://github.com/sameersbn/docker-gitlab/blob/master/docs/container_registry.md).
-
-Make sure you modify the following sections:
-
-* Modify `git.example.com` to point to the domain for your GitLab:
-
-```yaml
-REGISTRY_AUTH_TOKEN_REALM=https://git.example.com/jwt/auth
-```
-
-* Modify the Traefik label rule, change the `registry.example.com` to the domain for your Registry:
-
-```yaml
-- "traefik.frontend.rule=Host:registry.example.com"
-```
-
-* Modify the Traefik label rule, change the `- "git.example.com"` to the domain for your GitLab:
-
-```yaml
-- "traefik.frontend.rule=Host:git.example.com"
-```
-
-* Set `GITLAB_REGISTRY_HOST` to the domain of your Registry:
-
-```yaml
-- GITLAB_REGISTRY_HOST=registry.example.com
-```
+For Registry specific options and details, check the main [GitLab Registry documentation in this repo](https://github.com/sameersbn/docker-gitlab/blob/master/docs/container_registry.md).
 
 * If you want anyone to sign up instead of only people with invitation, change `GITLAB_SIGNUP_ENABLED` to `true`:
 
 ```yaml
 - GITLAB_SIGNUP_ENABLED=false
-```
-
-* Set `GITLAB_HOST` to the domain for your GitLab:
-
-```yaml
-- GITLAB_HOST=git.example.com
 ```
 
 * For the sections that require generating random strings for keys and passwords, each time, run the following command and copy the output:
@@ -293,7 +300,7 @@ openssl rand -hex 32
 
 ### Deploy the stack
 
-After finishing editing the Docker Compose file, copy it to your remote server, e.g.:
+If you modified the file locally, make sure you copy it to your remote server, e.g.:
 
 ```bash
 scp -P 2222 docker-compose.swarm-stack.yml root@172.173.174.175:/root/
@@ -308,7 +315,7 @@ ssh -p 2222 root@172.173.174.175
 Deploy your stack with something like:
 
 ```bash
-docker stack deploy -c docker-compose.swarm-stack.yml my-gitlab-stack
+docker stack deploy --compose-file docker-compose.swarm-stack.yml my-gitlab-stack
 ```
 
 ### Technical details
@@ -339,7 +346,7 @@ volumes:
 
 If you followed the Traefik section above, you would have a main Traefik proxy listening on the HTTP and HTTPS ports (`80` and `443`) that also handles HTTPS TLS (SSL) certificate generation via Let's Encrypt.
 
-For it to work, your stack needs to have access to the previous external network you created.
+For it to work, your stack needs to have access to the same network.
 
 This section tells Docker that this stack should have access to that `traefik-public` network:
 
@@ -384,7 +391,7 @@ Here's one of those sections with comments explaining what each label does:
 
 as this will go in a Docker Swarm mode cluster, the `labels` need to be *inside* `deploy`, not at the same level.
 
-Appart from the service labels, the services that should be able to communicate with, and reachable by, the main Traefik (`registry` and `gitlab`), are connected to the `traefik-public` network in a section in the service like:
+Apart from the service labels, the services that should be able to communicate with, and reachable by, the main Traefik (`registry` and `gitlab`), are connected to the `traefik-public` network in a section in the service like:
 
 ```yaml
     networks:
@@ -400,7 +407,7 @@ As in the fragment above we are overriding the `networks` section to add `traefi
 
 #### Internal certificates
 
-GitLab and the Docker Registry have public facing HTTPS certificates generated with Let's encrypt for each one. But to communicate between themselves they use an additional self-signed certificate.
+GitLab and the Docker Registry have public facing HTTPS certificates generated with Let's Encrypt for each one. But to communicate between themselves they use an additional self-signed certificate.
 
 To tell GitLab to generate those self-signed certificates for the internal communication with GitLab, the `gitlab` service has an environment variable:
 
@@ -432,7 +439,7 @@ And the Registry also has that named volume mounted:
       - gitlab-certs:/certs
 ```
 
-And the Registry is configured to look for the certificate in that same location, that GitLab used to generate the certificate:
+And the Registry is configured to look for the certificate in that same location that GitLab used to generate the certificate:
 
 ```yaml
 - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/certs/registry.crt
@@ -442,61 +449,9 @@ And the Registry is configured to look for the certificate in that same location
 
 If you use GitLab and want to integrate Continuous Integration / Continuous Deployment, you can follow this section to install the GitLab runner.
 
-There is a sub-section with how to install it in Docker Swarm mode and one in Docker standalone mode. You can set up the GitLab Runner in a different server or even a different Docker Swarm cluster.
-
-
-### Create the GitLab Runner in Docker Swarm mode
-
-To install a GitLab runner in Docker Swarm mode run:
-
-```bash
-docker service create \
-    --name gitlab-runner \
-    --constraint 'node.role==manager' \
-    --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
-    --mount src=gitlab-runner-config,dst=/etc/gitlab-runner \
-    gitlab/gitlab-runner:latest
-```
-
-After that, check in which node the service is running with:
-
-```bash
-docker service ps gitlab-runner
-```
-
-You will get an output like:
-
-```
-root@dog:~/code# docker service ps gitlab-runner
-ID                  NAME                IMAGE                         NODE                DESIRED STATE       CURRENT STATE            ERROR               PORTS
-eybbh93ll0iw        gitlab-runner.1     gitlab/gitlab-runner:latest   cat.example.com     Running             Running 33 seconds ago
-```
-
-Then SSH to the node running it (in the example above it would be `cat.example.com`), e.g.:
-
-```bash
-ssh root@cat.example.com
-```
-
-In that node, run a `docker exec` command to register it, use auto-completion ( with `tab` ) for it to fill the name of the container, e.g.:
-
-```bash
-docker exec -it gitlab-ru
-```
-
-...and then hit `tab`.
-
-Complete the command with the [GitLab Runner registration setup](https://docs.gitlab.com/runner/register/index.html#docker), e.g.:
-
-```bash
-docker exec -it gitlab-runner.1.eybbh93lasdfvvnasdfh7 bash
-```
-
-Continue below in the seciton **Install the GitLab Runner**.
+You should create the runner using Docker standalone instead of in Docker Swarm mode, as you need the configurations to persist, and in Docker Swarm mode, the container could be deployed to a different server and you would loose those configurations.
 
 ### Create the GitLab Runner in Docker standalone mode
-
-You might want to run a GitLab runner in Docker standalone, for example, run the tests in a standalone server and deploy in a Docker Swarm mode cluster. 
 
 To install a GitLab runner in a standalone Docker run:
 
@@ -514,8 +469,6 @@ Then, enter into that container:
 ```bash
 docker exec -it gitlab-runner bash
 ```
-
-Continue below in the seciton **Install the GitLab Runner**.
 
 ### Install the GitLab Runner
 
@@ -550,4 +503,4 @@ gitlab-runner \
 
 ## Notes
 
-This guide was heavily inspired by and based on [this other guide, on creating full stack projects and deploying them in a cluster equivalent to the one created here, with GitLab CI](https://github.com/senseta-os/senseta-base-project/blob/master/docker-swarm-cluster-deploy.md).
+This guide was heavily inspired by and based on [this other guide: Docker Swarm Mode and Traefik for an HTTPS cluster](https://github.com/tiangolo/medium-posts/tree/master/docker-swarm-mode-and-traefik-for-a-https-cluster).

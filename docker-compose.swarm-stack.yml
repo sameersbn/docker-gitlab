@@ -30,14 +30,14 @@ services:
     environment:
       - REGISTRY_LOG_LEVEL=info
       - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/registry
-      - REGISTRY_AUTH_TOKEN_REALM=https://git.example.com/jwt/auth
+      - REGISTRY_AUTH_TOKEN_REALM=https://${GITLAB_HOST:-git.example.com}/jwt/auth
       - REGISTRY_AUTH_TOKEN_SERVICE=container_registry
       - REGISTRY_AUTH_TOKEN_ISSUER=gitlab-issuer
       - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/certs/registry.crt
       - REGISTRY_STORAGE_DELETE_ENABLED=true
     deploy:
       labels:
-        - "traefik.frontend.rule=Host:registry.example.com"
+        - "traefik.frontend.rule=Host:${REGISTRY_HOST:-registry.example.com}"
         - "traefik.enable=true"
         - "traefik.port=5000"
         - "traefik.tags=traefik-public"
@@ -63,9 +63,9 @@ services:
     - gitlab-certs:/certs
     deploy:
       labels:
-        - "traefik.frontend.rule=Host:git.example.com"
+        - "traefik.frontend.rule=Host:${GITLAB_HOST:-git.example.com}"
         - "traefik.enable=true"
-        - "traefik.port=80"
+        - "traefik.port=8181"
         - "traefik.tags=traefik-public"
         - "traefik.docker.network=traefik-public"
         # Traefik service that listens to HTTP
@@ -80,7 +80,7 @@ services:
     - DEBUG=false
 
     - GITLAB_REGISTRY_ENABLED=true
-    - GITLAB_REGISTRY_HOST=registry.example.com
+    - GITLAB_REGISTRY_HOST=${REGISTRY_HOST:-registry.example.com}
     - GITLAB_REGISTRY_PORT=443
     - GITLAB_REGISTRY_API_URL=http://registry:5000
     - GITLAB_REGISTRY_KEY_PATH=/certs/registry.key
@@ -102,7 +102,7 @@ services:
     - GITLAB_HTTPS=true
     - SSL_SELF_SIGNED=false
 
-    - GITLAB_HOST=git.example.com
+    - GITLAB_HOST=${GITLAB_HOST:-git.example.com}
     - GITLAB_PORT=443
     - GITLAB_SSH_PORT=22
     - GITLAB_RELATIVE_URL_ROOT=
@@ -116,9 +116,9 @@ services:
     - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
     - GITLAB_NOTIFY_PUSHER=false
 
-    - GITLAB_EMAIL=notifications@git.example.com
-    - GITLAB_EMAIL_REPLY_TO=noreply@git.example.com
-    - GITLAB_INCOMING_EMAIL_ADDRESS=reply@git.example.com
+    - GITLAB_EMAIL=notifications@${GITLAB_HOST:-git.example.com}
+    - GITLAB_EMAIL_REPLY_TO=noreply@${GITLAB_HOST:-git.example.com}
+    - GITLAB_INCOMING_EMAIL_ADDRESS=reply@${GITLAB_HOST:-git.example.com}
 
     - GITLAB_BACKUP_SCHEDULE=daily
     - GITLAB_BACKUP_TIME=01:00
@@ -201,7 +201,7 @@ services:
     - OAUTH_AZURE_API_SECRET=
     - OAUTH_AZURE_TENANT_ID=
 
-    -RACK_ATTACK_ENABLED=false
+    - RACK_ATTACK_ENABLED=false
 
 volumes:
   gitlab-redis:

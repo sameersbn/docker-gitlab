@@ -1,0 +1,51 @@
+version: '3'
+services:
+  traefik:
+    image: traefik:v1.7
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - "traefik.frontend.rule=Host:${TRAEFIK_HOST:-traefik.example.com}" \
+        - "traefik.enable=true" \
+        - "traefik.port=8080" \
+        - "traefik.tags=traefik-public" \
+        - "traefik.docker.network=traefik-public" \
+        - "traefik.redirectorservice.frontend.entryPoints=http" \
+        - "traefik.redirectorservice.frontend.redirect.entryPoint=https" \
+        - "traefik.webservice.frontend.entryPoints=https" \
+        - "traefik.frontend.auth.basic=$TRAEFIK_USERNAME_PASSWORD" \
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - traefik-public-certificates:/certificates
+    networks:
+      - traefik-public
+    command: >
+      --docker
+      --docker.swarmmode
+      --docker.watch
+      --docker.exposedbydefault=false
+      --constraints=tag==traefik-public
+      --entrypoints='Name:http Address::80'
+      --entrypoints='Name:https Address::443 TLS'
+      --acme
+      --acme.email=$EMAIL
+      --acme.storage=/certificates/acme.json
+      --acme.entryPoint=https
+      --acme.httpChallenge.entryPoint=http
+      --acme.onhostrule=true
+      --acme.acmelogging=true
+      --logLevel=INFO
+      --accessLog
+      --api
+
+volumes:
+  traefik-public-certificates:
+
+networks:
+  traefik-public:
+    name: traefik-public
