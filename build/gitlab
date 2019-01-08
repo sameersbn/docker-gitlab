@@ -64,9 +64,9 @@ fi
 
 echo "Compiling assets. Please be patient, this could take a while..."
 if [ ${DEBUG} = true ]; then
-  exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true || exit 1
+  exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true NODE_OPTIONS="--max-old-space-size=4096" || exit 1
 else
-  exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true > /dev/null 2>&1 || exit 1
+  exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true NODE_OPTIONS="--max-old-space-size=4096" > /dev/null 2>&1 || exit 1
 fi
 
 # Remove auto generated secret.yml

@@ -31,7 +31,7 @@ Python:
   Version: 2.7
 
 Golang:
-  Version: 1.10.5
+  Version: 1.11.4
 
 Rails:
   Env: production
@@ -45,7 +45,7 @@ Build:
 # Gilab Configuration
 Gitlab:
   Edition: ${GITLAB_EDITION:-ce}
-  Version: 11.6.1
+  Version: 11.6.2
   Home: /home/git
   User: git
   Build: /build

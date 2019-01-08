@@ -18,7 +18,7 @@ ENV DEBUG=${DEBUG} \
     NODE_ENV=${NODE_ENV} \
     PATH=${RUBY_HOME}/bin:${PATH}
 
-RUN gem install --no-document bundler
+RUN gem install --no-document bundler -v 1.17.3
 
 
 #-------------------------------------------------------------------------------
