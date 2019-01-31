@@ -37,6 +37,17 @@ case ${1} in
         shift 1
         execute_raketask "$@"
         ;;
+      app:restore)
+        /usr/bin/supervisord -nc /etc/supervisor/supervisord.conf &
+        SUPERVISOR_PID=$!
+        /usr/bin/supervisorctl stop sidekiq unicorn gitlab-workhorse cron nginx sshd
+        execute_raketask gitlab:backup:restore "$@"
+        kill -15 $SUPERVISOR_PID
+        if ps h -p $SUPERVISOR_PID > /dev/null ; then
+        wait $SUPERVISOR_PID || true
+        fi
+        rm -rf /var/run/supervisor.sock
+        ;;
     esac
     ;;
   app:help)
@@ -47,6 +58,7 @@ case ${1} in
     echo " app:rake <task>  - Execute a rake task."
     echo " app:help         - Displays the help"
     echo " [command]        - Execute the specified command, eg. bash."
+    echo " app:restore      - Restore a backup of gitlab server."
     ;;
   *)
     exec "$@"

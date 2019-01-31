@@ -1128,6 +1128,7 @@ Below is the complete list of available options that can be used to customize yo
 | `AWS_BACKUP_ENDPOINT` | AWS endpoint. No defaults. |
 | `AWS_BACKUP_ACCESS_KEY_ID` | AWS access key id. No defaults. |
 | `AWS_BACKUP_SECRET_ACCESS_KEY` | AWS secret access key. No defaults. |
+| `AWS_BACKUP_USE_IAM_PROFILE` | Use IAM profile for uploading backups to S3 bucket. Defaults to `false`. |
 | `AWS_BACKUP_BUCKET` | AWS bucket for backup uploads. No defaults. |
 | `AWS_BACKUP_MULTIPART_CHUNK_SIZE` | Enables mulitpart uploads when file size reaches a defined size. See at [AWS S3 Docs](http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html) |
 | `AWS_BACKUP_ENCRYPTION`     | Turns on AWS Server-Side Encryption.  Defaults to `false`. See at [AWS S3 Docs](http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingServerSideEncryption.html) |
@@ -1206,7 +1207,7 @@ Execute the rake task to restore a backup. Make sure you run the container in in
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:11.7.0 app:rake gitlab:backup:restore
+    sameersbn/gitlab:11.7.0 app:restore
 ```
 
 The list of all available backups will be displayed in reverse chronological order. Select the backup you want to restore and continue.
@@ -1215,14 +1216,14 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:11.7.0 app:rake gitlab:backup:restore BACKUP=1417624827
+    sameersbn/gitlab:11.7.0 app:restore BACKUP=1417624827
 ```
 
 When using `docker-compose` you may use the following command to execute the restore.
 
 ```bash
-docker-compose run --rm gitlab app:rake gitlab:backup:restore # List available backups
-docker-compose run --rm gitlab app:rake gitlab:backup:restore BACKUP=1417624827 # Choose to restore from 1417624827
+docker-compose run --rm gitlab app:restore # List available backups
+docker-compose run --rm gitlab app:restore BACKUP=1417624827 # Choose to restore from 1417624827
 ```
 
 ## Host Key Backups (ssh)
