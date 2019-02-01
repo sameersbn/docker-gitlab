@@ -7,6 +7,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 - gitlab: upgrade CE to v11.7.3
 - Update gitlab-workhorse to 8.1.1
 - Update gitaly to 1.13.0
+- Update gitlab-pages to 1.4.0
 
 **11.7.0**
 - gitlab: upgrade CE to v11.7.0
