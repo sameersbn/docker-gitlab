@@ -5,6 +5,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 
 **11.7.4**
 - gitlab: upgrade CE to v11.7.4
+- Update gitlab-workhorse to 8.2.0
 
 **11.7.3**
 - gitlab: upgrade CE to v11.7.3
