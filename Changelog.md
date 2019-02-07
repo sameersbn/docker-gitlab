@@ -3,6 +3,12 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**11.7.3**
+- gitlab: upgrade CE to v11.7.3
+- Update gitlab-workhorse to 8.1.1
+- Update gitaly to 1.13.0
+- Update gitlab-pages to 1.4.0
+
 **11.7.0**
 - gitlab: upgrade CE to v11.7.0
 
@@ -113,7 +119,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 - gitlab: upgrade CE to v11.3.0
 - Fix backup config stripping for when AWS & GCS backups are disabled [#1725](https://github.com/sameersbn/docker-gitlab/pull/1725)
 - Correct Backup Date format for selective backups [#1699](https://github.com/sameersbn/docker-gitlab/pull/1699)
-- Fix gitlay-ssh symlink to enable rebase/squash in forks 
+- Fix gitlay-ssh symlink to enable rebase/squash in forks
 
 **11.2.3**
 - gitlab: upgrade CE to v11.2.3
