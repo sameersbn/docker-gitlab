@@ -165,14 +165,20 @@ production: &base
       background_upload: {{GITLAB_ARTIFACTS_OBJECT_STORE_BACKGROUND_UPLOAD}} # Temporary option to limit automatic upload (Default: true)
       proxy_download: {{GITLAB_ARTIFACTS_OBJECT_STORE_PROXY_DOWNLOAD}} # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
-        provider: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_PROVIDER}} # Only AWS supported at the moment
+        provider: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_PROVIDER}}
+        #start-artifacts-aws
         aws_access_key_id: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID}}
         aws_secret_access_key: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY}}
         region: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_REGION}}
         host: '{{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_HOST}}' # default: s3.amazonaws.com
         endpoint: '{{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT}}' # default: nil
         path_style: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE}} # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
-
+        #end-artifacts-aws
+        #start-artifacts-gcs
+        google_project: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT}}
+        google_client_email: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL}}
+        google_json_key_location: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION}}
+        #end-artifacts-gcs
 
   ## Git LFS
   lfs:
@@ -186,15 +192,22 @@ production: &base
       background_upload: {{GITLAB_LFS_OBJECT_STORE_BACKGROUND_UPLOAD}} # Temporary option to limit automatic upload (Default: true)
       proxy_download: {{GITLAB_LFS_OBJECT_STORE_PROXY_DOWNLOAD}} # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
-        provider: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_PROVIDER}} # Only AWS supported at the moment
+        provider: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_PROVIDER}}
+        #start-lfs-aws
         aws_access_key_id: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID}}
         aws_secret_access_key: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY}}
         region: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_REGION}}
         host: '{{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_HOST}}' # default: s3.amazonaws.com
         endpoint: '{{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT}}' # default: nil
         path_style: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE}} # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
+        #end-lfs-aws
+        #start-lfs-gcs
+        google_project: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT}}
+        google_client_email: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL}}
+        google_json_key_location: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION}}
+        #end-lfs-gcs
 
-
+        
   ## Uploads (attachments, avatars, etc...)
   uploads:
     # The location where uploads objects are stored (default: public/).
@@ -207,14 +220,20 @@ production: &base
       background_upload: {{GITLAB_UPLOADS_OBJECT_STORE_BACKGROUND_UPLOAD}} # Temporary option to limit automatic upload (Default: true)
       proxy_download: {{GITLAB_UPLOADS_OBJECT_STORE_PROXY_DOWNLOAD}} # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
-        provider: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_PROVIDER}} # Only AWS supported at the moment
+        provider: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_PROVIDER}}
+        #start-uploads-aws
         aws_access_key_id: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID}}
         aws_secret_access_key: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY}}
         region: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_REGION}}
         host: '{{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_HOST}}' # default: s3.amazonaws.com
         endpoint: '{{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT}}' # default: nil
         path_style: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE}} # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
-
+        #end-uploads-aws
+        #start-uploads-gcs
+        google_project: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT}}
+        google_client_email: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL}}
+        google_json_key_location: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION}}
+        #end-uploads-gcs
 
 
   ## GitLab Pages
