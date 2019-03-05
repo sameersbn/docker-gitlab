@@ -1600,6 +1600,13 @@ configure_gitlab_shell() {
     REDIS_HOST \
     REDIS_PORT \
     REDIS_DB_NUMBER
+
+  # update custom_hooks_dir if set $GITLAB_SHELL_CUSTOM_HOOKS_DIR
+  if [[ -n ${GITLAB_SHELL_CUSTOM_HOOKS_DIR} ]]; then
+    exec_as_git sed -i \
+      "s|custom_hooks_dir:.*|custom_hooks_dir: $GITLAB_SHELL_CUSTOM_HOOKS_DIR|g" \
+      ${GITLAB_SHELL_CONFIG}
+  fi
 }
 
 
