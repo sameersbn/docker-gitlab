@@ -920,7 +920,6 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`| Google project. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`|
 | `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`| Google service account. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`|
 | `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION`| Default Google key file. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION` (`/gcs/key.json`)|
-
 | `GITLAB_PIPELINE_SCHEDULE_WORKER_CRON` | Cron notation for the GitLab pipeline schedule worker. Defaults to `'0 */12 * * *'` |
 | `GITLAB_LFS_ENABLED` | Enable/Disable Git LFS support. Defaults to `true`. |
 | `GITLAB_LFS_OBJECTS_DIR` | Directory to store the lfs-objects. Defaults to `$GITLAB_SHARED_DIR/lfs-objects` |
