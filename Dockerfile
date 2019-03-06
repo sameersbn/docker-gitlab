@@ -1,4 +1,4 @@
-FROM ubuntu:xenial-20181218
+FROM ubuntu:xenial-20190122
 
 ARG BUILD_DATE
 ARG VCS_REF
