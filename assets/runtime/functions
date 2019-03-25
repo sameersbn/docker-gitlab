@@ -962,6 +962,20 @@ gitlab_configure_ci() {
 gitlab_configure_artifacts() {
   if [[ ${GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED} == true ]]; then
     echo "Configuring gitlab::artifacts:object_store"
+
+    if [[ "${GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_PROVIDER}" == "Google" ]]; then
+        echo " -> Google ARTIFACTS provider selected removing aws config"
+        exec_as_git sed -i "/#start-artifacts-aws/,/#end-artifacts-aws/d" ${GITLAB_CONFIG}
+        exec_as_git sed -i "/#start-artifacts-gcs/d" ${GITLAB_CONFIG}
+        exec_as_git sed -i "/#end-artifacts-gcs/d" ${GITLAB_CONFIG}
+    fi
+    if [[ "${GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_PROVIDER}" == "AWS" ]]; then
+      echo " -> AWS ARTIFACTS provider selected removing Google config"
+      exec_as_git sed -i "/#start-artifacts-gcs/,/#end-artifacts-gcs/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-artifacts-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-artifacts-aws/d" ${GITLAB_CONFIG}
+    fi
+
     update_template ${GITLAB_CONFIG} \
       GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED \
       GITLAB_ARTIFACTS_OBJECT_STORE_REMOTE_DIRECTORY \
@@ -974,9 +988,12 @@ gitlab_configure_artifacts() {
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_REGION \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_HOST \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT \
-      GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE
+      GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE \
+      GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT \
+      GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL \
+      GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION
   else
-   exec_as_git sed -i -e "/path: {{GITLAB_ARTIFACTS_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}" ${GITLAB_CONFIG}
+    exec_as_git sed -i -e "/path: {{GITLAB_ARTIFACTS_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}" ${GITLAB_CONFIG}
   fi
 
   echo "Configuring gitlab::artifacts..."
@@ -988,6 +1005,20 @@ gitlab_configure_artifacts() {
 gitlab_configure_lfs() {
   if [[ ${GITLAB_LFS_OBJECT_STORE_ENABLED} == true ]]; then
     echo "Configuring gitlab::lfs:object_store"
+
+    if [[ "${GITLAB_LFS_OBJECT_STORE_CONNECTION_PROVIDER}" == "Google" ]]; then
+      echo " -> Google LFS provider selected removing aws config"
+      exec_as_git sed -i "/#start-lfs-aws/,/#end-lfs-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-lfs-gcs/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-lfs-gcs/d" ${GITLAB_CONFIG}
+    fi
+    if [[ "${GITLAB_LFS_OBJECT_STORE_CONNECTION_PROVIDER}" == "AWS" ]]; then
+      echo " -> AWS LFS provider selected removing Google config"
+      exec_as_git sed -i "/#start-lfs-gcs/,/#end-lfs-gcs/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-lfs-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-lfs-aws/d" ${GITLAB_CONFIG}
+    fi
+
     update_template ${GITLAB_CONFIG} \
       GITLAB_LFS_OBJECT_STORE_ENABLED \
       GITLAB_LFS_OBJECT_STORE_REMOTE_DIRECTORY \
@@ -1000,9 +1031,12 @@ gitlab_configure_lfs() {
       GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_REGION \
       GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_HOST \
       GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT \
-      GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE
+      GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE \
+      GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT \
+      GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL \
+      GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION
   else
-    exec_as_git sed -i -e "/path: {{GITLAB_LFS_OBJECTS_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}"  ${GITLAB_CONFIG}
+    exec_as_git sed -i -e "/path: {{GITLAB_LFS_OBJECTS_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}"  ${GITLAB_CONFIG}
   fi
 
   echo "Configuring gitlab::lfs..."
@@ -1014,6 +1048,20 @@ gitlab_configure_lfs() {
 gitlab_configure_uploads() {
   if [[ ${GITLAB_UPLOADS_OBJECT_STORE_ENABLED} == true ]]; then
     echo "Configuring gitlab::uploads:object_store"
+
+    if [[ "${GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_PROVIDER}" == "Google" ]]; then
+      echo " -> Google UPLOADS provider selected removing aws config"
+      exec_as_git sed -i "/#start-uploads-aws/,/#end-uploads-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-uploads-gcs/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-uploads-gcs/d" ${GITLAB_CONFIG}
+    fi
+    if [[ "${GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_PROVIDER}" == "AWS" ]]; then
+      echo " -> AWS UPLOADS provider selected removing Google config"
+      exec_as_git sed -i "/#start-uploads-gcs/,/#end-uploads-gcs/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-uploads-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-uploads-aws/d" ${GITLAB_CONFIG}
+    fi
+
     update_template ${GITLAB_CONFIG} \
       GITLAB_UPLOADS_OBJECT_STORE_ENABLED \
       GITLAB_UPLOADS_OBJECT_STORE_REMOTE_DIRECTORY \
@@ -1026,9 +1074,13 @@ gitlab_configure_uploads() {
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_REGION \
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_HOST \
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT \
-      GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE
+      GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE \
+      GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT \
+      GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL \
+      GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION
+
   else
-   exec_as_git sed -i -e "/base_dir: {{GITLAB_UPLOADS_BASE_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}"  ${GITLAB_CONFIG}
+    exec_as_git sed -i -e "/base_dir: {{GITLAB_UPLOADS_BASE_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}"  ${GITLAB_CONFIG}
   fi
 
   echo "Configuring gitlab::uploads..."
