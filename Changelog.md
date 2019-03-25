@@ -5,6 +5,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 **11.9.0**
 - gitlab: upgrade CE to v11.9.0
 - Update gitaly to 1.27.0
+- Update gitlab-shell to 8.7.1
 
 **11.8.3**
 - gitlab: upgrade CE to v11.8.3
