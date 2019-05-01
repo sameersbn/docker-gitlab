@@ -3,6 +3,11 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**11.10.3**
+- gitlab: upgrade CE to v11.10.3
+- Update go lang to 1.11.9
+- Update gitaly to 1.34.1
+
 **11.10.1**
 - gitlab: upgrade CE to v11.10.1
 
