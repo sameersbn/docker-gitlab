@@ -23,7 +23,7 @@ server {
 ## Pages serving host
 server {
   listen 0.0.0.0:443 ssl;
-  listen [::]:443 ipv6only=on ssl http2;
+  listen [::]:443 ssl http2;
 
   ## Replace this with something like pages.gitlab.com
   server_name ~^.*{{GITLAB_PAGES_DOMAIN}};
