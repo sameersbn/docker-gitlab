@@ -6,7 +6,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 **11.11.3**
 - gitlab: upgrade CE to v11.11.3
 - Update gitaly to 1.42.4
-- Update golang to 1.12.5
+- Update golang to 1.12.6
 
 **11.11.2**
 - gitlab: upgrade CE to v11.11.2
