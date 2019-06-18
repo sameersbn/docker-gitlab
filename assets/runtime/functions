@@ -622,9 +622,11 @@ gitlab_configure_oauth_saml() {
       OAUTH_SAML_IDP_CERT_FINGERPRINT \
       OAUTH_SAML_IDP_SSO_TARGET_URL \
       OAUTH_SAML_ISSUER \
+      OAUTH_SAML_ATTRIBUTE_SERVICE_NAME \
       OAUTH_SAML_NAME_IDENTIFIER_FORMAT \
       OAUTH_SAML_GROUPS_ATTRIBUTE \
       OAUTH_SAML_EXTERNAL_GROUPS
+    exec_as_git sed -i "/attribute_service_name: '',/d" ${GITLAB_CONFIG}
     exec_as_git sed -i "/groups_attribute: '',/d" ${GITLAB_CONFIG}
     exec_as_git sed -i "/external_groups: \\[\\],/d" ${GITLAB_CONFIG}
     gitlab_configure_oauth_saml_attribute_statements
