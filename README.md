@@ -1114,6 +1114,7 @@ Below is the complete list of available options that can be used to customize yo
 | `OAUTH_SAML_IDP_SSO_TARGET_URL` | The URL to which the authentication request should be sent. No defaults. |
 | `OAUTH_SAML_ISSUER` | The name of your application. When `GITLAB_HTTPS=true`, defaults to `https://${GITLAB_HOST}` else defaults to `http://${GITLAB_HOST}`. |
 | `OAUTH_SAML_LABEL` | The "Sign in with" button label. Defaults to "Our SAML Provider". |
+| `OAUTH_SAML_ATTRIBUTE_SERVICE_NAME` | Name for the attribute service. Defaults to `Required attributes` |
 | `OAUTH_SAML_NAME_IDENTIFIER_FORMAT` | Describes the format of the username required by GitLab, Defaults to `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` |
 | `OAUTH_SAML_GROUPS_ATTRIBUTE` | Map groups attribute in a SAMLResponse to external groups. No defaults. |
 | `OAUTH_SAML_EXTERNAL_GROUPS` | List of external groups in a SAMLResponse. Value is comma separated list of single quoted groups. Example: `'group1','group2'`. No defaults. |
