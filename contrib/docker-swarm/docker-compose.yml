@@ -3,7 +3,7 @@ version: '3.4'
 services:
   redis:
     restart: always
-    image: sameersbn/redis:latest
+    image: sameersbn/redis:4.0.9-1
     command:
     - --loglevel warning
     volumes:
@@ -138,6 +138,7 @@ services:
     - OAUTH_SAML_EXTERNAL_GROUPS=
     - OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL=
     - OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME=
     - OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME=
     - OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME=
 

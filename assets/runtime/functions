@@ -463,6 +463,11 @@ gitlab_configure_ldap() {
     LDAP_BASE \
     LDAP_USER_FILTER \
     LDAP_LOWERCASE_USERNAMES \
+    LDAP_USER_ATTRIBUTE_USERNAME \
+    LDAP_USER_ATTRIBUTE_MAIL \
+    LDAP_USER_ATTRIBUTE_NAME \
+    LDAP_USER_ATTRIBUTE_FIRSTNAME \
+    LDAP_USER_ATTRIBUTE_LASTNAME \
     LDAP_LABEL
 }
 
@@ -593,6 +598,9 @@ gitlab_configure_oauth_saml_attribute_statements() {
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME \
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME
     # Remove undefined optional attributes
+    exec_as_git sed -i "/email: \\[''\\],/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/name: \\[''\\],/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/username: \\[''\\],/d" ${GITLAB_CONFIG}
     exec_as_git sed -i "/first_name: \\[''\\],/d" ${GITLAB_CONFIG}
     exec_as_git sed -i "/last_name: \\[''\\],/d" ${GITLAB_CONFIG}
   else
@@ -784,7 +792,11 @@ gitlab_configure_backups_schedule() {
           weekly) day_of_week=0 ;;
           monthly) day_of_month=01 ;;
         esac
-        echo "$min $hour $day_of_month $month $day_of_week /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create SKIP=${GITLAB_BACKUP_SKIP} RAILS_ENV=${RAILS_ENV}'" >> /tmp/cron.${GITLAB_USER}
+        if [[ -n ${GITLAB_BACKUP_DIR_GROUP} ]]; then
+            echo "$min $hour $day_of_month $month $day_of_week /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create SKIP=${GITLAB_BACKUP_SKIP} DIRECTORY=${GITLAB_BACKUP_DIR_GROUP} RAILS_ENV=${RAILS_ENV}'" >> /tmp/cron.${GITLAB_USER}
+        else
+            echo "$min $hour $day_of_month $month $day_of_week /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create SKIP=${GITLAB_BACKUP_SKIP} RAILS_ENV=${RAILS_ENV}'" >> /tmp/cron.${GITLAB_USER}
+        fi
         crontab -u ${GITLAB_USER} /tmp/cron.${GITLAB_USER}
       fi
       rm -rf /tmp/cron.${GITLAB_USER}
@@ -859,7 +871,7 @@ gitlab_configure_backups() {
     GITLAB_BACKUP_ARCHIVE_PERMISSIONS
   gitlab_configure_backups_schedule
   if [[ ${AWS_BACKUPS} != true && ${GCS_BACKUPS} != true ]]; then
-    exec_as_git sed -i "/upload:/,/#end-gcs/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/\s\+upload:/,/#end-gcs/d" ${GITLAB_CONFIG}
     return 0
   fi
   if [[ ${AWS_BACKUPS} == true && ${GCS_BACKUPS} == true ]]; then
@@ -950,9 +962,24 @@ gitlab_configure_ci() {
 gitlab_configure_artifacts() {
   if [[ ${GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED} == true ]]; then
     echo "Configuring gitlab::artifacts:object_store"
+
+    if [[ "${GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_PROVIDER}" == "Google" ]]; then
+        echo " -> Google ARTIFACTS provider selected removing aws config"
+        exec_as_git sed -i "/#start-artifacts-aws/,/#end-artifacts-aws/d" ${GITLAB_CONFIG}
+        exec_as_git sed -i "/#start-artifacts-gcs/d" ${GITLAB_CONFIG}
+        exec_as_git sed -i "/#end-artifacts-gcs/d" ${GITLAB_CONFIG}
+    fi
+    if [[ "${GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_PROVIDER}" == "AWS" ]]; then
+      echo " -> AWS ARTIFACTS provider selected removing Google config"
+      exec_as_git sed -i "/#start-artifacts-gcs/,/#end-artifacts-gcs/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-artifacts-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-artifacts-aws/d" ${GITLAB_CONFIG}
+    fi
+
     update_template ${GITLAB_CONFIG} \
       GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED \
       GITLAB_ARTIFACTS_OBJECT_STORE_REMOTE_DIRECTORY \
+      GITLAB_ARTIFACTS_OBJECT_STORE_DIRECT_UPLOAD \
       GITLAB_ARTIFACTS_OBJECT_STORE_BACKGROUND_UPLOAD \
       GITLAB_ARTIFACTS_OBJECT_STORE_PROXY_DOWNLOAD \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_PROVIDER \
@@ -961,9 +988,12 @@ gitlab_configure_artifacts() {
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_REGION \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_HOST \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT \
-      GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE
-  else 
-   exec_as_git sed -i -e "/path: {{GITLAB_ARTIFACTS_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;d;}" ${GITLAB_CONFIG}
+      GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE \
+      GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT \
+      GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL \
+      GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION
+  else
+    exec_as_git sed -i -e "/path: {{GITLAB_ARTIFACTS_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}" ${GITLAB_CONFIG}
   fi
 
   echo "Configuring gitlab::artifacts..."
@@ -975,6 +1005,20 @@ gitlab_configure_artifacts() {
 gitlab_configure_lfs() {
   if [[ ${GITLAB_LFS_OBJECT_STORE_ENABLED} == true ]]; then
     echo "Configuring gitlab::lfs:object_store"
+
+    if [[ "${GITLAB_LFS_OBJECT_STORE_CONNECTION_PROVIDER}" == "Google" ]]; then
+      echo " -> Google LFS provider selected removing aws config"
+      exec_as_git sed -i "/#start-lfs-aws/,/#end-lfs-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-lfs-gcs/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-lfs-gcs/d" ${GITLAB_CONFIG}
+    fi
+    if [[ "${GITLAB_LFS_OBJECT_STORE_CONNECTION_PROVIDER}" == "AWS" ]]; then
+      echo " -> AWS LFS provider selected removing Google config"
+      exec_as_git sed -i "/#start-lfs-gcs/,/#end-lfs-gcs/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-lfs-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-lfs-aws/d" ${GITLAB_CONFIG}
+    fi
+
     update_template ${GITLAB_CONFIG} \
       GITLAB_LFS_OBJECT_STORE_ENABLED \
       GITLAB_LFS_OBJECT_STORE_REMOTE_DIRECTORY \
@@ -987,9 +1031,12 @@ gitlab_configure_lfs() {
       GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_REGION \
       GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_HOST \
       GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT \
-      GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE
-  else 
-    exec_as_git sed -i -e "/path: {{GITLAB_LFS_OBJECTS_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}"  ${GITLAB_CONFIG}
+      GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE \
+      GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT \
+      GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL \
+      GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION
+  else
+    exec_as_git sed -i -e "/path: {{GITLAB_LFS_OBJECTS_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}"  ${GITLAB_CONFIG}
   fi
 
   echo "Configuring gitlab::lfs..."
@@ -1001,6 +1048,20 @@ gitlab_configure_lfs() {
 gitlab_configure_uploads() {
   if [[ ${GITLAB_UPLOADS_OBJECT_STORE_ENABLED} == true ]]; then
     echo "Configuring gitlab::uploads:object_store"
+
+    if [[ "${GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_PROVIDER}" == "Google" ]]; then
+      echo " -> Google UPLOADS provider selected removing aws config"
+      exec_as_git sed -i "/#start-uploads-aws/,/#end-uploads-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-uploads-gcs/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-uploads-gcs/d" ${GITLAB_CONFIG}
+    fi
+    if [[ "${GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_PROVIDER}" == "AWS" ]]; then
+      echo " -> AWS UPLOADS provider selected removing Google config"
+      exec_as_git sed -i "/#start-uploads-gcs/,/#end-uploads-gcs/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-uploads-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-uploads-aws/d" ${GITLAB_CONFIG}
+    fi
+
     update_template ${GITLAB_CONFIG} \
       GITLAB_UPLOADS_OBJECT_STORE_ENABLED \
       GITLAB_UPLOADS_OBJECT_STORE_REMOTE_DIRECTORY \
@@ -1013,15 +1074,19 @@ gitlab_configure_uploads() {
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_REGION \
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_HOST \
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT \
-      GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE
-  else 
-   exec_as_git sed -i -e "/base_dir: {{GITLAB_UPLOADS_BASE_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}"  ${GITLAB_CONFIG}
+      GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE \
+      GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT \
+      GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL \
+      GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION
+
+  else
+    exec_as_git sed -i -e "/base_dir: {{GITLAB_UPLOADS_BASE_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}"  ${GITLAB_CONFIG}
   fi
 
   echo "Configuring gitlab::uploads..."
   update_template ${GITLAB_CONFIG} \
     GITLAB_UPLOADS_STORAGE_PATH \
-    GITLAB_UPLOADS_BASE_DIR  
+    GITLAB_UPLOADS_BASE_DIR
 }
 
 gitlab_configure_mattermost() {
@@ -1072,7 +1137,8 @@ gitlab_configure_pages(){
     GITLAB_PAGES_DOMAIN \
     GITLAB_PAGES_PORT \
     GITLAB_PAGES_HTTPS \
-    GITLAB_PAGES_ARTIFACTS_SERVER
+    GITLAB_PAGES_ARTIFACTS_SERVER \
+    GITLAB_PAGES_ACCESS_CONTROL
 
   if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTP} ]]; then
     update_template ${GITLAB_CONFIG} \
@@ -1119,22 +1185,24 @@ nginx_configure_gitlab_hsts() {
   fi
 }
 
- nginx_configure_gitlab_ipv6() {
-   if [[ ! -f /proc/net/if_inet6 ]]; then
-     # disable ipv6 support in nginx for gitlab
-     sed -i \
-       -e "/listen \[::\]:80/d" \
-       -e "/listen \[::\]:443/d" \
-       ${GITLAB_NGINX_CONFIG}
-     # disable ipv6 support in nginx for pages
-     if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
-       sed -i \
-         -e "/listen \[::\]:80/d" \
-         -e "/listen \[::\]:443/d" \
-         ${GITLAB_PAGES_NGINX_CONFIG}
-     fi
-   fi
- }
+nginx_configure_gitlab_ipv6() {
+  if [[ ! -f /proc/net/if_inet6 ]]; then
+    # disable ipv6 support in nginx for gitlab
+    sed -i \
+      -e "/listen \[::\]:80/d" \
+      -e "/listen \[::\]:443/d" \
+      ${GITLAB_NGINX_CONFIG}
+    # disable ipv6 support in nginx for pages
+    if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
+      if [[ ${GITLAB_PAGES_NGINX_PROXY} == true ]]; then
+        sed -i \
+          -e "/listen \[::\]:80/d" \
+          -e "/listen \[::\]:443/d" \
+          ${GITLAB_PAGES_NGINX_CONFIG}
+      fi
+    fi
+  fi
+}
 
 nginx_configure_gitlab_real_ip() {
   if [[ ${NGINX_REAL_IP_RECURSIVE} == on && \
@@ -1197,21 +1265,26 @@ nginx_configure_pages(){
   local GITLAB_PAGES_DOMAIN=$(echo $GITLAB_PAGES_DOMAIN | sed 's/\./\\\\./g')
   if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
     echo "Configuring nginx::gitlab-pages..."
-    if [[ ${GITLAB_PAGES_HTTPS} == true ]]; then
-      update_template ${GITLAB_PAGES_NGINX_CONFIG} \
-        GITLAB_PORT \
-        GITLAB_PAGES_DOMAIN \
-        GITLAB_PAGES_PORT \
-        GITLAB_LOG_DIR \
-        GITLAB_PAGES_DOMAIN \
-        SSL_PAGES_CERT_PATH \
-        SSL_PAGES_KEY_PATH \
-        SSL_DHPARAM_PATH \
-        GITLAB_LOG_DIR
+    if [[ ${GITLAB_PAGES_NGINX_PROXY} == true ]]; then
+      if [[ ${GITLAB_PAGES_HTTPS} == true ]]; then
+        update_template ${GITLAB_PAGES_NGINX_CONFIG} \
+          GITLAB_PORT \
+          GITLAB_PAGES_DOMAIN \
+          GITLAB_PAGES_PORT \
+          GITLAB_LOG_DIR \
+          GITLAB_PAGES_DOMAIN \
+          SSL_PAGES_CERT_PATH \
+          SSL_PAGES_KEY_PATH \
+          SSL_DHPARAM_PATH \
+          GITLAB_LOG_DIR
+      else
+        update_template ${GITLAB_PAGES_NGINX_CONFIG} \
+          GITLAB_PAGES_DOMAIN \
+          GITLAB_LOG_DIR
+      fi
     else
-      update_template ${GITLAB_PAGES_NGINX_CONFIG} \
-        GITLAB_PAGES_DOMAIN \
-        GITLAB_LOG_DIR
+      echo "Gitlab pages nginx proxy disabled"
+      echo "Assuming custom domain setup with own HTTP(S) load balancer'"
     fi
   fi
 }
@@ -1328,7 +1401,9 @@ initialize_datadir() {
 
   # create the backups directory
   mkdir -p ${GITLAB_BACKUP_DIR}
-  chown ${GITLAB_USER}: ${GITLAB_BACKUP_DIR}
+  if [[ ${GITLAB_BACKUP_DIR_CHOWN} == true ]]; then
+    chown ${GITLAB_USER}: ${GITLAB_BACKUP_DIR}
+  fi
 
   # create the uploads directory
   mkdir -p ${GITLAB_DATA_DIR}/uploads
@@ -1475,11 +1550,21 @@ install_configuration_templates() {
   ## ${GITLAB_PAGES_NGINX_CONFIG}
   if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
     if [[ ${GITLAB_PAGES_HTTPS} == true && -f ${SSL_PAGES_CERT_PATH} && -f ${SSL_PAGES_KEY_PATH} ]]; then
-      install_template root: nginx/gitlab-pages-ssl ${GITLAB_PAGES_NGINX_CONFIG}
+      if [[ ${GITLAB_PAGES_NGINX_PROXY} == true ]]; then
+        install_template root: nginx/gitlab-pages-ssl ${GITLAB_PAGES_NGINX_CONFIG}
+      else
+        echo "Gitlab pages nginx proxy disabled"
+        echo "Assuming custom domain setup with own HTTP(S) load balancer'"
+      fi
     else
-      echo "SSL Key, SSL Certificate were not found."
-      echo "Assuming that the container is running behind a HTTPS enabled load balancer."
-      install_template root: nginx/gitlab-pages ${GITLAB_PAGES_NGINX_CONFIG}
+      if [[ ${GITLAB_PAGES_NGINX_PROXY} == true ]]; then
+        echo "SSL Key, SSL Certificate were not found."
+        echo "Assuming that the container is running behind a HTTPS enabled load balancer."
+        install_template root: nginx/gitlab-pages ${GITLAB_PAGES_NGINX_CONFIG}
+      else
+        echo "Gitlab pages nginx proxy disabled"
+        echo "Assuming custom domain setup with own HTTP(S) load balancer'"
+      fi
     fi
   fi
 
@@ -1517,6 +1602,7 @@ configure_gitlab() {
     GITLAB_SSH_HOST \
     GITLAB_SSH_PORT \
     GITLAB_SIGNUP_ENABLED \
+    GITLAB_IMPERSONATION_ENABLED \
     GITLAB_PROJECTS_LIMIT \
     GITLAB_USERNAME_CHANGE \
     GITLAB_DEFAULT_THEME \
@@ -1527,7 +1613,7 @@ configure_gitlab() {
     LETSENCRYPT_OWNER \
     LETSENCRYPT_AUTO_RENEW \
     LETSENCRYPT_RENEW_DAYOFMONTH \
-    GITLAB_CREATE_GROUP 
+    GITLAB_CREATE_GROUP
 
   gitlab_configure_database
   gitlab_configure_redis
@@ -1602,6 +1688,20 @@ cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
   -listen-https ${GITLAB_PAGES_EXTERNAL_HTTPS}
   -root-cert ${SSL_PAGES_CERT_PATH}
   -root-key ${SSL_PAGES_KEY_PATH}
+EOF
+fi
+
+if [[ ${GITLAB_PAGES_ACCESS_CONTROL} == true ]]; then
+  if [[ -z ${GITLAB_PAGES_ACCESS_SECRET} ]]; then
+    GITLAB_PAGES_ACCESS_SECRET=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 40 ; echo '')
+  fi
+
+cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
+  -auth-server ${GITLAB_PAGES_ACCESS_CONTROL_SERVER}
+  -auth-secret ${GITLAB_PAGES_ACCESS_SECRET}
+  -auth-client-id ${GITLAB_PAGES_ACCESS_CLIENT_ID}
+  -auth-client-secret ${GITLAB_PAGES_ACCESS_CLIENT_SECRET}
+  -auth-redirect-uri ${GITLAB_PAGES_ACCESS_REDIRECT_URI}
 EOF
 fi
 
@@ -1693,7 +1793,7 @@ migrate_database() {
     # assets need to be recompiled when GITLAB_RELATIVE_URL_ROOT is used
     if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
       echo "Recompiling assets (relative_url in use), this could take a while..."
-      exec_as_git bundle exec rake gitlab:assets:compile >/dev/null 2>&1
+      exec_as_git bundle exec rake gitlab:assets:compile NODE_OPTIONS="--max-old-space-size=4096" >/dev/null 2>&1
     fi
 
     echo "Clearing cache..."
@@ -1729,7 +1829,7 @@ execute_raketask() {
       echo
       for b in $(ls ${GITLAB_BACKUP_DIR} | grep _gitlab_backup | sort -r)
       do
-        echo "‣ $b (created at $(date --date="@${b%%_gitlab_backup.tar}" +'%d %b, %G - %H:%M:%S %Z'))"
+        echo "‣ $b (created at $(date --date="@${b%%_*_gitlab_backup.tar}" +'%d %b, %G - %H:%M:%S %Z'))"
       done
       echo
 

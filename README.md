@@ -1,7 +1,7 @@
 [![Docker Repository on Quay.io](https://quay.io/repository/sameersbn/gitlab/status "Docker Repository on Quay.io")](https://quay.io/repository/sameersbn/gitlab)
 [![](https://images.microbadger.com/badges/image/sameersbn/gitlab.svg)](http://microbadger.com/images/sameersbn/gitlab "Get your own image badge on microbadger.com")
 
-# sameersbn/gitlab:11.0.1
+# sameersbn/gitlab:11.11.3
 
 - [Introduction](#introduction)
     - [Changelog](Changelog.md)
@@ -49,9 +49,11 @@
         - [SAML](#saml)
         - [Crowd](#crowd)
         - [Microsoft Azure](#microsoft-azure)
+    - [Gitlab Pages](#gitlab-pages)
     - [External Issue Trackers](#external-issue-trackers)
     - [Host UID / GID Mapping](#host-uid--gid-mapping)
     - [Piwik](#piwik)
+    - [Exposing ssh port in dockerized gitlab-ce](docs/exposing-ssh-port.md)
     - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
     - [Creating Backups](#creating-backups)
@@ -126,7 +128,7 @@ Automated builds of the image are available on [Dockerhub](https://hub.docker.co
 > **Note**: Builds are also available on [Quay.io](https://quay.io/repository/sameersbn/gitlab)
 
 ```bash
-docker pull sameersbn/gitlab:11.0.1
+docker pull sameersbn/gitlab:11.11.3
 ```
 
 You can also pull the `latest` tag which is built from the repository *HEAD*
@@ -173,7 +175,7 @@ docker run --name gitlab-postgresql -d \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --env 'DB_EXTENSION=pg_trgm' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
-    sameersbn/postgresql:9.6-2
+    sameersbn/postgresql:10
 ```
 
 Step 2. Launch a redis container
@@ -181,7 +183,7 @@ Step 2. Launch a redis container
 ```bash
 docker run --name gitlab-redis -d \
     --volume /srv/docker/gitlab/redis:/var/lib/redis \
-    sameersbn/redis:latest
+    sameersbn/redis:4.0.9-1
 ```
 
 Step 3. Launch the gitlab container
@@ -195,7 +197,7 @@ docker run --name gitlab -d \
     --env 'GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alpha-numeric-string' \
     --env 'GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alpha-numeric-string' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:11.0.1
+    sameersbn/gitlab:11.11.3
 ```
 
 *Please refer to [Available Configuration Parameters](#available-configuration-parameters) to understand `GITLAB_PORT` and other configuration options*
@@ -230,7 +232,7 @@ Volumes can be mounted in docker by specifying the `-v` option in the docker run
 ```bash
 docker run --name gitlab -d \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:11.0.1
+    sameersbn/gitlab:11.11.3
 ```
 
 ## Database
@@ -263,7 +265,7 @@ docker run --name gitlab -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:11.0.1
+    sameersbn/gitlab:11.11.3
 ```
 
 #### Linking to PostgreSQL Container
@@ -277,7 +279,7 @@ To illustrate linking with a postgresql container, we will use the [sameersbn/po
 First, lets pull the postgresql image from the docker index.
 
 ```bash
-docker pull sameersbn/postgresql:9.6-2
+docker pull sameersbn/postgresql:10
 ```
 
 For data persistence lets create a store for the postgresql and start the container.
@@ -297,7 +299,7 @@ docker run --name gitlab-postgresql -d \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --env 'DB_EXTENSION=pg_trgm' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
-    sameersbn/postgresql:9.6-2
+    sameersbn/postgresql:10
 ```
 
 The above command will create a database named `gitlabhq_production` and also create a user named `gitlab` with the password `password` with access to the `gitlabhq_production` database.
@@ -307,7 +309,7 @@ We are now ready to start the GitLab application.
 ```bash
 docker run --name gitlab -d --link gitlab-postgresql:postgresql \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:11.0.1
+    sameersbn/gitlab:11.11.3
 ```
 
 Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the postgresql container as they are specified in the `docker run` command for the postgresql container. This is made possible using the magic of docker links and works with the following images:
@@ -330,7 +332,7 @@ Assuming that your mysql data is available at `/srv/docker/gitlab/mysql`
 ```bash
 docker run --name gitlab-mysql -d \
     --volume /srv/docker/gitlab/mysql:/var/lib/mysql \
-    sameersbn/mysql:latest
+    sameersbn/mysql:5.7.22-1
 ```
 
 This will start a mysql container with your existing mysql data. Now login to the mysql container and create a user for the existing `gitlabhq_production` database.
@@ -361,7 +363,7 @@ docker run --name gitlab -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:11.0.1
+    sameersbn/gitlab:11.11.3
 ```
 
 #### Linking to MySQL Container
@@ -375,7 +377,7 @@ To illustrate linking with a mysql container, we will use the [sameersbn/mysql](
 First, lets pull the mysql image from the docker index.
 
 ```bash
-docker pull sameersbn/mysql:latest
+docker pull sameersbn/mysql:5.7.22-1
 ```
 
 For data persistence lets create a store for the mysql and start the container.
@@ -394,7 +396,7 @@ docker run --name gitlab-mysql -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --volume /srv/docker/gitlab/mysql:/var/lib/mysql \
-    sameersbn/mysql:latest
+    sameersbn/mysql:5.7.22-1
 ```
 
 The above command will create a database named `gitlabhq_production` and also create a user named `gitlab` with the password `password` with full/remote access to the `gitlabhq_production` database.
@@ -404,7 +406,7 @@ We are now ready to start the GitLab application.
 ```bash
 docker run --name gitlab -d --link gitlab-mysql:mysql \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:11.0.1
+    sameersbn/gitlab:11.11.3
 ```
 
 Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the mysql container as they are specified in the `docker run` command for the mysql container. This is made possible using the magic of docker links and works with the following images:
@@ -431,7 +433,7 @@ The image can be configured to use an external redis server. The configuration s
 ```bash
 docker run --name gitlab -it --rm \
     --env 'REDIS_HOST=192.168.1.100' --env 'REDIS_PORT=6379' \
-    sameersbn/gitlab:11.0.1
+    sameersbn/gitlab:11.11.3
 ```
 
 ### Linking to Redis Container
@@ -443,7 +445,7 @@ To illustrate linking with a redis container, we will use the [sameersbn/redis](
 First, lets pull the redis image from the docker index.
 
 ```bash
-docker pull sameersbn/redis:latest
+docker pull sameersbn/redis:4.0.9-1
 ```
 
 Lets start the redis container
@@ -451,14 +453,14 @@ Lets start the redis container
 ```bash
 docker run --name gitlab-redis -d \
     --volume /srv/docker/gitlab/redis:/var/lib/redis \
-    sameersbn/redis:latest
+    sameersbn/redis:4.0.9-1
 ```
 
 We are now ready to start the GitLab application.
 
 ```bash
 docker run --name gitlab -d --link gitlab-redis:redisio \
-    sameersbn/gitlab:11.0.1
+    sameersbn/gitlab:11.11.3
 ```
 
 ### Mail
@@ -471,7 +473,7 @@ If you are using Gmail then all you need to do is:
 docker run --name gitlab -d \
     --env 'SMTP_USER=USER@gmail.com' --env 'SMTP_PASS=PASSWORD' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:11.0.1
+    sameersbn/gitlab:11.11.3
 ```
 
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of SMTP parameters that can be specified.
@@ -491,7 +493,7 @@ docker run --name gitlab -d \
     --env 'IMAP_USER=USER@gmail.com' --env 'IMAP_PASS=PASSWORD' \
     --env 'GITLAB_INCOMING_EMAIL_ADDRESS=USER+%{key}@gmail.com' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:11.0.1
+    sameersbn/gitlab:11.11.3
 ```
 
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of IMAP parameters that can be specified.
@@ -568,7 +570,7 @@ docker run --name gitlab -d \
     --env 'GITLAB_SSH_PORT=10022' --env 'GITLAB_PORT=10443' \
     --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:11.0.1
+    sameersbn/gitlab:11.11.3
 ```
 
 In this configuration, any requests made over the plain http protocol will automatically be redirected to use the https protocol. However, this is not optimal when using a load balancer.
@@ -584,7 +586,7 @@ docker run --name gitlab -d \
  --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
  --env 'NGINX_HSTS_MAXAGE=2592000' \
  --volume /srv/docker/gitlab/gitlab:/home/git/data \
- sameersbn/gitlab:11.0.1
+ sameersbn/gitlab:11.11.3
 ```
 
 If you want to completely disable HSTS set `NGINX_HSTS_ENABLED` to `false`.
@@ -607,7 +609,7 @@ docker run --name gitlab -d \
     --env 'GITLAB_SSH_PORT=10022' --env 'GITLAB_PORT=443' \
     --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:11.0.1
+    sameersbn/gitlab:11.11.3
 ```
 
 Again, drop the `--env 'SSL_SELF_SIGNED=true'` option if you are using CA certified SSL certificates.
@@ -655,7 +657,7 @@ Let's assume we want to deploy our application to '/git'. GitLab needs to know t
 docker run --name gitlab -it --rm \
     --env 'GITLAB_RELATIVE_URL_ROOT=/git' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:11.0.1
+    sameersbn/gitlab:11.11.3
 ```
 
 GitLab will now be accessible at the `/git` path, e.g. `http://www.example.com/git`.
@@ -766,6 +768,51 @@ Once you have the Client ID, Client secret and Tenant ID generated, configure th
 
 For example, if your Client ID is `xxx`, the Client secret is `yyy` and the Tenant ID is `zzz`, then adding `--env 'OAUTH_AZURE_API_KEY=xxx' --env 'OAUTH_AZURE_API_SECRET=yyy' --env 'OAUTH_AZURE_TENANT_ID=zzz'` to the docker run command enables support for Microsoft Azure OAuth.
 
+### Gitlab Pages
+
+Gitlab Pages allows a user to host static websites from a project. Gitlab pages can be enabled with setting the envrionment variable `GITLAB_PAGES_ENABLED` to `true`.
+
+### Gitlab Pages Access Control
+
+Since version `11.5.0` Gitlab pages supports access control. This allows only access to a published website if you are a project member, or have access to a certain project.
+
+Gitlab pages access control requires additional configuration before activating it through the variable `GITLAB_PAGES_ACCESS_CONTROL`.
+
+Gitab pages access control makes use of the Gitlab OAuth Module.
+
+ - Goto the Gitlab Admin area
+ - Select `Applications` in the menu
+ - Create `New Application`
+   - Name: `Gitlab Pages`
+   - Scopes:
+     - api
+   - Trusted: NO (Do not select)
+   - Redirect URI: https://projects.<GITLAB_PAGES_DOMAIN>/auth
+
+Note about the `Redirect URI`; this can be tricky to configure or figure out, What needs to be achieved is to following, the redirect URI needs to end up at the `gitlab-pages` daemon with the `/auth` endpoint.
+
+This means that if you run your gitlab pages at domain `pages.example.io` this will be a wilcard domain where your projects are created based on their namespace. The best trick is to enter a NON-Existing gitlab project pages URI as the redirect URI.
+
+In the example above; the pages domain `projects` has been chosen. This will cause the nginx, either the built in or your own loadbalancer to redirect `*.<GITLAB_PAGES_DOMAIN>` to the `gitlab-pages` daemon. Which will trigger the pages endpoint.
+
+Make sure to choose own which does not exist and make sure that the request is routed to the `gitlab-pages` daemon if you are using your own HTTP load balancer in front of Gitlab.
+
+After creating the OAuth application endpoint for the Gitlab Pages Daemon. Gitlab pages access control can now be enabled.
+
+Add to following environment variables to your Gitlab Container.
+
+| Variable | R/O | Description |
+|----------|-----|-------------|
+| GITLAB_PAGES_ACCESS_CONTROL | Required | Set to `true` to enable access control. |
+| GITLAB_PAGES_ACCESS_SECRET | Optional | Secret Hash, minimal 32 characters, if omitted, it will be auto generated. |
+| GITLAB_PAGES_ACCESS_CONTROL_SERVER | Required | Gitlab instance URI, example: `https://gitlab.example.io` |
+| GITLAB_PAGES_ACCESS_CLIENT_ID | Required | Client ID from earlier generated OAuth application |
+| GITLAB_PAGES_ACCESS_CLIENT_SECRET | Required | Client Secret from earlier genereated OAuth application |
+| GITLAB_PAGES_ACCESS_REDIRECT_URI | Required | Redirect URI, non existing pages domain to redirect to pages daemon, `https://projects.example.io` |
+
+After you have enabled the gitlab pages access control. When you go to a project `General Settings` -> `Permissions` you can choose the pages persmission level for the project.
+
+
 ### External Issue Trackers
 
 Since version `7.10.0` support for external issue trackers can be enabled in the "Service Templates" section of the settings panel.
@@ -783,14 +830,14 @@ Also the container processes seem to be executed as the host's user/group `1000`
 ```bash
 docker run --name gitlab -it --rm [options] \
     --env "USERMAP_UID=$(id -u git)" --env "USERMAP_GID=$(id -g git)" \
-    sameersbn/gitlab:11.0.1
+    sameersbn/gitlab:11.11.3
 ```
 
 When changing this mapping, all files and directories in the mounted data volume `/home/git/data` have to be re-owned by the new ids. This can be achieved automatically using the following command:
 
 ```bash
 docker run --name gitlab -d [OPTIONS] \
-    sameersbn/gitlab:11.0.1 app:sanitize
+    sameersbn/gitlab:11.11.3 app:sanitize
 ```
 
 ### Piwik
@@ -800,6 +847,7 @@ These options should contain something like:
 
 - `PIWIK_URL=piwik.example.org`
 - `PIWIK_SITE_ID=42`
+
 
 ### Available Configuration Parameters
 
@@ -825,9 +873,11 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_EMAIL_REPLY_TO` | The reply-to address of emails sent out by GitLab. Defaults to value of `GITLAB_EMAIL`, else defaults to `noreply@example.com`. |
 | `GITLAB_EMAIL_SUBJECT_SUFFIX` | The e-mail subject suffix used in e-mails sent by GitLab. No defaults. |
 | `GITLAB_EMAIL_ENABLED` | Enable or disable gitlab mailer. Defaults to the `SMTP_ENABLED` configuration. |
+| `GITLAB_DEFAULT_THEME` | Default theme ID, by default 2. (1 - Indigo, 2 - Dark, 3 - Light, 4 - Blue, 5 - Green, 6 - Light Indigo, 7 - Light Blue, 8 - Light Green, 9 - Red, 10 - Light Red) |
 | `GITLAB_INCOMING_EMAIL_ADDRESS` | The incoming email address for reply by email. Defaults to the value of `IMAP_USER`, else defaults to `reply@example.com`. Please read the [reply by email](http://doc.gitlab.com/ce/incoming_email/README.html) documentation to currently set this parameter. |
 | `GITLAB_INCOMING_EMAIL_ENABLED` | Enable or disable gitlab reply by email feature. Defaults to the value of `IMAP_ENABLED`. |
 | `GITLAB_SIGNUP_ENABLED` | Enable or disable user signups (first run only). Default is `true`. |
+| `GITLAB_IMPERSONATION_ENABLED` | Enable or disable impersonation. Defaults to `true`. |
 | `GITLAB_PROJECTS_LIMIT` | Set default projects limit. Defaults to `100`. |
 | `GITLAB_USERNAME_CHANGE` | Enable or disable ability for users to change their username. Defaults to `true`. |
 | `GITLAB_CREATE_GROUP` | Enable or disable ability for users to create groups. Defaults to `true`. |
@@ -842,49 +892,67 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_NOTIFY_PUSHER` | Add pusher to recipients list of broken build notification emails. Defaults to `false` |
 | `GITLAB_REPOS_DIR` | The git repositories folder in the container. Defaults to `/home/git/data/repositories` |
 | `GITLAB_BACKUP_DIR` | The backup folder in the container. Defaults to `/home/git/data/backups` |
+| `GITLAB_BACKUP_DIR_CHOWN` | Optionally change ownership of backup files on start-up. Defaults to `true` |
+| `GITLAB_BACKUP_DIR_GROUP` | Optionally group backups into a subfolder. Can also be used to place backups in to a subfolder on remote storage. Not used by default. |
 | `GITLAB_BUILDS_DIR` | The build traces directory. Defaults to `/home/git/data/builds` |
 | `GITLAB_DOWNLOADS_DIR` | The repository downloads directory. A temporary zip is created in this directory when users click **Download Zip** on a project. Defaults to `/home/git/data/tmp/downloads`. |
 | `GITLAB_SHARED_DIR` | The directory to store the build artifacts. Defaults to `/home/git/data/shared` |
 | `GITLAB_ARTIFACTS_ENABLED` | Enable/Disable GitLab artifacts support. Defaults to `true`. |
 | `GITLAB_ARTIFACTS_DIR` | Directory to store the artifacts. Defaults to `$GITLAB_SHARED_DIR/artifacts` |
+| `AWS_ACCESS_KEY_ID`| Default AWS access key to be used for object store. Defaults to `AWS_ACCESS_KEY_ID`|
+| `AWS_SECRET_ACCESS_KEY`| Default AWS access key to be used for object store. Defaults to `AWS_SECRET_ACCESS_KEY`|
+| `GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`| Default Google project to use for Object Store.|
+| `GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`| Default Google service account email to use for Object Store.|
+| `GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION`| Default Google key file Defaults to `/gcs/key.json`|
+| `GITLAB_OBJECT_STORE_CONNECTION_PROVIDER`| Default object store connection provider. Defaults to `AWS`|
 | `GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED` | Enables Object Store for Artifacts that will be remote stored. Defaults to `false` |
 | `GITLAB_ARTIFACTS_OBJECT_STORE_REMOTE_DIRECTORY` | Bucket name to store the artifacts. Defaults to `artifacts` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_DIRECT_UPLOAD` | Set to true to enable direct upload of Artifacts without the need of local shared storage.  Defaults to `false` |
 | `GITLAB_ARTIFACTS_OBJECT_STORE_BACKGROUND_UPLOAD` | Temporary option to limit automatic upload. Defaults to `false` |
 | `GITLAB_ARTIFACTS_OBJECT_STORE_PROXY_DOWNLOAD` | Passthrough all downloads via GitLab instead of using Redirects to Object Storage. Defaults to `false` |
-| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_PROVIDER` | Connection Provider for the Object Store. Currently only AWS is supported. Defaults to `AWS` |
-| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID` | AWS Access Key ID for the Bucket. Defaults to `AWS_ACCESS_KEY_ID` |
-| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY` | AWS Secret Access Key. Defaults to `AWS_SECRET_ACCESS_KEY` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_PROVIDER` | Connection Provider for the Object Store. (`AWS` or `Google`) Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_PROVIDER` (`AWS`) |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID` | AWS Access Key ID for the Bucket. Defaults to `$AWS_ACCESS_KEY_ID` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY` | AWS Secret Access Key. Defaults to `$AWS_SECRET_ACCESS_KEY` |
 | `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_REGION` | AWS Region. Defaults to `us-east-1` |
 | `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_HOST` | Configure this for an compatible AWS host like minio. Defaults to `s3.amazonaws.com` |
 | `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT` | AWS Endpoint like `http://127.0.0.1:9000`. Defaults to `nil` |
 | `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE` | Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `true` |
-| `GITLAB_PIPELINE_SCHEDULE_WORKER_CRON` | Cron notation for the Gitlab pipeline schedule worker. Defaults to `'0 */12 * * *'` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`| Google project. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`|
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`| Google service account. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`|
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION`| Default Google key file. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION` (`/gcs/key.json`)|
+| `GITLAB_PIPELINE_SCHEDULE_WORKER_CRON` | Cron notation for the GitLab pipeline schedule worker. Defaults to `'0 */12 * * *'` |
 | `GITLAB_LFS_ENABLED` | Enable/Disable Git LFS support. Defaults to `true`. |
 | `GITLAB_LFS_OBJECTS_DIR` | Directory to store the lfs-objects. Defaults to `$GITLAB_SHARED_DIR/lfs-objects` |
 | `GITLAB_LFS_OBJECT_STORE_ENABLED` | Enables Object Store for LFS that will be remote stored. Defaults to `false` |
 | `GITLAB_LFS_OBJECT_STORE_REMOTE_DIRECTORY` | Bucket name to store the LFS. Defaults to `lfs-object` |
 | `GITLAB_LFS_OBJECT_STORE_BACKGROUND_UPLOAD` | Temporary option to limit automatic upload. Defaults to `false` |
 | `GITLAB_LFS_OBJECT_STORE_PROXY_DOWNLOAD` | Passthrough all downloads via GitLab instead of using Redirects to Object Storage. Defaults to `false` |
-| `GITLAB_LFS_OBJECT_STORE_CONNECTION_PROVIDER` | Connection Provider for the Object Store. Currently only AWS is supported. Defaults to `AWS` |
+| `GITLAB_LFS_OBJECT_STORE_CONNECTION_PROVIDER` | Connection Provider for the Object Store. (`AWS` or `Google`) Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_PROVIDER` (`AWS`) |
 | `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID` | AWS Access Key ID for the Bucket. Defaults to `AWS_ACCESS_KEY_ID` |
 | `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY` | AWS Secret Access Key. Defaults to `AWS_SECRET_ACCESS_KEY` |
 | `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_REGION` | AWS Region. Defaults to `us-east-1` |
 | `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_HOST` | Configure this for an compatible AWS host like minio. Defaults to `s3.amazonaws.com` |
 | `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT` | AWS Endpoint like `http://127.0.0.1:9000`. Defaults to `nil` |
 | `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE` | Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `true` |
+| `GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`| Google project. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`|
+| `GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`| Google service account. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`|
+| `GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION`| Default Google key file. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION` (`/gcs/key.json`)|
 | `GITLAB_UPLOADS_STORAGE_PATH` | The location where uploads objects are stored. Defaults to `$GITLAB_SHARED_DIR/public`. |
 | `GITLAB_UPLOADS_BASE_DIR` | Mapping for the `GITLAB_UPLOADS_STORAGE_PATH`. Defaults to `uploads/-/system` |
 | `GITLAB_UPLOADS_OBJECT_STORE_ENABLED` | Enables Object Store for UPLOADS that will be remote stored. Defaults to `false` |
 | `GITLAB_UPLOADS_OBJECT_STORE_REMOTE_DIRECTORY` | Bucket name to store the UPLOADS. Defaults to `uploads` |
 | `GITLAB_UPLOADS_OBJECT_STORE_BACKGROUND_UPLOAD` | Temporary option to limit automatic upload. Defaults to `false` |
 | `GITLAB_UPLOADS_OBJECT_STORE_PROXY_DOWNLOAD` | Passthrough all downloads via GitLab instead of using Redirects to Object Storage. Defaults to `false` |
-| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_PROVIDER` | Connection Provider for the Object Store. Currently only AWS is supported. Defaults to `AWS` |
+| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_PROVIDER` | Connection Provider for the Object Store. (`AWS` or `Google`) Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_PROVIDER` (`AWS`) |
 | `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID` | AWS Access Key ID for the Bucket. Defaults to `AWS_ACCESS_KEY_ID` |
 | `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY` | AWS Secret Access Key. Defaults to `AWS_SECRET_ACCESS_KEY` |
 | `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_REGION` | AWS Region. Defaults to `us-east-1` |
 | `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_HOST` | Configure this for an compatible AWS host like minio. Defaults to `s3.amazonaws.com` |
 | `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT` | AWS Endpoint like `http://127.0.0.1:9000`. Defaults to `nil` |
 | `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE` | Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `true` |
+| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`| Google project. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`|
+| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`| Google service account. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`|
+| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION`| Default Google key file. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION` (`/gcs/key.json`)|
 | `GITLAB_MATTERMOST_ENABLED` | Enable/Disable GitLab Mattermost for *Add Mattermost button*. Defaults to `false`. |
 | `GITLAB_MATTERMOST_URL` | Sets Mattermost URL. Defaults to `https://mattermost.example.com`. |
 | `GITLAB_BACKUP_SCHEDULE` | Setup cron job to automatic backups. Possible values `disable`, `daily`, `weekly` or `monthly`. Disabled by default |
@@ -912,6 +980,13 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_PAGES_ARTIFACTS_SERVER` | Set to `true` to enable pages artifactsserver, enabled by default. |
 | `GITLAB_PAGES_EXTERNAL_HTTP` | Sets GitLab Pages external http to receive request on an independen port. Disabled by default |
 | `GITLAB_PAGES_EXTERNAL_HTTPS` | Sets GitLab Pages external https to receive request on an independen port. Disabled by default |
+| `GITLAB_PAGES_ACCESS_CONTROL` | Set to `true` to enable access control for pages. Allows access to a Pages site to be controlled based on a user’s membership to that project. Disabled by default. |
+| `GITLAB_PAGES_NGINX_PROXY` | Disable the nginx proxy for gitlab pages, defaults to `true`. When set to `false` this will turn off the nginx proxy to the gitlab pages daemon, used when the user provides their own http load balancer in combination with a gitlab pages custom domain setup. |
+| `GITLAB_PAGES_ACCESS_SECRET` | Secret Hash, minimal 32 characters, if omitted, it will be auto generated. |
+| `GITLAB_PAGES_ACCESS_CONTROL_SERVER` | Gitlab instance URI, example: `https://gitlab.example.io` |
+| `GITLAB_PAGES_ACCESS_CLIENT_ID` | Client ID from earlier generated OAuth application |
+| `GITLAB_PAGES_ACCESS_CLIENT_SECRET` | Client Secret from earlier genereated OAuth application |
+| `GITLAB_PAGES_ACCESS_REDIRECT_URI` | Redirect URI, non existing pages domain to redirect to pages daemon, `https://projects.example.io` |
 | `GITLAB_HTTPS` | Set to `true` to enable https support, disabled by default. |
 | `GITALY_CLIENT_PATH` | Set default path for gitaly. defaults to `/home/git/gitaly` |
 | `GITALY_TOKEN` | Set a gitaly token, blank by default. |
@@ -996,6 +1071,11 @@ Below is the complete list of available options that can be used to customize yo
 | `LDAP_BLOCK_AUTO_CREATED_USERS` | Locks down those users until they have been cleared by the admin. Defaults to `false`. |
 | `LDAP_BASE` | Base where we can search for users. No default. |
 | `LDAP_USER_FILTER` | Filter LDAP users. No default. |
+| `LDAP_USER_ATTRIBUTE_USERNAME` | Attribute fields for the identification of a user. Default to `['uid', 'userid', 'sAMAccountName']` |
+| `LDAP_USER_ATTRIBUTE_MAIL` | Attribute fields for the shown mail address. Default to `['mail', 'email', 'userPrincipalName']` |
+| `LDAP_USER_ATTRIBUTE_NAME` | Attribute field for the used username of a user. Default to `cn`. |
+| `LDAP_USER_ATTRIBUTE_FIRSTNAME` | Attribute field for the forename of a user. Default to `givenName` |
+| `LDAP_USER_ATTRIBUTE_LASTNAME` |  Attribute field for the surname of a user. Default to `sn` |
 | `LDAP_LOWERCASE_USERNAMES` | GitLab will lower case the username for the LDAP Server. Defaults to `false` |
 | `OAUTH_ENABLED` | Enable OAuth support. Defaults to `true` if any of the support OAuth providers is configured, else defaults to `false`. |
 | `OAUTH_AUTO_SIGN_IN_WITH_PROVIDER` | Automatically sign in with a specific OAuth provider without showing GitLab sign-in page. Accepted values are `cas3`, `github`, `bitbucket`, `gitlab`, `google_oauth2`, `facebook`, `twitter`, `saml`, `crowd`, `auth0` and `azure_oauth2`. No default. |
@@ -1038,6 +1118,7 @@ Below is the complete list of available options that can be used to customize yo
 | `OAUTH_SAML_GROUPS_ATTRIBUTE` | Map groups attribute in a SAMLResponse to external groups. No defaults. |
 | `OAUTH_SAML_EXTERNAL_GROUPS` | List of external groups in a SAMLResponse. Value is comma separated list of single quoted groups. Example: `'group1','group2'`. No defaults. |
 | `OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL` | Map 'email' attribute name in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [GitLab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details. |
+| `OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME` | Map 'username' attribute in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [GitLab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details. |
 | `OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME` | Map 'name' attribute in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [GitLab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details. |
 | `OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME` | Map 'first_name' attribute in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [GitLab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details. |
 | `OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME` | Map 'last_name' attribute in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [GitLab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details. |
@@ -1106,7 +1187,7 @@ Execute the rake task to create a backup.
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:11.0.1 app:rake gitlab:backup:create
+    sameersbn/gitlab:11.11.3 app:rake gitlab:backup:create
 ```
 
 A backup will be created in the backups folder of the [Data Store](#data-store). You can change the location of the backups using the `GITLAB_BACKUP_DIR` configuration parameter.
@@ -1134,14 +1215,14 @@ you need to prepare the database:
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:11.0.1 app:rake db:setup
+    sameersbn/gitlab:11.11.3 app:rake db:setup
 ```
 
 Execute the rake task to restore a backup. Make sure you run the container in interactive mode `-it`.
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:11.0.1 app:rake gitlab:backup:restore
+    sameersbn/gitlab:11.11.3 app:rake gitlab:backup:restore
 ```
 
 The list of all available backups will be displayed in reverse chronological order. Select the backup you want to restore and continue.
@@ -1150,7 +1231,7 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:11.0.1 app:rake gitlab:backup:restore BACKUP=1417624827
+    sameersbn/gitlab:11.11.3 app:rake gitlab:backup:restore BACKUP=1417624827
 ```
 
 When using `docker-compose` you may use the following command to execute the restore.
@@ -1199,7 +1280,7 @@ The `app:rake` command allows you to run gitlab rake tasks. To run a rake task s
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:11.0.1 app:rake gitlab:env:info
+    sameersbn/gitlab:11.11.3 app:rake gitlab:env:info
 ```
 
 You can also use `docker exec` to run raketasks on running gitlab instance. For example,
@@ -1212,7 +1293,7 @@ Similarly, to import bare repositories into GitLab project instance
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:11.0.1 app:rake gitlab:import:repos
+    sameersbn/gitlab:11.11.3 app:rake gitlab:import:repos
 ```
 
 Or
@@ -1243,7 +1324,7 @@ Copy all the **bare** git repositories to the `repositories/` directory of the [
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:11.0.1 app:rake gitlab:import:repos
+    sameersbn/gitlab:11.11.3 app:rake gitlab:import:repos
 ```
 
 Watch the logs and your repositories should be available into your new gitlab container.
@@ -1265,12 +1346,12 @@ To upgrade to newer gitlab releases, simply follow this 4 step upgrade procedure
 
 > **Note**
 >
-> Upgrading to `sameersbn/gitlab:11.0.1` from `sameersbn/gitlab:7.x.x` can cause issues. It is therefore required that you first upgrade to `sameersbn/gitlab:8.0.5-1` before upgrading to `sameersbn/gitlab:8.1.0` or higher.
+> Upgrading to `sameersbn/gitlab:11.11.3` from `sameersbn/gitlab:7.x.x` can cause issues. It is therefore required that you first upgrade to `sameersbn/gitlab:8.0.5-1` before upgrading to `sameersbn/gitlab:8.1.0` or higher.
 
 - **Step 1**: Update the docker image.
 
 ```bash
-docker pull sameersbn/gitlab:11.0.1
+docker pull sameersbn/gitlab:11.11.3
 ```
 
 - **Step 2**: Stop and remove the currently running image
@@ -1296,7 +1377,7 @@ Replace `x.x.x` with the version you are upgrading from. For example, if you are
 > **Note**: Since GitLab `8.11.0` you need to provide the `GITLAB_SECRETS_SECRET_KEY_BASE` and `GITLAB_SECRETS_OTP_KEY_BASE` parameters while starting the image. These should initially both have the same value as the contents of the `/home/git/data/.secret` file. See [Available Configuration Parameters](#available-configuration-parameters) for more information on these parameters.
 
 ```bash
-docker run --name gitlab -d [OPTIONS] sameersbn/gitlab:11.0.1
+docker run --name gitlab -d [OPTIONS] sameersbn/gitlab:11.11.3
 ```
 
 ## Shell Access

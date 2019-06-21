@@ -3,7 +3,7 @@ version: '2'
 services:
   redis:
     restart: always
-    image: sameersbn/redis:latest
+    image: sameersbn/redis:4.0.9-1
     command:
     - --loglevel warning
     volumes:
@@ -11,7 +11,7 @@ services:
 
   postgresql:
     restart: always
-    image: sameersbn/postgresql:9.6-2
+    image: sameersbn/postgresql:10
     volumes:
     - /srv/docker/gitlab/postgresql:/var/lib/postgresql:Z
     environment:
@@ -22,7 +22,7 @@ services:
 
   gitlab:
     restart: always
-    image: sameersbn/gitlab:11.0.1
+    image: sameersbn/gitlab:11.11.3
     depends_on:
     - redis
     - postgresql
@@ -134,6 +134,7 @@ services:
     - OAUTH_SAML_EXTERNAL_GROUPS=
     - OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL=
     - OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME=
     - OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME=
     - OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME=
 

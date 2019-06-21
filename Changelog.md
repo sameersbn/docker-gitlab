@@ -3,6 +3,241 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**11.11.3**
+- gitlab: upgrade CE to v11.11.3
+- Update gitaly to 1.42.4
+- Update golang to 1.12.6
+
+**11.11.2**
+- gitlab: upgrade CE to v11.11.2
+- Update gitaly to 1.42.3
+
+**11.11.1**
+- gitlab: upgrade CE to v11.11.1
+- Update gitaly to 1.42.2
+
+**11.11.0**
+- gitlab: upgrade CE to v11.11.0
+- Update gitaly to 1.42.0
+- Update gitlab-shell to 9.1.0
+- Update gitlab-workhorse to 8.7.0
+
+**11.10.4**
+- gitlab: upgrade CE to v11.10.4
+
+**11.10.3**
+- gitlab: upgrade CE to v11.10.3
+
+**11.10.2**
+- gitlab: upgrade CE to v11.10.2
+
+**11.10.1**
+- gitlab: upgrade CE to v11.10.1
+
+**11.10.0**
+- gitlab: upgrade CE to v11.10.0
+
+**11.9.8**
+- gitlab: upgrade CE to v11.9.8
+
+**11.9.7**
+- gitlab: upgrade CE to v11.9.7
+
+**11.9.6**
+- gitlab: upgrade CE to v11.9.6
+
+**11.9.5**
+- gitlab: upgrade CE to v11.9.5
+
+**11.9.4**
+- gitlab: upgrade CE to v11.9.4
+- Update gitlab-workhorse to 8.3.3
+
+**11.9.1**
+- gitlab: upgrade CE to v11.9.1
+- Update gitaly to 1.27.1
+
+**11.9.0**
+- gitlab: upgrade CE to v11.9.0
+
+**11.8.3**
+- gitlab: upgrade CE to v11.8.3
+
+**11.8.2**
+- gitlab: upgrade CE to v11.8.2
+
+**11.8.1**
+- gitlab: upgrade CE to v11.8.1
+
+**11.8.0**
+- gitlab: upgrade CE to v11.8.0
+- Update gitlab-workhorse to 8.3.1
+- Update gitaly to 1.20.0
+- Update gitlab-pages to 1.5.0
+
+**11.7.5**
+- gitlab: upgrade CE to v11.7.5
+
+**11.7.4**
+- gitlab: upgrade CE to v11.7.4
+
+**11.7.3**
+- gitlab: upgrade CE to v11.7.3
+- Update gitlab-workhorse to 8.1.1
+- Update gitaly to 1.13.0
+- Update gitlab-pages to 1.4.0
+
+**11.7.0**
+- gitlab: upgrade CE to v11.7.0
+
+**11.6.5**
+- gitlab: upgrade CE to v11.6.5
+
+**11.6.4**
+- gitlab: upgrade CE to v11.6.4
+
+**11.6.3**
+- gitlab: upgrade CE to v11.6.3
+
+**11.6.2**
+- gitlab: upgrade CE to v11.6.2
+
+**11.6.1**
+- gitlab: upgrade CE to v11.6.1
+- Added `GITLAB_IMPERSONATION_ENABLED`
+- Added `OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME`
+- Added `GITLAB_PAGES_ACCESS_CONTROL_SERVER`
+- Added `GITLAB_PAGES_ACCESS_CLIENT_ID`
+- Added `GITLAB_PAGES_ACCESS_CLIENT_SECRET`
+- Added `GITLAB_PAGES_ACCESS_SECRET`
+- Added `GITLAB_PAGES_ACCESS_REDIRECT_URI`
+
+**11.6.0**
+- gitlab: upgrade CE to v11.6.0
+- Update gitaly to 1.7.1
+- Update gitlab-shell to 8.4.3
+- Update gitlab-workhorse to 7.6.0
+- Update golang to 1.11.4
+- Added `LDAP_USER_ATTRIBUTE_USERNAME`
+- Added `LDAP_USER_ATTRIBUTE_MAIL`
+- Added `LDAP_USER_ATTRIBUTE_NAME`
+- Added `LDAP_USER_ATTRIBUTE_FIRSTNAME`
+- Added `LDAP_USER_ATTRIBUTE_LASTNAME`
+- Added `GITLAB_BACKUP_DIR_CHOWN`
+- Added `GITLAB_BACKUP_DIR_GROUP`
+- Added `GITLAB_PAGES_NGINX_PROXY`
+
+**11.5.5**
+- gitlab: upgrade CE to v11.5.5
+
+**11.5.4**
+- gitlab: upgrade CE to v11.5.4
+
+**11.5.3**
+- gitlab: upgrade CE to v11.5.3
+
+**11.5.2**
+- gitlab: upgrade CE to v11.5.2
+
+**11.5.1-1**
+- Fixed GitLab Dependencies
+
+**11.5.1**
+- gitlab: upgrade CE to v11.5.1
+
+**11.5.0**
+- gitlab: upgrade CE to v11.5.0
+
+**11.4.7**
+- gitlab: upgrade CE to v11.4.7
+
+**11.4.6**
+- gitlab: upgrade CE to v11.4.6
+
+**11.4.5**
+- gitlab: upgrade CE to v11.4.5
+
+**11.4.4**
+- gitlab: upgrade CE to v11.4.4
+- golang: update to 1.10.4
+
+**11.4.3**
+- gitlab: upgrade CE to v11.4.3
+
+**11.4.2**
+- gitlab: upgrade CE to v11.4.2
+
+**11.4.1**
+- gitlab: upgrade CE to v11.4.1
+- Add docs how to reuse ssh port [#1731](https://github.com/sameersbn/docker-gitlab/pull/1731)
+
+**11.4.0**
+- gitlab: upgrade CE to v11.4.0
+- baseimage: upgrade to xenial-20181005
+
+**11.3.6**
+- gitlab: upgrade CE to v11.3.6
+
+**11.3.5**
+- gitlab: upgrade CE to v11.3.5
+
+**11.3.4**
+- gitlab: upgrade CE to v11.3.4
+
+**11.3.3**
+- gitlab: upgrade CE to v11.3.3
+
+**11.3.2**
+- gitlab: upgrade CE to v11.3.2
+
+**11.3.1**
+- gitlab: upgrade CE to v11.3.1
+
+**11.3.0**
+- gitlab: upgrade CE to v11.3.0
+- Fix backup config stripping for when AWS & GCS backups are disabled [#1725](https://github.com/sameersbn/docker-gitlab/pull/1725)
+- Correct Backup Date format for selective backups [#1699](https://github.com/sameersbn/docker-gitlab/pull/1699)
+- Fix gitlay-ssh symlink to enable rebase/squash in forks
+
+**11.2.3**
+- gitlab: upgrade CE to v11.2.3
+
+**11.2.2**
+- gitlab: upgrade CE to v11.2.2
+
+**11.2.1**
+- gitlab: upgrade CE to v11.2.1
+
+**11.2.0**
+- gitlab: upgrade CE to v11.2.0
+- ADD `GITLAB_DEFAULT_THEME`
+
+**11.1.4**
+- gitlab: upgrade CE to v11.1.4
+
+**11.1.3**
+- gitlab: upgrade CE to v11.1.3
+- Upgrade redis to 4.0.9-1
+
+**11.1.2**
+- gitlab: upgrade CE to v11.1.2
+
+**11.1.1**
+- gitlab: upgrade CE to v11.1.1
+
+**11.1.0**
+- gitlab: upgrade CE to v11.1.0
+
+**11.0.4**
+- gitlab: upgrade CE to v11.0.4
+
+**11.0.3**
+- gitlab: upgrade CE to v11.0.3
+- ruby: update to 2.4
+
+**11.0.2**
+- gitlab: upgrade CE to v11.0.2
+
 **11.0.1**
 - gitlab: upgrade CE to v11.0.1
 
