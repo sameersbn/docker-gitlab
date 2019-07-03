@@ -1148,6 +1148,7 @@ Below is the complete list of available options that can be used to customize yo
 | `AWS_BACKUP_MULTIPART_CHUNK_SIZE` | Enables mulitpart uploads when file size reaches a defined size. See at [AWS S3 Docs](http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html) |
 | `AWS_BACKUP_ENCRYPTION`     | Turns on AWS Server-Side Encryption.  Defaults to `false`. See at [AWS S3 Docs](http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingServerSideEncryption.html) |
 | `AWS_BACKUP_STORAGE_CLASS` | Configure the storage class for the item. Defaults to `STANDARD`  See at [AWS S3 Docs](http://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html) |
+| `AWS_BACKUP_SIGNATURE_VERSION` | Configure the storage signature version. Defaults to `4`  See at [AWS S3 Docs](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingAWSSDK.html#specify-signature-version) |
 | `GCS_BACKUPS` | Enables automatic uploads to an Google Cloud Storage (GCS) instance. Defaults to `false`.  |
 | `GCS_BACKUP_ACCESS_KEY_ID` | GCS access key id. No defaults |
 | `GCS_BACKUP_SECRET_ACCESS_KEY` | GCS secret access key. No defaults |

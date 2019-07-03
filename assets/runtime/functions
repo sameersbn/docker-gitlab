@@ -844,7 +844,8 @@ gitlab_configure_backups_aws() {
       AWS_BACKUP_SECRET_ACCESS_KEY \
       AWS_BACKUP_BUCKET \
       AWS_BACKUP_MULTIPART_CHUNK_SIZE \
-      AWS_BACKUP_STORAGE_CLASS
+      AWS_BACKUP_STORAGE_CLASS \
+      AWS_BACKUP_SIGNATURE_VERSION
 }
 
 gitlab_configure_backup_gcs() {
