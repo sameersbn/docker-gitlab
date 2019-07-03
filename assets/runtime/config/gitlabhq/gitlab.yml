@@ -606,6 +606,7 @@ production: &base
         path_style: {{AWS_BACKUP_PATH_STYLE}}
         aws_access_key_id: {{AWS_BACKUP_ACCESS_KEY_ID}}
         aws_secret_access_key: '{{AWS_BACKUP_SECRET_ACCESS_KEY}}'
+        aws_signature_version: {{AWS_BACKUP_SIGNATURE_VERSION}}
       # The remote 'directory' to store your backups. For S3, this would be the bucket name.
       remote_directory: '{{AWS_BACKUP_BUCKET}}'
       #start-multipart-aws
