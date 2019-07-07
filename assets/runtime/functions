@@ -1802,7 +1802,16 @@ execute_raketask() {
     return 1
   fi
 
+  if [[ ${1} == gitlab:backup:create  ]]; then
+    /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+    supervisorctl stop gitlab_extensions:*
+    supervisorctl stop gitlab:*
+  fi
+
   if [[ ${1} == gitlab:backup:restore ]]; then
+    /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+    supervisorctl stop gitlab_extensions:*
+    supervisorctl stop gitlab:*
     interactive=true
     for arg in $@
     do

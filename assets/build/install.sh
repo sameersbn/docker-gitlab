@@ -402,6 +402,19 @@ stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 EOF
 
+
+cat > /etc/supervisor/conf.d/groups.conf <<EOF
+[group:core]
+programs=gitaly
+priority=5
+[group:gitlab]
+programs=unicorn,gitlab-workhorse
+priority=10
+[group:gitlab_extensions]
+programs=sshd,nginx,mail_room,cron
+priority=20
+EOF
+
 # purge build dependencies and cleanup apt
 DEBIAN_FRONTEND=noninteractive apt-get purge -y --auto-remove ${BUILD_DEPENDENCIES}
 rm -rf /var/lib/apt/lists/*

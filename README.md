@@ -1198,7 +1198,14 @@ A backup will be created in the backups folder of the [Data Store](#data-store).
 When using `docker-compose` you may use the following command to execute the backup.
 
 ```bash
+docker-compose rm -sf gitlab
 docker-compose run --rm gitlab app:rake gitlab:backup:create
+```
+
+Afterwards you can bring your Instance back with the following command:
+
+```bash
+docker-compose up -d
 ```
 
 ## Restoring Backups
@@ -1241,6 +1248,7 @@ When using `docker-compose` you may use the following command to execute the res
 docker-compose run --rm gitlab app:rake gitlab:backup:restore # List available backups
 docker-compose run --rm gitlab app:rake gitlab:backup:restore BACKUP=1417624827 # Choose to restore from 1417624827
 ```
+
 
 ## Host Key Backups (ssh)
 
