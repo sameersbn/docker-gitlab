@@ -9,6 +9,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 - Update gitlab-shell to 9.3.0
 - Update gitlab-pages to 1.6.1
 - ruby: update to 2.6
+- python: update to 3
 
 **11.11.3**
 - gitlab: upgrade CE to v11.11.3
