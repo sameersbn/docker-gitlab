@@ -18,7 +18,11 @@ rm -f /home/git/gitlab-shell/bin/gitlab-shell
 tee -a /home/git/gitlab-shell/bin/gitlab-shell > /dev/null <<EOF
 #!/bin/sh
 
-ssh -i /home/git/.ssh/id_rsa -p ${GITLAB_SSH_PORT} -o StrictHostKeyChecking=no git@127.0.0.1 "SSH_ORIGINAL_COMMAND=\"\$SSH_ORIGINAL_COMMAND\" \$0 \$@"
+if [ -n "\${SSH_ORIGINAL_COMMAND}" ]; then
+  ssh_original_command="SSH_ORIGINAL_COMMAND=\"\$SSH_ORIGINAL_COMMAND\""
+fi
+
+ssh -i /home/git/.ssh/id_rsa -p ${GITLAB_SSH_PORT} -o StrictHostKeyChecking=no git@127.0.0.1 "\$ssh_original_command \$0 \$@"
 EOF
 chown git:git /home/git/gitlab-shell/bin/gitlab-shell
 chmod u+x /home/git/gitlab-shell/bin/gitlab-shell
