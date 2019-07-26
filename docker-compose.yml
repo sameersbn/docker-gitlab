@@ -44,8 +44,8 @@ services:
     - REDIS_HOST=redis
     - REDIS_PORT=6379
 
-    - TZ=Asia/Kolkata
-    - GITLAB_TIMEZONE=Kolkata
+    - TZ=Asia/Shanghai
+    - GITLAB_TIMEZONE=Beijing
 
     - GITLAB_HTTPS=false
     - SSL_SELF_SIGNED=false
@@ -54,9 +54,9 @@ services:
     - GITLAB_PORT=10080
     - GITLAB_SSH_PORT=10022
     - GITLAB_RELATIVE_URL_ROOT=
-    - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
-    - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alphanumeric-string
-    - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alphanumeric-string
+    - GITLAB_SECRETS_DB_KEY_BASE=JwsMwJpxPnrfxsKdtCNTppmxnxbhXz4m9Wwcq3PLbjmhT9kgXN7RcgFsWFsxttt9
+    - GITLAB_SECRETS_SECRET_KEY_BASE=JwsMwJpxPnrfxsKdtCNTppmxnxbhXz4m9Wwcq3PLbjmhT9kgXN7RcgFsWFsxttt9
+    - GITLAB_SECRETS_OTP_KEY_BASE=JwsMwJpxPnrfxsKdtCNTppmxnxbhXz4m9Wwcq3PLbjmhT9kgXN7RcgFsWFsxttt9
 
     - GITLAB_ROOT_PASSWORD=
     - GITLAB_ROOT_EMAIL=
