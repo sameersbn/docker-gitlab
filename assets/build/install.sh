@@ -168,6 +168,9 @@ exec_as_git yarn install --production --pure-lockfile
 exec_as_git yarn add ajv@^4.0.0
 
 echo "Compiling assets. Please be patient, this could take a while..."
+# FIX https://github.com/sameersbn/docker-gitlab/issues/1962
+# https://gitlab.com/gitlab-org/gitlab-ee/blob/master/config/initializers/1_postgresql_only.rb
+rm ${GITLAB_INSTALL_DIR}/config/initializers/1_postgresql_only.rb
 exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true NODE_OPTIONS="--max-old-space-size=4096"
 
 # remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
