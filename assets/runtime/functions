@@ -102,47 +102,30 @@ gitlab_finalize_database_parameters() {
   # is a mysql or postgresql database linked?
   # requires that the mysql or postgresql containers have exposed
   # port 3306 and 5432 respectively.
-  if [[ -n ${MYSQL_PORT_3306_TCP_ADDR} ]]; then
-    DB_ADAPTER=${DB_ADAPTER:-mysql2}
-    DB_HOST=${DB_HOST:-${MYSQL_PORT_3306_TCP_ADDR}}
-    DB_PORT=${DB_PORT:-${MYSQL_PORT_3306_TCP_PORT}}
+  DB_HOST=${DB_HOST:-${POSTGRESQL_PORT_5432_TCP_ADDR}}
+  DB_PORT=${DB_PORT:-${POSTGRESQL_PORT_5432_TCP_PORT}}
 
-    # support for linked sameersbn/mysql image
-    DB_USER=${DB_USER:-${MYSQL_ENV_DB_USER}}
-    DB_PASS=${DB_PASS:-${MYSQL_ENV_DB_PASS}}
-    DB_NAME=${DB_NAME:-${MYSQL_ENV_DB_NAME}}
+  # support for linked official postgres image
+  DB_USER=${DB_USER:-${POSTGRESQL_ENV_POSTGRES_USER}}
+  DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_POSTGRES_PASSWORD}}
+  DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_POSTGRES_DB}}
+  DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_POSTGRES_USER}}
 
-    # support for linked orchardup/mysql and enturylink/mysql image
-    # also supports official mysql image
-    DB_USER=${DB_USER:-${MYSQL_ENV_MYSQL_USER}}
-    DB_PASS=${DB_PASS:-${MYSQL_ENV_MYSQL_PASSWORD}}
-    DB_NAME=${DB_NAME:-${MYSQL_ENV_MYSQL_DATABASE}}
-  elif [[ -n ${POSTGRESQL_PORT_5432_TCP_ADDR} ]]; then
-    DB_ADAPTER=${DB_ADAPTER:-postgresql}
-    DB_HOST=${DB_HOST:-${POSTGRESQL_PORT_5432_TCP_ADDR}}
-    DB_PORT=${DB_PORT:-${POSTGRESQL_PORT_5432_TCP_PORT}}
+  # support for linked sameersbn/postgresql image
+  DB_USER=${DB_USER:-${POSTGRESQL_ENV_DB_USER}}
+  DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_DB_PASS}}
+  DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_DB_NAME}}
 
-    # support for linked official postgres image
-    DB_USER=${DB_USER:-${POSTGRESQL_ENV_POSTGRES_USER}}
-    DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_POSTGRES_PASSWORD}}
-    DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_POSTGRES_DB}}
-    DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_POSTGRES_USER}}
+  # support for linked orchardup/postgresql image
+  DB_USER=${DB_USER:-${POSTGRESQL_ENV_POSTGRESQL_USER}}
+  DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_POSTGRESQL_PASS}}
+  DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_POSTGRESQL_DB}}
 
-    # support for linked sameersbn/postgresql image
-    DB_USER=${DB_USER:-${POSTGRESQL_ENV_DB_USER}}
-    DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_DB_PASS}}
-    DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_DB_NAME}}
-
-    # support for linked orchardup/postgresql image
-    DB_USER=${DB_USER:-${POSTGRESQL_ENV_POSTGRESQL_USER}}
-    DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_POSTGRESQL_PASS}}
-    DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_POSTGRESQL_DB}}
-
-    # support for linked paintedfox/postgresql image
-    DB_USER=${DB_USER:-${POSTGRESQL_ENV_USER}}
-    DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_PASS}}
-    DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_DB}}
-  fi
+  # support for linked paintedfox/postgresql image
+  DB_USER=${DB_USER:-${POSTGRESQL_ENV_USER}}
+  DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_PASS}}
+  DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_DB}}
+  
 
   if [[ -z ${DB_HOST} ]]; then
     echo
@@ -155,27 +138,11 @@ gitlab_finalize_database_parameters() {
   fi
 
   # set default port number if not specified
-  DB_ADAPTER=${DB_ADAPTER:-postgresql}
-  case ${DB_ADAPTER} in
-    mysql2)
-      DB_ENCODING=${DB_ENCODING:-utf8}
-      DB_COLLATION=${DB_COLLATION:-utf8_general_ci}
-      DB_PORT=${DB_PORT:-3306}
-      ;;
-    postgresql)
-      DB_ENCODING=${DB_ENCODING:-unicode}
-      # DB_COLLATION: Not supported for postgresql and will be removed below.
-      DB_PORT=${DB_PORT:-5432}
-      ;;
-    *)
-      echo
-      echo "ERROR: "
-      echo "  Please specify the database type in use via the DB_ADAPTER configuration option."
-      echo "  Accepted values are \"postgresql\" or \"mysql2\". Aborting..."
-      echo
-      return 1
-      ;;
-  esac
+
+  DB_ENCODING=${DB_ENCODING:-unicode}
+  # DB_COLLATION: Not supported for postgresql and will be removed below.
+  DB_PORT=${DB_PORT:-5432}
+
 
   # set default user and database
   DB_USER=${DB_USER:-root}
@@ -183,15 +150,10 @@ gitlab_finalize_database_parameters() {
 }
 
 gitlab_check_database_connection() {
-  case ${DB_ADAPTER} in
-    mysql2)
-      prog="mysqladmin -h ${DB_HOST} -P ${DB_PORT} -u ${DB_USER} ${DB_PASS:+-p$DB_PASS} status"
-      ;;
-    postgresql)
-      prog=$(find /usr/lib/postgresql/ -name pg_isready)
-      prog="${prog} -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -t 1"
-      ;;
-  esac
+
+  prog=$(find /usr/lib/postgresql/ -name pg_isready)
+  prog="${prog} -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -t 1"
+
   timeout=60
   while ! ${prog} >/dev/null 2>&1
   do
@@ -214,22 +176,13 @@ gitlab_configure_database() {
   gitlab_check_database_connection
 
   update_template ${GITLAB_DATABASE_CONFIG} \
-    DB_ADAPTER \
     DB_ENCODING \
-    DB_COLLATION \
     DB_HOST \
     DB_PORT \
     DB_NAME \
     DB_USER \
     DB_PASS \
     DB_POOL
-
-  if [[ ${DB_ADAPTER} == postgresql ]]; then
-    exec_as_git sed -i \
-      -e "/reconnect: /d" \
-      -e "/collation: /d" \
-      ${GITLAB_DATABASE_CONFIG}
-  fi
 }
 
 gitlab_finalize_redis_parameters() {
@@ -1724,16 +1677,9 @@ configure_nginx() {
 
 migrate_database() {
   # run the `gitlab:setup` rake task if required
-  case ${DB_ADAPTER} in
-    mysql2)
-      QUERY="SELECT count(*) FROM information_schema.tables WHERE table_schema = '${DB_NAME}';"
-      COUNT=$(mysql -h ${DB_HOST} -P ${DB_PORT} -u ${DB_USER} ${DB_PASS:+-p$DB_PASS} -ss -e "${QUERY}")
-      ;;
-    postgresql)
-      QUERY="SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public';"
-      COUNT=$(PGPASSWORD="${DB_PASS}" psql -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -Atw -c "${QUERY}")
-      ;;
-  esac
+  QUERY="SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public';"
+  COUNT=$(PGPASSWORD="${DB_PASS}" psql -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -Atw -c "${QUERY}")
+
 
   if [[ -z ${COUNT} || ${COUNT} -eq 0 ]]; then
     echo "Setting up GitLab for firstrun. Please be patient, this could take a while..."
@@ -1772,10 +1718,6 @@ migrate_database() {
 
     echo "Migrating database..."
     exec_as_git bundle exec rake db:migrate >/dev/null
-
-    if [[ ${DB_ADAPTER} == mysql2 ]]; then
-      exec_as_git bundle exec rake add_limits_mysql >/dev/null
-    fi
 
     echo "${GITLAB_VERSION}" > ${GITLAB_TEMP_DIR}/VERSION
     rm -rf ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT # force cache cleanup
