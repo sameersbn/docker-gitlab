@@ -1,4 +1,4 @@
-FROM ubuntu:xenial-20190222
+FROM ubuntu:xenial-20190720
 
 ARG BUILD_DATE
 ARG VCS_REF
@@ -43,9 +43,9 @@ RUN apt-get update \
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
       sudo supervisor logrotate locales curl \
-      nginx openssh-server mysql-client postgresql-client redis-tools \
+      nginx openssh-server postgresql-client-10 redis-tools \
       git-core gnupg2 ruby${RUBY_VERSION} python3 python3-docutils nodejs yarn gettext-base \
-      libmysqlclient20 libpq5 zlib1g libyaml-0-2 libssl1.0.0 \
+      libpq5 zlib1g libyaml-0-2 libssl1.0.0 \
       libgdbm3 libreadline6 libncurses5 libffi6 \
       libxml2 libxslt1.1 libcurl3 libicu55 libre2-dev tzdata unzip libimage-exiftool-perl \
  && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
