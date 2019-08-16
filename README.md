@@ -1066,7 +1066,7 @@ and then both docker-compose and Docker Swarm can import them into your gitlab c
 
 On startup, the gitlab container will source env vars from a config file labeled `gitlab-config`, and then a secrets file labeled `gitlab-secrets` (both mounted in the default locations).
 
-See the example [`config/docker-swarm/docker-compose.yml`](./config/docker-swarm/docker-compose.yml) file, and the
+See the example [`contrib/docker-swarm/docker-compose.yml`](./config/docker-swarm/docker-compose.yml) file, and the
 example `gitlab.configs` and `gitlab.secrets` file.
 You may as well choose file names other than the example source files (`gitlab.configs` and `gitlab.secrets`) and update
 the `file: ./gitlab.configs` and `file: ./gitlab.secrets` references accordingly. But do not alter the config
