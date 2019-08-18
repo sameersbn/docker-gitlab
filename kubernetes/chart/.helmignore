@@ -1,0 +1,4 @@
+docs/*
+.git/*
+.gitignore
+CONTRIBUTING.md

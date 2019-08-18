@@ -1,0 +1,205 @@
+expose:
+  # Set the way how to expose the service. Set the type as "ingress","clusterIP","loadBalancer"
+  # or "nodePort" and fill the information in the corresponding 
+  # section
+  type: ingress
+  tls:
+    enabled: false
+    # Fill the name of secret if you want to use your own TLS certificate
+    # and private key. The secret must contain keys named tls.crt and 
+    # tls.key that contain the certificate and private key to use for TLS
+    # The certificate and private key will be generated automatically if 
+    # it is not set
+    secretName: ""
+    certExpiry: 3560
+  ingress:
+    host: gitlab.cluster.local
+    annotations:
+      ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      ingress.kubernetes.io/proxy-body-size: "0"
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      # kubernetes.io/tls-acme: "true"
+  clusterIP:
+    # The name of ClusterIP service
+    # name: gitlab
+    ports:
+      # The service port Gitlab listens on when serving with SSH
+      ssh: 22
+      # The service port Gitlab listens on when serving with HTTP
+      http: 80
+  nodePort:
+    # The name of NodePort service
+    # name: gitlab
+    ports:
+      ssh: 
+        # The service port Gitlab listens on when serving with SSH
+        port: 22
+        # The node port Gitlab listens on when serving with SSH
+        # nodePort: 30002
+      http:
+        # The service port Gitlab listens on when serving with HTTP
+        port: 80
+        # The node port Gitlab listens on when serving with HTTP
+        # nodePort: 30003
+  loadBalancer:
+    # The name of LoadBalancer service
+    # name: gitlab
+    # Set the IP if the LoadBalancer supports assigning IP
+    IP: ""
+    ports:
+      # The service port Gitlab listens on when serving with SSH
+      ssh: 22
+      # The service port Gitlab listens on when serving with HTTP
+      http: 80
+
+# The persistence is enabled by default and a default StorageClass
+# is needed in the k8s cluster to provision volumes dynamicly. 
+# Specify another StorageClass in the "storageClass" or set "existingClaim"
+# if you have already existing persistent volumes to use
+persistence:
+  enabled: false
+  # Setting it to "keep" to avoid removing PVCs during a helm delete 
+  # operation. Leaving it empty will delete PVCs after the chart deleted
+  resourcePolicy: "keep"
+  persistentVolumeClaim:
+    core:
+      # Use the existing PVC which must be created manually before bound
+      existingClaim: ""
+      # Specify the "storageClass" used to provision the volume. Or the default
+      # StorageClass will be used(the default).
+      # Set it to "-" to disable dynamic provisioning
+      storageClass: ""
+      subPath: ""
+      accessMode: ReadWriteMany
+      size: 5Gi
+    # If external database is used, the following settings for database will 
+    # be ignored
+    database:
+      existingClaim: ""
+      storageClass: ""
+      subPath: ""
+      accessMode: ReadWriteOnce
+      size: 1Gi
+    # If external Redis is used, the following settings for Redis will 
+    # be ignored
+    redis:
+      existingClaim: ""
+      storageClass: ""
+      subPath: ""
+      accessMode: ReadWriteOnce
+      size: 1Gi
+
+imagePullPolicy: IfNotPresent
+
+core:
+  image:
+    repository: sameersbn/gitlab
+    tag: 12.1.6
+  replicas: 1
+  ## Additional deployment annotations
+  podAnnotations: {}
+  # resources:
+  #  requests:
+  #    memory: 256Mi
+  #    cpu: 100m
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  env:
+    # DEBUG: true
+    TZ: Asia/Kolkata
+    GITLAB_TIMEZONE: Kolkata
+    # GITLAB_HOST: localhost
+    # GITLAB_PORT: "80"
+    # GITLAB_SSH_PORT: "22"
+    GITLAB_SECRETS_DB_KEY_BASE: bf2e47b68d6cafaef1d767e628b619365becf27571e10f196f98dc85e7771042b9203199d39aff91fcb6837c8ed83f2a912b278da50999bb11a2fbc0fba52964
+    GITLAB_SECRETS_SECRET_KEY_BASE: 6e657410d57c71b4fc3ed0d694e7842b1895a8b401d812c17fe61caf95b48a6d703cb53c112bc01ebd197a85da81b18e29682040e99b4f26594772a4a2c98c6d
+    GITLAB_SECRETS_OTP_KEY_BASE: b719fe119132c7810908bba18315259ed12888d4f5ee5430c42a776d840a396799b0a5ef0a801348c8a357f07aa72bbd58e25a84b8f247a25c72f539c7a6c5fa
+
+    # GITLAB_ROOT_PASSWORD: "changeit"
+    # GITLAB_ROOT_EMAIL: 
+
+    GITLAB_NOTIFY_ON_BROKEN_BUILDS: true
+    GITLAB_NOTIFY_PUSHER: false
+
+    GITLAB_EMAIL: notifications@example.com
+    GITLAB_EMAIL_REPLY_TO: noreply@example.com
+    GITLAB_INCOMING_EMAIL_ADDRESS: reply@example.com
+    
+    GITLAB_BACKUP_SCHEDULE: daily
+    GITLAB_BACKUP_TIME: 01:00
+
+    SMTP_ENABLED: false
+    SMTP_DOMAIN: www.example.com
+    SMTP_HOST: smtp.gmail.com
+    SMTP_PORT: 587
+    SMTP_USER: mailer@example.com
+    SMTP_PASS: password
+    SMTP_STARTTLS: true
+    SMTP_AUTHENTICATION: login
+
+    IMAP_ENABLED: false
+    IMAP_HOST: imap.gmail.com
+    IMAP_PORT: 993
+    IMAP_USER: mailer@example.com
+    IMAP_PASS: password
+    IMAP_SSL: true
+    IMAP_STARTTLS: false
+
+    OAUTH_ENABLED: false
+    OAUTH_AUTO_SIGN_IN_WITH_PROVIDER: 
+    OAUTH_ALLOW_SSO: 
+    OAUTH_BLOCK_AUTO_CREATED_USERS: true
+    OAUTH_AUTO_LINK_LDAP_USER: false
+    OAUTH_AUTO_LINK_SAML_USER: false
+    OAUTH_EXTERNAL_PROVIDERS: 
+
+database:
+  # if external database is used, set "type" to "external"
+  # and fill the connection informations in "external" section
+  type: internal
+  internal:
+    # You can configure this image to use PostgreSQL.
+    image:
+      repository: sameersbn/postgresql
+      tag: 10-2
+    # The initial superuser password for internal database
+    password: "changeit"
+    ## Additional deployment annotations
+    podAnnotations: {}
+    # resources:
+    #  requests:
+    #    memory: 256Mi
+    #    cpu: 100m
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+  external:
+    # GitLab uses a database backend to store its data. 
+    host: "192.168.0.1"
+    port: "5432"
+    username: "user"
+    password: "password"
+    databaseName: "gitlabhq_production"
+
+redis:
+  # if external Redis is used, set "type" to "external"
+  # and fill the connection informations in "external" section
+  type: internal
+  internal:
+    image:
+      repository: sameersbn/redis
+      tag: 4.0.9-2
+    ## Additional deployment annotations
+    podAnnotations: {}
+    # resources:
+    #  requests:
+    #    memory: 256Mi
+    #    cpu: 100m
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+  external:
+    host: "192.168.0.2"
+    port: "6379"

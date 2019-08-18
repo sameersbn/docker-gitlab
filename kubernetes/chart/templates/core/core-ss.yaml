@@ -1,0 +1,131 @@
+{{- $core := .Values.persistence.persistentVolumeClaim.core -}}
+{{- $ingress := .Values.expose.ingress -}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ include "gitlab.core" . }}"
+  labels:
+{{ include "gitlab.labels" . | indent 4 }}
+    component: gitlab
+spec:
+  replicas: {{ .Values.core.replicas }}
+  serviceName: {{ include "gitlab.core.serviceName" . }}
+  selector:
+    matchLabels:
+{{ include "gitlab.matchLabels" . | indent 6 }}
+      component: gitlab
+  template:
+    metadata:
+      labels:
+{{ include "gitlab.labels" . | indent 8 }}
+        component: gitlab
+      annotations:
+{{- if .Values.core.podAnnotations }}
+{{ toYaml .Values.core.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+      - name: gitlab
+        image: "{{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+      {{- range $name, $value := .Values.core.env }}
+      {{- if ne (len ($value | quote)) 0 }}
+        - name: {{ $name | quote }}
+          value: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
+      {{- if eq .Values.expose.type "ingress" }}
+        - name: GITLAB_HOST
+          value: {{ $ingress.host }}
+        {{- if .Values.expose.tls.enabled }}
+        - name: GITLAB_HTTPS
+          value: "true"
+        - name: SSL_SELF_SIGNED
+          value: "true"
+        {{- end }}
+      {{- end }}
+        - name: REDIS_HOST
+          value: {{ include "gitlab.redis.host" . | quote }}
+        - name: REDIS_PORT
+          value: {{ include "gitlab.redis.port" . | quote }}
+        - name: DB_HOST
+          value: {{ include "gitlab.database.host" . | quote }}
+        - name: DB_PORT
+          value: {{ include "gitlab.database.port" . | quote }}
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "gitlab.database" . }}
+              key: DB_USER
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "gitlab.database" . }}
+              key: DB_PASS
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "gitlab.database" . }}
+              key: DB_NAME
+        - name: DB_ADAPTER
+          value: postgresql
+        - name: GITLAB_DATA_DIR
+          value: "/home/git/data"
+        - name: GITLAB_BACKUP_SCHEDULE
+          value: disable
+        livenessProbe:
+          httpGet:
+            path: /help
+            scheme: HTTP
+            port: 80
+          initialDelaySeconds: 600
+          periodSeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /help
+            scheme: HTTP
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.core.resources | indent 10 }}
+        ports:
+        - name: ssh
+          containerPort: 22
+        - name: http
+          containerPort: 80
+        volumeMounts:
+        - name: data
+          mountPath: /home/git/data
+          subPath: {{ $core.subPath }}
+      {{- if not .Values.persistence.enabled }}
+      volumes:
+      - name: data
+        emptyDir: {}
+      {{- else if $core.existingClaim }}
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ $core.existingClaim }}
+      {{- end -}}
+      {{- if and .Values.persistence.enabled (not $core.existingClaim) }}
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ include "gitlab.core" . }}
+      {{- end -}}
+    {{- with .Values.core.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.core.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.core.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

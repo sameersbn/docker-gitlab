@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "gitlab.core.serviceName" . }}
+  labels:
+{{ include "gitlab.labels" . | indent 4 }}
+{{- if or (eq .Values.expose.type "clusterIP") (eq .Values.expose.type "ingress") }}
+{{- $clusterIP := .Values.expose.clusterIP }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: ssh
+      port: {{ $clusterIP.ports.ssh }}
+      targetPort: 22
+    - name: http
+      port: {{ $clusterIP.ports.http }}
+      targetPort: 80
+{{- else if eq .Values.expose.type "nodePort" }}
+{{- $nodePort := .Values.expose.nodePort }}
+spec:
+  type: NodePort
+  ports:
+    - name: ssh
+      port: {{ $nodePort.ports.ssh.port }}
+      targetPort: 22
+      {{- if $nodePort.ports.ssh.nodePort }}
+      nodePort: {{ $nodePort.ports.ssh.nodePort }}
+      {{- end }}
+    - name: http
+      port: {{ $nodePort.ports.http.port }}
+      targetPort: 80
+      {{- if $nodePort.ports.http.nodePort }}
+      nodePort: {{ $nodePort.ports.http.nodePort }}
+      {{- end }}
+{{- else if eq .Values.expose.type "loadBalancer" }}
+{{- $loadBalancer := .Values.expose.loadBalancer }}
+spec:
+  type: LoadBalancer
+  {{- if $loadBalancer.IP }}
+  loadBalancerIP: {{ $loadBalancer.IP }}
+  {{- end }}
+  ports:
+    - name: ssh
+      port: {{ $loadBalancer.ports.ssh }}
+      targetPort: 22
+    - name: http
+      port: {{ $loadBalancer.ports.http }}
+      targetPort: 80
+{{- end }}
+  selector:
+{{ include "gitlab.matchLabels" . | indent 4 }}
+    component: gitlab

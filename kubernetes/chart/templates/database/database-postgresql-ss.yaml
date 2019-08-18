@@ -1,0 +1,120 @@
+{{- if eq .Values.database.type "internal" -}}
+{{- $database := .Values.persistence.persistentVolumeClaim.database -}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ include "gitlab.database" . }}"
+  labels:
+{{ include "gitlab.labels" . | indent 4 }}
+    component: database
+spec:
+  replicas: 1
+  serviceName: "{{ include "gitlab.database" . }}"
+  selector:
+    matchLabels:
+{{ include "gitlab.matchLabels" . | indent 6 }}
+      component: database
+  template:
+    metadata:
+      labels:
+{{ include "gitlab.labels" . | indent 8 }}
+        component: database
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/database/database-secret.yaml") . | sha256sum }}
+{{- if .Values.database.internal.podAnnotations }}
+{{ toYaml .Values.database.internal.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+      - name: database
+        image: "{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: DB_EXTENSION
+          value: pg_trgm
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "gitlab.database" . }}
+              key: DB_USER
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "gitlab.database" . }}
+              key: DB_PASS
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "gitlab.database" . }}
+              key: DB_NAME
+        ports:
+        - name: postgres
+          containerPort: 5432
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -h
+            - localhost
+            - -U
+            - postgres
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -h
+            - localhost
+            - -U
+            - postgres
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.database.internal.resources | indent 10 }}
+        volumeMounts:
+        - name: "database-data"
+          mountPath: /var/lib/postgresql
+          subPath: {{ $database.subPath }}
+      {{- if not .Values.persistence.enabled }}
+      volumes:
+      - name: "database-data"
+        emptyDir: {}
+      {{- else if $database.existingClaim }}
+      volumes:
+      - name: "database-data"
+        persistentVolumeClaim:
+          claimName: {{ $database.existingClaim }}
+      {{- end -}}
+    {{- with .Values.database.internal.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.database.internal.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.database.internal.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+  {{- if and .Values.persistence.enabled (not $database.existingClaim) }}
+  volumeClaimTemplates:
+  - metadata:
+      name: "database-data"
+      labels:
+{{ include "gitlab.labels" . | indent 8 }}
+    spec:
+      accessModes: [{{ $database.accessMode | quote }}]
+      {{- if $database.storageClass }}
+      {{- if (eq "-" $database.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ $database.storageClass }}"
+      {{- end }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ $database.size | quote }}
+  {{- end -}}
+  {{- end -}}

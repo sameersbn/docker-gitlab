@@ -1,0 +1,20 @@
+Please wait for several minutes for Gitlab deployment to complete.
+Then you should be able to visit the Gitlab portal at:
+{{ if eq .Values.expose.type "ingress" }}
+  {{if .Values.expose.tls.enabled }}https{{ else }}http{{ end }}://{{ .Values.expose.ingress.host }} 
+{{ else if eq .Values.expose.type "clusterIP" }}
+  # Execute the following command to route the connection:
+  echo http://127.0.0.1:{{ .Values.expose.clusterIP.ports.http }}/
+  kubectl port-forward svc/{{ include "gitlab.core.serviceName" . }} --namespace {{ .Release.Namespace }} {{ .Values.expose.clusterIP.ports.http }}
+{{ else if eq .Values.expose.type "nodePort" }}
+  # Execute the following command to route the connection:
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[1].nodePort}" svc {{ include "gitlab.core.serviceName" . }})
+  export NODE_IP=$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT/
+{{ else if eq .Values.expose.type "loadBalancer" }}
+  **** NOTE: It may take a few minutes for the LoadBalancer IP to be available.   ****
+  ****       You can watch the status of by running 'kubectl get svc -w {{ include "gitlab.core.serviceName" . }}' ****
+    export SERVICE_IP=$(kubectl get svc {{ include "gitlab.core.serviceName" . }} --namespace {{ .Release.Namespace }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+    echo http://$SERVICE_IP:{{ .Values.expose.loadBalancer.ports.http }}/
+{{ end }}
+For more details, please visit https://about.gitlab.com.

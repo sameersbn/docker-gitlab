@@ -1,0 +1,95 @@
+{{- if eq .Values.redis.type "internal" -}}
+{{- $redis := .Values.persistence.persistentVolumeClaim.redis -}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "gitlab.redis" . }}
+  labels:
+{{ include "gitlab.labels" . | indent 4 }}
+    component: redis
+spec:
+  replicas: 1
+  serviceName: {{ include "gitlab.redis" . }}
+  selector:
+    matchLabels:
+{{ include "gitlab.matchLabels" . | indent 6 }}
+      component: redis
+  template:
+    metadata:
+      labels:
+{{ include "gitlab.labels" . | indent 8 }}
+        component: redis
+{{- if .Values.redis.internal.podAnnotations }}
+      annotations:
+{{ toYaml .Values.redis.internal.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+      - name: redis
+        image: "{{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        ports:
+        - name: redis
+          containerPort: 6379
+        livenessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.redis.internal.resources | indent 10 }}
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/redis
+          subPath: {{ $redis.subPath }}
+      {{- if not .Values.persistence.enabled }}
+      volumes:
+      - name: data
+        emptyDir: {}
+      {{- else if $redis.existingClaim }}
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ $redis.existingClaim }}
+      {{- end -}}
+    {{- with .Values.redis.internal.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.redis.internal.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.redis.internal.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+  {{- if and .Values.persistence.enabled (not $redis.existingClaim) }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      labels:
+{{ include "gitlab.labels" . | indent 8 }}
+    spec:
+      accessModes: [{{ $redis.accessMode | quote }}]
+      {{- if $redis.storageClass }}
+      {{- if (eq "-" $redis.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ $redis.storageClass }}"
+      {{- end }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ $redis.size | quote }}
+  {{- end -}}
+  {{- end -}}

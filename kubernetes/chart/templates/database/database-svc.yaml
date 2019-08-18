@@ -1,0 +1,16 @@
+{{- if eq .Values.database.type "internal" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ include "gitlab.database" . }}"
+  labels:
+{{ include "gitlab.labels" . | indent 4 }}
+spec:
+  ports:
+  - name: postgres
+    port: 5432
+    targetPort: 5432
+  selector:
+{{ include "gitlab.matchLabels" . | indent 4 }}
+    component: database
+{{- end -}}

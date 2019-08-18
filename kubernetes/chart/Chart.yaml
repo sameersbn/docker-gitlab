@@ -1,0 +1,16 @@
+name: docker-gitlab
+version: 0.1.0
+appVersion: 12.1.6
+description: GitLab CE is set up in the Docker image using the install from source method as documented in the the official GitLab documentation.
+keywords:
+- gitlab
+home: https://about.gitlab.com
+icon: https://gitlab.com/gitlab-com/gitlab-artwork/raw/master/logo/logo-square.png
+sources:
+- http://www.damagehead.com/docker-gitlab/
+- https://github.com/sameersbn/docker-gitlab/
+- https://hub.docker.com/r/gitlab/gitlab-ce/
+- https://docs.gitlab.com/omnibus/
+maintainers:
+- name: TimeBye
+  email: setzero@aliyun.com

@@ -1,0 +1,16 @@
+{{- if eq .Values.redis.type "internal" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "gitlab.redis" . }}
+  labels:
+{{ include "gitlab.labels" . | indent 4 }}
+spec:
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: 6379
+  selector:
+{{ include "gitlab.matchLabels" . | indent 4 }}
+    component: redis
+{{- end -}}

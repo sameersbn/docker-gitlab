@@ -1,0 +1,31 @@
+{{- if eq .Values.expose.type "ingress" -}}
+{{- $ingress := .Values.expose.ingress -}}
+{{- $tls := .Values.expose.tls -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ include "gitlab.ingress" . }}"
+  labels:
+{{ include "gitlab.labels" . | indent 4 }}
+  annotations:
+{{ toYaml $ingress.annotations | indent 4 }}
+spec:
+  {{- if $tls.enabled }}
+  tls:
+  - hosts:
+    - {{ $ingress.host }}
+    {{- if $tls.secretName }}
+    secretName: {{ $tls.secretName }}
+    {{- else }}
+    secretName: "{{ include "gitlab.ingress" . }}"
+    {{- end }}
+  {{- end }}
+  rules:
+  - host: {{ $ingress.host }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ include "gitlab.core.serviceName" . }}
+          servicePort: 80
+{{- end }}

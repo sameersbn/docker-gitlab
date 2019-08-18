@@ -1,0 +1,27 @@
+{{- $core := .Values.persistence.persistentVolumeClaim.core -}}
+{{- if and .Values.persistence.enabled (not $core.existingClaim) -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "gitlab.core" . }}
+  {{- if eq .Values.persistence.resourcePolicy "keep" }}
+  annotations:
+    helm.sh/resource-policy: keep
+  {{- end }}
+  labels:
+{{ include "gitlab.labels" . | indent 4 }}
+    component: gitlab
+spec:
+  accessModes: 
+    - {{ $core.accessMode }}
+  resources:
+    requests:
+      storage: {{ $core.size }}
+  {{- if $core.storageClass }}
+    {{- if eq "-" $core.storageClass }}
+  storageClassName: ""
+    {{- else }}
+  storageClassName: {{ $core.storageClass }}
+    {{- end }}
+  {{- end }}
+{{- end }}
