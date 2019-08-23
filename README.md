@@ -1069,7 +1069,7 @@ On startup, the gitlab container will source env vars from a config file labeled
 See the example [`contrib/docker-swarm/docker-compose.yml`](./contrib/docker-swarm/docker-compose.yml) file, and the
 example `gitlab.configs` and `gitlab.secrets` file.
 You may as well choose file names other than the example source files (`gitlab.configs` and `gitlab.secrets`) and update
-the `file: ./gitlab.configs` and `file: ./gitlab.secrets` references accordingly. But do not alter the config
+the `file: ./gitlab.configs` and `file: ./gitlab.secrets` references accordingly. But do not alter the config 
 keys [`gitlab-configs`](contrib/docker-swarm/docker-compose.yml#L158) and
 [`gitlab-secrets`](contrib/docker-swarm/docker-compose.yml#L162) as they are currently
 [hardcoded](./assets/runtime/functions#L4:L9) and thus must be kept as in the example.
