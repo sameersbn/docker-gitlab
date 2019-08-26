@@ -5,6 +5,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 
 **12.2.0**
 - gitlab: upgrade CE to v12.2.0
+- upgrade base image to ubuntu:bionic
 
 **12.1.6**
 - gitlab: upgrade CE to v12.1.6
