@@ -1439,7 +1439,7 @@ generate_ssh_key() {
 }
 
 generate_ssh_host_keys() {
-  sed -i "s|HostKey /etc/ssh/|HostKey ${GITLAB_DATA_DIR}/ssh/|g" /etc/ssh/sshd_config
+  sed -i "s|#HostKey /etc/ssh/|HostKey ${GITLAB_DATA_DIR}/ssh/|g" /etc/ssh/sshd_config
   if [[ ! -e ${GITLAB_DATA_DIR}/ssh/ssh_host_rsa_key ]]; then
     echo -n "Generating OpenSSH host keys... "
     generate_ssh_key rsa      ${GITLAB_DATA_DIR}/ssh/ssh_host_rsa_key
