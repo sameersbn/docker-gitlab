@@ -69,6 +69,11 @@ exec_as_git git config --global receive.advertisePushOptions true
 echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
 
+# disable automatic postgresql update if false
+if [[ ${GITLAB_PGRES_AUTO_UPDATE} == 'false' ]]
+    then exec_as_git touch ${GITLAB_INSTALL_DIR}/disable-postgresql-upgrade
+fi
+
 GITLAB_SHELL_VERSION=${GITLAB_SHELL_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_SHELL_VERSION)}
 GITLAB_WORKHORSE_VERSION=${GITLAB_WORKHOUSE_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_WORKHORSE_VERSION)}
 GITLAB_PAGES_VERSION=${GITLAB_PAGES_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_PAGES_VERSION)}
