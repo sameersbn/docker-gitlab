@@ -548,6 +548,7 @@ gitlab_configure_oauth_saml_attribute_statements() {
     update_template ${GITLAB_CONFIG} \
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL \
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME \
+      OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME \
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME \
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME
     # Remove undefined optional attributes
