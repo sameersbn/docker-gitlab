@@ -20,7 +20,7 @@ jobs:
     docker:
       - image: circleci/golang:1-stretch-browsers-legacy
         environment:
-          IMAGE_NAME: "sameersbn/gitlab"
+          IMAGE_NAME: "broncolee/gitlab"
 
     steps:
       - checkout
@@ -83,6 +83,12 @@ jobs:
           key: cache-v2-{{ .Branch }}
           paths:
             - /tmp/cache/layers.tar
+            
+      - run:
+          name: Push Docker Image
+          command: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker push ${IMAGE_NAME}:$(cat VERSION)
 
 workflows:
   version: 2
