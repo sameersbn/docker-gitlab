@@ -1111,6 +1111,14 @@ gitlab_configure_pages(){
   fi
 }
 
+gitlab_configure_sentry(){
+  echo "Configuring gitlab::sentry..."
+  update_template ${GITLAB_CONFIG} \
+    SENTRY_ENABLED \
+    SENTRY_DSN \
+    SENTRY_CLIENTSIDE_DSN \
+    SENTRY_ENVIRONMENT
+}
 
 nginx_configure_gitlab_ssl() {
   if [[ ${GITLAB_HTTPS} == true && -f ${SSL_CERTIFICATE_PATH} && -f ${SSL_KEY_PATH} && -f ${SSL_DHPARAM_PATH} ]]; then
@@ -1592,6 +1600,7 @@ configure_gitlab() {
   gitlab_configure_backups
   gitlab_configure_registry
   gitlab_configure_pages
+  gitlab_configure_sentry
 
   # remove stale gitlab.socket
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket

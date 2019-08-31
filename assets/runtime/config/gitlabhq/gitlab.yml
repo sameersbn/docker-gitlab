@@ -310,6 +310,13 @@ production: &base
     path: {{GITLAB_REGISTRY_DIR}}
     issuer: {{GITLAB_REGISTRY_ISSUER}}
 
+  ## Error Reporting and Logging with Sentry
+  sentry:
+    enabled: {{SENTRY_ENABLED}}
+    dsn: {{SENTRY_DSN}}
+    clientside_dsn: {{SENTRY_CLIENTSIDE_DSN}}
+    environment: '{{SENTRY_ENVIRONMENT}}' # e.g. development, staging, production
+
   #
   # 2. GitLab CI settings
   # ==========================
