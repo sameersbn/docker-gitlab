@@ -1026,6 +1026,7 @@ Below is the complete list of available options that can be used to customize yo
 | `OAUTH_AUTH0_CLIENT_ID` | Auth0 Client ID. No defaults. |
 | `OAUTH_AUTH0_CLIENT_SECRET` | Auth0 Client secret. No defaults. |
 | `OAUTH_AUTH0_DOMAIN` | Auth0 Domain. No defaults. |
+| `OAUTH_AUTH0_SCOPE` | Auth0 Scope. Defaults to `openid profile email`. |
 | `OAUTH_AZURE_API_KEY` | Azure Client ID. No defaults. |
 | `OAUTH_AZURE_API_SECRET` | Azure Client secret. No defaults. |
 | `OAUTH_AZURE_TENANT_ID` | Azure Tenant ID. No defaults. |

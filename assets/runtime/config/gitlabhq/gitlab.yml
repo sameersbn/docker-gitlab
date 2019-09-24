@@ -551,7 +551,8 @@ production: &base
           args: {
             client_id: '{{OAUTH_AUTH0_CLIENT_ID}}',
             client_secret: '{{OAUTH_AUTH0_CLIENT_SECRET}}',
-            namespace: '{{OAUTH_AUTH0_DOMAIN}}' } }
+            domain: '{{OAUTH_AUTH0_DOMAIN}}',
+            scope: '{{OAUTH_AUTH0_SCOPE}}'  } }
       - { name: 'azure_oauth2',
           args: {
             client_id: '{{OAUTH_AZURE_API_KEY}}',
