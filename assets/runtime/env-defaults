@@ -44,6 +44,7 @@ DB_NAME=${DB_NAME:-}
 DB_USER=${DB_USER:-}
 DB_PASS=${DB_PASS:-}
 DB_POOL=${DB_POOL:-10}
+DB_PREPARED_STATEMENTS=${DB_PREPARED_STATEMENTS:-true}
 
 # backward compatibility
 case ${DB_TYPE} in
