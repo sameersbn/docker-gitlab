@@ -65,7 +65,7 @@ jobs:
           name: Launching container for testing
           command: |
             docker-compose up -d
-            sleep 120
+            sleep 180
 
       - run:
           name: Testing image
