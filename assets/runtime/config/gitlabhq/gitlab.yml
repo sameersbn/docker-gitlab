@@ -271,7 +271,7 @@ production: &base
 
   ## Sidekiq
   sidekiq:
-    log_format: {{GITLAB_SIDEKIQ_LOG_FORMAT}} # (json is also supported)
+    log_format: {{GITLAB_SIDEKIQ_LOG_FORMAT}} # (default is the original format)
 
   ## Auxiliary jobs
   # Periodically executed jobs, to self-heal GitLab, do external synchronizations, etc.
