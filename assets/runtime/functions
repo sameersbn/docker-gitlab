@@ -615,7 +615,7 @@ gitlab_configure_oauth_auth0() {
       OAUTH_AUTH0_DOMAIN \
       OAUTH_AUTH0_SCOPE
   else
-    exec_as_git sed -i "/name: 'auth0'/,/{{OAUTH_AUTH0_DOMAIN}}/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/name: 'auth0'/,/{{OAUTH_AUTH0_SCOPE}}/d" ${GITLAB_CONFIG}
   fi
 }
 
