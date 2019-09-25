@@ -378,9 +378,9 @@ sameersbn/gitlab:12.3.1
 
 
 [wildcard certificate]: https://en.wikipedia.org/wiki/Wildcard_certificate
-[ce-4040]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040
+[ce-4040]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4040
 [docker-insecure]: https://docs.docker.com/registry/insecure/
 [registry-deploy]: https://docs.docker.com/registry/deploying/
 [storage-config]: https://docs.docker.com/registry/configuration/#storage
 [token-config]: https://docs.docker.com/registry/configuration/#token
-[8-8-docs]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-8-stable/doc/administration/container_registry.md
+[8-8-docs]: https://gitlab.com/gitlab-org/gitlab-foss/blob/8-8-stable/doc/administration/container_registry.md
