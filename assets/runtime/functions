@@ -125,7 +125,7 @@ gitlab_finalize_database_parameters() {
   DB_USER=${DB_USER:-${POSTGRESQL_ENV_USER}}
   DB_PASS=${DB_PASS:-${POSTGRESQL_ENV_PASS}}
   DB_NAME=${DB_NAME:-${POSTGRESQL_ENV_DB}}
-  
+
 
   if [[ -z ${DB_HOST} ]]; then
     echo
@@ -351,6 +351,17 @@ gitlab_configure_mail_delivery() {
     GITLAB_EMAIL_DISPLAY_NAME \
     GITLAB_EMAIL_REPLY_TO \
     GITLAB_EMAIL_SUBJECT_SUFFIX
+
+  if [[ ${GITLAB_EMAIL_SMIME_ENABLE} == true ]]; then
+    exec_as_git sed -i "/#start-email-smime/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/#end-email-smime/d" ${GITLAB_CONFIG}
+    update_template ${GITLAB_CONFIG} \
+      GITLAB_EMAIL_SMIME_ENABLE \
+      GITLAB_EMAIL_SMIME_KEY_FILE \
+      GITLAB_EMAIL_SMIME_CERT_FILE
+  else
+    exec_as_git sed -i "/#start-email-smime/,/#end-email-smime/d" ${GITLAB_CONFIG}
+  fi
 }
 
 gitlab_configure_mailroom() {
