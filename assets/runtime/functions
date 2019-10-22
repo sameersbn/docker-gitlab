@@ -138,11 +138,9 @@ gitlab_finalize_database_parameters() {
   fi
 
   # set default port number if not specified
-
-  DB_ENCODING=${DB_ENCODING:-unicode}
-  # DB_COLLATION: Not supported for postgresql and will be removed below.
   DB_PORT=${DB_PORT:-5432}
 
+  DB_ENCODING=${DB_ENCODING:-unicode}
 
   # set default user and database
   DB_USER=${DB_USER:-root}
