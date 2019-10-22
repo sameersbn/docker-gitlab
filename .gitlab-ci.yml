@@ -7,7 +7,7 @@ before_script:
   - export VERSION=$(cat VERSION)
   - export CI_REGISTRY=${CI_REGISTRY:-hub.docker.com}
   - export CI_REGISTRY_USER=${CI_REGISTRY_USER:-gitlab-ci-token}
-  - export CI_REGISTRY_PASSWORD=${CI_REGISTRY_PASS:-${CI_REGISTRY_PASSWORD:-${CI_JOB_TOKEN}}}
+  - export CI_REGISTRY_PASSWORD=${CI_REGISTRY_PASSWORD:-${CI_JOB_TOKEN}}
   - export DOCKER_IMAGE=${DOCKER_IMAGE:-${CI_REGISTRY}/${CI_PROJECT_PATH}}
   - |
     if [ "${DOCKER_IMAGE}" = "/" ]; then
@@ -35,7 +35,7 @@ docker:build:branches:
   except:
     - master
   script:
-    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASS} ${CI_REGISTRY}
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
     - docker build
       --pull
       --cache-from=${DOCKER_IMAGE}:${CI_COMMIT_REF_SLUG}
@@ -49,7 +49,7 @@ docker:build:release:
   only:
     - tags
   script:
-    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASS} ${CI_REGISTRY}
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
     - docker build
       --pull
       --cache-from=${DOCKER_IMAGE}:${VERSION}
