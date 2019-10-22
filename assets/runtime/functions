@@ -99,9 +99,8 @@ update_template() {
 }
 
 gitlab_finalize_database_parameters() {
-  # is a mysql or postgresql database linked?
-  # requires that the mysql or postgresql containers have exposed
-  # port 3306 and 5432 respectively.
+  # is a postgresql database linked?
+  # requires that the postgresql containers have exposed port 5432.
   DB_HOST=${DB_HOST:-${POSTGRESQL_PORT_5432_TCP_ADDR}}
   DB_PORT=${DB_PORT:-${POSTGRESQL_PORT_5432_TCP_PORT}}
 
