@@ -929,7 +929,7 @@ Below is the complete list of available options that can be used to customize yo
 | `DB_ADAPTER` | The database type. Currently only postgresql is supported. Over 12.1 postgres force. Possible values: `postgresql`. Defaults to `postgresql`. |
 | `DB_ENCODING` | The database encoding. For `DB_ADAPTER` values `postresql` this parameter defaults and `utf8` respectively. |
 | `DB_HOST` | The database server hostname. Defaults to `localhost`. |
-| `DB_PORT` | The database server port. Defaults to `3306` for mysql and `5432` for postgresql. |
+| `DB_PORT` | The database server port. Defaults to `5432` for postgresql. |
 | `DB_NAME` | The database database name. Defaults to `gitlabhq_production` |
 | `DB_USER` | The database database user. Defaults to `root` |
 | `DB_PASS` | The database database password. Defaults to no password |
