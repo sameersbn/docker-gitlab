@@ -13,7 +13,7 @@ services:
     restart: always
     image: sameersbn/postgresql:10-2
     volumes:
-    - postgresql-data:/var/lib/postgresql:Z
+    - postgresql-data:/var/lib/postgresql/data:Z
     environment:
     - DB_USER=gitlab
     - DB_PASS=password
