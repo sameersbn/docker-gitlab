@@ -60,7 +60,7 @@ server {
 
   # GitLab needs backwards compatible ciphers to retain compatibility with Java IDEs
   ssl_ciphers "{{SSL_CIPHERS}}";
-  ssl_protocols "{{SSL_PROTOCOLS}}";
+  ssl_protocols {{SSL_PROTOCOLS}};
   ssl_prefer_server_ciphers on;
   ssl_session_cache shared:SSL:10m;
   ssl_session_timeout 5m;
