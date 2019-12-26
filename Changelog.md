@@ -3,8 +3,19 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+
 **(next)**
 - added SSL_PROTOCOLS option to change ssl protocols for nginx
+
+**12.5.5**
+- gitlab: upgrade CE to v12.5.5
+
+**12.5.4**
+- gitlab: upgrade CE to v12.5.4
+- Update golang to 1.12.14
+
+**12.5.3**
+- gitlab: upgrade CE to v12.5.3
 
 **12.5.2**
 - gitlab: upgrade CE to v12.5.2
