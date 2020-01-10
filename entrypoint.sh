@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
-source ${GITLAB_RUNTIME_DIR}/functions
+set -o pipefail
+
+source "${GITLAB_RUNTIME_DIR}/functions"
 
 [[ $DEBUG == true ]] && set -x
 
@@ -15,7 +17,13 @@ case ${1} in
 
     case ${1} in
       app:start)
+        /usr/bin/supervisord -nc /etc/supervisor/supervisord.conf &
+        SUPERVISOR_PID=$!
         migrate_database
+        kill -15 $SUPERVISOR_PID
+        if ps h -p $SUPERVISOR_PID > /dev/null ; then
+        wait $SUPERVISOR_PID || true
+        fi
         rm -rf /var/run/supervisor.sock
         exec /usr/bin/supervisord -nc /etc/supervisor/supervisord.conf
         ;;
@@ -27,7 +35,7 @@ case ${1} in
         ;;
       app:rake)
         shift 1
-        execute_raketask $@
+        execute_raketask "$@"
         ;;
     esac
     ;;

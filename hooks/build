@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Docker Daemon Build Hook
+# $IMAGE_NAME var is injected into the build so the tag is correct.
+
+docker pull ${DOCKER_REPO}:latest
+
+docker build \
+		--cache-from=${DOCKER_REPO}:latest \
+		--build-arg=BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")" \
+		--build-arg=VCS_REF="$(git rev-parse --short HEAD)" \
+		-t ${IMAGE_NAME} .

@@ -2,14 +2,13 @@
 # PRODUCTION
 #
 production:
-  adapter: {{DB_ADAPTER}}
+  adapter: postgresql
   encoding: {{DB_ENCODING}}
-  collation: {{DB_COLLATION}}
-  reconnect: false
   database: {{DB_NAME}}
   host: {{DB_HOST}}
   port: {{DB_PORT}}
   username: {{DB_USER}}
   password: "{{DB_PASS}}"
   pool: {{DB_POOL}}
+  prepared_statements: {{DB_PREPARED_STATEMENTS}}
 

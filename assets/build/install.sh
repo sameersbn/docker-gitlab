@@ -1,25 +1,34 @@
 #!/bin/bash
 set -e
 
-GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
-GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz
+GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-foss.git
+GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/-/archive/v${GITLAB_SHELL_VERSION}/gitlab-shell-v${GITLAB_SHELL_VERSION}.tar.bz2
 GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
 GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages.git
 GITLAB_GITALY_URL=https://gitlab.com/gitlab-org/gitaly.git
 
+GITLAB_WORKHORSE_BUILD_DIR=/tmp/gitlab-workhorse
+GITLAB_PAGES_BUILD_DIR=/tmp/gitlab-pages
+GITLAB_GITALY_BUILD_DIR=/tmp/gitaly
+
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
+
+GOROOT=/tmp/go
+PATH=${GOROOT}/bin:$PATH
+
+export GOROOT PATH
 
 BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
   libc6-dev ruby${RUBY_VERSION}-dev \
-  libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
+  libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
   libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
-  gettext"
+  gettext libkrb5-dev"
 
 ## Execute a command as GITLAB_USER
 exec_as_git() {
-  if [[ $(whoami) == ${GITLAB_USER} ]]; then
-    $@
+  if [[ $(whoami) == "${GITLAB_USER}" ]]; then
+    "$@"
   else
     sudo -HEu ${GITLAB_USER} "$@"
   fi
@@ -27,28 +36,15 @@ exec_as_git() {
 
 # install build dependencies for gem installation
 apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install -y ${BUILD_DEPENDENCIES}
-
-# Install RE2 library wich became dependencie since 9.3.8 version
-# https://gitlab.com/gitlab-org/gitlab-ce/issues/35342
-DEBIAN_FRONTEND=noninteractive apt-get install -y checkinstall
-cd /tmp
-git clone https://github.com/google/re2.git
-cd re2/ && make && make test
-checkinstall -D --install=no -y --pkgname=re2 --pkgversion=1-current
-dpkg -i re2_1-current-1_amd64.deb
-ldconfig
-cd -
-rm -rf /tmp/re2
-DEBIAN_FRONTEND=noninteractive apt-get purge -y --auto-remove checkinstall
+DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ${BUILD_DEPENDENCIES}
 
 # PaX-mark ruby
 # Applying the mark late here does make the build usable on PaX kernels, but
 # still the build itself must be executed on a non-PaX kernel. It's done here
 # only for simplicity.
-paxctl -Cm `which ruby${RUBY_VERSION}`
+paxctl -cvm "$(command -v ruby${RUBY_VERSION})"
 # https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
-paxctl -Cm `which nodejs`
+paxctl -cvm "$(command -v nodejs)"
 
 # remove the host keys generated during openssh-server installation
 rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
@@ -66,16 +62,18 @@ EOF
 exec_as_git git config --global core.autocrlf input
 exec_as_git git config --global gc.auto 0
 exec_as_git git config --global repack.writeBitmaps true
+exec_as_git git config --global receive.advertisePushOptions true
 
-# shallow clone gitlab-ce
-echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
+
+# shallow clone gitlab-foss
+echo "Cloning gitlab-foss v.${GITLAB_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
 
 GITLAB_SHELL_VERSION=${GITLAB_SHELL_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_SHELL_VERSION)}
 GITLAB_WORKHORSE_VERSION=${GITLAB_WORKHOUSE_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_WORKHORSE_VERSION)}
 GITLAB_PAGES_VERSION=${GITLAB_PAGES_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_PAGES_VERSION)}
 
-#download golang
+# download golang
 echo "Downloading Go ${GOLANG_VERSION}..."
 wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
 tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
@@ -83,56 +81,63 @@ tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
 # install gitlab-shell
 echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
 mkdir -p ${GITLAB_SHELL_INSTALL_DIR}
-wget -cq ${GITLAB_SHELL_URL}?ref=v${GITLAB_SHELL_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz
-tar xf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz --strip 1 -C ${GITLAB_SHELL_INSTALL_DIR}
-rm -rf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz
+wget -cq ${GITLAB_SHELL_URL} -O ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2
+tar xf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2 --strip 1 -C ${GITLAB_SHELL_INSTALL_DIR}
+rm -rf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2
 chown -R ${GITLAB_USER}: ${GITLAB_SHELL_INSTALL_DIR}
 
 cd ${GITLAB_SHELL_INSTALL_DIR}
-exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+exec_as_git cp -a config.yml.example config.yml
 if [[ -x ./bin/compile ]]; then
   echo "Compiling gitlab-shell golang executables..."
-  exec_as_git PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go ./bin/compile
+  ./bin/compile
+  rm -rf go_build
 fi
-exec_as_git ./bin/install
+./bin/install
 
 # remove unused repositories directory created by gitlab-shell install
-exec_as_git rm -rf ${GITLAB_HOME}/repositories
+rm -rf ${GITLAB_HOME}/repositories
 
 # download gitlab-workhorse
 echo "Cloning gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
-exec_as_git git clone -q -b v${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_URL} ${GITLAB_WORKHORSE_INSTALL_DIR}
-chown -R ${GITLAB_USER}: ${GITLAB_WORKHORSE_INSTALL_DIR}
+git clone -q -b v${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_URL} ${GITLAB_WORKHORSE_BUILD_DIR}
+make -C ${GITLAB_WORKHORSE_BUILD_DIR} install
 
-#install gitlab-workhorse
-cd ${GITLAB_WORKHORSE_INSTALL_DIR}
-PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make install
+# clean up
+rm -rf ${GITLAB_WORKHORSE_BUILD_DIR}
 
-#download pages
+# download gitlab-pages
 echo "Downloading gitlab-pages v.${GITLAB_PAGES_VERSION}..."
-exec_as_git git clone -q -b v${GITLAB_PAGES_VERSION} --depth 1 ${GITLAB_PAGES_URL} ${GITLAB_PAGES_INSTALL_DIR}
-chown -R ${GITLAB_USER}: ${GITLAB_PAGES_INSTALL_DIR}
+git clone -q -b v${GITLAB_PAGES_VERSION} --depth 1 ${GITLAB_PAGES_URL} ${GITLAB_PAGES_BUILD_DIR}
 
-#install gitlab-pages
-cd ${GITLAB_PAGES_INSTALL_DIR}
-PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make
-cp -f gitlab-pages /usr/local/bin/
+# install gitlab-pages
+make -C ${GITLAB_PAGES_BUILD_DIR}
+cp -a ${GITLAB_PAGES_BUILD_DIR}/gitlab-pages /usr/local/bin/
 
-# download gitaly
+# clean up
+rm -rf ${GITLAB_PAGES_BUILD_DIR}
+
+# download and build gitaly
 echo "Downloading gitaly v.${GITALY_SERVER_VERSION}..."
-exec_as_git git clone -q -b v${GITALY_SERVER_VERSION} --depth 1 ${GITLAB_GITALY_URL} ${GITLAB_GITALY_INSTALL_DIR}
-chown -R ${GITLAB_USER}: ${GITLAB_GITALY_INSTALL_DIR}
-# copy default config for gitaly
-exec_as_git cp ${GITLAB_GITALY_INSTALL_DIR}/config.toml.example ${GITLAB_GITALY_INSTALL_DIR}/config.toml
+git clone -q -b v${GITALY_SERVER_VERSION} --depth 1 ${GITLAB_GITALY_URL} ${GITLAB_GITALY_BUILD_DIR}
 
 # install gitaly
-cd ${GITLAB_GITALY_INSTALL_DIR}
-ln -sf /tmp/go /usr/local/go
-PATH=/tmp/go/bin:$PATH make install && make clean
-rm -f /usr/local/go
+make -C ${GITLAB_GITALY_BUILD_DIR} install
+mkdir -p ${GITLAB_GITALY_INSTALL_DIR}
+cp -a ${GITLAB_GITALY_BUILD_DIR}/ruby ${GITLAB_GITALY_INSTALL_DIR}/
+cp -a ${GITLAB_GITALY_BUILD_DIR}/config.toml.example ${GITLAB_GITALY_INSTALL_DIR}/config.toml
+rm -rf ${GITLAB_GITALY_INSTALL_DIR}/ruby/vendor/bundle/ruby/**/cache
+chown -R ${GITLAB_USER}: ${GITLAB_GITALY_INSTALL_DIR}
+
+# clean up
+rm -rf ${GITLAB_GITALY_BUILD_DIR}
 
 # remove go
-rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz /tmp/go
+rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz ${GOROOT}
+
+# Fix for rebase in forks 
+echo "Linking $(command -v gitaly-ssh) to /"
+ln -s "$(command -v gitaly-ssh)" /
 
 # remove HSTS config from the default headers, we configure it in nginx
 exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
@@ -148,7 +153,7 @@ if [[ -d ${GEM_CACHE_DIR} ]]; then
   chown -R ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/vendor/cache
 fi
 
-exec_as_git bundle install -j$(nproc) --deployment --without development test aws
+exec_as_git bundle install -j"$(nproc)" --deployment --without development test mysql aws
 
 # make sure everything in ${GITLAB_HOME} is owned by ${GITLAB_USER} user
 chown -R ${GITLAB_USER}: ${GITLAB_HOME}
@@ -156,14 +161,14 @@ chown -R ${GITLAB_USER}: ${GITLAB_HOME}
 # gitlab.yml and database.yml are required for `assets:precompile`
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/resque.yml.example ${GITLAB_INSTALL_DIR}/config/resque.yml
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.mysql ${GITLAB_INSTALL_DIR}/config/database.yml
+exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
 
 # Installs nodejs packages required to compile webpack
 exec_as_git yarn install --production --pure-lockfile
 exec_as_git yarn add ajv@^4.0.0
 
 echo "Compiling assets. Please be patient, this could take a while..."
-exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true
+exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true NODE_OPTIONS="--max-old-space-size=4096"
 
 # remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
 rm -rf ${GITLAB_DATA_DIR}/config/secrets.yml
@@ -207,6 +212,7 @@ sed -i \
   -e "s|^[#]*UsePrivilegeSeparation yes|UsePrivilegeSeparation no|" \
   -e "s|^[#]*PasswordAuthentication yes|PasswordAuthentication no|" \
   -e "s|^[#]*LogLevel INFO|LogLevel VERBOSE|" \
+  -e "s|^[#]*AuthorizedKeysFile.*|AuthorizedKeysFile %h/.ssh/authorized_keys %h/.ssh/authorized_keys_proxy|" \
   /etc/ssh/sshd_config
 echo "UseDNS no" >> /etc/ssh/sshd_config
 
@@ -218,6 +224,9 @@ sed -i \
   -e "s|access_log /var/log/nginx/access.log;|access_log ${GITLAB_LOG_DIR}/nginx/access.log;|" \
   -e "s|error_log /var/log/nginx/error.log;|error_log ${GITLAB_LOG_DIR}/nginx/error.log;|" \
   /etc/nginx/nginx.conf
+
+# fix "unknown group 'syslog'" error preventing logrotate from functioning
+sed -i "s|^su root syslog$|su root root|" /etc/logrotate.conf
 
 # configure supervisord log rotation
 cat > /etc/logrotate.d/supervisord <<EOF
@@ -393,6 +402,22 @@ stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 EOF
 
+
+cat > /etc/supervisor/conf.d/groups.conf <<EOF
+[group:core]
+programs=gitaly
+priority=5
+[group:gitlab]
+programs=unicorn,gitlab-workhorse
+priority=10
+[group:gitlab_extensions]
+programs=sshd,nginx,mail_room,cron
+priority=20
+EOF
+
 # purge build dependencies and cleanup apt
 DEBIAN_FRONTEND=noninteractive apt-get purge -y --auto-remove ${BUILD_DEPENDENCIES}
 rm -rf /var/lib/apt/lists/*
+
+# clean up caches
+exec_as_git rm -rf ${GITLAB_HOME}/.cache
