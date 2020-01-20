@@ -595,6 +595,27 @@ gitlab_configure_oauth_saml() {
   fi
 }
 
+gitlab_configure_oauth2_generic() {
+  if [[ -n ${OAUTH2_GENERIC_APP_ID} && \
+        -n ${OAUTH2_GENERIC_APP_SECRET} ]]; then
+    echo "Configuring gitlab::oauth::generic..."
+    OAUTH_ENABLED=${OAUTH_ENABLED:-true}
+    update_template ${GITLAB_CONFIG} \
+    OAUTH2_GENERIC_APP_ID \
+    OAUTH2_GENERIC_APP_SECRET \
+    OAUTH2_GENERIC_CLIENT_SITE \
+    OAUTH2_GENERIC_CLIENT_USER_INFO_URL \
+    OAUTH2_GENERIC_CLIENT_AUTHORIZE_URL \
+    OAUTH2_GENERIC_CLIENT_TOKEN_URL \
+    OAUTH2_GENERIC_CLIENT_END_SESSION_ENDPOINT \
+    OAUTH2_GENERIC_ID_PATH \
+    OAUTH2_GENERIC_USER_UID \
+    OAUTH2_GENERIC_USER_NAME \
+    OAUTH2_GENERIC_USER_EMAIL \
+    OAUTH2_GENERIC_NAME
+  fi
+}
+
 gitlab_configure_oauth_crowd() {
   if [[ -n ${OAUTH_CROWD_SERVER_URL} && \
         -n ${OAUTH_CROWD_APP_NAME} && \
@@ -654,6 +675,7 @@ gitlab_configure_oauth() {
   gitlab_configure_oauth_gitlab
   gitlab_configure_oauth_bitbucket
   gitlab_configure_oauth_saml
+  gitlab_configure_oauth2_generic
   gitlab_configure_oauth_crowd
   gitlab_configure_oauth_auth0
   gitlab_configure_oauth_azure
@@ -668,7 +690,7 @@ gitlab_configure_oauth() {
     OAUTH_EXTERNAL_PROVIDERS
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
-    cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2)
+    cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2|oauth2_generic)
       update_template ${GITLAB_CONFIG} OAUTH_AUTO_SIGN_IN_WITH_PROVIDER
       ;;
     *)
