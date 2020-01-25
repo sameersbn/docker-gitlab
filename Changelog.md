@@ -3,6 +3,9 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**12.7.2**
+- Upgrade GitLab CE to 12.7.2
+
 **12.7.0**
 - Update gitlab-shell to 11.0.0
 - Upgrade GitLab CE to 12.7.0
