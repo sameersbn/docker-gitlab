@@ -72,7 +72,7 @@ jobs:
           name: Testing image
           command: |
             docker run --network container:$(docker-compose ps -q gitlab) \
-              appropriate/curl --retry 15 --retry-delay 5 --retry-connrefused http://localhost/explore
+              appropriate/curl --ipv4 --retry 15 --retry-delay 5 --retry-connrefused http://localhost/explore
 
       - run:
           name: Generate docker build image cache
