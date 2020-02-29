@@ -239,6 +239,10 @@ GitLab uses a database backend to store its data. You can configure this image t
 
 ### PostgreSQL
 
+*NOTE:* PostgreSQL version 10 is highly recommended. 
+
+While the GitLab will most likely work with even latest version of PostgreSQL, it is recommended to use version 10.x.x., because this docker image includes some PostgreSQL tools from release 10. These tools are used for backups and other database maintenance tasks.
+
 #### External PostgreSQL Server
 
 The image also supports using an external PostgreSQL Server. This is also controlled via environment variables.
