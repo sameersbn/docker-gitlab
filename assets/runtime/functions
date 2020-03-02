@@ -1473,12 +1473,17 @@ generate_ssh_host_keys() {
   chmod 0644 ${GITLAB_DATA_DIR}/ssh/*.pub
 }
 
+update_ssh_listen_port() {
+  sed -i "s|#Port 22|Port ${GITLAB_SSH_LISTEN_PORT}|g" /etc/ssh/sshd_config
+}
+
 initialize_system() {
   map_uidgid
   initialize_logdir
   initialize_datadir
   update_ca_certificates
   generate_ssh_host_keys
+  update_ssh_listen_port
   install_configuration_templates
   rm -rf /var/run/supervisor.sock
 }
@@ -1573,6 +1578,7 @@ configure_gitlab() {
     GITLAB_RELATIVE_URL_ROOT \
     GITLAB_HTTPS \
     GITLAB_SSH_HOST \
+    GITLAB_SSH_LISTEN_PORT \
     GITLAB_SSH_PORT \
     GITLAB_SIGNUP_ENABLED \
     GITLAB_IMPERSONATION_ENABLED \
