@@ -45,6 +45,7 @@
         - [SAML](#saml)
         - [Crowd](#crowd)
         - [Microsoft Azure](#microsoft-azure)
+        - [Generic OAuth2](#Generic-OAuth2)
     - [Gitlab Pages](#gitlab-pages)
     - [External Issue Trackers](#external-issue-trackers)
     - [Host UID / GID Mapping](#host-uid--gid-mapping)
@@ -671,6 +672,14 @@ Once you have the Client ID, Client secret and Tenant ID generated, configure th
 
 For example, if your Client ID is `xxx`, the Client secret is `yyy` and the Tenant ID is `zzz`, then adding `--env 'OAUTH_AZURE_API_KEY=xxx' --env 'OAUTH_AZURE_API_SECRET=yyy' --env 'OAUTH_AZURE_TENANT_ID=zzz'` to the docker run command enables support for Microsoft Azure OAuth.
 
+#### Generic OAuth2
+
+To enable the Generic OAuth2 provider, you must register your application with your provider. You also need to confirm OAuth2 provider app's ID and secret, the client options and the user's response structure.
+
+As an example this code has been tested with Keycloak, with the following variables: `OAUTH2_GENERIC_APP_ID`, `OAUTH2_GENERIC_APP_SECRET`, `OAUTH2_GENERIC_CLIENT_SITE`, `OAUTH2_GENERIC_CLIENT_USER_INFO_URL`, `OAUTH2_GENERIC_CLIENT_AUTHORIZE_URL`, `OAUTH2_GENERIC_CLIENT_TOKEN_URL`, `OAUTH2_GENERIC_CLIENT_END_SESSION_ENDPOINT`, `OAUTH2_GENERIC_ID_PATH`, `OAUTH2_GENERIC_USER_UID`, `OAUTH2_GENERIC_USER_NAME`, `OAUTH2_GENERIC_USER_EMAIL`, `OAUTH2_GENERIC_NAME`,
+
+See [GitLab documentation](https://docs.gitlab.com/ee/integration/oauth2_generic.html#sign-into-gitlab-with-almost-any-oauth2-provider) and [Omniauth-oauth2-generic documentation](https://gitlab.com/satorix/omniauth-oauth2-generic) for more details.
+
 ### Gitlab Pages
 
 Gitlab Pages allows a user to host static websites from a project. Gitlab pages can be enabled with setting the envrionment variable `GITLAB_PAGES_ENABLED` to `true`.
@@ -1038,6 +1047,18 @@ Below is the complete list of available options that can be used to customize yo
 | `OAUTH_AZURE_API_KEY` | Azure Client ID. No defaults. |
 | `OAUTH_AZURE_API_SECRET` | Azure Client secret. No defaults. |
 | `OAUTH_AZURE_TENANT_ID` | Azure Tenant ID. No defaults. |
+| `OAUTH2_GENERIC_APP_ID` | Your OAuth2 App ID. No defaults. |
+| `OAUTH2_GENERIC_APP_SECRET` | Your OAuth2 App Secret. No defaults. |
+| `OAUTH2_GENERIC_CLIENT_SITE` | The OAuth2 generic client site. No defaults |
+| `OAUTH2_GENERIC_CLIENT_USER_INFO_URL` | The OAuth2 generic client user info url. No defaults |
+| `OAUTH2_GENERIC_CLIENT_AUTHORIZE_URL` | The OAuth2 generic client authorize url. No defaults |
+| `OAUTH2_GENERIC_CLIENT_TOKEN_URL` | The OAuth2 generic client token url. No defaults|
+| `OAUTH2_GENERIC_CLIENT_END_SESSION_ENDPOINT` | The OAuth2 generic client end session endpoint. No defaults |
+| `OAUTH2_GENERIC_ID_PATH` | The OAuth2 generic id path. No defaults |
+| `OAUTH2_GENERIC_USER_UID` | The OAuth2 generic user id path. No defaults |
+| `OAUTH2_GENERIC_USER_NAME` | The OAuth2 generic user name. No defaults |
+| `OAUTH2_GENERIC_USER_EMAIL` | The OAuth2 generic user email. No defaults |
+| `OAUTH2_GENERIC_NAME` | The name of your OAuth2 provider. No defaults |
 | `GITLAB_GRAVATAR_ENABLED` | Enables gravatar integration. Defaults to `true`. |
 | `GITLAB_GRAVATAR_HTTP_URL` | Sets a custom gravatar url. Defaults to `http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`. This can be used for [Libravatar integration](http://doc.gitlab.com/ce/customization/libravatar.html). |
 | `GITLAB_GRAVATAR_HTTPS_URL` | Same as above, but for https. Defaults to `https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`. |
