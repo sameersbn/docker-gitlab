@@ -769,19 +769,20 @@ gitlab_configure_backups_schedule() {
     daily|weekly|monthly)
       if ! crontab -u ${GITLAB_USER} -l >/tmp/cron.${GITLAB_USER} 2>/dev/null || ! grep -q 'bundle exec rake gitlab:backup:create' /tmp/cron.${GITLAB_USER}; then
         echo "Configuring gitlab::backups::schedule..."
-        read hour min <<< ${GITLAB_BACKUP_TIME//[:]/ }
-        day_of_month=*
-        month=*
-        day_of_week=*
+        gitlab_backup_log="${GITLAB_LOG_DIR}/gitlab/gitlab-backup.log"
+        read -r hour min <<< "${GITLAB_BACKUP_TIME//[:]/ }"
+        day_of_month="*"
+        month="*"
+        day_of_week="*"
         case ${GITLAB_BACKUP_SCHEDULE} in
           daily) ;;
           weekly) day_of_week=0 ;;
           monthly) day_of_month=01 ;;
         esac
         if [[ -n ${GITLAB_BACKUP_DIR_GROUP} ]]; then
-            echo "$min $hour $day_of_month $month $day_of_week /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create SKIP=${GITLAB_BACKUP_SKIP} DIRECTORY=${GITLAB_BACKUP_DIR_GROUP} RAILS_ENV=${RAILS_ENV}'" >> /tmp/cron.${GITLAB_USER}
+            echo "$min $hour $day_of_month $month $day_of_week /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create SKIP=${GITLAB_BACKUP_SKIP} DIRECTORY=${GITLAB_BACKUP_DIR_GROUP} RAILS_ENV=${RAILS_ENV}' >> ${gitlab_backup_log} 2>&1" >> "/tmp/cron.${GITLAB_USER}"
         else
-            echo "$min $hour $day_of_month $month $day_of_week /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create SKIP=${GITLAB_BACKUP_SKIP} RAILS_ENV=${RAILS_ENV}'" >> /tmp/cron.${GITLAB_USER}
+            echo "$min $hour $day_of_month $month $day_of_week /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create SKIP=${GITLAB_BACKUP_SKIP} RAILS_ENV=${RAILS_ENV}' >> ${gitlab_backup_log} 2>&1" >> "/tmp/cron.${GITLAB_USER}"
         fi
         crontab -u ${GITLAB_USER} /tmp/cron.${GITLAB_USER}
       fi
