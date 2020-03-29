@@ -590,8 +590,7 @@ production: &base
               email: '{{OAUTH2_GENERIC_USER_EMAIL}}'
               }
             },
-            name: '{{OAUTH2_GENERIC_NAME}}'
-          }}
+            name: '{{OAUTH2_GENERIC_NAME}}' }}
       - { name: 'azure_oauth2',
           args: {
             client_id: '{{OAUTH_AZURE_API_KEY}}',

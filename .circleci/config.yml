@@ -34,23 +34,6 @@ jobs:
             docker version
             docker info
 
-      - restore_cache:
-          keys:
-            - cache-v2-{{ .Branch }}
-          paths:
-            - /tmp/cache/layers.tar
-
-      - run:
-          name: Loading docker cache
-          command: |
-            if [[ -f /tmp/cache/layers.tar ]]; then
-              echo "Loading cache ..."
-              docker load -i /tmp/cache/layers.tar
-              docker image ls
-            else
-              echo "Couldn't find any caches"
-            fi
-
       - run:
           name: Build docker image
           command: |
@@ -74,16 +57,6 @@ jobs:
             docker run --network container:$(docker-compose ps -q gitlab) \
               appropriate/curl --ipv4 --retry 15 --retry-delay 5 --retry-connrefused http://localhost/explore
 
-      - run:
-          name: Generate docker build image cache
-          command: |
-            mkdir -p /tmp/cache/
-            docker save -o /tmp/cache/layers.tar ${IMAGE_NAME}
-
-      - save_cache:
-          key: cache-v2-{{ .Branch }}
-          paths:
-            - /tmp/cache/layers.tar
 
 workflows:
   version: 2
