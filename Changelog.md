@@ -5,6 +5,7 @@ https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list
 
 **12.8.0**
 - gitlab: upgrade CE to v12.8.0
+- fix: ArgumentError: 'import/{{oauth2_generic_name}}' is not supported [#2101](https://github.com/sameersbn/docker-gitlab/issues/2101)
 
 **12.7.8**
 - Upgrade GitLab CE to 12.7.8
