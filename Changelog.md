@@ -5,6 +5,13 @@ https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list
 
 **12.9.0**
 - gitlab: upgrade CE to v12.9.0
+- replaced unicorn with puma
+- Removed `UNICORN_WORKERS`
+- Removed `UNICORN_TIMEOUT`
+- Added `PUMA_THREADS_MIN`
+- Added `PUMA_THREADS_MAX`
+- Added `PUMA_WORKERS`
+- Added `PUMA_TIMEOUT`
 
 **12.8.8**
 - gitlab: upgrade CE to v12.8.8

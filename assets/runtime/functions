@@ -15,7 +15,7 @@ USERCONF_TEMPLATES_DIR="${GITLAB_DATA_DIR}/config"
 
 GITLAB_CONFIG="${GITLAB_INSTALL_DIR}/config/gitlab.yml"
 GITLAB_DATABASE_CONFIG="${GITLAB_INSTALL_DIR}/config/database.yml"
-GITLAB_UNICORN_CONFIG="${GITLAB_INSTALL_DIR}/config/unicorn.rb"
+GITLAB_PUMA_CONFIG="${GITLAB_INSTALL_DIR}/config/puma.rb"
 GITLAB_RELATIVE_URL_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/relative_url.rb"
 GITLAB_RACK_ATTACK_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/rack_attack.rb"
 GITLAB_SMTP_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb"
@@ -262,18 +262,26 @@ gitlab_configure_gitlab_workhorse() {
     GITLAB_WORKHORSE_TIMEOUT
 }
 
-gitlab_configure_unicorn() {
-  echo "Configuring gitlab::unicorn..."
+gitlab_configure_puma() {
+  echo "Configuring gitlab::puma..."
   if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
-    update_template ${GITLAB_UNICORN_CONFIG} GITLAB_RELATIVE_URL_ROOT
+    update_template ${GITLAB_PUMA_CONFIG} GITLAB_RELATIVE_URL_ROOT
   else
-    exec_as_git sed -i "/{{GITLAB_RELATIVE_URL_ROOT}}/d" ${GITLAB_UNICORN_CONFIG}
+    exec_as_git sed -i "/{{GITLAB_RELATIVE_URL_ROOT}}/d" ${GITLAB_PUMA_CONFIG}
   fi
 
-  update_template ${GITLAB_UNICORN_CONFIG} \
+  update_template ${GITLAB_PUMA_CONFIG} \
     GITLAB_INSTALL_DIR \
-    UNICORN_WORKERS \
-    UNICORN_TIMEOUT
+    GITLAB_INSTALL_DIR \
+    GITLAB_INSTALL_DIR \
+    GITLAB_INSTALL_DIR \
+    PUMA_THREADS_MIN \
+    PUMA_THREADS_MAX \
+    PUMA_WORKERS \
+    GITLAB_INSTALL_DIR \
+    GITLAB_INSTALL_DIR \
+    PUMA_TIMEOUT \
+    GITLAB_INSTALL_DIR
 }
 
 gitlab_configure_relative_url() {
@@ -1511,7 +1519,7 @@ install_configuration_templates() {
   echo "Installing configuration templates..."
   install_template ${GITLAB_USER}: gitlabhq/gitlab.yml ${GITLAB_CONFIG} 0640
   install_template ${GITLAB_USER}: gitlabhq/database.yml ${GITLAB_DATABASE_CONFIG} 0640
-  install_template ${GITLAB_USER}: gitlabhq/unicorn.rb ${GITLAB_UNICORN_CONFIG} 0644
+  install_template ${GITLAB_USER}: gitlabhq/puma.rb ${GITLAB_PUMA_CONFIG} 0644
   install_template ${GITLAB_USER}: gitlabhq/rack_attack.rb ${GITLAB_RACK_ATTACK_CONFIG} 0644
   install_template ${GITLAB_USER}: gitlabhq/resque.yml ${GITLAB_RESQUE_CONFIG} 0640
   install_template ${GITLAB_USER}: gitlabhq/secrets.yml ${GITLAB_SECRETS_CONFIG} 0600
@@ -1614,7 +1622,7 @@ configure_gitlab() {
   gitlab_configure_gitlab_workhorse
   gitlab_configure_relative_url
   gitlab_configure_trusted_proxies
-  gitlab_configure_unicorn
+  gitlab_configure_puma
   gitlab_configure_timezone
   gitlab_configure_rack_attack
   gitlab_configure_ci
