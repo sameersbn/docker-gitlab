@@ -287,13 +287,12 @@ ${GITLAB_LOG_DIR}/nginx/*.log {
 }
 EOF
 
-# configure supervisord to start unicorn
-cat > /etc/supervisor/conf.d/unicorn.conf <<EOF
-[program:unicorn]
+cat > /etc/supervisor/conf.d/puma.conf <<EOF
+[program:puma]
 priority=10
 directory=${GITLAB_INSTALL_DIR}
 environment=HOME=${GITLAB_HOME}
-command=bundle exec unicorn_rails -c ${GITLAB_INSTALL_DIR}/config/unicorn.rb -E ${RAILS_ENV}
+command=bundle exec puma --config ${GITLAB_INSTALL_DIR}/config/puma.rb --environment ${RAILS_ENV}
 user=git
 autostart=true
 autorestart=true
@@ -415,7 +414,7 @@ cat > /etc/supervisor/conf.d/groups.conf <<EOF
 programs=gitaly
 priority=5
 [group:gitlab]
-programs=unicorn,gitlab-workhorse
+programs=puma,gitlab-workhorse
 priority=10
 [group:gitlab_extensions]
 programs=sshd,nginx,mail_room,cron
