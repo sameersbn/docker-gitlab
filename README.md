@@ -929,8 +929,10 @@ Below is the complete list of available options that can be used to customize yo
 | `REDIS_HOST` | The hostname of the redis server. Defaults to `localhost` |
 | `REDIS_PORT` | The connection port of the redis server. Defaults to `6379`. |
 | `REDIS_DB_NUMBER` | The redis database number. Defaults to '0'. |
-| `UNICORN_WORKERS` | The number of unicorn workers to start. Defaults to `3`. |
-| `UNICORN_TIMEOUT` | Sets the timeout of unicorn worker processes. Defaults to `60` seconds. |
+| `PUMA_WORKERS` | The number of puma workers to start. Defaults to `3`. |
+| `PUMA_TIMEOUT` | Sets the timeout of puma worker processes. Defaults to `60` seconds. |
+| `PUMA_THREADS_MIN` | The number of puma minimum threads. Defaults to `1`. |
+| `PUMA_THREADS_MAX` | The number of puma maximum threads. Defaults to `16`. |
 | `SIDEKIQ_CONCURRENCY` | The number of concurrent sidekiq jobs to run. Defaults to `25` |
 | `SIDEKIQ_SHUTDOWN_TIMEOUT` | Timeout for sidekiq shutdown. Defaults to `4` |
 | `SIDEKIQ_MEMORY_KILLER_MAX_RSS` | Non-zero value enables the SidekiqMemoryKiller. Defaults to `1000000`. For additional options refer [Configuring the MemoryKiller](http://doc.gitlab.com/ce/operations/sidekiq_memory_killer.html) |
