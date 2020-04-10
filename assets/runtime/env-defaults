@@ -66,6 +66,8 @@ PUMA_THREADS_MIN=${PUMA_THREADS_MIN:-1}
 PUMA_THREADS_MAX=${PUMA_THREADS_MAX:-16}
 PUMA_WORKERS=${PUMA_WORKERS:-3}
 PUMA_TIMEOUT=${PUMA_TIMEOUT:-60}
+PUMA_PER_WORKER_MAX_MEMORY_MB=${PUMA_PER_WORKER_MAX_MEMORY_MB:-850}
+PUMA_MASTER_MAX_MEMORY_MB=${PUMA_MASTER_MAX_MEMORY_MB:-550}
 
 # Set Default values according to the documentation
 # https://docs.gitlab.com/ee/administration/operations/unicorn.html#unicorn-worker-killer
