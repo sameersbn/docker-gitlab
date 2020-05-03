@@ -1,4 +1,3 @@
-[![Docker Repository on Quay.io](https://quay.io/repository/sameersbn/gitlab/status "Docker Repository on Quay.io")](https://quay.io/repository/sameersbn/gitlab)
 [![](https://images.microbadger.com/badges/image/sameersbn/gitlab.svg)](http://microbadger.com/images/sameersbn/gitlab "Get your own image badge on microbadger.com")
 
 # sameersbn/gitlab:12.9.4
@@ -121,8 +120,6 @@ Your docker host needs to have 1GB or more of available RAM to run GitLab. Pleas
 # Installation
 
 Automated builds of the image are available on [Dockerhub](https://hub.docker.com/r/sameersbn/gitlab) and is the recommended method of installation.
-
-> **Note**: Builds are also available on [Quay.io](https://quay.io/repository/sameersbn/gitlab)
 
 ```bash
 docker pull sameersbn/gitlab:12.9.4
