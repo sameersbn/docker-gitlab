@@ -1,7 +1,5 @@
 FROM ubuntu:bionic-20200219
 
-ARG BUILD_DATE
-ARG VCS_REF
 ARG VERSION=12.9.4
 
 ENV GITLAB_VERSION=${VERSION} \
@@ -62,6 +60,9 @@ RUN bash ${GITLAB_BUILD_DIR}/install.sh
 COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
+
+ARG BUILD_DATE
+ARG VCS_REF
 
 LABEL \
     maintainer="sameer@damagehead.com" \
