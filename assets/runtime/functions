@@ -236,7 +236,10 @@ gitlab_configure_gitaly() {
   echo "Configuring gitlab::gitaly..."
   update_template ${GITLAB_GITALY_CONFIG} \
     GITALY_SOCKET_PATH \
-    GITLAB_REPOS_DIR
+    GITLAB_GITALY_INSTALL_DIR \
+    GITLAB_LOG_DIR \
+    GITLAB_REPOS_DIR \
+    GITLAB_SHELL_INSTALL_DIR
 
   update_template ${GITLAB_CONFIG} \
     GITALY_CLIENT_PATH \
@@ -623,7 +626,7 @@ gitlab_configure_oauth2_generic() {
     OAUTH2_GENERIC_USER_NAME \
     OAUTH2_GENERIC_USER_EMAIL \
     OAUTH2_GENERIC_NAME
-  else 
+  else
       exec_as_git sed -i "/name: 'oauth2_generic'/,/{{OAUTH2_GENERIC_NAME}}/d" ${GITLAB_CONFIG}
   fi
 }
