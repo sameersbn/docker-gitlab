@@ -61,8 +61,9 @@
     - [Import Repositories](#import-repositories)
     - [Upgrading](#upgrading)
     - [Shell Access](#shell-access)
-- [Features](#features)
- - [Container Registry](docs/container_registry.md)
+- [Monitoring](#monitoring)
+    - [Health Check](#health-check)
+- [Container Registry](docs/container_registry.md)
 - [References](#references)
 
 # Introduction
@@ -1331,6 +1332,48 @@ For debugging and maintenance purposes you may want access the containers shell.
 
 ```bash
 docker exec -it gitlab bash
+```
+
+# Monitoring
+
+You can monitor your GitLab instance status as described in the [official documentation](https://docs.gitlab.com/ee/user/admin_area/monitoring/health_check.html), for example:
+
+```bash
+curl 'https://gitlab.example.com/-/liveness'
+```
+
+On success, the endpoint will return a `200` HTTP status code, and a response like below.
+
+```bash
+{
+   "status": "ok"
+}
+```
+
+To do that you will need to set the environment variable `GITLAB_MONITORING_IP_WHITELIST` to allow your IP or subnet to make requests to your GitLab instance.
+
+## Health Check
+
+You can also set your `docker-compose.yml` [healthcheck](https://docs.docker.com/compose/compose-file/compose-file-v2/#healthcheck) configuration to make periodic checks:
+
+```yml
+version: '2.3'
+
+services:
+  gitlab:
+    image: sameersbn/gitlab:12.7.7
+    healthcheck:
+      test: ["CMD", "/usr/local/sbin/healthcheck"]
+      interval: 1m
+      timeout: 5s
+      retries: 5
+      start_period: 2m
+```
+
+Then you will be able to consult the healthcheck log by executing:
+
+```bash
+docker inspect --format "{{json .State.Health }}" $(docker-compose ps -q gitlab) | jq
 ```
 
 # References

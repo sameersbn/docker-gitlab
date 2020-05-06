@@ -1,4 +1,4 @@
-version: '2'
+version: '2.3'
 
 services:
   redis:
@@ -31,6 +31,12 @@ services:
     - "10022:22"
     volumes:
     - gitlab-data:/home/git/data:Z
+    healthcheck:
+      test: ["CMD", "/usr/local/sbin/healthcheck"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 5m
     environment:
     - DEBUG=false
 
