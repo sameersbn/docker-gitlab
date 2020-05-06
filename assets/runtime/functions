@@ -1233,6 +1233,7 @@ nginx_configure_gitlab_real_ip() {
 nginx_configure_gitlab() {
   echo "Configuring nginx::gitlab..."
   update_template ${GITLAB_NGINX_CONFIG} \
+    GITLAB_HOME \
     GITLAB_INSTALL_DIR \
     GITLAB_LOG_DIR \
     GITLAB_HOST \
