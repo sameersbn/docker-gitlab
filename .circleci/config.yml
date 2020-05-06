@@ -206,7 +206,7 @@ jobs:
           image: sameersbn/gitlab
           tag: ${CIRCLE_TAG:-latest}
           cache_from: docker.io/sameersbn/gitlab:latest
-          extra_build_args: '--build-arg GIT_COMMIT=${CIRCLE_SHA1} --build-arg GIT_TAG=$(date +%s)'
+          extra_build_args: '--build-arg VCS_REF=${CIRCLE_TAG:-${CIRCLE_SHA1}} --build-arg BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"'
           no_output_timeout: 45m
       - docker-save:
           registry: docker.io,quay.io
