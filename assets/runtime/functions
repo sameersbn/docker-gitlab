@@ -15,7 +15,7 @@ USERCONF_TEMPLATES_DIR="${GITLAB_DATA_DIR}/config"
 
 GITLAB_CONFIG="${GITLAB_INSTALL_DIR}/config/gitlab.yml"
 GITLAB_DATABASE_CONFIG="${GITLAB_INSTALL_DIR}/config/database.yml"
-GITLAB_UNICORN_CONFIG="${GITLAB_INSTALL_DIR}/config/unicorn.rb"
+GITLAB_PUMA_CONFIG="${GITLAB_INSTALL_DIR}/config/puma.rb"
 GITLAB_RELATIVE_URL_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/relative_url.rb"
 GITLAB_RACK_ATTACK_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/rack_attack.rb"
 GITLAB_SMTP_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb"
@@ -236,7 +236,10 @@ gitlab_configure_gitaly() {
   echo "Configuring gitlab::gitaly..."
   update_template ${GITLAB_GITALY_CONFIG} \
     GITALY_SOCKET_PATH \
-    GITLAB_REPOS_DIR
+    GITLAB_GITALY_INSTALL_DIR \
+    GITLAB_LOG_DIR \
+    GITLAB_REPOS_DIR \
+    GITLAB_SHELL_INSTALL_DIR
 
   update_template ${GITLAB_CONFIG} \
     GITALY_CLIENT_PATH \
@@ -262,18 +265,28 @@ gitlab_configure_gitlab_workhorse() {
     GITLAB_WORKHORSE_TIMEOUT
 }
 
-gitlab_configure_unicorn() {
-  echo "Configuring gitlab::unicorn..."
+gitlab_configure_puma() {
+  echo "Configuring gitlab::puma..."
   if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
-    update_template ${GITLAB_UNICORN_CONFIG} GITLAB_RELATIVE_URL_ROOT
+    update_template ${GITLAB_PUMA_CONFIG} GITLAB_RELATIVE_URL_ROOT
   else
-    exec_as_git sed -i "/{{GITLAB_RELATIVE_URL_ROOT}}/d" ${GITLAB_UNICORN_CONFIG}
+    exec_as_git sed -i "/{{GITLAB_RELATIVE_URL_ROOT}}/d" ${GITLAB_PUMA_CONFIG}
   fi
 
-  update_template ${GITLAB_UNICORN_CONFIG} \
+  update_template ${GITLAB_PUMA_CONFIG} \
     GITLAB_INSTALL_DIR \
-    UNICORN_WORKERS \
-    UNICORN_TIMEOUT
+    GITLAB_INSTALL_DIR \
+    GITLAB_INSTALL_DIR \
+    GITLAB_INSTALL_DIR \
+    PUMA_THREADS_MIN \
+    PUMA_THREADS_MAX \
+    PUMA_WORKERS \
+    PUMA_PER_WORKER_MAX_MEMORY_MB \
+    PUMA_MASTER_MAX_MEMORY_MB \
+    GITLAB_INSTALL_DIR \
+    GITLAB_INSTALL_DIR \
+    PUMA_TIMEOUT \
+    GITLAB_INSTALL_DIR
 }
 
 gitlab_configure_relative_url() {
@@ -551,12 +564,12 @@ gitlab_configure_oauth_bitbucket() {
 }
 
 gitlab_configure_oauth_saml_attribute_statements() {
-  if [[ -n ${OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL} && \
-        -n ${OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME} ]]; then
+  if [[ -n ${OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL} ]]; then
     echo "Configuring gitlab::oauth::saml::attribute_statements..."
     update_template ${GITLAB_CONFIG} \
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL \
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME \
+      OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME \
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME \
       OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME
     # Remove undefined optional attributes
@@ -592,6 +605,29 @@ gitlab_configure_oauth_saml() {
     gitlab_configure_oauth_saml_attribute_statements
   else
     exec_as_git sed -i "/name: 'saml'/,/{{OAUTH_SAML_NAME_IDENTIFIER_FORMAT}}/d" ${GITLAB_CONFIG}
+  fi
+}
+
+gitlab_configure_oauth2_generic() {
+  if [[ -n ${OAUTH2_GENERIC_APP_ID} && \
+        -n ${OAUTH2_GENERIC_APP_SECRET} ]]; then
+    echo "Configuring gitlab::oauth::generic..."
+    OAUTH_ENABLED=${OAUTH_ENABLED:-true}
+    update_template ${GITLAB_CONFIG} \
+    OAUTH2_GENERIC_APP_ID \
+    OAUTH2_GENERIC_APP_SECRET \
+    OAUTH2_GENERIC_CLIENT_SITE \
+    OAUTH2_GENERIC_CLIENT_USER_INFO_URL \
+    OAUTH2_GENERIC_CLIENT_AUTHORIZE_URL \
+    OAUTH2_GENERIC_CLIENT_TOKEN_URL \
+    OAUTH2_GENERIC_CLIENT_END_SESSION_ENDPOINT \
+    OAUTH2_GENERIC_ID_PATH \
+    OAUTH2_GENERIC_USER_UID \
+    OAUTH2_GENERIC_USER_NAME \
+    OAUTH2_GENERIC_USER_EMAIL \
+    OAUTH2_GENERIC_NAME
+  else
+      exec_as_git sed -i "/name: 'oauth2_generic'/,/{{OAUTH2_GENERIC_NAME}}/d" ${GITLAB_CONFIG}
   fi
 }
 
@@ -654,6 +690,7 @@ gitlab_configure_oauth() {
   gitlab_configure_oauth_gitlab
   gitlab_configure_oauth_bitbucket
   gitlab_configure_oauth_saml
+  gitlab_configure_oauth2_generic
   gitlab_configure_oauth_crowd
   gitlab_configure_oauth_auth0
   gitlab_configure_oauth_azure
@@ -668,7 +705,7 @@ gitlab_configure_oauth() {
     OAUTH_EXTERNAL_PROVIDERS
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
-    cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2)
+    cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2|oauth2_generic|$OAUTH2_GENERIC_NAME)
       update_template ${GITLAB_CONFIG} OAUTH_AUTO_SIGN_IN_WITH_PROVIDER
       ;;
     *)
@@ -747,19 +784,20 @@ gitlab_configure_backups_schedule() {
     daily|weekly|monthly)
       if ! crontab -u ${GITLAB_USER} -l >/tmp/cron.${GITLAB_USER} 2>/dev/null || ! grep -q 'bundle exec rake gitlab:backup:create' /tmp/cron.${GITLAB_USER}; then
         echo "Configuring gitlab::backups::schedule..."
-        read hour min <<< ${GITLAB_BACKUP_TIME//[:]/ }
-        day_of_month=*
-        month=*
-        day_of_week=*
+        gitlab_backup_log="${GITLAB_LOG_DIR}/gitlab/gitlab-backup.log"
+        read -r hour min <<< "${GITLAB_BACKUP_TIME//[:]/ }"
+        day_of_month="*"
+        month="*"
+        day_of_week="*"
         case ${GITLAB_BACKUP_SCHEDULE} in
           daily) ;;
           weekly) day_of_week=0 ;;
           monthly) day_of_month=01 ;;
         esac
         if [[ -n ${GITLAB_BACKUP_DIR_GROUP} ]]; then
-            echo "$min $hour $day_of_month $month $day_of_week /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create SKIP=${GITLAB_BACKUP_SKIP} DIRECTORY=${GITLAB_BACKUP_DIR_GROUP} RAILS_ENV=${RAILS_ENV}'" >> /tmp/cron.${GITLAB_USER}
+            echo "$min $hour $day_of_month $month $day_of_week /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create SKIP=${GITLAB_BACKUP_SKIP} DIRECTORY=${GITLAB_BACKUP_DIR_GROUP} RAILS_ENV=${RAILS_ENV}' >> ${gitlab_backup_log} 2>&1" >> "/tmp/cron.${GITLAB_USER}"
         else
-            echo "$min $hour $day_of_month $month $day_of_week /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create SKIP=${GITLAB_BACKUP_SKIP} RAILS_ENV=${RAILS_ENV}'" >> /tmp/cron.${GITLAB_USER}
+            echo "$min $hour $day_of_month $month $day_of_week /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create SKIP=${GITLAB_BACKUP_SKIP} RAILS_ENV=${RAILS_ENV}' >> ${gitlab_backup_log} 2>&1" >> "/tmp/cron.${GITLAB_USER}"
         fi
         crontab -u ${GITLAB_USER} /tmp/cron.${GITLAB_USER}
       fi
@@ -1278,7 +1316,7 @@ map_uidgid() {
     echo "Mapping UID and GID for ${GITLAB_USER}:${GITLAB_USER} to $USERMAP_UID:$USERMAP_GID"
     groupmod -o -g ${USERMAP_GID} ${GITLAB_USER}
     sed -i -e "s|:${USERMAP_ORIG_UID}:${USERMAP_GID}:|:${USERMAP_UID}:${USERMAP_GID}:|" /etc/passwd
-    find ${GITLAB_HOME} -path ${GITLAB_DATA_DIR}/\* -prune -o -print0 | xargs -0 chown -h ${GITLAB_USER}:
+    find ${GITLAB_HOME} -path ${GITLAB_DATA_DIR}/\* \( ! -uid ${USERMAP_ORIG_UID} -o ! -gid ${USERMAP_ORIG_GID} \) -print0 | xargs -0 chown -h ${GITLAB_USER}: ${GITLAB_HOME}
   fi
 }
 
@@ -1473,12 +1511,17 @@ generate_ssh_host_keys() {
   chmod 0644 ${GITLAB_DATA_DIR}/ssh/*.pub
 }
 
+update_ssh_listen_port() {
+  sed -i "s|#Port 22|Port ${GITLAB_SSH_LISTEN_PORT}|g" /etc/ssh/sshd_config
+}
+
 initialize_system() {
   map_uidgid
   initialize_logdir
   initialize_datadir
   update_ca_certificates
   generate_ssh_host_keys
+  update_ssh_listen_port
   install_configuration_templates
   rm -rf /var/run/supervisor.sock
 }
@@ -1487,7 +1530,7 @@ install_configuration_templates() {
   echo "Installing configuration templates..."
   install_template ${GITLAB_USER}: gitlabhq/gitlab.yml ${GITLAB_CONFIG} 0640
   install_template ${GITLAB_USER}: gitlabhq/database.yml ${GITLAB_DATABASE_CONFIG} 0640
-  install_template ${GITLAB_USER}: gitlabhq/unicorn.rb ${GITLAB_UNICORN_CONFIG} 0644
+  install_template ${GITLAB_USER}: gitlabhq/puma.rb ${GITLAB_PUMA_CONFIG} 0644
   install_template ${GITLAB_USER}: gitlabhq/rack_attack.rb ${GITLAB_RACK_ATTACK_CONFIG} 0644
   install_template ${GITLAB_USER}: gitlabhq/resque.yml ${GITLAB_RESQUE_CONFIG} 0640
   install_template ${GITLAB_USER}: gitlabhq/secrets.yml ${GITLAB_SECRETS_CONFIG} 0600
@@ -1573,6 +1616,7 @@ configure_gitlab() {
     GITLAB_RELATIVE_URL_ROOT \
     GITLAB_HTTPS \
     GITLAB_SSH_HOST \
+    GITLAB_SSH_LISTEN_PORT \
     GITLAB_SSH_PORT \
     GITLAB_SIGNUP_ENABLED \
     GITLAB_IMPERSONATION_ENABLED \
@@ -1590,7 +1634,7 @@ configure_gitlab() {
   gitlab_configure_gitlab_workhorse
   gitlab_configure_relative_url
   gitlab_configure_trusted_proxies
-  gitlab_configure_unicorn
+  gitlab_configure_puma
   gitlab_configure_timezone
   gitlab_configure_rack_attack
   gitlab_configure_ci

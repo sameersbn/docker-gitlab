@@ -3,6 +3,110 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**12.9.4**
+- gitlab: upgrade CE to v12.9.4
+- Update gitlab-workhorse to 8.25.2
+- Update golang to 1.13.10
+
+**12.9.2**
+- gitlab: upgrade CE to v12.9.2
+
+**12.9.1**
+- gitlab: upgrade CE to v12.9.1
+
+**12.9.0**
+- gitlab: upgrade CE to v12.9.0
+- replaced unicorn with puma
+- Removed `UNICORN_WORKERS`
+- Removed `UNICORN_TIMEOUT`
+- Added `PUMA_THREADS_MIN`
+- Added `PUMA_THREADS_MAX`
+- Added `PUMA_WORKERS`
+- Added `PUMA_TIMEOUT`
+
+**12.8.8**
+- gitlab: upgrade CE to v12.8.8
+
+**12.8.7**
+- gitlab: upgrade CE to v12.8.7
+
+**12.8.6**
+- gitlab: upgrade CE to v12.8.6
+
+**12.8.5**
+- gitlab: upgrade CE to v12.8.5
+
+**12.8.4**
+- gitlab: upgrade CE to v12.8.4
+
+**12.8.3**
+- gitlab: upgrade CE to v12.8.3
+
+**12.8.2**
+- gitlab: upgrade CE to v12.8.2
+
+**12.8.1**
+- gitlab: upgrade CE to v12.8.1
+
+**12.8.0**
+- gitlab: upgrade CE to v12.8.0
+- fix: ArgumentError: 'import/{{oauth2_generic_name}}' is not supported [#2101](https://github.com/sameersbn/docker-gitlab/issues/2101)
+
+**12.7.8**
+- Upgrade GitLab CE to 12.7.8
+
+**12.7.7**
+- Upgrade GitLab CE to 12.7.7
+- Add Generic OAuth Provider PR#2070
+
+**12.7.7**
+- Upgrade GitLab CE to 12.7.7
+
+**12.7.6**
+- gitlab: upgrade CE to v12.7.6
+
+**12.7.5**
+- gitlab: upgrade CE to v12.7.5
+
+**12.7.4**
+- Upgrade GitLab CE to 12.7.4
+- Update golang to 1.13.7
+- Update gitlab-pages to 1.15.0
+- Update gitlab-workhorse to 8.20.0
+- Update gitaly to 1.85.0
+
+**12.7.2**
+- Upgrade GitLab CE to 12.7.2
+
+**12.7.0**
+- Update gitlab-shell to 11.0.0
+- Upgrade GitLab CE to 12.7.0
+- Update golang to 1.13.6
+- Update gitaly to 1.83.0
+- Update gitlab-pages to 1.14.0
+- Update gitlab-workhorse to 8.19.0
+
+**12.6.4**
+- gitlab: upgrade CE to v12.6.4
+
+**12.6.3**
+- gitlab: upgrade CE to v12.6.3
+
+**12.6.2**
+- gitlab: upgrade CE to v12.6.2
+
+**12.6.1**
+- gitlab: upgrade CE to v12.6.1
+
+**12.6.0**
+- gitlab: upgrade CE to v12.6.0
+
+**12.5.7**
+- gitlab: upgrade CE to v12.5.7
+
+**12.5.6**
+- gitlab: upgrade CE to v12.5.6
+
 **12.5.5**
 - gitlab: upgrade CE to v12.5.5
 

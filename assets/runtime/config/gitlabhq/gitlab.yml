@@ -571,6 +571,26 @@ production: &base
             client_secret: '{{OAUTH_AUTH0_CLIENT_SECRET}}',
             domain: '{{OAUTH_AUTH0_DOMAIN}}',
             scope: '{{OAUTH_AUTH0_SCOPE}}'  } }
+      - { name: 'oauth2_generic',
+          app_id: '{{OAUTH2_GENERIC_APP_ID}}',
+          app_secret: '{{OAUTH2_GENERIC_APP_SECRET}}',
+          args: {
+            client_options: {
+              site: '{{OAUTH2_GENERIC_CLIENT_SITE}}',
+              user_info_url: '{{OAUTH2_GENERIC_CLIENT_USER_INFO_URL}}',
+              authorize_url: '{{OAUTH2_GENERIC_CLIENT_AUTHORIZE_URL}}',
+              token_url: '{{OAUTH2_GENERIC_CLIENT_TOKEN_URL}}',
+              end_session_endpoint: '{{OAUTH2_GENERIC_CLIENT_END_SESSION_ENDPOINT}}',
+                        },
+            user_response_structure: {
+            id_path: '{{OAUTH2_GENERIC_ID_PATH}}',
+            attributes: {
+              uid: '{{OAUTH2_GENERIC_USER_UID}}',
+              name: '{{OAUTH2_GENERIC_USER_NAME}}',
+              email: '{{OAUTH2_GENERIC_USER_EMAIL}}'
+              }
+            },
+            name: '{{OAUTH2_GENERIC_NAME}}' }}
       - { name: 'azure_oauth2',
           args: {
             client_id: '{{OAUTH_AZURE_API_KEY}}',

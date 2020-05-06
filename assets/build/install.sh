@@ -64,10 +64,14 @@ exec_as_git git config --global gc.auto 0
 exec_as_git git config --global repack.writeBitmaps true
 exec_as_git git config --global receive.advertisePushOptions true
 
-
 # shallow clone gitlab-foss
 echo "Cloning gitlab-foss v.${GITLAB_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
+
+if [[ -d "${GITLAB_BUILD_DIR}/patches" ]]; then
+echo "Applying patches for gitlab-foss..."
+exec_as_git git -C ${GITLAB_INSTALL_DIR} apply --ignore-whitespace < ${GITLAB_BUILD_DIR}/patches/*.patch
+fi
 
 GITLAB_SHELL_VERSION=${GITLAB_SHELL_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_SHELL_VERSION)}
 GITLAB_WORKHORSE_VERSION=${GITLAB_WORKHOUSE_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_WORKHORSE_VERSION)}
@@ -88,12 +92,10 @@ chown -R ${GITLAB_USER}: ${GITLAB_SHELL_INSTALL_DIR}
 
 cd ${GITLAB_SHELL_INSTALL_DIR}
 exec_as_git cp -a config.yml.example config.yml
-if [[ -x ./bin/compile ]]; then
-  echo "Compiling gitlab-shell golang executables..."
-  ./bin/compile
-  rm -rf go_build
-fi
-./bin/install
+
+echo "Compiling gitlab-shell golang executables..."
+exec_as_git bundle install -j"$(nproc)" --deployment --with development test
+exec_as_git "PATH=$PATH" make verify setup
 
 # remove unused repositories directory created by gitlab-shell install
 rm -rf ${GITLAB_HOME}/repositories
@@ -135,10 +137,6 @@ rm -rf ${GITLAB_GITALY_BUILD_DIR}
 # remove go
 rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz ${GOROOT}
 
-# Fix for rebase in forks 
-echo "Linking $(command -v gitaly-ssh) to /"
-ln -s "$(command -v gitaly-ssh)" /
-
 # remove HSTS config from the default headers, we configure it in nginx
 exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
 
@@ -149,6 +147,7 @@ cd ${GITLAB_INSTALL_DIR}
 
 # install gems, use local cache if available
 if [[ -d ${GEM_CACHE_DIR} ]]; then
+  echo "Found local npm package cache..."
   mv ${GEM_CACHE_DIR} ${GITLAB_INSTALL_DIR}/vendor/cache
   chown -R ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/vendor/cache
 fi
@@ -280,13 +279,12 @@ ${GITLAB_LOG_DIR}/nginx/*.log {
 }
 EOF
 
-# configure supervisord to start unicorn
-cat > /etc/supervisor/conf.d/unicorn.conf <<EOF
-[program:unicorn]
+cat > /etc/supervisor/conf.d/puma.conf <<EOF
+[program:puma]
 priority=10
 directory=${GITLAB_INSTALL_DIR}
 environment=HOME=${GITLAB_HOME}
-command=bundle exec unicorn_rails -c ${GITLAB_INSTALL_DIR}/config/unicorn.rb -E ${RAILS_ENV}
+command=bundle exec puma --config ${GITLAB_INSTALL_DIR}/config/puma.rb --environment ${RAILS_ENV}
 user=git
 autostart=true
 autorestart=true
@@ -408,7 +406,7 @@ cat > /etc/supervisor/conf.d/groups.conf <<EOF
 programs=gitaly
 priority=5
 [group:gitlab]
-programs=unicorn,gitlab-workhorse
+programs=puma,gitlab-workhorse
 priority=10
 [group:gitlab_extensions]
 programs=sshd,nginx,mail_room,cron
@@ -420,4 +418,4 @@ DEBIAN_FRONTEND=noninteractive apt-get purge -y --auto-remove ${BUILD_DEPENDENCI
 rm -rf /var/lib/apt/lists/*
 
 # clean up caches
-exec_as_git rm -rf ${GITLAB_HOME}/.cache
+rm -rf ${GITLAB_HOME}/.cache ${GITLAB_HOME}/.bundle ${GITLAB_HOME}/go
