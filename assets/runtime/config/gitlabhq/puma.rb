@@ -1,10 +1,3 @@
-
-# Relative URL support
-# WARNING: We recommend using an FQDN to host GitLab in a root path instead
-# of using a relative URL.
-# Documentation: http://doc.gitlab.com/ce/install/relative_url.html
-# Uncomment and customize the following line to run in a non-root path
-#
 ENV['RAILS_RELATIVE_URL_ROOT'] = "{{GITLAB_RELATIVE_URL_ROOT}}"
 
 # frozen_string_literal: true
