@@ -870,7 +870,8 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_BACKUP_TIME` | Set a time for the automatic backups in `HH:MM` format. Defaults to `04:00`. |
 | `GITLAB_BACKUP_SKIP` | Specified sections are skipped by the backups. Defaults to empty, i.e. `lfs,uploads`. [See](http://doc.gitlab.com/ce/raketasks/backup_restore.html#create-a-backup-of-the-gitlab-system) |
 | `GITLAB_SSH_HOST` | The ssh host. Defaults to **GITLAB_HOST**. |
-| `GITLAB_SSH_PORT` | The ssh port number. Defaults to `22`. |
+| `GITLAB_SSH_LISTEN_PORT` | The ssh port for SSHD to listen on. Defaults to `22` |
+| `GITLAB_SSH_PORT` | The ssh port number. Defaults to `$GITLAB_SSH_LISTEN_PORT`. |
 | `GITLAB_RELATIVE_URL_ROOT` | The relative url of the GitLab server, e.g. `/git`. No default. |
 | `GITLAB_TRUSTED_PROXIES` | Add IP address reverse proxy to trusted proxy list, otherwise users will appear signed in from that address. Currently only a single entry is permitted. No defaults. |
 | `GITLAB_REGISTRY_ENABLED` | Enables the GitLab Container Registry. Defaults to `false`. |
