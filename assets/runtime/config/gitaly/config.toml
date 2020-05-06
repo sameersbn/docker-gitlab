@@ -45,9 +45,9 @@ path = "{{GITLAB_REPOS_DIR}}"
 #
 
 # # You can optionally configure Gitaly to output JSON-formatted log messages to stdout
-# [logging]
+[logging]
 # # The directory where Gitaly stores extra log files
-dir = "{{GITLAB_LOG_DIR}}"
+dir = "{{GITLAB_LOG_DIR}}/gitaly"
 # format = "json"
 # # Optional: Set log level to only log entries with that severity or above
 # # One of, in order: debug, info, warn, errror, fatal, panic

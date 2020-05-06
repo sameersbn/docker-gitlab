@@ -1347,6 +1347,10 @@ initialize_logdir() {
   mkdir -p ${GITLAB_LOG_DIR}/gitlab-shell
   chmod -R 0755 ${GITLAB_LOG_DIR}/gitlab-shell
   chown -R ${GITLAB_USER}: ${GITLAB_LOG_DIR}/gitlab-shell
+
+  mkdir -p ${GITLAB_LOG_DIR}/gitaly
+  chmod -R 0755 ${GITLAB_LOG_DIR}/gitaly
+  chown -R ${GITLAB_USER}: ${GITLAB_LOG_DIR}/gitaly
 }
 
 initialize_datadir() {

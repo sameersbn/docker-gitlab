@@ -266,6 +266,19 @@ ${GITLAB_LOG_DIR}/gitlab-shell/*.log {
 }
 EOF
 
+# configure gitlab log rotation
+cat > /etc/logrotate.d/gitaly <<EOF
+${GITLAB_LOG_DIR}/gitaly/*.log {
+  weekly
+  missingok
+  rotate 52
+  compress
+  delaycompress
+  notifempty
+  copytruncate
+}
+EOF
+
 # configure gitlab vhost log rotation
 cat > /etc/logrotate.d/gitlab-nginx <<EOF
 ${GITLAB_LOG_DIR}/nginx/*.log {
