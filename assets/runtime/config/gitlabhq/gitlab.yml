@@ -1149,6 +1149,7 @@ production: &base
     # puma_sampler_interval: 5
     # IP whitelist to access monitoring endpoints
     ip_whitelist:
+      - 127.0.0.0/8
       - {{GITLAB_MONITORING_IP_WHITELIST}}
 
     # Sidekiq exporter is webserver built in to Sidekiq to expose Prometheus metrics
