@@ -1,5 +1,59 @@
-image: docker:dind
+image: docker:18-git
 
-deploy:
+stages:
+  - build
+
+before_script:
+  - export VERSION=$(cat VERSION)
+  - export CI_REGISTRY=${CI_REGISTRY:-hub.docker.com}
+  - export CI_REGISTRY_USER=${CI_REGISTRY_USER:-gitlab-ci-token}
+  - export CI_REGISTRY_PASSWORD=${CI_REGISTRY_PASSWORD:-${CI_JOB_TOKEN}}
+  - export DOCKER_IMAGE=${DOCKER_IMAGE:-${CI_REGISTRY}/${CI_PROJECT_PATH}}
+  - |
+    if [ "${DOCKER_IMAGE}" = "/" ]; then
+      export DOCKER_IMAGE=sameersbn/gitlab
+    fi
+
+docker:build:
+  stage: build
+  only:
+    - master
   script:
-    - ci/gitlab
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+    - docker build
+      --pull
+      --cache-from=${DOCKER_IMAGE}
+      --build-arg=VCS_REF=$(git rev-parse --short HEAD)
+      --build-arg=BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"
+      --tag ${DOCKER_IMAGE} .
+    - docker push ${DOCKER_IMAGE}
+
+docker:build:branches:
+  stage: build
+  only:
+    - branches
+  except:
+    - master
+  script:
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+    - docker build
+      --pull
+      --cache-from=${DOCKER_IMAGE}:${CI_COMMIT_REF_SLUG}
+      --build-arg=VCS_REF=$(git rev-parse --short HEAD)
+      --build-arg=BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"
+      --tag ${DOCKER_IMAGE}:${CI_COMMIT_REF_SLUG} .
+    - docker push ${DOCKER_IMAGE}:${CI_COMMIT_REF_SLUG}
+
+docker:build:release:
+  stage: build
+  only:
+    - tags
+  script:
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+    - docker build
+      --pull
+      --cache-from=${DOCKER_IMAGE}:${VERSION}
+      --build-arg=VCS_REF=$(git rev-parse --short HEAD)
+      --build-arg=BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"
+      --tag ${DOCKER_IMAGE}:${VERSION} .
+    - docker push ${DOCKER_IMAGE}:${VERSION}

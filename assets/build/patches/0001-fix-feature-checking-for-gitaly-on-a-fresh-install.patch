@@ -1,0 +1,33 @@
+From 36bf91a3fd423d9ee564ae669a271c714362d648 Mon Sep 17 00:00:00 2001
+From: solidnerd <niclas@mietz.io>
+Date: Sun, 29 Mar 2020 11:14:40 +0200
+Subject: [PATCH] fix: feature checking for gitaly on a fresh install
+
+Signed-off-by: solidnerd <niclas@mietz.io>
+---
+ lib/feature.rb | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/lib/feature.rb b/lib/feature.rb
+index aadc2c64957..1d39a921465 100644
+--- a/lib/feature.rb
++++ b/lib/feature.rb
+@@ -33,6 +33,7 @@ class Feature
+ 
+     def persisted_names
+       return [] unless Gitlab::Database.exists?
++      return [] unless Feature::FlipperFeature.table_exists?
+ 
+       Gitlab::SafeRequestStore[:flipper_persisted_names] ||=
+         begin
+@@ -57,6 +58,7 @@ class Feature
+       # During setup the database does not exist yet. So we haven't stored a value
+       # for the feature yet and return the default.
+       return default_enabled unless Gitlab::Database.exists?
++      return default_enabled unless Feature::FlipperFeature.table_exists?
+ 
+       feature = Feature.get(key)
+ 
+-- 
+2.25.2
+

@@ -1,10 +1,10 @@
 GitLab Container Registry
 =========================
-Since `8.8.0` GitLab introduces container registry. GitLab is helping to authenticate the user against the registry and proxy it via NGINX. If we are talking about [Registry](https://docs.docker.com/registry) we are meaning the registry from docker and Container Registry is the feature of GitLab.
+Since `8.8.0` GitLab introduces a container registry. GitLab is helping to authenticate the user against the registry and proxy it via Nginx. By [Registry](https://docs.docker.com/registry) we mean the registry from docker whereas *Container Registry* is the feature in GitLab.
 
 - [Prerequisites](#prerequisites)
-- [Available Parameters](#available-parameters)
 - [Installation](#installation)
+- [Configuration](#configuration)
 - [Maintenance](#maintenance)
     - [Creating Backups](#creating-backups)
     - [Restoring Backups](#restoring-backups)
@@ -16,18 +16,148 @@ Since `8.8.0` GitLab introduces container registry. GitLab is helping to authent
   - [Docker GitLab](https://github.com/sameersbn/docker-gitlab) >= 8.8.5-1
 
 
-# Available Parameters
+# Installation
+
+## Setup with Nginx as Reverse Proxy
+
+We assume that you already have Nginx installed on your host system and that
+you use a reverse proxy configuration to connect to your GitLab container.
+
+In this example we use a dedicated domain for the registry. The URLs for
+the GitLab installation and the registry are:
+
+* git.example.com
+* registry.example.com
+
+> Note: You could also run everything on the same domain and use different ports
+> instead. The required configuration changes below should be straightforward.
+
+### Create auth tokens
+
+GitLab needs a certificate ("auth token") to talk to the registry API. The
+tokens must be provided in the `/certs` directory of your container. You could
+use an existing domain ceritificate or create your own with a very long
+lifetime like this:
+
+```bash
+mkdir certs
+cd certs
+openssl req -new -newkey rsa:4096 > registry.csr
+openssl rsa -in privkey.pem -out registry.key
+openssl x509 -in registry.csr -out registry.crt -req -signkey registry.key -days 10000
+```
+
+It doesn't matter which details (domain name, etc.) you enter during key
+creation. This information is not used at all.
+
+
+### Update docker-compose.yml
+
+First add the configuration for the registry container to your `docker-compose.yml`.
+
+```yaml
+    registry:
+        image: registry
+        restart: always
+        expose:
+            - "5000"
+        ports:
+            - "5000:5000"
+        volumes:
+            - ./gitlab/shared/registry:/registry
+            - ./certs:/certs
+        environment:
+            - REGISTRY_LOG_LEVEL=info
+            - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/registry
+            - REGISTRY_AUTH_TOKEN_REALM=https://git.example.com/jwt/auth
+            - REGISTRY_AUTH_TOKEN_SERVICE=container_registry
+            - REGISTRY_AUTH_TOKEN_ISSUER=gitlab-issuer
+            - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/certs/registry.crt
+            - REGISTRY_STORAGE_DELETE_ENABLED=true
+```
+
+> **Important:**
+>
+> 1. Don't change `REGISTRY_AUTH_TOKEN_SERVICE`. It must have
+>    `container_registry` as value.
+> 2. `REGISTRY_AUTH_TOKEN_REALM` must look like
+>    `https://git.example.com/jwt/auth`. So the endpoint must be `/jwt/auth`.
+>
+> These configuration options are required by the GitLab Container Registry.
+
+Then update the `volumes` and `environment` sections of your `gitlab` container:
+
+```yaml
+    gitlab:
+        environment:
+            # ...
+            # Registry
+            - GITLAB_REGISTRY_ENABLED=true
+            - GITLAB_REGISTRY_HOST=registry.example.com
+            - GITLAB_REGISTRY_PORT=443
+            - GITLAB_REGISTRY_API_URL=http://registry:5000
+            - GITLAB_REGISTRY_KEY_PATH=/certs/registry.key
+
+        volumes:
+            - ./gitlab:/home/git/data
+            - ./certs:/certs
+```
+
+### Nginx Site Configuration
+
+```nginx
+server {
+    root /dev/null;
+    server_name registry.example.com;
+    charset UTF-8;
+    access_log /var/log/nginx/registry.example.com.access.log;
+    error_log /var/log/nginx/registry.example.com.error.log;
+
+    # Set up SSL only connections:
+    listen *:443 ssl http2;
+    ssl_certificate             /etc/letsencrypt/live/registry.example.com/fullchain.pem;
+    ssl_certificate_key         /etc/letsencrypt/live/registry.example.com/privkey.pem;
+
+    ssl_ciphers 'ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4';
+    ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on;
+    ssl_session_cache  builtin:1000  shared:SSL:10m;
+    ssl_session_timeout  5m;
+
+    client_max_body_size        0;
+    chunked_transfer_encoding   on;
+
+    location / {
+        proxy_set_header  Host              $http_host;   # required for docker client's sake
+        proxy_set_header  X-Real-IP         $remote_addr; # pass on real client's IP
+        proxy_set_header  X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header  X-Forwarded-Proto $scheme;
+        proxy_read_timeout                  900;
+        proxy_pass        http://localhost:5000;
+    }
+}
+
+server {
+    listen *:80;
+    server_name  registry.example.com;
+    server_tokens off; ## Don't show the nginx version number, a security best practice
+    return 301 https://$http_host:$request_uri;
+}
+```
+
+# Configuration
+
+## Available Parameters
 
 Here is an example of all configuration parameters that can be used in the GitLab container.
 
-```
+```yml
 ...
 gitlab:
     ...
     environment:
     - GITLAB_REGISTRY_ENABLED=true
     - GITLAB_REGISTRY_HOST=registry.gitlab.example.com
-    - GITLAB_REGISTRY_PORT=5500
     - GITLAB_REGISTRY_API_URL=http://registry:5000
     - GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key
     - GITLAB_REGISTRY_ISSUER=gitlab-issuer
@@ -64,134 +194,6 @@ gitlab:
     - GITLAB_REGISTRY_ISSUER=gitlab-issuer
 ...
 ```
-# Installation
-
-Starting a fresh installation with GitLab Container registry would be like the `docker-compose` file.
-
-## Docker Compose
-
-This is an example with a registry and filesystem as storage driver.
-
-```yml
-version: '2'
-
-services:
-  redis:
-    restart: always
-    image: sameersbn/redis:latest
-    command:
-    - --loglevel warning
-    volumes:
-    - ./redis:/var/lib/redis:Z
-  postgresql:
-    restart: always
-    image: sameersbn/postgresql:9.6-2
-    volumes:
-    - ./postgresql:/var/lib/postgresql:Z
-    environment:
-    - DB_USER=gitlab
-    - DB_PASS=password
-    - DB_NAME=gitlabhq_production
-    - DB_EXTENSION=pg_trgm
-
-  gitlab:
-    restart: always
-    image: sameersbn/gitlab:8.16.6
-    depends_on:
-    - redis
-    - postgresql
-    ports:
-    - "10080:80"
-    - "5500:5500"
-    - "10022:22"
-    volumes:
-    - ./gitlab:/home/git/data:Z
-    - ./logs:/var/log/gitlab
-    - ./certs:/certs
-    environment:
-    - DEBUG=false
-
-    - DB_ADAPTER=postgresql
-    - DB_HOST=postgresql
-    - DB_PORT=5432
-    - DB_USER=gitlab
-    - DB_PASS=password
-    - DB_NAME=gitlabhq_production
-
-    - REDIS_HOST=redis
-    - REDIS_PORT=6379
-    - GITLAB_SSH_PORT=10022
-    - GITLAB_PORT=10080
-    - GITLAB_HOST=gitlab.example.com
-
-    - GITLAB_SECRETS_DB_KEY_BASE=superrandomsecret
-    - GITLAB_REGISTRY_ENABLED=true
-    - GITLAB_REGISTRY_HOST=registry.gitlab.example.com
-    - GITLAB_REGISTRY_PORT=5500
-    - GITLAB_REGISTRY_API_URL=http://registry:5000
-    - GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key
-    - SSL_REGISTRY_KEY_PATH=/certs/registry.key
-    - SSL_REGISTRY_CERT_PATH=/certs/registry.crt
-
-  registry:
-    restart: always
-    image: registry:2.4.1
-    volumes:
-    - ./gitlab/shared/registry:/registry
-    - ./certs:/certs
-    environment:
-    - REGISTRY_LOG_LEVEL=info
-    - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/registry
-    - REGISTRY_AUTH_TOKEN_REALM=http://gitlab.example.com:10080/jwt/auth
-    - REGISTRY_AUTH_TOKEN_SERVICE=container_registry
-    - REGISTRY_AUTH_TOKEN_ISSUER=gitlab-issuer
-    - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/certs/registry-auth.crt
-    - REGISTRY_STORAGE_DELETE_ENABLED=true
-```
-> **Important Notice**
->
-> 1. Don't change `REGISTRY_AUTH_TOKEN_SERVICE`. It must have `container_registry` as value.
-> 2. `REGISTRY_AUTH_TOKEN_REALM` need to be look like `http/s://gitlab.example.com/jwt/auth`. Endpoint must be `/jwt/auth`
-> These configuration options are required by the GitLab Container Registry.
-
-
-## Generating certificate for authentication with the registry
-
-So GitLab handles for us the authentication with Registry we need an certificate to do that secure.
-With have here two options:
-
-1. Use a signed certificate from an Trusted Certificate Authority.
-2. Self-Signed Certificate for the authentication process.
-
-### Signed Certificate
-If you have a signed certificate from a Trusted Certificate Authority you need only to copy the files in then `certs` folder and mount the folder in both containers (gitlab,registry) like in the docker-compose example.
-After that you need to set an environment variable in each container.
-In the **GitLab Container** you need to set `GITLAB_REGISTRY_KEY_PATH` this is the private key of the signed certificate.
-In the **Registry Container** you need to set `REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE` to the certificate file of the signed certificate.
-For more info read [token auth configuration documentation][token-config].
-
-### Self Signed Certificate
-
-Generate a self signed certificate with openssl.
-
-- **Step 1**: Create a certs dir
- ```bash
- mkdir certs && cd certs
- ```
-
-- **Step 2**: Generate a private key and sign request for the private key
-```bash
-openssl req -nodes -newkey rsa:4096 -keyout registry-auth.key -out registry-auth.csr -subj "/CN=gitlab-issuer"
-```
-
-- **Step 3**: Sign your created privated key
-```bash
-openssl x509 -in registry-auth.csr -out registry-auth.crt -req -signkey registry-auth.key -days 3650
-```
-
-After this mount the `certs` dir in both containers and set the same environment variables like way of the signed certificate.
-
-
 
 ## Container Registry storage driver
 
@@ -282,11 +284,11 @@ docker stop registry gitlab && docker rm registry gitlab
 Execute the rake task with a removeable container.
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:8.16.6 app:rake gitlab:backup:create
+    sameersbn/gitlab:12.9.5 app:rake gitlab:backup:create
 ```
 ## Restoring Backups
 
-Gitlab also defines a rake task to restore a backup.
+GitLab also defines a rake task to restore a backup.
 
 Before performing a restore make sure the container is stopped and removed to avoid container name conflicts.
 
@@ -298,7 +300,7 @@ Execute the rake task to restore a backup. Make sure you run the container in in
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:8.16.6 app:rake gitlab:backup:restore
+    sameersbn/gitlab:12.9.5 app:rake gitlab:backup:restore
 ```
 
 The list of all available backups will be displayed in reverse chronological order. Select the backup you want to restore and continue.
@@ -307,7 +309,7 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:8.16.6 app:rake gitlab:backup:restore BACKUP=1417624827
+    sameersbn/gitlab:12.9.5 app:rake gitlab:backup:restore BACKUP=1417624827
 ```
 
 # Upgrading from an existing GitLab installation
@@ -318,7 +320,7 @@ If you want enable this feature for an existing instance of GitLab you need to d
 - **Step 1**: Update the docker image.
 
 ```bash
-docker pull sameersbn/gitlab:8.16.6
+docker pull sameersbn/gitlab:12.9.5
 ```
 
 - **Step 2**: Stop and remove the currently running image
@@ -335,7 +337,7 @@ docker run --name gitlab -it --rm [OPTIONS] \
 ```
 
 - **Step 4**: Create a certs folder
-Create an authentication certificate with [Generating certificate for authentication with the registry](#Generating-certificate-for-authentication-with-the-registry).
+Create an authentication certificate with [Generating certificate for authentication with the registry](#generating-certificate-for-authentication-with-the-registry).
 
 - **Step 5**: Create an registry instance
 
@@ -368,16 +370,17 @@ docker run --name gitlab -d [PREVIOUS_OPTIONS] \
 --env 'GITLAB_REGISTRY_ENABLED=true' \
 --env 'GITLAB_REGISTRY_HOST=registry.gitlab.example.com' \
 --env 'GITLAB_REGISTRY_API_URL=http://registry:5000/' \
+--env 'GITLAB_REGISTRY_CERT_PATH=/certs/registry-auth.crt' \
 --env 'GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key' \
 --link registry:registry
-sameersbn/gitlab:8.16.6
+sameersbn/gitlab:12.9.5
 ```
 
 
 [wildcard certificate]: https://en.wikipedia.org/wiki/Wildcard_certificate
-[ce-4040]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040
+[ce-4040]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4040
 [docker-insecure]: https://docs.docker.com/registry/insecure/
 [registry-deploy]: https://docs.docker.com/registry/deploying/
 [storage-config]: https://docs.docker.com/registry/configuration/#storage
 [token-config]: https://docs.docker.com/registry/configuration/#token
-[8-8-docs]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-8-stable/doc/administration/container_registry.md
+[8-8-docs]: https://gitlab.com/gitlab-org/gitlab-foss/blob/8-8-stable/doc/administration/container_registry.md

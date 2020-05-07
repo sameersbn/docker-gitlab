@@ -1,0 +1,331 @@
+version: 2.1
+
+orbs:
+  shellcheck: circleci/shellcheck@1.3.16
+  docker: circleci/docker@1.0.1
+  go: circleci/go@1.1.1
+
+commands:
+  docker-build:
+    description: |
+      Build and optionally deploy a Docker images
+    parameters:
+      dockerfile:
+        default: Dockerfile
+        description: 'Name of dockerfile to use, defaults to Dockerfile'
+        type: string
+      extra_build_args:
+        default: ''
+        description: >
+          Extra flags to pass to docker build. For examples, see
+          https://docs.docker.com/engine/reference/commandline/build
+        type: string
+      registry:
+        default: docker.io
+        description: |
+          Comma separated list of registry to use, defaults to docker.io
+        type: string
+      image:
+        description: Name of image to build
+        type: string
+      tag:
+        default: $CIRCLE_SHA1
+        description: 'Image tag, defaults to the value of $CIRCLE_SHA1'
+        type: string
+      path:
+        default: .
+        description: >
+          Path to the directory containing your Dockerfile and build context,
+          defaults to . (working directory)
+        type: string
+      cache_from:
+        default: ''
+        description: >
+          Comma-separated list of images, images will first be pulled, then passed
+          as the --cache-from build argument
+          https://docs.docker.com/engine/reference/commandline/build/
+        type: string
+      no_output_timeout:
+        default: 10m
+        description: |
+          No output timeout for build step
+        type: string
+    steps:
+      - when:
+          condition: <<parameters.cache_from>>
+          steps:
+            - run:
+                name: Build image for <<parameters.registry>>
+                no_output_timeout: <<parameters.no_output_timeout>>
+                command: >
+                  echo "<<parameters.cache_from>>" | sed -n 1'p' | tr ',' '\n' |
+                  while read image; do
+                    echo "Pulling ${image}";
+                    docker pull ${image} || true
+                  done
+
+                  docker_tag_args=""
+
+                  IFS="," read -ra DOCKER_REGISTRIES \<<< "<< parameters.registry >>"
+
+                  for registry in "${DOCKER_REGISTRIES[@]}"; do
+                    IFS="," read -ra DOCKER_TAGS \<<< "<< parameters.tag >>"
+
+                    for tag in "${DOCKER_TAGS[@]}"; do
+                      docker_tag_args="$docker_tag_args -t $registry/<<parameters.image>>:${tag}"
+                    done
+                  done
+
+                  docker build
+                  <<#parameters.extra_build_args>><<parameters.extra_build_args>><</parameters.extra_build_args>>
+                  \
+                    --cache-from <<parameters.cache_from>> \
+                    -f <<parameters.path>>/<<parameters.dockerfile>> \
+                    $docker_tag_args \
+                    <<parameters.path>>
+      - unless:
+          condition: <<parameters.cache_from>>
+          steps:
+            - run:
+                name: Building image for <<parameters.registry>>
+                no_output_timeout: <<parameters.no_output_timeout>>
+                command: >
+                  docker_tag_args=""
+
+                  IFS="," read -ra DOCKER_REGISTRIES \<<< "<< parameters.registry >>"
+
+                  for registry in "${DOCKER_REGISTRIES[@]}"; do
+                    IFS="," read -ra DOCKER_TAGS \<<< "<< parameters.tag >>"
+
+                    for tag in "${DOCKER_TAGS[@]}"; do
+                      docker_tag_args="$docker_tag_args -t $registry/<<parameters.image>>:${tag}"
+                    done
+                  done
+
+                  docker build
+                  <<#parameters.extra_build_args>><<parameters.extra_build_args>><</parameters.extra_build_args>>
+                  \
+                    -f <<parameters.path>>/<<parameters.dockerfile>> \
+                    $docker_tag_args \
+                    <<parameters.path>>
+
+  docker-save:
+    description: |
+      Save one or more images to a tar archive
+    parameters:
+      registry:
+        default: docker.io
+        description: |
+          Comma separated list of registry to use, defaults to docker.io
+        type: string
+      image:
+        description: Name of image to build
+        type: string
+      tag:
+        default: $CIRCLE_SHA1
+        description: 'Image tag, defaults to the value of $CIRCLE_SHA1'
+        type: string
+    steps:
+      - run:
+          name: Save image to tar archive
+          command: >
+            docker_images=""
+
+            IFS="," read -ra DOCKER_REGISTRIES \<<< "<< parameters.registry >>"
+
+            for registry in "${DOCKER_REGISTRIES[@]}"; do
+              IFS="," read -ra DOCKER_TAGS \<<< "<< parameters.tag >>"
+
+              for tag in "${DOCKER_TAGS[@]}"; do
+                docker_images="$docker_images $registry/<<parameters.image>>:${tag}"
+              done
+            done
+
+            mkdir -p ~/docker/
+
+            docker save -o ~/docker/docker-images.tar $docker_images
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - docker
+
+  docker-load:
+    description: |
+      Load tar archive
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Load images from tar archive
+          command: >
+            docker load -i ~/docker/docker-images.tar
+
+  docker-publish:
+    description: |
+      Build and optionally deploy a Docker images
+    parameters:
+      pr:
+        default: ''
+        type: string
+      registry:
+        default: docker.io
+        description: |
+          Comma separated list of registry to use, defaults to docker.io
+        type: string
+      image:
+        description: Name of image to build
+        type: string
+      tag:
+        default: $CIRCLE_SHA1
+        description: 'Image tag, defaults to the value of $CIRCLE_SHA1'
+        type: string
+    steps:
+      - unless:
+          condition: <<parameters.pr>>
+          steps:
+            - run:
+                name: Publish image for <<parameters.registry>>
+                command: >
+                  IFS="," read -ra DOCKER_REGISTRIES \<<< "<< parameters.registry >>"
+
+                  for registry in "${DOCKER_REGISTRIES[@]}"; do
+                    IFS="," read -ra DOCKER_TAGS \<<< "<< parameters.tag >>"
+
+                    for tag in "${DOCKER_TAGS[@]}"; do
+                      docker push $registry/<< parameters.image>>:${tag}
+                    done
+                  done
+
+jobs:
+  build:
+    executor: docker/machine
+    steps:
+      - checkout
+      - docker-build:
+          registry: docker.io,quay.io
+          image: sameersbn/gitlab
+          tag: ${CIRCLE_TAG:-latest}
+          cache_from: docker.io/sameersbn/gitlab:latest
+          extra_build_args: '--build-arg VCS_REF=${CIRCLE_TAG:-${CIRCLE_SHA1}} --build-arg BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"'
+          no_output_timeout: 45m
+      - docker-save:
+          registry: docker.io,quay.io
+          image: sameersbn/gitlab
+          tag: ${CIRCLE_TAG:-latest}
+
+  test:
+    executor: docker/machine
+    steps:
+      - checkout
+      - docker-load
+      - run:
+          name: Update tag in docker-compose.yml
+          command: |
+            sed -i "s|image: sameersbn/gitlab:.*|image: sameersbn/gitlab:${CIRCLE_TAG:-latest}|" docker-compose.yml
+      - run:
+          name: Launch gitlab stack
+          command: docker-compose up -d --quiet-pull
+      - run:
+          name: Container info
+          command: docker ps
+      - run:
+          name: Wait for stack bootup
+          command: sleep 90
+      - run:
+          name: Test image bootup
+          command: |
+            docker run --network container:$(docker-compose ps -q gitlab) \
+              curlimages/curl --ipv4 --retry 60 --retry-delay 5 --retry-connrefused -svf http://localhost/explore -o /dev/null
+
+  publish-dockerhub:
+    executor: docker/machine
+    steps:
+      - docker-load
+      - docker/check:
+          registry: docker.io
+          docker-username: DOCKER_LOGIN
+          docker-password: DOCKER_PASSWORD
+      - docker-publish:
+          registry: docker.io
+          image: sameersbn/gitlab
+          tag: ${CIRCLE_TAG:-latest}
+
+  publish-quay:
+    executor: docker/machine
+    steps:
+      - docker-load
+      - docker/check:
+          registry: quay.io
+          docker-username: DOCKER_LOGIN
+          docker-password: DOCKER_PASSWORD
+      - docker-publish:
+          registry: quay.io
+          image: sameersbn/gitlab
+          tag: ${CIRCLE_TAG:-latest}
+
+  release:
+    executor:
+      name: go/default
+      tag: '1.14'
+    steps:
+      - checkout
+      - run:
+          name: Installing github-release tool
+          command: go get github.com/meterup/github-release
+      - run:
+          name: Creating github release
+          command: |
+            PRE_RELEASE=${CIRCLE_TAG/${CIRCLE_TAG%-rc[0-9]*}/}
+            github-release delete -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -t ${CIRCLE_TAG} 2>/dev/null ||:
+            ./scripts/release-notes.sh ${CIRCLE_TAG} | github-release release ${PRE_RELEASE:+-p} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -t ${CIRCLE_TAG} -d -
+            for f in $(find /tmp/dist -type f); do github-release upload -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -t ${CIRCLE_TAG} -n $(basename ${f}) -f ${f} ; done
+
+workflows:
+  build-test-and-release:
+    jobs:
+      - shellcheck/check:
+          name: shellcheck
+          ignore: SC2086,SC2181
+          filters:
+            tags:
+              only: /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
+      - build:
+          requires:
+            - shellcheck
+          filters:
+            tags:
+              only: /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
+      - test:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
+      - publish-dockerhub:
+          context: dockerhub
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
+      - publish-quay:
+          context: quay
+          requires:
+            - test
+          filters:
+            tags:
+              only: /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
+            branches:
+              only: master
+      - release:
+          context: github
+          requires:
+            - publish-dockerhub
+            - publish-quay
+          filters:
+            tags:
+              only: /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
+            branches:
+              ignore: /.*/
