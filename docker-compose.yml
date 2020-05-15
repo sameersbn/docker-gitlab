@@ -3,17 +3,17 @@ version: '2'
 services:
   redis:
     restart: always
-    image: sameersbn/redis:4.0.9-1
+    image: sameersbn/redis:4.0.9-2
     command:
     - --loglevel warning
     volumes:
-    - /srv/docker/gitlab/redis:/var/lib/redis:Z
+    - redis-data:/var/lib/redis:Z
 
   postgresql:
     restart: always
-    image: sameersbn/postgresql:10
+    image: sameersbn/postgresql:10-2
     volumes:
-    - /srv/docker/gitlab/postgresql:/var/lib/postgresql:Z
+    - postgresql-data:/var/lib/postgresql:Z
     environment:
     - DB_USER=gitlab
     - DB_PASS=password
@@ -22,7 +22,7 @@ services:
 
   gitlab:
     restart: always
-    image: sameersbn/gitlab:11.8.3
+    image: sameersbn/gitlab:12.9.5
     depends_on:
     - redis
     - postgresql
@@ -30,7 +30,7 @@ services:
     - "10080:80"
     - "10022:22"
     volumes:
-    - /srv/docker/gitlab/gitlab:/home/git/data:Z
+    - gitlab-data:/home/git/data:Z
     environment:
     - DEBUG=false
 
@@ -145,7 +145,13 @@ services:
     - OAUTH_AUTH0_CLIENT_ID=
     - OAUTH_AUTH0_CLIENT_SECRET=
     - OAUTH_AUTH0_DOMAIN=
+    - OAUTH_AUTH0_SCOPE=
 
     - OAUTH_AZURE_API_KEY=
     - OAUTH_AZURE_API_SECRET=
     - OAUTH_AZURE_TENANT_ID=
+
+volumes:
+  redis-data:
+  postgresql-data:
+  gitlab-data:

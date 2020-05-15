@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
+GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-foss.git
 GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/-/archive/v${GITLAB_SHELL_VERSION}/gitlab-shell-v${GITLAB_SHELL_VERSION}.tar.bz2
 GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
 GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages.git
@@ -20,7 +20,7 @@ export GOROOT PATH
 
 BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
   libc6-dev ruby${RUBY_VERSION}-dev \
-  libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
+  libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
   libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
   gettext libkrb5-dev"
@@ -42,9 +42,9 @@ DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ${BUIL
 # Applying the mark late here does make the build usable on PaX kernels, but
 # still the build itself must be executed on a non-PaX kernel. It's done here
 # only for simplicity.
-paxctl -Cm "$(command -v ruby${RUBY_VERSION})"
+paxctl -cvm "$(command -v ruby${RUBY_VERSION})"
 # https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
-paxctl -Cm "$(command -v nodejs)"
+paxctl -cvm "$(command -v nodejs)"
 
 # remove the host keys generated during openssh-server installation
 rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
@@ -64,10 +64,14 @@ exec_as_git git config --global gc.auto 0
 exec_as_git git config --global repack.writeBitmaps true
 exec_as_git git config --global receive.advertisePushOptions true
 
-
-# shallow clone gitlab-ce
-echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
+# shallow clone gitlab-foss
+echo "Cloning gitlab-foss v.${GITLAB_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
+
+if [[ -d "${GITLAB_BUILD_DIR}/patches" ]]; then
+echo "Applying patches for gitlab-foss..."
+exec_as_git git -C ${GITLAB_INSTALL_DIR} apply --ignore-whitespace < ${GITLAB_BUILD_DIR}/patches/*.patch
+fi
 
 GITLAB_SHELL_VERSION=${GITLAB_SHELL_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_SHELL_VERSION)}
 GITLAB_WORKHORSE_VERSION=${GITLAB_WORKHOUSE_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_WORKHORSE_VERSION)}
@@ -88,12 +92,10 @@ chown -R ${GITLAB_USER}: ${GITLAB_SHELL_INSTALL_DIR}
 
 cd ${GITLAB_SHELL_INSTALL_DIR}
 exec_as_git cp -a config.yml.example config.yml
-if [[ -x ./bin/compile ]]; then
-  echo "Compiling gitlab-shell golang executables..."
-  ./bin/compile
-  rm -rf go_build
-fi
-./bin/install
+
+echo "Compiling gitlab-shell golang executables..."
+exec_as_git bundle install -j"$(nproc)" --deployment --with development test
+exec_as_git "PATH=$PATH" make verify setup
 
 # remove unused repositories directory created by gitlab-shell install
 rm -rf ${GITLAB_HOME}/repositories
@@ -135,10 +137,6 @@ rm -rf ${GITLAB_GITALY_BUILD_DIR}
 # remove go
 rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz ${GOROOT}
 
-# Fix for rebase in forks 
-echo "Linking $(command -v gitaly-ssh) to /"
-ln -s "$(command -v gitaly-ssh)" /
-
 # remove HSTS config from the default headers, we configure it in nginx
 exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
 
@@ -149,11 +147,12 @@ cd ${GITLAB_INSTALL_DIR}
 
 # install gems, use local cache if available
 if [[ -d ${GEM_CACHE_DIR} ]]; then
+  echo "Found local npm package cache..."
   mv ${GEM_CACHE_DIR} ${GITLAB_INSTALL_DIR}/vendor/cache
   chown -R ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/vendor/cache
 fi
 
-exec_as_git bundle install -j"$(nproc)" --deployment --without development test aws
+exec_as_git bundle install -j"$(nproc)" --deployment --without development test mysql aws
 
 # make sure everything in ${GITLAB_HOME} is owned by ${GITLAB_USER} user
 chown -R ${GITLAB_USER}: ${GITLAB_HOME}
@@ -161,7 +160,7 @@ chown -R ${GITLAB_USER}: ${GITLAB_HOME}
 # gitlab.yml and database.yml are required for `assets:precompile`
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/resque.yml.example ${GITLAB_INSTALL_DIR}/config/resque.yml
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.mysql ${GITLAB_INSTALL_DIR}/config/database.yml
+exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
 
 # Installs nodejs packages required to compile webpack
 exec_as_git yarn install --production --pure-lockfile
@@ -267,6 +266,19 @@ ${GITLAB_LOG_DIR}/gitlab-shell/*.log {
 }
 EOF
 
+# configure gitlab log rotation
+cat > /etc/logrotate.d/gitaly <<EOF
+${GITLAB_LOG_DIR}/gitaly/*.log {
+  weekly
+  missingok
+  rotate 52
+  compress
+  delaycompress
+  notifempty
+  copytruncate
+}
+EOF
+
 # configure gitlab vhost log rotation
 cat > /etc/logrotate.d/gitlab-nginx <<EOF
 ${GITLAB_LOG_DIR}/nginx/*.log {
@@ -280,13 +292,12 @@ ${GITLAB_LOG_DIR}/nginx/*.log {
 }
 EOF
 
-# configure supervisord to start unicorn
-cat > /etc/supervisor/conf.d/unicorn.conf <<EOF
-[program:unicorn]
+cat > /etc/supervisor/conf.d/puma.conf <<EOF
+[program:puma]
 priority=10
 directory=${GITLAB_INSTALL_DIR}
 environment=HOME=${GITLAB_HOME}
-command=bundle exec unicorn_rails -c ${GITLAB_INSTALL_DIR}/config/unicorn.rb -E ${RAILS_ENV}
+command=bundle exec puma --config ${GITLAB_INSTALL_DIR}/config/puma.rb --environment ${RAILS_ENV}
 user=git
 autostart=true
 autorestart=true
@@ -402,9 +413,22 @@ stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 EOF
 
+
+cat > /etc/supervisor/conf.d/groups.conf <<EOF
+[group:core]
+programs=gitaly
+priority=5
+[group:gitlab]
+programs=puma,gitlab-workhorse
+priority=10
+[group:gitlab_extensions]
+programs=sshd,nginx,mail_room,cron
+priority=20
+EOF
+
 # purge build dependencies and cleanup apt
 DEBIAN_FRONTEND=noninteractive apt-get purge -y --auto-remove ${BUILD_DEPENDENCIES}
 rm -rf /var/lib/apt/lists/*
 
 # clean up caches
-exec_as_git rm -rf ${GITLAB_HOME}/.cache
+rm -rf ${GITLAB_HOME}/.cache ${GITLAB_HOME}/.bundle ${GITLAB_HOME}/go

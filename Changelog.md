@@ -1,7 +1,272 @@
 # Changelog
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
-https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
+https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
+
+**12.9.4**
+- gitlab: upgrade CE to v12.9.4
+- Update gitlab-workhorse to 8.25.2
+- Update golang to 1.13.10
+
+**12.9.2**
+- gitlab: upgrade CE to v12.9.2
+
+**12.9.1**
+- gitlab: upgrade CE to v12.9.1
+
+**12.9.0**
+- gitlab: upgrade CE to v12.9.0
+- replaced unicorn with puma
+- Removed `UNICORN_WORKERS`
+- Removed `UNICORN_TIMEOUT`
+- Added `PUMA_THREADS_MIN`
+- Added `PUMA_THREADS_MAX`
+- Added `PUMA_WORKERS`
+- Added `PUMA_TIMEOUT`
+
+**12.8.8**
+- gitlab: upgrade CE to v12.8.8
+
+**12.8.7**
+- gitlab: upgrade CE to v12.8.7
+
+**12.8.6**
+- gitlab: upgrade CE to v12.8.6
+
+**12.8.5**
+- gitlab: upgrade CE to v12.8.5
+
+**12.8.4**
+- gitlab: upgrade CE to v12.8.4
+
+**12.8.3**
+- gitlab: upgrade CE to v12.8.3
+
+**12.8.2**
+- gitlab: upgrade CE to v12.8.2
+
+**12.8.1**
+- gitlab: upgrade CE to v12.8.1
+
+**12.8.0**
+- gitlab: upgrade CE to v12.8.0
+- fix: ArgumentError: 'import/{{oauth2_generic_name}}' is not supported [#2101](https://github.com/sameersbn/docker-gitlab/issues/2101)
+
+**12.7.8**
+- Upgrade GitLab CE to 12.7.8
+
+**12.7.7**
+- Upgrade GitLab CE to 12.7.7
+- Add Generic OAuth Provider PR#2070
+
+**12.7.7**
+- Upgrade GitLab CE to 12.7.7
+
+**12.7.6**
+- gitlab: upgrade CE to v12.7.6
+
+**12.7.5**
+- gitlab: upgrade CE to v12.7.5
+
+**12.7.4**
+- Upgrade GitLab CE to 12.7.4
+- Update golang to 1.13.7
+- Update gitlab-pages to 1.15.0
+- Update gitlab-workhorse to 8.20.0
+- Update gitaly to 1.85.0
+
+**12.7.2**
+- Upgrade GitLab CE to 12.7.2
+
+**12.7.0**
+- Update gitlab-shell to 11.0.0
+- Upgrade GitLab CE to 12.7.0
+- Update golang to 1.13.6
+- Update gitaly to 1.83.0
+- Update gitlab-pages to 1.14.0
+- Update gitlab-workhorse to 8.19.0
+
+**12.6.4**
+- gitlab: upgrade CE to v12.6.4
+
+**12.6.3**
+- gitlab: upgrade CE to v12.6.3
+
+**12.6.2**
+- gitlab: upgrade CE to v12.6.2
+
+**12.6.1**
+- gitlab: upgrade CE to v12.6.1
+
+**12.6.0**
+- gitlab: upgrade CE to v12.6.0
+
+**12.5.7**
+- gitlab: upgrade CE to v12.5.7
+
+**12.5.6**
+- gitlab: upgrade CE to v12.5.6
+
+**12.5.5**
+- gitlab: upgrade CE to v12.5.5
+
+**12.5.4**
+- gitlab: upgrade CE to v12.5.4
+- Update golang to 1.12.14
+
+**12.5.3**
+- gitlab: upgrade CE to v12.5.3
+
+**12.5.2**
+- gitlab: upgrade CE to v12.5.2
+
+**12.5.1**
+- gitlab: upgrade CE to v12.5.1
+
+**12.5.0**
+- gitlab: upgrade CE to v12.5.0
+
+**12.4.3**
+- gitlab: upgrade CE to v12.4.3
+
+**12.4.2**
+- gitlab: upgrade CE to v12.4.2
+
+**12.4.1**
+- gitlab: upgrade CE to v12.4.1
+
+**12.4.0**
+- gitlab: upgrade CE to v12.4.0
+
+**12.3.5**
+- gitlab: upgrade CE to v12.3.5
+
+**12.3.4**
+- gitlab: upgrade CE to v12.3.4
+
+**12.3.3**
+- gitlab: upgrade CE to v12.3.3
+
+**12.3.2**
+- gitlab: upgrade CE to v12.3.2
+
+**12.3.1**
+- gitlab: upgrade CE to v12.3.1
+
+**12.3.0**
+- gitlab: upgrade CE to v12.3.0
+
+**12.2.5**
+- gitlab: upgrade CE to v12.2.5
+
+**12.2.4**
+- gitlab: upgrade CE to v12.2.4
+
+**12.2.3**
+- gitlab: upgrade CE to v12.2.3
+
+**12.2.1**
+- gitlab: upgrade CE to v12.2.1
+
+**12.2.0**
+- gitlab: upgrade CE to v12.2.0
+- upgrade base image to ubuntu:bionic
+
+**12.1.6**
+- gitlab: upgrade CE to v12.1.6
+
+**12.1.4**
+- gitlab: upgrade CE to v12.1.4
+
+**12.1.3**
+- gitlab: upgrade CE to v12.1.3
+
+**12.1.2**
+- gitlab: upgrade CE to v12.1.2
+
+**12.1.1**
+- gitlab: upgrade CE to v12.1.1
+
+**12.1.0**
+- gitlab: upgrade CE to v12.1.0
+- Removed MySQL related information and packages. GitLab v12.1.X or greater requires only PostgreSQL. Do an Migration before upgrading to v12.1.X. For more Information have a look at the [Migration Guide](https://docs.gitlab.com/ce/update/mysql_to_postgresql.html)
+
+**12.0.4**
+- gitlab: upgrade CE to v12.0.4
+
+**12.0.3**
+- gitlab: upgrade CE to v12.0.3
+
+**12.0.2**
+- gitlab: upgrade CE to v12.0.2
+
+**12.0.1**
+- gitlab: upgrade CE to v12.0.1
+
+**12.0.0**
+- gitlab: upgrade CE to v12.0.0
+- Update gitaly to 1.47.0
+- Update gitlab-shell to 9.3.0
+- Update gitlab-pages to 1.6.1
+- ruby: update to 2.6
+- python: update to 3
+
+**11.11.3**
+- gitlab: upgrade CE to v11.11.3
+- Update gitaly to 1.42.4
+- Update golang to 1.12.6
+
+**11.11.2**
+- gitlab: upgrade CE to v11.11.2
+- Update gitaly to 1.42.3
+
+**11.11.1**
+- gitlab: upgrade CE to v11.11.1
+- Update gitaly to 1.42.2
+
+**11.11.0**
+- gitlab: upgrade CE to v11.11.0
+- Update gitaly to 1.42.0
+- Update gitlab-shell to 9.1.0
+- Update gitlab-workhorse to 8.7.0
+
+**11.10.4**
+- gitlab: upgrade CE to v11.10.4
+
+**11.10.3**
+- gitlab: upgrade CE to v11.10.3
+
+**11.10.2**
+- gitlab: upgrade CE to v11.10.2
+
+**11.10.1**
+- gitlab: upgrade CE to v11.10.1
+
+**11.10.0**
+- gitlab: upgrade CE to v11.10.0
+
+**11.9.8**
+- gitlab: upgrade CE to v11.9.8
+
+**11.9.7**
+- gitlab: upgrade CE to v11.9.7
+
+**11.9.6**
+- gitlab: upgrade CE to v11.9.6
+
+**11.9.5**
+- gitlab: upgrade CE to v11.9.5
+
+**11.9.4**
+- gitlab: upgrade CE to v11.9.4
+- Update gitlab-workhorse to 8.3.3
+
+**11.9.1**
+- gitlab: upgrade CE to v11.9.1
+- Update gitaly to 1.27.1
+
+**11.9.0**
+- gitlab: upgrade CE to v11.9.0
 
 **11.8.3**
 - gitlab: upgrade CE to v11.8.3
@@ -451,7 +716,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list o
 
 **9.3.8**
 - gitlab: upgrade to CE v9.3.8
-- Added RE2 library to build dependencies ([issue 35342](https://gitlab.com/gitlab-org/gitlab-ce/issues/35342))
+- Added RE2 library to build dependencies ([issue 35342](https://gitlab.com/gitlab-org/gitlab-foss/issues/35342))
 
 **9.3.7**
 - gitlab: upgrade to CE v9.3.7
