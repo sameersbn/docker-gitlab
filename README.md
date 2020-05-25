@@ -64,6 +64,7 @@
 - [Monitoring](#monitoring)
     - [Health Check](#health-check)
 - [Container Registry](docs/container_registry.md)
+- [Deploy in Docker Swarm mode, with HTTPS handled by Traefik proxy and Docker Registry](docs/docker-swarm-traefik-registry.md)
 - [References](#references)
 
 # Introduction
@@ -882,6 +883,7 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_REGISTRY_KEY_PATH` | Sets the GitLab Registry Key Path. Defaults to `config/registry.key` |
 | `GITLAB_REGISTRY_DIR` | Directory to store the container images will be shared with registry. Defaults to `$GITLAB_SHARED_DIR/registry` |
 | `GITLAB_REGISTRY_ISSUER` | Sets the GitLab Registry Issuer. Defaults to `gitlab-issuer`. |
+| `GITLAB_REGISTRY_GENERATE_INTERNAL_CERTIFICATES` | Set to `true` to generate SSL internal Registry keys. Used to communicate between a Docker Registry and GitLab. It will generate a self-signed certificate key at the location given by `$GITLAB_REGISTRY_KEY_PATH`, e.g. `/certs/registry.key`. And will generate the certificate file at the same location, with the same name, but changing the extension from `key` to `crt`, e.g. `/certs/registry.crt` |
 | `GITLAB_PAGES_ENABLED` | Enables the GitLab Pages. Defaults to `false`. |
 | `GITLAB_PAGES_DOMAIN` | Sets the GitLab Pages Domain. Defaults to `example.com` |
 | `GITLAB_PAGES_DIR` | Sets GitLab Pages directory where all pages will be stored. Defaults to `$GITLAB_SHARED_DIR/pages` |
