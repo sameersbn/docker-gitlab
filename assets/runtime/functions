@@ -1651,6 +1651,7 @@ configure_gitlab() {
   gitlab_configure_cron_jobs
   gitlab_configure_analytics
   gitlab_configure_backups
+  generate_registry_certificates
   gitlab_configure_registry
   gitlab_configure_pages
   gitlab_configure_sentry
@@ -1867,6 +1868,7 @@ execute_raketask() {
 generate_registry_certificates() {
   if [[ ${GITLAB_REGISTRY_GENERATE_INTERNAL_CERTIFICATES} == true ]]; then
     echo 'Generating GitLab Registry internal certificates for communication between Gitlab and a Docker Registry'
+    PREVIOUS_DIRECTORY=$(pwd)
     # Get directory from cert file path
     if [[ -z $GITLAB_REGISTRY_KEY_PATH ]]; then
         echo "\$GITLAB_REGISTRY_KEY_PATH is empty"
@@ -1912,5 +1914,7 @@ generate_registry_certificates() {
     else
         openssl x509 -in registry.csr -out "$CERT_FILENAME" -req -signkey "$KEY_FILENAME" -days 10000
     fi
+    chown -R ${GITLAB_USER}: ${DIRECTORY}
+    cd ${PREVIOUS_DIRECTORY}
   fi
 }
