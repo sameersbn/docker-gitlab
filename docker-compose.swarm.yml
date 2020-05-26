@@ -76,6 +76,12 @@ services:
     volumes:
     - gitlab-data:/home/git/data:Z
     - certs-data:/certs
+    healthcheck:
+      test: ["CMD", "/usr/local/sbin/healthcheck"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 5m
     networks:
       # To communicate with other services in this stack
       - default
