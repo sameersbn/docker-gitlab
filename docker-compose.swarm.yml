@@ -33,13 +33,13 @@ services:
       - registry-data:/registry
       - certs-data:/certs
     environment:
-      - REGISTRY_LOG_LEVEL=${REGISTRY_LOG_LEVEL:-info}
-      - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=${REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY:-/registry}
+      - REGISTRY_LOG_LEVEL=info
+      - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/registry
       - REGISTRY_AUTH_TOKEN_REALM=https://${GITLAB_HOST?Variable not set}/jwt/auth
-      - REGISTRY_AUTH_TOKEN_SERVICE=${REGISTRY_AUTH_TOKEN_SERVICE:-container_registry}
-      - REGISTRY_AUTH_TOKEN_ISSUER=${REGISTRY_AUTH_TOKEN_ISSUER:-gitlab-issuer}
-      - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=${REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE:-/certs/registry.crt}
-      - REGISTRY_STORAGE_DELETE_ENABLED=${REGISTRY_STORAGE_DELETE_ENABLED:-true}
+      - REGISTRY_AUTH_TOKEN_SERVICE=container_registry
+      - REGISTRY_AUTH_TOKEN_ISSUER=gitlab-issuer
+      - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/certs/registry.crt
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
     deploy:
       placement:
         constraints:
@@ -63,7 +63,7 @@ services:
       - traefik-public
 
   gitlab:
-    image: sameersbn/gitlab:13.0.0
+    image: sameersbn/gitlab:13.0.0x
     depends_on:
     - redis
     - postgresql
@@ -84,134 +84,134 @@ services:
     environment:
     - DEBUG=false
 
-    - GITLAB_REGISTRY_ENABLED=${GITLAB_REGISTRY_ENABLED:-true}
+    - GITLAB_REGISTRY_ENABLED=true
     - GITLAB_REGISTRY_HOST=${REGISTRY_HOST?Variable not set}
-    - GITLAB_REGISTRY_PORT=${GITLAB_REGISTRY_PORT:-443}
-    - GITLAB_REGISTRY_API_URL=${GITLAB_REGISTRY_API_URL:-http://registry:5000}
-    - GITLAB_REGISTRY_KEY_PATH=${GITLAB_REGISTRY_KEY_PATH:-/certs/registry.key}
-    - GITLAB_REGISTRY_ISSUER=${GITLAB_REGISTRY_ISSUER:-gitlab-issuer}
-    - GITLAB_REGISTRY_GENERATE_INTERNAL_CERTIFICATES=${GITLAB_REGISTRY_GENERATE_INTERNAL_CERTIFICATES:-true}
+    - GITLAB_REGISTRY_PORT=443
+    - GITLAB_REGISTRY_API_URL=http://registry:5000
+    - GITLAB_REGISTRY_KEY_PATH=/certs/registry.key
+    - GITLAB_REGISTRY_ISSUER=gitlab-issuer
+    - GITLAB_REGISTRY_GENERATE_INTERNAL_CERTIFICATES=true
 
-    - GITLAB_SIGNUP_ENABLED=${GITLAB_SIGNUP_ENABLED:-false}
+    - GITLAB_SIGNUP_ENABLED=false
 
-    - DB_ADAPTER=${DB_ADAPTER:-postgresql}
-    - DB_HOST=${DB_HOST:-postgresql}
-    - DB_PORT=${DB_PORT:-5432}
-    - DB_USER=${DB_USER:-gitlab}
-    - DB_PASS=${DB_PASS:-password}
-    - DB_NAME=${DB_NAME:-gitlabhq_production}
+    - DB_ADAPTER=postgresql
+    - DB_HOST=postgresql
+    - DB_PORT=5432
+    - DB_USER=gitlab
+    - DB_PASS=password
+    - DB_NAME=gitlabhq_production
 
-    - REDIS_HOST=${REDIS_HOST:-redis}
-    - REDIS_PORT=${REDIS_PORT:-6379}
+    - REDIS_HOST=redis
+    - REDIS_PORT=6379
 
-    - TZ=${TZ:-Asia/Kolkata}
-    - GITLAB_TIMEZONE=${GITLAB_TIMEZONE:-Kolkata}
+    - TZ=Asia/Kolkata
+    - GITLAB_TIMEZONE=Kolkata
 
-    - GITLAB_HTTPS=${GITLAB_HTTPS:-true}
-    - SSL_SELF_SIGNED=${SSL_SELF_SIGNED:-false}
+    - GITLAB_HTTPS=true
+    - SSL_SELF_SIGNED=false
 
     - GITLAB_HOST=${GITLAB_HOST?Variable not set}
-    - GITLAB_PORT=${GITLAB_PORT:-443}
-    - GITLAB_SSH_PORT=${GITLAB_SSH_PORT:-22}
-    - GITLAB_RELATIVE_URL_ROOT=${GITLAB_RELATIVE_URL_ROOT}
-    - GITLAB_SECRETS_DB_KEY_BASE=${GITLAB_SECRETS_DB_KEY_BASE?Variable not set}
-    - GITLAB_SECRETS_SECRET_KEY_BASE=${GITLAB_SECRETS_SECRET_KEY_BASE?Variable not set}
-    - GITLAB_SECRETS_OTP_KEY_BASE=${GITLAB_SECRETS_OTP_KEY_BASE?Variable not set}
+    - GITLAB_PORT=443
+    - GITLAB_SSH_PORT=22
+    - GITLAB_RELATIVE_URL_ROOT=
+    - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
+    - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alphanumeric-string
+    - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alphanumeric-string
 
-    - GITLAB_ROOT_PASSWORD=${GITLAB_ROOT_PASSWORD?Variable not set}
-    - GITLAB_ROOT_EMAIL=${GITLAB_ROOT_EMAIL?Variable not set}
+    - GITLAB_ROOT_PASSWORD=
+    - GITLAB_ROOT_EMAIL=
 
-    - GITLAB_NOTIFY_ON_BROKEN_BUILDS=${GITLAB_NOTIFY_ON_BROKEN_BUILDS:-true}
-    - GITLAB_NOTIFY_PUSHER=${GITLAB_NOTIFY_PUSHER:-false}
+    - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
+    - GITLAB_NOTIFY_PUSHER=false
 
-    - GITLAB_EMAIL=${GITLAB_EMAIL:?Variable not set}
-    - GITLAB_EMAIL_REPLY_TO=${GITLAB_EMAIL_REPLY_TO?Variable not set}
-    - GITLAB_INCOMING_EMAIL_ADDRESS=${GITLAB_INCOMING_EMAIL_ADDRESS?Variable not set}
+    - GITLAB_EMAIL=notifications@example.com
+    - GITLAB_EMAIL_REPLY_TO=noreply@example.com
+    - GITLAB_INCOMING_EMAIL_ADDRESS=reply@example.com
 
-    - GITLAB_BACKUP_SCHEDULE=${GITLAB_BACKUP_SCHEDULE:-daily}
-    - GITLAB_BACKUP_TIME=${GITLAB_BACKUP_TIME:-01:00}
+    - GITLAB_BACKUP_SCHEDULE=daily
+    - GITLAB_BACKUP_TIME=01:00
 
-    - SMTP_ENABLED=${SMTP_ENABLED:-false}
-    - SMTP_DOMAIN=${SMTP_DOMAIN:-www.example.com}
-    - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
-    - SMTP_PORT=${SMTP_PORT:-587}
-    - SMTP_USER=${SMTP_USER:-mailer@example.com}
-    - SMTP_PASS=${SMTP_PASS:-password}
-    - SMTP_STARTTLS=${SMTP_STARTTLS:-true}
-    - SMTP_AUTHENTICATION=${SMTP_AUTHENTICATION:-login}
+    - SMTP_ENABLED=false
+    - SMTP_DOMAIN=www.example.com
+    - SMTP_HOST=smtp.gmail.com
+    - SMTP_PORT=587
+    - SMTP_USER=mailer@example.com
+    - SMTP_PASS=password
+    - SMTP_STARTTLS=true
+    - SMTP_AUTHENTICATION=login
 
-    - IMAP_ENABLED=${IMAP_ENABLED:-false}
-    - IMAP_HOST=${IMAP_HOST:-imap.gmail.com}
-    - IMAP_PORT=${IMAP_PORT:-993}
-    - IMAP_USER=${IMAP_USER:-mailer@example.com}
-    - IMAP_PASS=${IMAP_PASS:-password}
-    - IMAP_SSL=${IMAP_SSL:-true}
-    - IMAP_STARTTLS=${IMAP_STARTTLS:-false}
+    - IMAP_ENABLED=false
+    - IMAP_HOST=imap.gmail.com
+    - IMAP_PORT=993
+    - IMAP_USER=mailer@example.com
+    - IMAP_PASS=password
+    - IMAP_SSL=true
+    - IMAP_STARTTLS=false
 
-    - OAUTH_ENABLED=${OAUTH_ENABLED:-false}
-    - OAUTH_AUTO_SIGN_IN_WITH_PROVIDER=${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER}
-    - OAUTH_ALLOW_SSO=${OAUTH_ALLOW_SSO}
-    - OAUTH_BLOCK_AUTO_CREATED_USERS=${OAUTH_BLOCK_AUTO_CREATED_USERS:-true}
-    - OAUTH_AUTO_LINK_LDAP_USER=${OAUTH_AUTO_LINK_LDAP_USER:-false}
-    - OAUTH_AUTO_LINK_SAML_USER=${OAUTH_AUTO_LINK_SAML_USER:-false}
-    - OAUTH_EXTERNAL_PROVIDERS=${OAUTH_EXTERNAL_PROVIDERS}
+    - OAUTH_ENABLED=false
+    - OAUTH_AUTO_SIGN_IN_WITH_PROVIDER=
+    - OAUTH_ALLOW_SSO=
+    - OAUTH_BLOCK_AUTO_CREATED_USERS=true
+    - OAUTH_AUTO_LINK_LDAP_USER=false
+    - OAUTH_AUTO_LINK_SAML_USER=false
+    - OAUTH_EXTERNAL_PROVIDERS=
 
-    - OAUTH_CAS3_LABEL=${OAUTH_CAS3_LABEL:-cas3}
-    - OAUTH_CAS3_SERVER=${OAUTH_CAS3_SERVER}
-    - OAUTH_CAS3_DISABLE_SSL_VERIFICATION=${OAUTH_CAS3_DISABLE_SSL_VERIFICATION:-false}
-    - OAUTH_CAS3_LOGIN_URL=${OAUTH_CAS3_LOGIN_URL:-/cas/login}
-    - OAUTH_CAS3_VALIDATE_URL=${OAUTH_CAS3_VALIDATE_URL:-/cas/p3/serviceValidate}
-    - OAUTH_CAS3_LOGOUT_URL=${OAUTH_CAS3_LOGOUT_URL:-/cas/logout}
+    - OAUTH_CAS3_LABEL=cas3
+    - OAUTH_CAS3_SERVER=
+    - OAUTH_CAS3_DISABLE_SSL_VERIFICATION=false
+    - OAUTH_CAS3_LOGIN_URL=/cas/login
+    - OAUTH_CAS3_VALIDATE_URL=/cas/p3/serviceValidate
+    - OAUTH_CAS3_LOGOUT_URL=/cas/logout
 
-    - OAUTH_GOOGLE_API_KEY=${OAUTH_GOOGLE_API_KEY}
-    - OAUTH_GOOGLE_APP_SECRET=${OAUTH_GOOGLE_APP_SECRET}
-    - OAUTH_GOOGLE_RESTRICT_DOMAIN=${OAUTH_GOOGLE_RESTRICT_DOMAIN}
+    - OAUTH_GOOGLE_API_KEY=
+    - OAUTH_GOOGLE_APP_SECRET=
+    - OAUTH_GOOGLE_RESTRICT_DOMAIN=
 
-    - OAUTH_FACEBOOK_API_KEY=${OAUTH_FACEBOOK_API_KEY}
-    - OAUTH_FACEBOOK_APP_SECRET=${OAUTH_FACEBOOK_APP_SECRET}
+    - OAUTH_FACEBOOK_API_KEY=
+    - OAUTH_FACEBOOK_APP_SECRET=
 
-    - OAUTH_TWITTER_API_KEY=${OAUTH_TWITTER_API_KEY}
-    - OAUTH_TWITTER_APP_SECRET=${OAUTH_TWITTER_APP_SECRET}
+    - OAUTH_TWITTER_API_KEY=
+    - OAUTH_TWITTER_APP_SECRET=
 
-    - OAUTH_GITHUB_API_KEY=${OAUTH_GITHUB_API_KEY}
-    - OAUTH_GITHUB_APP_SECRET=${OAUTH_GITHUB_APP_SECRET}
-    - OAUTH_GITHUB_URL=${OAUTH_GITHUB_URL}
-    - OAUTH_GITHUB_VERIFY_SSL=${OAUTH_GITHUB_VERIFY_SSL}
+    - OAUTH_GITHUB_API_KEY=
+    - OAUTH_GITHUB_APP_SECRET=
+    - OAUTH_GITHUB_URL=
+    - OAUTH_GITHUB_VERIFY_SSL=
 
-    - OAUTH_GITLAB_API_KEY=${OAUTH_GITLAB_API_KEY}
-    - OAUTH_GITLAB_APP_SECRET=${OAUTH_GITLAB_APP_SECRET}
+    - OAUTH_GITLAB_API_KEY=
+    - OAUTH_GITLAB_APP_SECRET=
 
-    - OAUTH_BITBUCKET_API_KEY=${OAUTH_BITBUCKET_API_KEY}
-    - OAUTH_BITBUCKET_APP_SECRET=${OAUTH_BITBUCKET_APP_SECRET}
+    - OAUTH_BITBUCKET_API_KEY=
+    - OAUTH_BITBUCKET_APP_SECRET=
 
-    - OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL=${OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL}
-    - OAUTH_SAML_IDP_CERT_FINGERPRINT=${OAUTH_SAML_IDP_CERT_FINGERPRINT}
-    - OAUTH_SAML_IDP_SSO_TARGET_URL=${OAUTH_SAML_IDP_SSO_TARGET_URL}
-    - OAUTH_SAML_ISSUER=${OAUTH_SAML_ISSUER}
-    - OAUTH_SAML_LABEL=${OAUTH_SAML_LABEL:-"Our SAML Provider"}
-    - OAUTH_SAML_NAME_IDENTIFIER_FORMAT=${OAUTH_SAML_NAME_IDENTIFIER_FORMAT:-urn:oasis:names:tc:SAML:2.0:nameid-format:transient}
-    - OAUTH_SAML_GROUPS_ATTRIBUTE=${OAUTH_SAML_GROUPS_ATTRIBUTE}
-    - OAUTH_SAML_EXTERNAL_GROUPS=${OAUTH_SAML_EXTERNAL_GROUPS}
-    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL=${OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL}
-    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME=${OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME}
-    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME=${OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME}
-    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME=${OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME}
-    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME=${OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME}
+    - OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL=
+    - OAUTH_SAML_IDP_CERT_FINGERPRINT=
+    - OAUTH_SAML_IDP_SSO_TARGET_URL=
+    - OAUTH_SAML_ISSUER=
+    - OAUTH_SAML_LABEL="Our SAML Provider"
+    - OAUTH_SAML_NAME_IDENTIFIER_FORMAT=urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+    - OAUTH_SAML_GROUPS_ATTRIBUTE=
+    - OAUTH_SAML_EXTERNAL_GROUPS=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME=
 
-    - OAUTH_CROWD_SERVER_URL=${OAUTH_CROWD_SERVER_URL}
-    - OAUTH_CROWD_APP_NAME=${OAUTH_CROWD_APP_NAME}
-    - OAUTH_CROWD_APP_PASSWORD=${OAUTH_CROWD_APP_PASSWORD}
+    - OAUTH_CROWD_SERVER_URL=
+    - OAUTH_CROWD_APP_NAME=
+    - OAUTH_CROWD_APP_PASSWORD=
 
-    - OAUTH_AUTH0_CLIENT_ID=${OAUTH_AUTH0_CLIENT_ID}
-    - OAUTH_AUTH0_CLIENT_SECRET=${OAUTH_AUTH0_CLIENT_SECRET}
-    - OAUTH_AUTH0_DOMAIN=${OAUTH_AUTH0_DOMAIN}
-    - OAUTH_AUTH0_SCOPE=${OAUTH_AUTH0_SCOPE}
+    - OAUTH_AUTH0_CLIENT_ID=
+    - OAUTH_AUTH0_CLIENT_SECRET=
+    - OAUTH_AUTH0_DOMAIN=
+    - OAUTH_AUTH0_SCOPE=
 
-    - OAUTH_AZURE_API_KEY=${OAUTH_AZURE_API_KEY}
-    - OAUTH_AZURE_API_SECRET=${OAUTH_AZURE_API_SECRET}
-    - OAUTH_AZURE_TENANT_ID=${OAUTH_AZURE_TENANT_ID}
+    - OAUTH_AZURE_API_KEY=
+    - OAUTH_AZURE_API_SECRET=
+    - OAUTH_AZURE_TENANT_ID=
 
-    - RACK_ATTACK_ENABLED=${RACK_ATTACK_ENABLED:-false}
+    - RACK_ATTACK_ENABLED=false
     deploy:
       placement:
         constraints:
@@ -220,14 +220,14 @@ services:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
-        - traefik.http.routers.gitlab-registry-http.rule=Host(`${GITLAB_HOST?Variable not set}`)
-        - traefik.http.routers.gitlab-registry-http.entrypoints=http
-        - traefik.http.routers.gitlab-registry-http.middlewares=https-redirect
-        - traefik.http.routers.gitlab-registry-https.rule=Host(`${GITLAB_HOST?Variable not set}`)
-        - traefik.http.routers.gitlab-registry-https.entrypoints=https
-        - traefik.http.routers.gitlab-registry-https.tls=true
-        - traefik.http.routers.gitlab-registry-https.tls.certresolver=le
-        - traefik.http.services.gitlab-registry.loadbalancer.server.port=8181
+        - traefik.http.routers.gitlab-gitlab-http.rule=Host(`${GITLAB_HOST?Variable not set}`)
+        - traefik.http.routers.gitlab-gitlab-http.entrypoints=http
+        - traefik.http.routers.gitlab-gitlab-http.middlewares=https-redirect
+        - traefik.http.routers.gitlab-gitlab-https.rule=Host(`${GITLAB_HOST?Variable not set}`)
+        - traefik.http.routers.gitlab-gitlab-https.entrypoints=https
+        - traefik.http.routers.gitlab-gitlab-https.tls=true
+        - traefik.http.routers.gitlab-gitlab-https.tls.certresolver=le
+        - traefik.http.services.gitlab-gitlab.loadbalancer.server.port=80
 
 volumes:
   redis-data:
