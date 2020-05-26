@@ -100,7 +100,7 @@ export GITLAB_HOST=gitlab.example.com
 export REGISTRY_HOST=registry.example.com
 ```
 
-You will use the domain for `GITLAB_HOST` to access GitLab in your browser and to commit with Git.
+You will use the domain for `GITLAB_HOST` to access GitLab in your browser and to commit and push with Git.
 
 And you will use the domain for `REGISTRY_HOST` to store, push, and pull Docker images, e.g.:
 
@@ -110,7 +110,7 @@ docker pull registry.example.com/mygroup/myproject/imagename:sometag
 
 These environment variables will be used by the file `docker-compose.swarm.yml`.
 
-They are used inside of the stacks and are also used to configure the domains for the Traefik load balancer. Because of that, you need to export them.
+They are used inside of the stacks and are also used to configure the domains for the Traefik load balancer. Because of that, you need to export them for them to be available when deploying the stack.
 
 ## Other environment variables
 
@@ -120,15 +120,13 @@ Read the [main README](https://github.com/sameersbn/docker-gitlab) for all the o
 
 For Registry specific options and details, check the main [GitLab Registry documentation in this repo](https://github.com/sameersbn/docker-gitlab/blob/master/docs/container_registry.md).
 
-You can configure them by exporting the environment variables you want to use like you did for `GITLAB_HOST` and `REGISTRY_HOST`, or you can also edit de file `docker-compose.swarm.yml` directly.
+You can configure them by editing de file `docker-compose.swarm.yml`.
 
-If you want to edit the file directly, you can do it in the command line with a program like `nano`, e.g.:
+You can do it in the command line with a program like `nano`, e.g.:
 
 ```bash
 nano docker-compose.swarm.yml
 ```
-
-You could want to edit the file directly to preserve the values that you used for deploying your stack.
 
 ## Set other environment variables
 
@@ -155,43 +153,7 @@ You can copy it and set it in the file like:
 - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alphanumeric-string
 ```
 
-Or you can do it by exporting variables like:
-
-```bash
-export GITLAB_SECRETS_DB_KEY_BASE=$(openssl rand -hex 32)
-export GITLAB_SECRETS_SECRET_KEY_BASE=$(openssl rand -hex 32)
-export GITLAB_SECRETS_OTP_KEY_BASE=$(openssl rand -hex 32)
-```
-
-that will assign a new random string to each environment variable.
-
-* Set `GITLAB_ROOT_PASSWORD` to the key of the main first administrator user:
-
-```bash
-export GITLAB_ROOT_PASSWORD=change-this-admin-password
-```
-
-* Set `GITLAB_ROOT_EMAIL` to the email of the main first administrator user:
-
-```bash
-export GITLAB_ROOT_EMAIL=admin@example.com
-```
-
-...by default `admin@${GITLAB_HOST}`.
-
-* Set the appropriate email accounts for the following variables:
-
-```bash
-export GITLAB_EMAIL=notifications@git.example.com
-export GITLAB_EMAIL_REPLY_TO=noreply@git.example.com
-export GITLAB_INCOMING_EMAIL_ADDRESS=reply@git.example.com
-```
-
-...by default:
-
-* `GITLAB_EMAIL`: `notifications@${GITLAB_HOST}`
-* `GITLAB_EMAIL_REPLY_TO`: `noreply@${GITLAB_HOST}`
-* `GITLAB_INCOMING_EMAIL_ADDRESS`: `reply@${GITLAB_HOST}`
+There are several other settings that you might want to configure, like email accounts for notifications, SMTP credentials to send emails, etc.
 
 ## Copy the file
 
@@ -207,15 +169,13 @@ and connect via SSH to your remote server, e.g.:
 ssh -p 2222 root@gitlab.example.com
 ```
 
-If you modified the file locally and then connected to your server later, make sure you export any missing environment variables.
-
-Specially `GITLAB_HOST` and `REGISTRY_HOST` that are needed as env vars even if you modified the Docker Compose file (as those are used in the Traefik labels).
+If you modified the file locally and then connected to your server later, make sure you export the environment variables `GITLAB_HOST` and `REGISTRY_HOST` that are needed even if you modified the Docker Compose file (as those are used in the Traefik labels).
 
 ## About volumes, labels, and constraints
 
 Because the Docker Swarm cluster may have more than one single node (machine) in the cluster, we need to make sure that the services that need to save and read files from volumes are always deployed to the same node.
 
-For example, the service for `redis` uses a volume, you can check it on the file:
+For example, the service for `redis` uses a volume, you can check it on the `docker-compose.swarm.yml` file:
 
 ```yaml
     volumes:
@@ -233,7 +193,7 @@ To make sure `redis` is always deployed to the same node that contains the same 
 
 This tells Docker that the service `redis` should be deployed to a Docker node (a machine in the cluster) with the label `node.labels.gitlab.redis-data=true`.
 
-Then we can make one node have this label, and Docker Swarm will always deploy the `redis` service to the same node.
+Then we can make one node (only one) have this label, and Docker Swarm will always deploy the `redis` service to the same node. That way, the service will keep reading the same volume every time. Even if you re-deploy or upgrade the stack.
 
 ## Add constraint labels
 
@@ -258,15 +218,15 @@ m48gz5e8ucmk59af4m6enmnaz *   dog.example.com      Ready    Active         Leade
 mue36qqwqnzrqt4iqi0yyd6ie     gitlab.example.com   Ready    Active                          19.03.9
 ```
 
-And select the node where you want to deploy the main `gitlab` service. In this example, in the `HOSTNAME` `gitlab.example.com`, with node ID `mue36qqwqnzrqt4iqi0yyd6ie`.
+And select the node where you want to deploy the main `gitlab` service. In this example, in the node that has a `HOSTNAME` with value `gitlab.example.com`, with node ID `mue36qqwqnzrqt4iqi0yyd6ie`.
 
-So, you could export that environment variable with that node with:
+So, you could export that environment variable using the node ID with something like:
 
 ```bash
 export NODE_ID=mue36qqwqnzrqt4iqi0yyd6ie
 ```
 
-* Create a tag in that node, so that the service `gitlab` and `registry` are always deployed to the same node and use the same volumes:
+* Create a label in that node, so that the service `gitlab` and `registry` are always deployed to the same node and use the same volumes:
 
 ```bash
 docker node update --label-add gitlab.certs-data=true $NODE_ID
@@ -286,6 +246,8 @@ And add the label for `postgres`:
 docker node update --label-add gitlab.postgresql-data=true $NODE_ID
 ```
 
+**Note**: you only have to set those labels once. Not every time you want to re-deploy your stack.
+
 ## Deploy the stack
 
 Now, having the labels set in the Docker nodes, and the environment variables exported, you can deploy your stack:
@@ -293,6 +255,8 @@ Now, having the labels set in the Docker nodes, and the environment variables ex
 ```bash
 docker stack deploy --compose-file docker-compose.swarm.yml gitlab
 ```
+
+**Note**: the environment variables `GITLAB_HOST` and `REGISTRY_HOST` have to be available every time to deploy the stack. But the node labels can be set only once, the first time you deploy.
 
 You can check the status of the deployment with:
 
@@ -350,13 +314,13 @@ And the Registry is configured to look for the certificate in that same location
 
 If you use GitLab and want to integrate Continuous Integration / Continuous Deployment, you can follow this section to install the GitLab runner.
 
-You should create the runner using Docker standalone instead of in Docker Swarm mode, as you need the configurations to persist, and in Docker Swarm mode, the container could be deployed to a different server and you would loose those configurations.
+You should create the runner using Docker standalone instead of in Docker Swarm mode, as you need the configurations to persist, and in Docker Swarm mode, the container could be deployed to a different server and you would lose those configurations.
 
 ### Testing and Deployment
 
 For testing, the GitLab runner can run in any node.
 
-But if you want to deploy another runner (or the same) for deployment in the same Docker Swarm cluster, it has to run on a manager node.
+But if you want to deploy another runner for deployment (or use the same one), it has to run on a manager node in the Docker Swarm cluster.
 
 ### Create the GitLab Runner in Docker standalone mode
 
@@ -380,19 +344,19 @@ docker exec -it gitlab-runner bash
 ### Install the GitLab Runner
 
 * Go to the GitLab "Admin Area -> Runners" section.
-* Get the URL and create a variable in your Docker Manager's Terminal, e.g.:
+* Get the URL and create a variable with it in the bash session inside of your Runner's Docker container, e.g.:
 
 ```bash
 export GITLAB_URL=https://gitlab.example.com/
 ```
 
-* Get the registration token and create a variable in your Docker Manager's Terminal, e.g.:
+* Get the registration token and create a variable in the bash session inside of your Runner's Docker container, e.g.:
 
 ```bash
 export GITLAB_TOKEN=WYasdfJp4sdfasdf1234
 ```
 
-* Run the next command editing the name and tags as you need, you can also edit the tags later in the web user interface.
+* Run the next command editing the name and tags as you need, you can also edit them later in the web user interface.
 
 ```bash
 gitlab-runner \
