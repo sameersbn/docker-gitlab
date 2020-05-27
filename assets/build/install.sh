@@ -431,8 +431,9 @@ EOF
 cat > /usr/local/sbin/healthcheck <<EOF
 #!/bin/bash
 url=http://localhost/-/liveness
-curl -s \$url
-[[ "\$(curl -s -o /dev/null -I -w '%{http_code}' \$url)" == "200" ]]
+options=( '--insecure' '--location' '--silent' )
+curl "\${options[@]}" \$url
+[[ "\$(curl \${options[@]} -o /dev/null -I -w '%{http_code}' \$url)" == "200" ]]
 EOF
 chmod +x /usr/local/sbin/healthcheck
 
