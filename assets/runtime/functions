@@ -27,6 +27,7 @@ GITLAB_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab"
 GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
 GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
 GITLAB_PAGES_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-pages"
+GITLAB_PAGES_CONFIG="${GITLAB_INSTALL_DIR}/gitlab-pages-config"
 GITLAB_GITALY_CONFIG="${GITLAB_GITALY_INSTALL_DIR}/config.toml"
 
 # Compares two version strings `a` and `b`
@@ -1564,6 +1565,7 @@ install_configuration_templates() {
 
   ## ${GITLAB_PAGES_NGINX_CONFIG}
   if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
+    install_template ${GITLAB_USER}: gitlab-pages/config ${GITLAB_PAGES_CONFIG} 0640
     if [[ ${GITLAB_PAGES_HTTPS} == true && -f ${SSL_PAGES_CERT_PATH} && -f ${SSL_PAGES_KEY_PATH} ]]; then
       if [[ ${GITLAB_PAGES_NGINX_PROXY} == true ]]; then
         install_template root: nginx/gitlab-pages-ssl ${GITLAB_PAGES_NGINX_CONFIG}
@@ -1708,12 +1710,15 @@ if [[ ${GITLAB_PAGES_ACCESS_CONTROL} == true ]]; then
     GITLAB_PAGES_ACCESS_SECRET=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 40 ; echo '')
   fi
 
+  update_template ${GITLAB_PAGES_CONFIG} \
+      GITLAB_PAGES_ACCESS_CLIENT_ID \
+      GITLAB_PAGES_ACCESS_CLIENT_SECRET \
+      GITLAB_PAGES_ACCESS_REDIRECT_URI \
+      GITLAB_PAGES_ACCESS_SECRET \
+      GITLAB_PAGES_ACCESS_CONTROL_SERVER
+
 cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
-  -auth-server ${GITLAB_PAGES_ACCESS_CONTROL_SERVER}
-  -auth-secret ${GITLAB_PAGES_ACCESS_SECRET}
-  -auth-client-id ${GITLAB_PAGES_ACCESS_CLIENT_ID}
-  -auth-client-secret ${GITLAB_PAGES_ACCESS_CLIENT_SECRET}
-  -auth-redirect-uri ${GITLAB_PAGES_ACCESS_REDIRECT_URI}
+  -config ${GITLAB_PAGES_CONFIG}
 EOF
 fi
 

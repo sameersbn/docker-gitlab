@@ -1,0 +1,5 @@
+auth-client-id={{GITLAB_PAGES_ACCESS_CLIENT_ID}}
+auth-client-secret={{GITLAB_PAGES_ACCESS_CLIENT_SECRET}}
+auth-redirect-uri={{GITLAB_PAGES_ACCESS_REDIRECT_URI}}
+auth-secret={{GITLAB_PAGES_ACCESS_SECRET}}
+gitlab-server={{GITLAB_PAGES_ACCESS_CONTROL_SERVER}}
