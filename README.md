@@ -327,11 +327,12 @@ The internal redis server has been removed from the image. Please use a [linked 
 
 The image can be configured to use an external redis server. The configuration should be specified using environment variables while starting the GitLab image.
 
-*Assuming that the redis server host is 192.168.1.100*
+*Assuming that the redis server host is 192.168.1.100*, and configured to use authentication*
 
 ```bash
 docker run --name gitlab -it --rm \
     --env 'REDIS_HOST=192.168.1.100' --env 'REDIS_PORT=6379' \
+    --env 'REDIS_PASSWORD=p4ssw0rd' \
     sameersbn/gitlab:13.0.6
 ```
 
