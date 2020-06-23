@@ -91,3 +91,6 @@ dir = "{{GITLAB_SHELL_INSTALL_DIR}}"
 # [[concurrency]]
 # rpc = "/gitaly.RepositoryService/GarbageCollect"
 # max_per_repo = 1
+
+[gitlab]
+url = "{{GITALY_WORKHORSE_SOCKET_PATH}}"

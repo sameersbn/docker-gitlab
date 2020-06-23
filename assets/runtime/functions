@@ -236,6 +236,7 @@ gitlab_configure_gitaly() {
   echo "Configuring gitlab::gitaly..."
   update_template ${GITLAB_GITALY_CONFIG} \
     GITALY_SOCKET_PATH \
+    GITALY_WORKHORSE_SOCKET_PATH \
     GITLAB_GITALY_INSTALL_DIR \
     GITLAB_LOG_DIR \
     GITLAB_REPOS_DIR \
