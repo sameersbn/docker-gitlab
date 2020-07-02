@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: gitlab
-        image: sameersbn/gitlab:13.0.8.
+        image: sameersbn/gitlab:13.0.8
         env:
         - name: TZ
           value: Asia/Kolkata
