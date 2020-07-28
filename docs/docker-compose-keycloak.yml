@@ -3,7 +3,7 @@ version: '2'
 services:
   redis:
     restart: always
-    image: sameersbn/redis:4.0.9-2
+    image: redis:5.0.9
     command:
     - --loglevel warning
     volumes:
@@ -11,7 +11,7 @@ services:
 
   postgresql:
     restart: always
-    image: sameersbn/postgresql:10-2
+    image: sameersbn/postgresql:11-20200524
     volumes:
     - postgresql-data:/var/lib/postgresql:Z
     environment:
@@ -22,7 +22,7 @@ services:
 
   gitlab:
     restart: always
-    image: nuberabe/docker-gitlab:12.7.0
+    image: sameersbn/gitlab:13.2.1
     depends_on:
     - redis
     - postgresql
