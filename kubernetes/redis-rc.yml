@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: redis
-        image: sameersbn/redis
+        image: redis:5.0.9
         ports:
         - name: redis
           containerPort: 6379
