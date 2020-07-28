@@ -93,5 +93,6 @@ dir = "{{GITLAB_SHELL_INSTALL_DIR}}"
 # max_per_repo = 1
 
 [gitlab]
-url = "http+unix://%2Fhome%2Fgit%2Fgitlab%2Ftmp%2Fsockets%2Fgitlab-workhorse.socket"
+secret_file = "/home/git/gitlab-shell/.gitlab_shell_secret"
+url = "http://localhost:8181"
 
