@@ -94,5 +94,5 @@ dir = "{{GITLAB_SHELL_INSTALL_DIR}}"
 
 [gitlab]
 secret_file = "/home/git/gitlab-shell/.gitlab_shell_secret"
-url = "http://localhost:8181"
+url = "http://localhost:8181{{GITLAB_RELATIVE_URL_ROOT}}"
 
