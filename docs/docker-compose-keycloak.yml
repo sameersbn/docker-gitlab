@@ -18,11 +18,11 @@ services:
     - DB_USER=gitlab
     - DB_PASS=password
     - DB_NAME=gitlabhq_production
-    - DB_EXTENSION=pg_trgm
+    - DB_EXTENSION=pg_trgm,btree_gist
 
   gitlab:
     restart: always
-    image: sameersbn/gitlab:13.2.6
+    image: sameersbn/gitlab:13.3.0
     depends_on:
     - redis
     - postgresql
