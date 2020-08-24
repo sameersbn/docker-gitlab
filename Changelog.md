@@ -68,7 +68,7 @@ https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list
 - gitlab: upgrade CE to v12.9.4
 - Update gitlab-workhorse to 8.25.2
 - Update golang to 1.13.10
--
+
 **12.9.2**
 - gitlab: upgrade CE to v12.9.2
 
