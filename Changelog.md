@@ -3,6 +3,13 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**13.3.0**
+- gitlab: upgrade CE to v13.3.0
+- gitaly: upgrade to v13.3.0
+- gitlab-pages: upgrade to v1.22.0
+- gitlab-shell: upgrade to v13.6.0
+- gitlab-workhorse: upgrade to v8.39.0
+
 **13.2.6**
 - gitlab: upgrade CE to v13.2.6
 
@@ -14,7 +21,7 @@ https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list
 - gitlab: upgrade CE to v13.2.3
 - golang: upgrade to 1.14.7
 - gitaly: upgrade to 13.2.3
-- postgresql: add btree_gist extension 
+- postgresql: add btree_gist extension
 
 **13.2.2**
 - gitlab: upgrade CE to v13.2.2
@@ -61,7 +68,7 @@ https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list
 - gitlab: upgrade CE to v12.9.4
 - Update gitlab-workhorse to 8.25.2
 - Update golang to 1.13.10
-- 
+-
 **12.9.2**
 - gitlab: upgrade CE to v12.9.2
 
