@@ -1,9 +1,9 @@
-version: '2'
+version: '2.3'
 
 services:
   redis:
     restart: always
-    image: sameersbn/redis:4.0.9-2
+    image: redis:5.0.9
     command:
     - --loglevel warning
     volumes:
@@ -11,18 +11,18 @@ services:
 
   postgresql:
     restart: always
-    image: sameersbn/postgresql:10-2
+    image: sameersbn/postgresql:11-20200524
     volumes:
     - postgresql-data:/var/lib/postgresql:Z
     environment:
     - DB_USER=gitlab
     - DB_PASS=password
     - DB_NAME=gitlabhq_production
-    - DB_EXTENSION=pg_trgm
+    - DB_EXTENSION=pg_trgm,btree_gist
 
   gitlab:
     restart: always
-    image: sameersbn/gitlab:12.5.5
+    image: sameersbn/gitlab:13.3.0
     depends_on:
     - redis
     - postgresql
@@ -31,6 +31,12 @@ services:
     - "10022:22"
     volumes:
     - gitlab-data:/home/git/data:Z
+    healthcheck:
+      test: ["CMD", "/usr/local/sbin/healthcheck"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 5m
     environment:
     - DEBUG=false
 

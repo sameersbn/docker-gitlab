@@ -42,14 +42,14 @@ log_file: "{{GITLAB_LOG_DIR}}/gitlab-shell/gitlab-shell.log"
 # Log level. INFO by default
 log_level: INFO
 
+# Log format. 'text' by default
+# log_format: json
+
 # Audit usernames.
 # Set to true to see real usernames in the logs instead of key ids, which is easier to follow, but
 # incurs an extra API call on every gitlab-shell command.
 audit_usernames: false
 
-# Git trace log file.
-# If set, git commands receive GIT_TRACE* environment variables
-# See https://git-scm.com/book/es/v2/Git-Internals-Environment-Variables#Debugging for documentation
-# An absolute path starting with / – the trace output will be appended to that file.
-# It needs to exist so we can check permissions and avoid to throwing warnings to the users.
-git_trace_log_file:
+# Distributed Tracing. GitLab-Shell has distributed tracing instrumentation.
+# For more details, visit https://docs.gitlab.com/ee/development/distributed_tracing.html
+# gitlab_tracing: opentracing://driver

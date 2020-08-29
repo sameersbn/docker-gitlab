@@ -1,16 +1,14 @@
-FROM ubuntu:bionic-20191010
+FROM ubuntu:bionic-20200713
 
-ARG BUILD_DATE
-ARG VCS_REF
-ARG VERSION=12.5.5
+ARG VERSION=13.3.0
 
 ENV GITLAB_VERSION=${VERSION} \
     RUBY_VERSION=2.6 \
-    GOLANG_VERSION=1.12.14 \
-    GITLAB_SHELL_VERSION=10.2.0 \
-    GITLAB_WORKHORSE_VERSION=8.14.1 \
-    GITLAB_PAGES_VERSION=1.12.0 \
-    GITALY_SERVER_VERSION=1.72.1 \
+    GOLANG_VERSION=1.14.7 \
+    GITLAB_SHELL_VERSION=13.6.0 \
+    GITLAB_WORKHORSE_VERSION=8.39.0 \
+    GITLAB_PAGES_VERSION=1.22.0 \
+    GITALY_SERVER_VERSION=13.3.0 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
@@ -45,7 +43,7 @@ RUN set -ex && \
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
       sudo supervisor logrotate locales curl \
-      nginx openssh-server postgresql-client-10 postgresql-contrib-10 redis-tools \
+      nginx openssh-server postgresql-client-12 postgresql-contrib-12 redis-tools \
       git-core ruby${RUBY_VERSION} python3 python3-docutils nodejs yarn gettext-base graphicsmagick \
       libpq5 zlib1g libyaml-0-2 libssl1.0.0 \
       libgdbm5 libreadline7 libncurses5 libffi6 \
@@ -62,6 +60,9 @@ RUN bash ${GITLAB_BUILD_DIR}/install.sh
 COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
+
+ARG BUILD_DATE
+ARG VCS_REF
 
 LABEL \
     maintainer="sameer@damagehead.com" \
