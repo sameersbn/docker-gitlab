@@ -1562,8 +1562,6 @@ EOF
 }
 
 configure_container_timezone() {
-  TIMEZONE=${TZ:-UTC}
-
   # Preform sanity check of provided timezone value
   if [ -e /usr/share/zoneinfo/${TIMEZONE} ]; then
     # Configured timezone is available
