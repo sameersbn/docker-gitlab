@@ -249,7 +249,7 @@ storage:
  ...
  registry:
     restart: always
-    image: registry:2.4.1
+    image: registry:2.7.1
     volumes:
      - ./certs:/certs
     environment:
@@ -325,7 +325,7 @@ If you want enable this feature for an existing instance of GitLab you need to d
 - **Step 1**: Update the docker image.
 
 ```bash
-docker pull sameersbn/gitlab:13.4.3
+docker pull sameersbn/gitlab:13.4.4
 ```
 
 - **Step 2**: Stop and remove the currently running image
@@ -378,7 +378,7 @@ docker run --name gitlab -d [PREVIOUS_OPTIONS] \
 --env 'GITLAB_REGISTRY_CERT_PATH=/certs/registry-auth.crt' \
 --env 'GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key' \
 --link registry:registry
-sameersbn/gitlab:13.4.3
+sameersbn/gitlab:13.4.4
 ```
 
 
