@@ -135,6 +135,7 @@ chown -R ${GITLAB_USER}: ${GITLAB_GITALY_INSTALL_DIR}
 rm -rf ${GITLAB_GITALY_BUILD_DIR}
 
 # remove go
+go clean --modcache
 rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz ${GOROOT}
 
 # remove HSTS config from the default headers, we configure it in nginx
@@ -443,3 +444,4 @@ rm -rf /var/lib/apt/lists/*
 
 # clean up caches
 rm -rf ${GITLAB_HOME}/.cache ${GITLAB_HOME}/.bundle ${GITLAB_HOME}/go
+rm -rf /root/.cache /root/.bundle ${GITLAB_HOME}/gitlab/node_modules
