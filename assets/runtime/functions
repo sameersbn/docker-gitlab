@@ -1719,6 +1719,12 @@ if [[ ${GITLAB_PAGES_ACCESS_CONTROL} == true ]]; then
       GITLAB_PAGES_ACCESS_SECRET \
       GITLAB_PAGES_ACCESS_CONTROL_SERVER
 
+  if [[ -n ${GITLAB_PAGES_ARTIFACTS_SERVER_URL} ]]; then
+    update_template ${GITLAB_PAGES_CONFIG} GITLAB_PAGES_ARTIFACTS_SERVER_URL
+  else
+    exec_as_git sed -i "/{{GITLAB_PAGES_ARTIFACTS_SERVER_URL}}/d" ${GITLAB_PAGES_CONFIG}
+  fi
+
 cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
   -config ${GITLAB_PAGES_CONFIG}
 EOF
