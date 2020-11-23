@@ -10,6 +10,7 @@ https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list
 - gitlab-pages: upgrade to v1.30.0
 - gitlab-workhorse: upgrade to v8.54.0
 - use bundler 2.1.4
+- use ruby 2.7
 
 **13.5.4**
 - gitlab: upgrade CE to v13.5.4
