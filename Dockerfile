@@ -51,7 +51,7 @@ RUN set -ex && \
  && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
  && locale-gen en_US.UTF-8 \
  && DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales \
- && gem install --no-document bundler -v 1.17.3 \
+ && gem install --no-document bundler -v 2.1.4 \
  && rm -rf /var/lib/apt/lists/*
 
 COPY assets/build/ ${GITLAB_BUILD_DIR}/
