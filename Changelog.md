@@ -9,6 +9,7 @@ https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list
 - gitlab-shell: upgrade to 13.14.0
 - gitlab-pages: upgrade to v1.32.0
 - gitlab-workhorse: upgrade to v8.58.0
+- ubuntu: upgrade to ubuntu bionic-20201119
 
 **13.6.3**
 - gitlab: upgrade CE to v13.6.3
