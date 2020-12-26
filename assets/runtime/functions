@@ -1806,6 +1806,14 @@ migrate_database() {
   if [[ ! -f ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT || ${GITLAB_RELATIVE_URL_ROOT} != ${CACHE_GITLAB_RELATIVE_URL_ROOT} ]]; then
     # assets need to be recompiled when GITLAB_RELATIVE_URL_ROOT is used
     if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
+      if [[ ! -d ${GITLAB_HOME}/gitlab/node_modules ]]; then
+        mkdir -p ${GITLAB_HOME}/gitlab/node_modules
+        chown -R ${GITLAB_USER}: ${GITLAB_HOME}/gitlab/node_modules
+      fi
+      echo "Prepare recomplie assets... Installing missing node_modules for assets"
+      chown -R ${GITLAB_USER}: ${GITLAB_HOME}/gitlab/node_modules
+      exec_as_git yarn install --production --pure-lockfile
+      exec_as_git yarn add ajv@^4.0.0
       echo "Recompiling assets (relative_url in use), this could take a while..."
       exec_as_git bundle exec rake gitlab:assets:compile NODE_OPTIONS="--max-old-space-size=4096" >/dev/null 2>&1
     fi
