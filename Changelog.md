@@ -3,6 +3,13 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**13.7.0**
+- gitlab: upgrade CE to v13.7.0
+- gitaly: upgrade v13.7.0
+- gitlab-shell: upgrade to 13.14.0
+- gitlab-pages: upgrade to v1.32.0
+- gitlab-workhorse: upgrade to v8.58.0
+
 **13.6.3**
 - gitlab: upgrade CE to v13.6.3
 - gitaly: upgrade v13.6.3
