@@ -12,7 +12,7 @@ services:
           - node.labels.gitlab.redis-data == true
 
   postgresql:
-    image: sameersbn/postgresql:11-20200524
+    image: sameersbn/postgresql:12-20200524
     volumes:
     - postgresql-data:/var/lib/postgresql:Z
     environment:
