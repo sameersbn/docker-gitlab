@@ -17,6 +17,7 @@
         - [PostgreSQL (Recommended)](#postgresql)
             - [External PostgreSQL Server](#external-postgresql-server)
             - [Linking to PostgreSQL Container](#linking-to-postgresql-container)
+            - [Upgrading PostgreSQL](#upgrading-postgresql)
     - [Redis](#redis)
         - [Internal Redis Server](#internal-redis-server)
         - [External Redis Server](#external-redis-server)
@@ -239,6 +240,8 @@ GitLab uses a database backend to store its data. You can configure this image t
 
 ### PostgreSQL
 
+*NOTE:* version 13.7.0 and later requires PostgreSQL version 12.x
+
 #### External PostgreSQL Server
 
 The image also supports using an external PostgreSQL Server. This is also controlled via environment variables.
@@ -314,6 +317,18 @@ Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PA
  - [sameersbn/postgresql](https://quay.io/repository/sameersbn/postgresql/)
  - [orchardup/postgresql](https://hub.docker.com/r/orchardup/postgresql/)
  - [paintedfox/postgresql](https://hub.docker.com/r/paintedfox/postgresql/)
+
+#### Upgrading PostgreSQL
+
+When this Gitlab image upgrades its dependency on specific version of PostgreSQL you will need to make sure to use corresponding version of PostgreSQL.
+
+If you are setting a brand new install, there is no data migration involved. However, if you already have an existing setup, the PostgreSQL data will need to be migrated as you are upgrading the version of PostgreSQL.
+
+If you are using PostgreSQL image other than [sameersbn/postgresql](https://quay.io/repository/sameersbn/postgresql/) you will need make sure that the image you are using can handle migration itself, **or**, you will need to migrate the data yourself before starting newer version of PostgreSQL.
+
+Following project provides Docker image that handles migration of PostgreSQL data: [tianon/postgres-upgrade](https://hub.docker.com/r/tianon/postgres-upgrade/)
+
+After migration of the data, verify that other PostgreSQL configuration files in its data folder are copied over as well. One such file is `pg_hba.conf`, it will need to be copied from old version data folder into new version data folder.
 
 ## Redis
 
@@ -1289,6 +1304,8 @@ Usage when using `docker-compose` can also be found there.
 > Since GitLab release `8.6.0` PostgreSQL users should enable `pg_trgm` extension on the GitLab database. Refer to GitLab's [Postgresql Requirements](http://doc.gitlab.com/ce/install/requirements.html#postgresql-requirements) for more information
 >
 > If you're using `sameersbn/postgresql` then please upgrade to `sameersbn/postgresql:12-20200524` or later and add `DB_EXTENSION=pg_trgm,btree_gist` to the environment of the PostgreSQL container (see: https://github.com/sameersbn/docker-gitlab/blob/master/docker-compose.yml#L8).
+> 
+> As of version 13.7.0, the required PostgreSQL is version 12.x. If you're using PostgreSQL image other than the above, please review section [Upgrading PostgreSQL](#upgrading-postgresql). 
 
 GitLabHQ releases new versions on the 22nd of every month, bugfix releases immediately follow. I update this project almost immediately when a release is made (at least it has been the case so far). If you are using the image in production environments I recommend that you delay updates by a couple of days after the gitlab release, allowing some time for the dust to settle down.
 
