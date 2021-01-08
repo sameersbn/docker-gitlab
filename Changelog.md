@@ -3,6 +3,75 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**13.7.1**
+- gitlab: upgrade CE to v13.7.1
+- gitaly: upgrade v13.7.1
+
+**13.7.0**
+- gitlab: upgrade CE to v13.7.0
+- gitaly: upgrade v13.7.0
+- gitlab-shell: upgrade to 13.14.0
+- gitlab-pages: upgrade to v1.32.0
+- gitlab-workhorse: upgrade to v8.58.0
+- ubuntu: upgrade to ubuntu bionic-20201119
+- postgresql: upgrade to postgresql 12
+
+**13.6.3**
+- gitlab: upgrade CE to v13.6.3
+- gitaly: upgrade v13.6.3
+
+**13.6.2**
+- gitlab: upgrade CE to v13.6.2
+- gitaly: upgrade v13.6.2
+
+**13.6.1**
+- gitlab: upgrade CE to v13.6.1
+- gitaly: upgrade v13.6.1
+
+**13.6.0**
+- gitlab: upgrade CE to v13.6.0
+- gitaly: upgrade v13.6.0
+- gitlab-shell: upgrade to v13.13.0
+- gitlab-pages: upgrade to v1.30.0
+- gitlab-workhorse: upgrade to v8.54.0
+- use bundler 2.1.4
+- use ruby 2.7
+
+**13.5.4**
+- gitlab: upgrade CE to v13.5.4
+- gitaly: upgrade v13.5.4
+
+**13.5.3**
+- gitlab: upgrade CE to v13.5.3
+- gitaly: upgrade v13.5.3
+
+**13.5.2**
+- gitlab: upgrade CE to v13.5.2
+- gitaly: upgrade v13.5.2
+
+**13.5.1**
+- gitlab: upgrade CE to v13.5.1
+- gitaly: upgrade v13.5.1
+- gitlab-shell: upgrade to v13.11.0
+- gitlab-pages: upgrade to v1.28.0
+- gitlab-workhorse: upgrade to v8.51.0
+
+**13.4.4**
+- gitlab: upgrade CE to v13.4.4
+- gitaly: upgrade to v13.4.4
+
+**13.4.3**
+- gitlab: upgrade CE to v13.4.3
+- gitaly: upgrade to v13.4.3
+
+**13.4.2**
+- gitlab: upgrade CE to v13.4.2
+- gitaly: upgrade to v13.4.2
+- gitlab-pages: upgrade to 1.25.0
+- gitlab-workhorse: upgrade to 8.46.0
+- gitlab-shell: uprade to 13.7.0
+- ubuntu: upgrade to bionic-20200921
+
 **13.3.4**
 - gitlab: upgrade CE to v13.3.4
 - gitaly: upgrade to v13.3.4

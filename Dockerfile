@@ -1,14 +1,14 @@
-FROM ubuntu:bionic-20200807
+FROM ubuntu:bionic-20201119
 
-ARG VERSION=13.3.4
+ARG VERSION=13.7.1
 
 ENV GITLAB_VERSION=${VERSION} \
-    RUBY_VERSION=2.6 \
-    GOLANG_VERSION=1.15.1 \
-    GITLAB_SHELL_VERSION=13.6.0 \
-    GITLAB_WORKHORSE_VERSION=8.39.0 \
-    GITLAB_PAGES_VERSION=1.22.0 \
-    GITALY_SERVER_VERSION=13.3.4 \
+    RUBY_VERSION=2.7 \
+    GOLANG_VERSION=1.15.6 \
+    GITLAB_SHELL_VERSION=13.14.0 \
+    GITLAB_WORKHORSE_VERSION=8.58.0 \
+    GITLAB_PAGES_VERSION=1.32.0 \
+    GITALY_SERVER_VERSION=13.7.1 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
@@ -25,7 +25,9 @@ ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
 
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
-      wget ca-certificates apt-transport-https gnupg2
+    wget ca-certificates apt-transport-https gnupg2 \
+ && rm -rf /var/lib/apt/lists/*
+
 RUN set -ex && \
  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E6030699E45FA1715D88E1DF1F24 \
  && echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu bionic main" >> /etc/apt/sources.list \
@@ -51,7 +53,7 @@ RUN set -ex && \
  && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
  && locale-gen en_US.UTF-8 \
  && DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales \
- && gem install --no-document bundler -v 1.17.3 \
+ && gem install --no-document bundler -v 2.1.4 \
  && rm -rf /var/lib/apt/lists/*
 
 COPY assets/build/ ${GITLAB_BUILD_DIR}/
@@ -77,7 +79,7 @@ LABEL \
 
 EXPOSE 22/tcp 80/tcp 443/tcp
 
-VOLUME ["${GITLAB_DATA_DIR}", "${GITLAB_LOG_DIR}"]
+VOLUME ["${GITLAB_DATA_DIR}", "${GITLAB_LOG_DIR}","${GITLAB_HOME}/gitlab/node_modules"]
 WORKDIR ${GITLAB_INSTALL_DIR}
 ENTRYPOINT ["/sbin/entrypoint.sh"]
 CMD ["app:start"]
