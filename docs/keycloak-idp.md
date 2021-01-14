@@ -42,7 +42,7 @@ Set the following in the docker-compose file:
 
 The following must also be configured:
 
-``yaml
+```yaml
     - OAUTH2_GENERIC_USER_UID='username'
     - OAUTH2_GENERIC_USER_NAME='full name'
     - OAUTH2_GENERIC_USER_EMAIL='email'    
