@@ -38,7 +38,7 @@ Set the following in the docker-compose file:
     - OAUTH2_GENERIC_CLIENT_END_SESSION_ENDPOINT=http://<your-ip-address>:10081/auth/realms/master/protocol/openid-connect/logout
 ```
 
-`<your-ip-address>` is the IP address of your keycloak for this example this would be your IP address, but if your Keycloak existed elsewhere `<your-ip-address>` would be different for your deployment as would the port and the realm. 
+`<your-ip-address>` is the IP address of your keycloak. For this example this would be your IP address, but if your Keycloak existed elsewhere for your deployment `<your-ip-address>` would be different as would the port and the realm. 
 
 The following must also be configured:
 
@@ -63,7 +63,7 @@ Also, make sure the following variables are filled in the docker-compose file:
     - OAUTH_AUTO_LINK_SAML_USER=false
 ```
 
-`<your-ip-address>` is the IP address of your GitLAB for this exampke this would be the your IP address, but if your GitLab was to be proxied or deployed elsewhere `<your-ip-address>` would be another value appropriate for your deployment.
+`<your-ip-address>` is the IP address of your GitLab for this example this would be the your IP address, but if your GitLab was to be proxied or deployed elsewhere `<your-ip-address>` would be another value appropriate for your deployment.
 
 GitLab does not allow login from users in Keycloak with an empty email or name. To prevent this, you can create a new user in Keycloak or you can add email and name for the admin account.
 
