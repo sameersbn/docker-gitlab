@@ -43,12 +43,13 @@ Set the following in the docker-compose file:
 The following must also be configured:
 
 ```yaml
-    - OAUTH2_GENERIC_USER_UID='username'
-    - OAUTH2_GENERIC_USER_NAME='full name'
+    - OAUTH2_GENERIC_USER_UID='preffered_usename'
+    - OAUTH2_GENERIC_USER_NAME='name'
     - OAUTH2_GENERIC_USER_EMAIL='email'    
 ```
 
-The values set may be different for your deployment.
+The values will be different for your deployment. Navigate Keycloak's UI, select `Clients`, click `[your client]`, then open the `Client Scopes` tab, then open `Evaluate` sub-tab, enter a username you know in the `User` field, select the match, then `Generate Access Token` to see the values you need to configure. 
+
 
 Also, make sure the following variables are filled in the docker-compose file:
 
