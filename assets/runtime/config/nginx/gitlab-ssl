@@ -60,7 +60,7 @@ server {
 
   # GitLab needs backwards compatible ciphers to retain compatibility with Java IDEs
   ssl_ciphers "{{SSL_CIPHERS}}";
-  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+  ssl_protocols {{SSL_PROTOCOLS}};
   ssl_prefer_server_ciphers on;
   ssl_session_cache shared:SSL:10m;
   ssl_session_timeout 5m;
@@ -117,7 +117,7 @@ server {
     proxy_set_header    X-Forwarded-Proto   {{NGINX_X_FORWARDED_PROTO}};
     proxy_set_header    Upgrade             $http_upgrade;
     proxy_set_header    Connection          $connection_upgrade_gitlab_ssl;
-    
+
     proxy_pass http://gitlab-workhorse;
   }
 
