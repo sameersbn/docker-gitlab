@@ -31,7 +31,6 @@ server {
 
   ## Strong SSL Security
   ## https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html & https://cipherli.st/
-  ssl on;
   ssl_certificate {{SSL_PAGES_CERT_PATH}};
   ssl_certificate_key {{SSL_PAGES_KEY_PATH}};
 

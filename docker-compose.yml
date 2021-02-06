@@ -1,28 +1,28 @@
-version: '2'
+version: '2.3'
 
 services:
   redis:
     restart: always
-    image: sameersbn/redis:4.0.9-1
+    image: redis:5.0.9
     command:
     - --loglevel warning
     volumes:
-    - /srv/docker/gitlab/redis:/var/lib/redis:Z
+    - redis-data:/var/lib/redis:Z
 
   postgresql:
     restart: always
-    image: sameersbn/postgresql:10
+    image: sameersbn/postgresql:12-20200524
     volumes:
-    - /srv/docker/gitlab/postgresql:/var/lib/postgresql:Z
+    - postgresql-data:/var/lib/postgresql:Z
     environment:
     - DB_USER=gitlab
     - DB_PASS=password
     - DB_NAME=gitlabhq_production
-    - DB_EXTENSION=pg_trgm
+    - DB_EXTENSION=pg_trgm,btree_gist
 
   gitlab:
     restart: always
-    image: sameersbn/gitlab:11.11.3
+    image: sameersbn/gitlab:13.8.2
     depends_on:
     - redis
     - postgresql
@@ -30,7 +30,13 @@ services:
     - "10080:80"
     - "10022:22"
     volumes:
-    - /srv/docker/gitlab/gitlab:/home/git/data:Z
+    - gitlab-data:/home/git/data:Z
+    healthcheck:
+      test: ["CMD", "/usr/local/sbin/healthcheck"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 5m
     environment:
     - DEBUG=false
 
@@ -145,7 +151,13 @@ services:
     - OAUTH_AUTH0_CLIENT_ID=
     - OAUTH_AUTH0_CLIENT_SECRET=
     - OAUTH_AUTH0_DOMAIN=
+    - OAUTH_AUTH0_SCOPE=
 
     - OAUTH_AZURE_API_KEY=
     - OAUTH_AZURE_API_SECRET=
     - OAUTH_AZURE_TENANT_ID=
+
+volumes:
+  redis-data:
+  postgresql-data:
+  gitlab-data:

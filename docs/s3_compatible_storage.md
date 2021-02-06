@@ -72,7 +72,7 @@ version: '2'
 services:
   redis:
     restart: always
-    image: sameersbn/redis:4.0.9-1
+    image: sameersbn/redis:4.0.9-2
     command:
     - --loglevel warning
     volumes:
@@ -80,7 +80,7 @@ services:
 
   postgresql:
     restart: always
-    image: sameersbn/postgresql:10
+    image: sameersbn/postgresql:10-2
     volumes:
     - /tmp/docker/gitlab/postgresql:/var/lib/postgresql:Z
     environment:
@@ -193,6 +193,7 @@ services:
     - OAUTH_AUTH0_CLIENT_ID=
     - OAUTH_AUTH0_CLIENT_SECRET=
     - OAUTH_AUTH0_DOMAIN=
+    - OAUTH_AUTH0_SCOPE=
     - OAUTH_AZURE_API_KEY=
     - OAUTH_AZURE_API_SECRET=
     - OAUTH_AZURE_TENANT_ID=

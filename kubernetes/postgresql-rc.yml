@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: postgresql
-        image: sameersbn/postgresql:10
+        image: sameersbn/postgresql:12-20200524
         env:
         - name: DB_USER
           value: gitlab

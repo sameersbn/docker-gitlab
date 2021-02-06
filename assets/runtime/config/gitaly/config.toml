@@ -1,18 +1,37 @@
 # Example Gitaly configuration file
+# Documentation lives at https://docs.gitlab.com/ee/administration/gitaly/ and
+# https://docs.gitlab.com/ee//administration/gitaly/reference
 
 socket_path = "{{GITALY_SOCKET_PATH}}"
 
+# The directory where Gitaly's executables are stored
+bin_dir = "/usr/local/bin/"
+
 # # Optional: listen on a TCP socket. This is insecure (no authentication)
 # listen_addr = "localhost:9999"
-#
+# tls_listen_addr = "localhost:8888
 
 # # Optional: export metrics via Prometheus
 # prometheus_listen_addr = "localhost:9236"
-#
 
-# # Git executable settings
+# # Optional: configure where the Gitaly creates the sockets for internal connections. If unset, Gitaly will create a randomly
+# # named temp directory each time it boots.
+# # Non Gitaly clients should never connect to these sockets.
+# internal_socket_dir = "/home/git/gitlab/tmp/sockets/private/internal"
+
+# # Optional: authenticate Gitaly requests using a shared secret
+# [auth]
+# token = 'abc123secret'
+# transitioning = false # Set `transitioning` to true to temporarily allow unauthenticated while rolling out authentication.
+
+# [tls]
+# certificate_path = '/home/git/cert.cert'
+# key_path = '/home/git/key.pem'
+
+# # Git settings
 # [git]
 # bin_path = "/usr/bin/git"
+# catfile_cache_size = 100
 
 [[storage]]
 name = "default"
@@ -26,10 +45,19 @@ path = "{{GITLAB_REPOS_DIR}}"
 #
 
 # # You can optionally configure Gitaly to output JSON-formatted log messages to stdout
-# [logging]
+[logging]
+# # The directory where Gitaly stores extra log files
+dir = "{{GITLAB_LOG_DIR}}/gitaly"
 # format = "json"
-# # Additionally exceptions can be reported to Sentry
+# # Optional: Set log level to only log entries with that severity or above
+# # One of, in order: debug, info, warn, errror, fatal, panic
+# # Defaults to "info"
+# level = "warn"
+#
+# # Additionally exceptions from the Go server can be reported to Sentry
 # sentry_dsn = "https://<key>:<secret>@sentry.io/<project>"
+# # Exceptions from gitaly-ruby can also be reported to Sentry
+# ruby_sentry_dsn = "https://<key>:<secret>@sentry.io/<project>"
 
 # # You can optionally configure Gitaly to record histogram latencies on GRPC method calls
 # [prometheus]
@@ -37,23 +65,34 @@ path = "{{GITLAB_REPOS_DIR}}"
 
 [gitaly-ruby]
 # The directory where gitaly-ruby is installed
-dir = "/home/git/gitaly/ruby"
+dir = "{{GITLAB_GITALY_INSTALL_DIR}}/ruby"
 
 # # Gitaly-ruby resident set size (RSS) that triggers a memory restart (bytes)
-# max_rss = 300000000
-# 
+# max_rss = 200000000
+#
 # # Grace period before a gitaly-ruby process is forcibly terminated after exceeding max_rss (seconds)
 # graceful_restart_timeout = "10m"
-# 
+#
 # # Time that gitaly-ruby memory must remain high before a restart (seconds)
 # restart_delay = "5m"
-
+#
+# # Number of gitaly-ruby worker processes
+# num_workers = 2
+#
+# # Search path for system gitconfig file (e.g. /etc, /opt/gitlab/embedded/etc)
+# # NOTE: This only affects RPCs that use Rugged.
+# rugged_git_config_search_path = "/etc"
 
 [gitlab-shell]
 # The directory where gitlab-shell is installed
-dir = "/home/git/gitlab-shell"
+dir = "{{GITLAB_SHELL_INSTALL_DIR}}"
 
 # # You can adjust the concurrency of each RPC endpoint
 # [[concurrency]]
 # rpc = "/gitaly.RepositoryService/GarbageCollect"
 # max_per_repo = 1
+
+[gitlab]
+secret_file = "/home/git/gitlab-shell/.gitlab_shell_secret"
+url = "http://localhost:8181{{GITLAB_RELATIVE_URL_ROOT}}"
+

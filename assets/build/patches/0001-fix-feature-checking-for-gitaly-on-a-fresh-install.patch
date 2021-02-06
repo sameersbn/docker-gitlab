@@ -1,0 +1,20 @@
+diff --git a/lib/feature.rb b/lib/feature.rb
+index 7cf40b63fdf..f225a666cfc 100644
+--- a/lib/feature.rb
++++ b/lib/feature.rb
+@@ -33,6 +33,7 @@ class Feature
+ 
+     def persisted_names
+       return [] unless Gitlab::Database.exists?
++      return [] unless Feature::FlipperFeature.table_exists?
+ 
+       # This loads names of all stored feature flags
+       # and returns a stable Set in the following order:
+@@ -67,6 +68,7 @@ class Feature
+       # During setup the database does not exist yet. So we haven't stored a value
+       # for the feature yet and return the default.
+       return default_enabled unless Gitlab::Database.exists?
++      return default_enabled unless Feature::FlipperFeature.table_exists?
+ 
+       feature = get(key)
+ 

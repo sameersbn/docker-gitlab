@@ -42,8 +42,13 @@ lifetime like this:
 ```bash
 mkdir certs
 cd certs
-openssl req -new -newkey rsa:4096 > registry.csr
-openssl rsa -in privkey.pem -out registry.key
+# Generate a random password password_file used in the next commands
+openssl rand -hex -out password_file 32
+# Create a PKCS#10 certificate request
+openssl req -new -passout file:password_file -newkey rsa:4096 -batch > registry.csr
+# Convert RSA key
+openssl rsa -passin file:password_file -in privkey.pem -out registry.key
+# Generate certificate
 openssl x509 -in registry.csr -out registry.crt -req -signkey registry.key -days 10000
 ```
 
@@ -284,7 +289,7 @@ docker stop registry gitlab && docker rm registry gitlab
 Execute the rake task with a removeable container.
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:11.11.3 app:rake gitlab:backup:create
+    sameersbn/gitlab:13.8.2 app:rake gitlab:backup:create
 ```
 ## Restoring Backups
 
@@ -300,7 +305,7 @@ Execute the rake task to restore a backup. Make sure you run the container in in
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:11.11.3 app:rake gitlab:backup:restore
+    sameersbn/gitlab:13.8.2 app:rake gitlab:backup:restore
 ```
 
 The list of all available backups will be displayed in reverse chronological order. Select the backup you want to restore and continue.
@@ -309,7 +314,7 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:11.11.3 app:rake gitlab:backup:restore BACKUP=1417624827
+    sameersbn/gitlab:13.8.2 app:rake gitlab:backup:restore BACKUP=1417624827
 ```
 
 # Upgrading from an existing GitLab installation
@@ -320,7 +325,7 @@ If you want enable this feature for an existing instance of GitLab you need to d
 - **Step 1**: Update the docker image.
 
 ```bash
-docker pull sameersbn/gitlab:11.11.3
+docker pull sameersbn/gitlab:13.8.2
 ```
 
 - **Step 2**: Stop and remove the currently running image
@@ -373,14 +378,14 @@ docker run --name gitlab -d [PREVIOUS_OPTIONS] \
 --env 'GITLAB_REGISTRY_CERT_PATH=/certs/registry-auth.crt' \
 --env 'GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key' \
 --link registry:registry
-sameersbn/gitlab:11.11.3
+sameersbn/gitlab:13.8.2
 ```
 
 
 [wildcard certificate]: https://en.wikipedia.org/wiki/Wildcard_certificate
-[ce-4040]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040
+[ce-4040]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4040
 [docker-insecure]: https://docs.docker.com/registry/insecure/
 [registry-deploy]: https://docs.docker.com/registry/deploying/
 [storage-config]: https://docs.docker.com/registry/configuration/#storage
 [token-config]: https://docs.docker.com/registry/configuration/#token
-[8-8-docs]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-8-stable/doc/administration/container_registry.md
+[8-8-docs]: https://gitlab.com/gitlab-org/gitlab-foss/blob/8-8-stable/doc/administration/container_registry.md
