@@ -935,6 +935,11 @@ Below is the complete list of available options that can be used to customize yo
 | `SSL_PAGES_KEY_PATH` | Location of the ssl private key for gitlab pages. Defaults to `/home/git/data/certs/pages.key` |
 | `SSL_PAGES_CERT_PATH` | Location of the ssl certificate for the gitlab pages. Defaults to `/home/git/data/certs/pages.crt` |
 | `SSL_CIPHERS` | List of supported SSL ciphers: Defaults to `ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4` |
+| `SSL_PROTOCOLS` | List of supported SSL protocols: Defaults to `TLSv1 TLSv1.1 TLSv1.2 TLSv1.3` |
+| `SSL_PAGES_CIPHERS` | List of supported SSL ciphers for the gitlab pages: Defaults to `SSL_CIPHERS` |
+| `SSL_PAGES_PROTOCOLS` | List of supported SSL protocols for the gitlab pages: Defaults to `SSL_PROTOCOLS` |
+| `SSL_REGISTRY_CIPHERS` | List of supported SSL ciphers for gitlab container registry: Defaults to `SSL_CIPHERS` |
+| `SSL_REGISTRY_PROTOCOLS` | List of supported SSL protocols for gitlab container registry: Defaults to `SSL_PROTOCOLS` |
 | `NGINX_WORKERS` | The number of nginx workers to start. Defaults to `1`. |
 | `NGINX_SERVER_NAMES_HASH_BUCKET_SIZE` | Sets the bucket size for the server names hash tables. This is needed when you have long server_names or your an error message from nginx like *nginx: [emerg] could not build server_names_hash, you should increase server_names_hash_bucket_size:..*. It should be only increment by a power of 2. Defaults to `32`. |
 | `NGINX_HSTS_ENABLED` | Advanced configuration option for turning off the HSTS configuration. Applicable only when SSL is in use. Defaults to `true`. See [#138](https://github.com/sameersbn/docker-gitlab/issues/138) for use case scenario. |
@@ -1304,8 +1309,8 @@ Usage when using `docker-compose` can also be found there.
 > Since GitLab release `8.6.0` PostgreSQL users should enable `pg_trgm` extension on the GitLab database. Refer to GitLab's [Postgresql Requirements](http://doc.gitlab.com/ce/install/requirements.html#postgresql-requirements) for more information
 >
 > If you're using `sameersbn/postgresql` then please upgrade to `sameersbn/postgresql:12-20200524` or later and add `DB_EXTENSION=pg_trgm,btree_gist` to the environment of the PostgreSQL container (see: https://github.com/sameersbn/docker-gitlab/blob/master/docker-compose.yml#L8).
-> 
-> As of version 13.7.0, the required PostgreSQL is version 12.x. If you're using PostgreSQL image other than the above, please review section [Upgrading PostgreSQL](#upgrading-postgresql). 
+>
+> As of version 13.7.0, the required PostgreSQL is version 12.x. If you're using PostgreSQL image other than the above, please review section [Upgrading PostgreSQL](#upgrading-postgresql).
 
 GitLabHQ releases new versions on the 22nd of every month, bugfix releases immediately follow. I update this project almost immediately when a release is made (at least it has been the case so far). If you are using the image in production environments I recommend that you delay updates by a couple of days after the gitlab release, allowing some time for the dust to settle down.
 
