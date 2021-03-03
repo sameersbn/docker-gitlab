@@ -956,8 +956,8 @@ Below is the complete list of available options that can be used to customize yo
 | `PUMA_TIMEOUT` | Sets the timeout of puma worker processes. Defaults to `60` seconds. |
 | `PUMA_THREADS_MIN` | The number of puma minimum threads. Defaults to `1`. |
 | `PUMA_THREADS_MAX` | The number of puma maximum threads. Defaults to `16`. |
-| `PUMA_PER_WORKER_MAX_MEMORY_MB` | Maximum memory size of per puma worker process. Defaults to `850`. |
-| `PUMA_MASTER_MAX_MEMORY_MB` | Maximum memory size of puma master process. Defaults to `550`. |
+| `PUMA_PER_WORKER_MAX_MEMORY_MB` | Maximum memory size of per puma worker process. Defaults to `1024`. |
+| `PUMA_MASTER_MAX_MEMORY_MB` | Maximum memory size of puma master process. Defaults to `800`. |
 | `SIDEKIQ_CONCURRENCY` | The number of concurrent sidekiq jobs to run. Defaults to `25` |
 | `SIDEKIQ_SHUTDOWN_TIMEOUT` | Timeout for sidekiq shutdown. Defaults to `4` |
 | `SIDEKIQ_MEMORY_KILLER_MAX_RSS` | Non-zero value enables the SidekiqMemoryKiller. Defaults to `1000000`. For additional options refer [Configuring the MemoryKiller](http://doc.gitlab.com/ce/operations/sidekiq_memory_killer.html) |
