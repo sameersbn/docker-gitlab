@@ -1047,6 +1047,7 @@ Below is the complete list of available options that can be used to customize yo
 | `OAUTH_GITLAB_APP_SECRET` | GitLab App Client secret. No defaults. |
 | `OAUTH_BITBUCKET_API_KEY` | BitBucket App Client ID. No defaults. |
 | `OAUTH_BITBUCKET_APP_SECRET` | BitBucket App Client secret. No defaults. |
+| `OAUTH_BITBUCKET_URL` | Bitbucket URL. Defaults: https://bitbucket.org/ |
 | `OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL` | The URL at which the SAML assertion should be received. When `GITLAB_HTTPS=true`, defaults to `https://${GITLAB_HOST}/users/auth/saml/callback` else defaults to `http://${GITLAB_HOST}/users/auth/saml/callback`. |
 | `OAUTH_SAML_IDP_CERT_FINGERPRINT` | The SHA1 fingerprint of the certificate. No Defaults. |
 | `OAUTH_SAML_IDP_SSO_TARGET_URL` | The URL to which the authentication request should be sent. No defaults. |
