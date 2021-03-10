@@ -556,7 +556,7 @@ gitlab_configure_oauth_bitbucket() {
       OAUTH_BITBUCKET_APP_SECRET \
       OAUTH_BITBUCKET_URL
   else
-    exec_as_git sed -i "/name: 'bitbucket'/,/{{OAUTH_BITBUCKET_APP_SECRET}}/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/name: 'bitbucket'/,/{{OAUTH_BITBUCKET_URL}}/d" ${GITLAB_CONFIG}
   fi
 }
 

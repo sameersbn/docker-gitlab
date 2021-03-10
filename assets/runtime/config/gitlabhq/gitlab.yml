@@ -929,7 +929,7 @@ production: &base
       - { name: 'bitbucket',
           app_id: '{{OAUTH_BITBUCKET_API_KEY}}',
           app_secret: '{{OAUTH_BITBUCKET_APP_SECRET}}',
-          url: '{{OAUTH_BITBUCKET_URL}}'}
+          url: '{{OAUTH_BITBUCKET_URL}}' }
       - { name: 'gitlab',
           label: 'GitLab.com',
           app_id: '{{OAUTH_GITLAB_API_KEY}}',
