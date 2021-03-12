@@ -593,7 +593,7 @@ production: &base
   #   bundle exec rake gitlab:ldap:check RAILS_ENV=production
   ldap:
     enabled: {{LDAP_ENABLED}}
-    prevent_ldap_sign_in: false
+    prevent_ldap_sign_in: {{LDAP_PREVENT_LDAP_SIGN_IN}}
 
     # This setting controls the number of seconds between LDAP permission checks
     # for each user. After this time has expired for a given user, their next
