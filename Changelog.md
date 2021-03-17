@@ -4,6 +4,12 @@ This file only reflects the changes that are made in this image. Please refer to
 https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
 **13.9.3**
+- gitlab: upgrade CE to v13.9.4
+- gitaly: upgrade to v13.9.4
+- golang: upgrade to v1.16.2
+- ubuntu: upgrade to bionic-20210222
+
+**13.9.3**
 - gitlab: upgrade CE to v13.9.3
 - gitaly: upgrade to v13.9.3
 - gitlab-shell: upgrade to v13.17.0
