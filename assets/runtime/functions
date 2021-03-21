@@ -553,9 +553,10 @@ gitlab_configure_oauth_bitbucket() {
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
     update_template ${GITLAB_CONFIG} \
       OAUTH_BITBUCKET_API_KEY \
-      OAUTH_BITBUCKET_APP_SECRET
+      OAUTH_BITBUCKET_APP_SECRET \
+      OAUTH_BITBUCKET_URL
   else
-    exec_as_git sed -i "/name: 'bitbucket'/,/{{OAUTH_BITBUCKET_APP_SECRET}}/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/name: 'bitbucket'/,/{{OAUTH_BITBUCKET_URL}}/d" ${GITLAB_CONFIG}
   fi
 }
 
@@ -1176,7 +1177,8 @@ nginx_configure_gitlab_ssl() {
       SSL_DHPARAM_PATH \
       SSL_VERIFY_CLIENT \
       SSL_CA_CERTIFICATES_PATH \
-      SSL_CIPHERS
+      SSL_CIPHERS \
+      SSL_PROTOCOLS
   fi
 }
 
@@ -1265,7 +1267,9 @@ nginx_configure_gitlab_registry() {
       GITLAB_REGISTRY_HOST \
       GITLAB_REGISTRY_API_URL \
       SSL_REGISTRY_KEY_PATH \
-      SSL_REGISTRY_CERT_PATH
+      SSL_REGISTRY_CERT_PATH \
+      SSL_REGISTRY_CIPHERS \
+      SSL_REGISTRY_PROTOCOLS
   fi
 }
 
@@ -1283,6 +1287,8 @@ nginx_configure_pages(){
           GITLAB_PAGES_DOMAIN \
           SSL_PAGES_CERT_PATH \
           SSL_PAGES_KEY_PATH \
+          SSL_PAGES_CIPHERS \
+          SSL_PAGES_PROTOCOLS \
           SSL_DHPARAM_PATH \
           GITLAB_LOG_DIR
       else

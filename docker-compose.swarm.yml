@@ -63,7 +63,7 @@ services:
       - traefik-public
 
   gitlab:
-    image: sameersbn/gitlab:13.8.2
+    image: sameersbn/gitlab:13.9.0
     depends_on:
     - redis
     - postgresql
@@ -189,6 +189,7 @@ services:
 
     - OAUTH_BITBUCKET_API_KEY=
     - OAUTH_BITBUCKET_APP_SECRET=
+    - OAUTH_BITBUCKET_URL=
 
     - OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL=
     - OAUTH_SAML_IDP_CERT_FINGERPRINT=
