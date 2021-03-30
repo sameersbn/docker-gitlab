@@ -1,7 +1,16 @@
 #!/bin/bash
 set -e
 
-GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-foss.git
+GITLAB_EDITION=${GITLAB_EDITION:-ce}
+
+# if we're using the enterprise edition suffix the version with -ee
+if [ x"${GITLAB_EDITION}" = x"ee" ] ; then
+	GITLAB_VERSION="${GITLAB_VERSION}-ee"
+  GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab.git
+else
+  GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-foss.git
+fi
+
 GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/-/archive/v${GITLAB_SHELL_VERSION}/gitlab-shell-v${GITLAB_SHELL_VERSION}.tar.bz2
 GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages.git
 GITLAB_GITALY_URL=https://gitlab.com/gitlab-org/gitaly.git
@@ -63,12 +72,12 @@ exec_as_git git config --global gc.auto 0
 exec_as_git git config --global repack.writeBitmaps true
 exec_as_git git config --global receive.advertisePushOptions true
 
-# shallow clone gitlab-foss
-echo "Cloning gitlab-foss v.${GITLAB_VERSION}..."
+# shallow clone gitlab
+echo "Cloning gitlab-${GITLAB_EDITION} v.${GITLAB_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
 
 if [[ -d "${GITLAB_BUILD_DIR}/patches" ]]; then
-echo "Applying patches for gitlab-foss..."
+echo "Applying patches for gitlab-${GITLAB_EDITION}..."
 exec_as_git git -C ${GITLAB_INSTALL_DIR} apply --ignore-whitespace < ${GITLAB_BUILD_DIR}/patches/*.patch
 fi
 
