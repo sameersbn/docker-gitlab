@@ -50,6 +50,7 @@ RUN set -ex && \
       libpq5 zlib1g libyaml-0-2 libssl1.0.0 \
       libgdbm5 libreadline7 libncurses5 libffi6 \
       libxml2 libxslt1.1 libcurl4 libicu60 libre2-dev tzdata unzip libimage-exiftool-perl \
+      libmagic1 \
  && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
  && locale-gen en_US.UTF-8 \
  && DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales \
