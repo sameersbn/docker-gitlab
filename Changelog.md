@@ -6,6 +6,7 @@ https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list
 **13.10.1**
 - gitlab: upgrade CE to v13.10.1
 - gitaly: upgrade to v13.10.1
+- added libmagic1 to fit requirements of ruby-magic-static-0.3.4 (necessary for puma)
 
 **13.10.0**
 - gitlab: upgrade CE to v13.10.0
