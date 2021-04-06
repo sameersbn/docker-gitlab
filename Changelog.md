@@ -13,6 +13,10 @@ https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list
 - gitaly: upgrade to v13.10.0
 - gitlab-pages: upgrade to v1.36.0
 
+**13.9.5**
+- gitlab: upgrade CE to v13.9.5
+- gitaly: upgrade to v13.9.5
+
 **13.9.4**
 - gitlab: upgrade CE to v13.9.4
 - gitaly: upgrade to v13.9.4
