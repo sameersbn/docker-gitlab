@@ -423,17 +423,6 @@ programs=sshd,nginx,mail_room,cron
 priority=20
 EOF
 
-# configure healthcheck script
-## https://docs.gitlab.com/ee/user/admin_area/monitoring/health_check.html
-cat > /usr/local/sbin/healthcheck <<EOF
-#!/bin/bash
-url=http://localhost/-/liveness
-options=( '--insecure' '--location' '--silent' )
-curl "\${options[@]}" \$url
-[[ "\$(curl \${options[@]} -o /dev/null -I -w '%{http_code}' \$url)" == "200" ]]
-EOF
-chmod +x /usr/local/sbin/healthcheck
-
 # purge build dependencies and cleanup apt
 DEBIAN_FRONTEND=noninteractive apt-get purge -y --auto-remove ${BUILD_DEPENDENCIES}
 rm -rf /var/lib/apt/lists/*
