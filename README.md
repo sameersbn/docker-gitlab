@@ -1021,6 +1021,7 @@ Below is the complete list of available options that can be used to customize yo
 | `OAUTH_BLOCK_AUTO_CREATED_USERS` | Locks down those users until they have been cleared by the admin. Defaults to `true`. |
 | `OAUTH_AUTO_LINK_LDAP_USER` | Look up new users in LDAP servers. If a match is found (same uid), automatically link the omniauth identity with the LDAP account. Defaults to `false`. |
 | `OAUTH_AUTO_LINK_SAML_USER` | Allow users with existing accounts to login and auto link their account via SAML login, without having to do a manual login first and manually add SAML. Defaults to `false`. |
+| `OAUTH_AUTO_LINK_USER` | Allow users with existing accounts to login and auto link their account via the defined Omniauth providers login, without having to do a manual login first and manually connect their chosen provider. Defaults to `[]`. |
 | `OAUTH_EXTERNAL_PROVIDERS` | Comma separated list if oauth providers to disallow access to `internal` projects. Users creating accounts via these providers will have access internal projects. Accepted values are `cas3`, `github`, `bitbucket`, `gitlab`, `google_oauth2`, `facebook`, `twitter`, `saml`, `crowd`, `auth0` and `azure_oauth2`. No default. |
 | `OAUTH_CAS3_LABEL` | The "Sign in with" button label. Defaults to "cas3". |
 | `OAUTH_CAS3_SERVER` | CAS3 server URL. No defaults. |
