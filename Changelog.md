@@ -3,7 +3,12 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
-**13.12.1**
+**13.12.3**
+- gitlab: upgrade CE to v13.12.3
+- gitaly: upgrade to v13.12.3
+- golang: upgrade to v1.16.5
+
+**13.12.2**
 - gitlab: upgrade CE to v13.12.2
 - gitaly: upgrade to v13.12.2
 
