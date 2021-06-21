@@ -439,7 +439,8 @@ gitlab_configure_ldap() {
     LDAP_USER_ATTRIBUTE_NAME \
     LDAP_USER_ATTRIBUTE_FIRSTNAME \
     LDAP_USER_ATTRIBUTE_LASTNAME \
-    LDAP_LABEL
+    LDAP_LABEL \
+    LDAP_PREVENT_LDAP_SIGN_IN
 }
 
 gitlab_configure_oauth_cas3() {

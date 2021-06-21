@@ -1015,6 +1015,7 @@ Below is the complete list of available options that can be used to customize yo
 | `LDAP_USER_ATTRIBUTE_FIRSTNAME` | Attribute field for the forename of a user. Default to `givenName` |
 | `LDAP_USER_ATTRIBUTE_LASTNAME` |  Attribute field for the surname of a user. Default to `sn` |
 | `LDAP_LOWERCASE_USERNAMES` | GitLab will lower case the username for the LDAP Server. Defaults to `false` |
+| `LDAP_PREVENT_LDAP_SIGN_IN` | Set to `true` to [Disable LDAP web sign in](https://docs.gitlab.com/ce/administration/auth/ldap/#disable-ldap-web-sign-in), defaults to `false` |
 | `OAUTH_ENABLED` | Enable OAuth support. Defaults to `true` if any of the support OAuth providers is configured, else defaults to `false`. |
 | `OAUTH_AUTO_SIGN_IN_WITH_PROVIDER` | Automatically sign in with a specific OAuth provider without showing GitLab sign-in page. Accepted values are `cas3`, `github`, `bitbucket`, `gitlab`, `google_oauth2`, `facebook`, `twitter`, `saml`, `crowd`, `auth0` and `azure_oauth2`. No default. |
 | `OAUTH_ALLOW_SSO` | Comma separated list of oauth providers for single sign-on. This allows users to login without having a user account. The account is created automatically when authentication is successful. Accepted values are `cas3`, `github`, `bitbucket`, `gitlab`, `google_oauth2`, `facebook`, `twitter`, `saml`, `crowd`, `auth0` and `azure_oauth2`. No default. |
