@@ -924,6 +924,24 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_MONITORING_SIDEKIQ_EXPORTER_ENABLED` | Set to `true` to enable the sidekiq exporter, enabled by default. |
 | `GITLAB_MONITORING_SIDEKIQ_EXPORTER_ADDRESS` | Sidekiq exporter address, defaults to `0.0.0.0` |
 | `GITLAB_MONITORING_SIDEKIQ_EXPORTER_PORT` | Sidekiq exporter port, defaults to `3807` |
+| `GITLAB_CONTENT_SECURITY_POLICY_ENABLED` | Set to `true` to enable [Content Security Policy](https://guides.rubyonrails.org/security.html#content-security-policy), enabled by default. |
+| `GITLAB_CONTENT_SECURITY_POLICY_REPORT_ONLY` | Set to `true` to set `Content-Security-Policy-Report-Only` header, disabled by default |
+| `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_BASE_URI` | The value of the `base-uri` directive in the `Content-Security-Policy` header |
+| `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_CHILD_SRC` | The value of the `child-src` directive in the `Content-Security-Policy` header |
+| `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_CONNECT_SRC` | The value of the `connect-src` directive in the `Content-Security-Policy` header. Default to `'self' http://localhost:* ws://localhost:* wss://localhost:*` |
+| `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_DEFAULT_SRC` | The value of the `default-src` directive in the `Content-Security-Policy` header. Default to `'self'` |
+| `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_FONT_SRC` | The value of the `font-src` directive in the `Content-Security-Policy` header |
+| `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_FORM_ACTION` | The value of the `form-action` directive in the `Content-Security-Policy` header |
+| `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_FRAME_ANCESTORS` | The value of the `frame-ancestors` directive in the `Content-Security-Policy` header. Default to `'self'` |
+| `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_FRAME_SRC` | The value of the `frame-src` directive in the `Content-Security-Policy` header. Default to `'self' https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com` |
+| `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_IMG_SRC` | The value of the `img-src` directive in the `Content-Security-Policy` header. Default to `* data: blob:` |
+| `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_MANIFEST_SRC` | The value of the `manifest-src` directive in the `Content-Security-Policy` header |
+| `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_MEDIA_SRC` | The value of the `media-src` directive in the `Content-Security-Policy` header |
+| `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_OBJECT_SRC` | The value of the `object-src` directive in the `Content-Security-Policy` header. Default to `'none'`  |
+| `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_SCRIPT_SRC` | The value of the `script-src` directive in the `Content-Security-Policy` header. Default to `'self' 'unsafe-eval' http://localhost:* https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://www.gstatic.com/recaptcha/ https://apis.google.com` |
+| `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_STYLE_SRC` | The value of the `style-src` directive in the `Content-Security-Policy` header. Default to `'self' 'unsafe-inline'` |
+| `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_WORKER_SRC` | The value of the `worker-src` directive in the `Content-Security-Policy` header. Default to `'self' blob:` |
+| `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_REPORT_URI` | The value of the `report-uri` directive in the `Content-Security-Policy` header |
 | `SSL_SELF_SIGNED` | Set to `true` when using self signed ssl certificates. `false` by default. |
 | `SSL_CERTIFICATE_PATH` | Location of the ssl certificate. Defaults to `/home/git/data/certs/gitlab.crt` |
 | `SSL_KEY_PATH` | Location of the ssl private key. Defaults to `/home/git/data/certs/gitlab.key` |
