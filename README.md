@@ -179,8 +179,8 @@ Step 2. Launch a redis container
 
 ```bash
 docker run --name gitlab-redis -d \
-    --volume /srv/docker/gitlab/redis:/var/lib/redis \
-    redis:5.0.9
+    --volume /srv/docker/gitlab/redis:/data \
+    redis:6.2
 ```
 
 Step 3. Launch the gitlab container
@@ -354,20 +354,20 @@ docker run --name gitlab -it --rm \
 
 You can link this image with a redis container to satisfy gitlab's redis requirement. The alias of the redis server container should be set to **redisio** while linking with the gitlab image.
 
-To illustrate linking with a redis container, we will use the [sameersbn/redis](https://github.com/sameersbn/docker-redis) image. Please refer the [README](https://github.com/sameersbn/docker-redis/blob/master/README.md) of docker-redis for details.
+To illustrate linking with a redis container, we will use the [redis](https://github.com/docker-library/redis) image. Please refer the [README](https://github.com/docker-library/docs/blob/master/redis/README.md) for details.
 
 First, lets pull the redis image from the docker index.
 
 ```bash
-docker pull redis:5.0.9
+docker pull redis:6.2
 ```
 
 Lets start the redis container
 
 ```bash
 docker run --name gitlab-redis -d \
-    --volume /srv/docker/gitlab/redis:/var/lib/redis \
-    redis:5.0.9
+    --volume /srv/docker/gitlab/redis:/data \
+    redis:6.2
 ```
 
 We are now ready to start the GitLab application.
