@@ -3,11 +3,11 @@ version: '2.3'
 services:
   redis:
     restart: always
-    image: redis:5.0.9
+    image: redis:6.2
     command:
     - --loglevel warning
     volumes:
-    - redis-data:/var/lib/redis:Z
+    - redis-data:/data:Z
 
   postgresql:
     restart: always
