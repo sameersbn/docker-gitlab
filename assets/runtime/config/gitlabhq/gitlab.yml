@@ -320,25 +320,33 @@ production: &base
 
   ## Packages (maven repository, npm registry, etc...)
   packages:
-    enabled: true
+    enabled: {{GITLAB_PACKAGES_ENABLED}}
     # The location where build packages are stored (default: shared/packages).
-    # storage_path: shared/packages
+    path: {{GITLAB_PACKAGES_DIR}}
     object_store:
-      enabled: false
-      remote_directory: packages # The bucket name
-      # direct_upload: false # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
-      # background_upload: false # Temporary option to limit automatic upload (Default: true)
-      # proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
+      enabled: {{GITLAB_PACKAGES_OBJECT_STORE_ENABLED}}
+      remote_directory: {{GITLAB_PACKAGES_OBJECT_STORE_REMOTE_DIRECTORY}} # The bucket name
+      direct_upload: {{GITLAB_PACKAGES_OBJECT_STORE_DIRECT_UPLOAD}} # Set to true to enable direct upload of Artifacts without the need of local shared storage.
+      background_upload: {{GITLAB_PACKAGES_OBJECT_STORE_BACKGROUND_UPLOAD}} # Temporary option to limit automatic upload (Default: true)
+      proxy_download: {{GITLAB_PACKAGES_OBJECT_STORE_PROXY_DOWNLOAD}} # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
-        provider: AWS
-        aws_access_key_id: AWS_ACCESS_KEY_ID
-        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-        region: us-east-1
-        # host: 'localhost' # default: s3.amazonaws.com
-        # endpoint: 'http://127.0.0.1:9000' # default: nil
-        # aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
-        # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
+        provider: {{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_PROVIDER}} # Only AWS supported at the moment
+        #start-packages-aws
+        aws_access_key_id: {{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID}}
+        aws_secret_access_key: {{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY}}
+        region: {{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_REGION}}
+        host: '{{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_HOST}}' # default: s3.amazonaws.com
+        aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
+        endpoint: '{{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_ENDPOINT}}' # default: nil - Useful for S3 compliant services such as DigitalOcean Spaces
+        path_style: {{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE}} # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
+        #end-packages-aws
+        #start-packages-gcs
+        google_project: {{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT}}
+        google_client_email: {{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL}}
+        google_json_key_location: {{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION}}
+        #end-packages-gcs
 
+  
   ## Dependency Proxy
   dependency_proxy:
     enabled: true
