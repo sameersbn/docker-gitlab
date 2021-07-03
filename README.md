@@ -875,6 +875,8 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`| Google project. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`|
 | `GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`| Google service account. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`|
 | `GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION`| Default Google key file. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION` (`/gcs/key.json`)|
+| `GITLAB_PACKAGES_ENABLED` | Enable/Disable Pakages support. Defaults to `true`. |
+| `GITLAB_PACKAGES_DIR` | Directory to store the packages data. Defaults to `$GITLAB_SHARED_DIR/packages` |
 | `GITLAB_PACKAGES_OBJECT_STORE_ENABLED` | Enables Object Store for Packages that will be remote stored. Defaults to `false` |
 | `GITLAB_PACKAGES_OBJECT_STORE_REMOTE_DIRECTORY` | Bucket name to store the packages. Defaults to `packages` |
 | `GITLAB_PACKAGES_OBJECT_STORE_DIRECT_UPLOAD` | Set to true to enable direct upload of Packages without the need of local shared storage.  Defaults to `false` |
