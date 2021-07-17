@@ -3,11 +3,11 @@ version: '2.3'
 services:
   redis:
     restart: always
-    image: redis:5.0.9
+    image: redis:6.2
     command:
     - --loglevel warning
     volumes:
-    - redis-data:/var/lib/redis:Z
+    - redis-data:/data:Z
 
   postgresql:
     restart: always
@@ -22,7 +22,7 @@ services:
 
   gitlab:
     restart: always
-    image: sameersbn/gitlab:13.9.4
+    image: sameersbn/gitlab:14.0.5
     depends_on:
     - redis
     - postgresql

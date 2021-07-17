@@ -72,11 +72,11 @@ version: '2'
 services:
   redis:
     restart: always
-    image: sameersbn/redis:4.0.9-2
+    image: sameersbn/redis:6.2
     command:
     - --loglevel warning
     volumes:
-    - /tmp/docker/gitlab/redis:/var/lib/redis:Z
+    - /tmp/docker/gitlab/redis:/data:Z
 
   postgresql:
     restart: always

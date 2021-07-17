@@ -3,11 +3,10 @@ set -e
 
 GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-foss.git
 GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/-/archive/v${GITLAB_SHELL_VERSION}/gitlab-shell-v${GITLAB_SHELL_VERSION}.tar.bz2
-GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
 GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages.git
 GITLAB_GITALY_URL=https://gitlab.com/gitlab-org/gitaly.git
 
-GITLAB_WORKHORSE_BUILD_DIR=/tmp/gitlab-workhorse
+GITLAB_WORKHORSE_BUILD_DIR=${GITLAB_INSTALL_DIR}/workhorse
 GITLAB_PAGES_BUILD_DIR=/tmp/gitlab-pages
 GITLAB_GITALY_BUILD_DIR=/tmp/gitaly
 
@@ -44,7 +43,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ${BUIL
 # only for simplicity.
 paxctl -cvm "$(command -v ruby${RUBY_VERSION})"
 # https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
-paxctl -cvm "$(command -v nodejs)"
+paxctl -cvm "$(command -v node)"
 
 # remove the host keys generated during openssh-server installation
 rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
@@ -74,7 +73,6 @@ exec_as_git git -C ${GITLAB_INSTALL_DIR} apply --ignore-whitespace < ${GITLAB_BU
 fi
 
 GITLAB_SHELL_VERSION=${GITLAB_SHELL_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_SHELL_VERSION)}
-GITLAB_WORKHORSE_VERSION=${GITLAB_WORKHOUSE_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_WORKHORSE_VERSION)}
 GITLAB_PAGES_VERSION=${GITLAB_PAGES_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_PAGES_VERSION)}
 
 # download golang
@@ -100,11 +98,9 @@ exec_as_git "PATH=$PATH" make verify setup
 # remove unused repositories directory created by gitlab-shell install
 rm -rf ${GITLAB_HOME}/repositories
 
-# download gitlab-workhorse
-echo "Cloning gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
-git clone -q -b v${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_URL} ${GITLAB_WORKHORSE_BUILD_DIR}
+# build gitlab-workhorse
+echo "Build gitlab-workhorse"
 make -C ${GITLAB_WORKHORSE_BUILD_DIR} install
-
 # clean up
 rm -rf ${GITLAB_WORKHORSE_BUILD_DIR}
 
@@ -427,17 +423,6 @@ programs=sshd,nginx,mail_room,cron
 priority=20
 EOF
 
-# configure healthcheck script
-## https://docs.gitlab.com/ee/user/admin_area/monitoring/health_check.html
-cat > /usr/local/sbin/healthcheck <<EOF
-#!/bin/bash
-url=http://localhost/-/liveness
-options=( '--insecure' '--location' '--silent' )
-curl "\${options[@]}" \$url
-[[ "\$(curl \${options[@]} -o /dev/null -I -w '%{http_code}' \$url)" == "200" ]]
-EOF
-chmod +x /usr/local/sbin/healthcheck
-
 # purge build dependencies and cleanup apt
 DEBIAN_FRONTEND=noninteractive apt-get purge -y --auto-remove ${BUILD_DEPENDENCIES}
 rm -rf /var/lib/apt/lists/*
@@ -445,3 +430,4 @@ rm -rf /var/lib/apt/lists/*
 # clean up caches
 rm -rf ${GITLAB_HOME}/.cache ${GITLAB_HOME}/.bundle ${GITLAB_HOME}/go
 rm -rf /root/.cache /root/.bundle ${GITLAB_HOME}/gitlab/node_modules
+rm -r /tmp/* 

@@ -439,7 +439,8 @@ gitlab_configure_ldap() {
     LDAP_USER_ATTRIBUTE_NAME \
     LDAP_USER_ATTRIBUTE_FIRSTNAME \
     LDAP_USER_ATTRIBUTE_LASTNAME \
-    LDAP_LABEL
+    LDAP_LABEL \
+    LDAP_PREVENT_LDAP_SIGN_IN
 }
 
 gitlab_configure_oauth_cas3() {
@@ -699,6 +700,7 @@ gitlab_configure_oauth() {
     OAUTH_BLOCK_AUTO_CREATED_USERS \
     OAUTH_AUTO_LINK_LDAP_USER \
     OAUTH_AUTO_LINK_SAML_USER \
+    OAUTH_AUTO_LINK_USER \
     OAUTH_EXTERNAL_PROVIDERS
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
@@ -1164,6 +1166,29 @@ gitlab_configure_sentry(){
     SENTRY_ENVIRONMENT
 }
 
+gitlab_configure_content_security_policy(){
+  echo "Configuring gitlab::content_security_policy..."
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_CONTENT_SECURITY_POLICY_ENABLED \
+    GITLAB_CONTENT_SECURITY_POLICY_REPORT_ONLY \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_BASE_URI \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_CHILD_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_CONNECT_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_DEFAULT_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_FONT_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_FORM_ACTION \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_FRAME_ANCESTORS \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_FRAME_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_IMG_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_MANIFEST_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_MEDIA_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_OBJECT_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_SCRIPT_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_STYLE_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_WORKER_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_REPORT_URI
+}
+
 nginx_configure_gitlab_ssl() {
   if [[ ${GITLAB_HTTPS} == true && -f ${SSL_CERTIFICATE_PATH} && -f ${SSL_KEY_PATH} && -f ${SSL_DHPARAM_PATH} ]]; then
     echo "Configuring nginx::gitlab::ssl..."
@@ -1523,6 +1548,34 @@ update_ssh_listen_port() {
   sed -i "s|#Port 22|Port ${GITLAB_SSH_LISTEN_PORT}|g" /etc/ssh/sshd_config
 }
 
+generate_healthcheck_script() {
+  # configure healthcheck script
+  ## https://docs.gitlab.com/ee/user/admin_area/monitoring/health_check.html
+cat > /usr/local/sbin/healthcheck <<EOF
+#!/bin/bash
+url=http://localhost${GITLAB_RELATIVE_URL_ROOT}/-/liveness
+options=( '--insecure' '--location' '--silent' )
+curl "\${options[@]}" \$url
+[[ "\$(curl \${options[@]} -o /dev/null -I -w '%{http_code}' \$url)" == "200" ]]
+EOF
+  chmod +x /usr/local/sbin/healthcheck
+}
+
+configure_container_timezone() {
+  # Perform sanity check of provided timezone value
+  if [ -e /usr/share/zoneinfo/${TIMEZONE} ]; then
+    # Configured timezone is available
+
+    # Set localtime
+    ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
+
+    # Set timezone
+    echo ${TIMEZONE} > /etc/timezone
+
+    echo "Container TimeZone -> ${TIMEZONE}"
+  fi
+}
+
 initialize_system() {
   map_uidgid
   initialize_logdir
@@ -1530,6 +1583,7 @@ initialize_system() {
   update_ca_certificates
   generate_ssh_host_keys
   update_ssh_listen_port
+  configure_container_timezone
   install_configuration_templates
   rm -rf /var/run/supervisor.sock
 }
@@ -1665,6 +1719,8 @@ configure_gitlab() {
   gitlab_configure_registry
   gitlab_configure_pages
   gitlab_configure_sentry
+  generate_healthcheck_script
+  gitlab_configure_content_security_policy
 
   # remove stale gitlab.socket
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
@@ -1681,6 +1737,13 @@ configure_gitlab_shell() {
     REDIS_HOST \
     REDIS_PORT \
     REDIS_DB_NUMBER
+
+  # update custom_hooks_dir if set $GITLAB_SHELL_CUSTOM_HOOKS_DIR
+  if [[ -n ${GITLAB_SHELL_CUSTOM_HOOKS_DIR} ]]; then
+    exec_as_git sed -i \
+      "s|custom_hooks_dir:.*|custom_hooks_dir: $GITLAB_SHELL_CUSTOM_HOOKS_DIR|g" \
+      ${GITLAB_SHELL_CONFIG}
+  fi
 }
 
 
