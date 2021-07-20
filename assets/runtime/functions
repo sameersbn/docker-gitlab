@@ -752,6 +752,12 @@ gitlab_configure_secrets() {
     exec_as_git openssl rand -base64 -out "${workhorse_secret}" 32
     chmod 600 "${workhorse_secret}"
   fi
+
+  local pages_secret="${GITLAB_INSTALL_DIR}/.gitlab_pages_secret"
+  if [[ ! -f "${pages_secret}" ]]; then
+    exec_as_git openssl rand -base64 -out "${pages_secret}" 32
+    chmod 600 "${pages_secret}"
+  fi
 }
 
 gitlab_configure_sidekiq() {
