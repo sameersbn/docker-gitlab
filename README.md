@@ -215,7 +215,7 @@ GitLab is a code hosting software and as such you don't want to lose your code w
 
 * `/home/git/data`
 
-Note that if you are using the `docker-compose` approach, this has already been done for you.
+*Note: that if you are using the `docker-compose` approach, you must "inpect" the volumes (```docker volume inpect```) to check the mounted path.*
 
 SELinux users are also required to change the security context of the mount point so that it plays nicely with selinux.
 
@@ -462,7 +462,14 @@ Out of the four files generated above, we need to install the `gitlab.key`, `git
 
 The default path that the gitlab application is configured to look for the SSL certificates is at `/home/git/data/certs`, this can however be changed using the `SSL_KEY_PATH`, `SSL_CERTIFICATE_PATH` and `SSL_DHPARAM_PATH` configuration options.
 
-If you remember from above, the `/home/git/data` path is the path of the [data store](#data-store), which means that we have to create a folder named `certs/` inside `/srv/docker/gitlab/gitlab/` and copy the files into it and as a measure of security we'll update the permission on the `gitlab.key` file to only be readable by the owner.
+If you remember from above, the `/home/git/data` path is the path of the [data store](#data-store), which means that we have to create a folder named `certs/` inside the volume to where `/home/git/data` point and copy the files into it and as a measure of security we'll update the permission on the `gitlab.key` file to only be readable by the owner.
+
+In case use of docker-compose ...
+
+```$>docker volume inspect```
+
+look for "< user >_gitlab-data" and copy the "certs" directory into the "Mountpoint"
+
 
 ```bash
 mkdir -p /srv/docker/gitlab/gitlab/certs
