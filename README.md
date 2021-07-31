@@ -835,6 +835,11 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_ARTIFACTS_DIR` | Directory to store the artifacts. Defaults to `$GITLAB_SHARED_DIR/artifacts` |
 | `AWS_ACCESS_KEY_ID`| Default AWS access key to be used for object store. Defaults to `AWS_ACCESS_KEY_ID`|
 | `AWS_SECRET_ACCESS_KEY`| Default AWS access key to be used for object store. Defaults to `AWS_SECRET_ACCESS_KEY`|
+| `AWS_REGION`| AWS Region. Defaults to `us-east-1` |
+| `AWS_HOST`| Configure this for an compatible AWS host like minio. Defaults to `$AWS_HOST`. Defaults to `s3.amazon.com`|
+| `AWS_ENDPOINT`| AWS Endpoint like `http://127.0.0.1:9000`. Defaults to `nil`|
+| `AWS_PATH_STYLE`| Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `true` |
+| `AWS_SIGNATURE_VERSION`| AWS signature version to use. 2 or 4 are valid options. Digital Ocean Spaces and other providers may need 2. Defaults to `4` |
 | `GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`| Default Google project to use for Object Store.|
 | `GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`| Default Google service account email to use for Object Store.|
 | `GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION`| Default Google key file Defaults to `/gcs/key.json`|
@@ -847,10 +852,11 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_PROVIDER` | Connection Provider for the Object Store. (`AWS` or `Google`) Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_PROVIDER` (`AWS`) |
 | `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID` | AWS Access Key ID for the Bucket. Defaults to `$AWS_ACCESS_KEY_ID` |
 | `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY` | AWS Secret Access Key. Defaults to `$AWS_SECRET_ACCESS_KEY` |
-| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_REGION` | AWS Region. Defaults to `us-east-1` |
-| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_HOST` | Configure this for an compatible AWS host like minio. Defaults to `s3.amazonaws.com` |
-| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT` | AWS Endpoint like `http://127.0.0.1:9000`. Defaults to `nil` |
-| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE` | Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `true` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_REGION` | AWS Region. Defaults to `$AWS_REGION` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_HOST` | Configure this for an compatible AWS host like minio. Defaults to `$AWS_HOST` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT` | AWS Endpoint like `http://127.0.0.1:9000`. Defaults to `$AWS_ENDPOINT` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE` | Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `$AWS_PATH_STYLE` |
+| `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_SIGNATURE_VERSION` | AWS signature version to use. 2 or 4 are valid options. Digital Ocean Spaces and other providers may need 2. Defaults to `$AWS_SIGNATURE_VERSION` |
 | `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`| Google project. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`|
 | `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`| Google service account. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`|
 | `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION`| Default Google key file. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION` (`/gcs/key.json`)|
@@ -864,13 +870,31 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_LFS_OBJECT_STORE_CONNECTION_PROVIDER` | Connection Provider for the Object Store. (`AWS` or `Google`) Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_PROVIDER` (`AWS`) |
 | `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID` | AWS Access Key ID for the Bucket. Defaults to `AWS_ACCESS_KEY_ID` |
 | `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY` | AWS Secret Access Key. Defaults to `AWS_SECRET_ACCESS_KEY` |
-| `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_REGION` | AWS Region. Defaults to `us-east-1` |
-| `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_HOST` | Configure this for an compatible AWS host like minio. Defaults to `s3.amazonaws.com` |
-| `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT` | AWS Endpoint like `http://127.0.0.1:9000`. Defaults to `nil` |
-| `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE` | Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `true` |
+| `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_REGION` | AWS Region. Defaults to `$AWS_REGION` |
+| `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_HOST` | Configure this for an compatible AWS host like minio. Defaults to `$AWS_HOST` |
+| `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT` | AWS Endpoint like `http://127.0.0.1:9000`. Defaults to `$AWS_ENDPOINT` |
+| `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE` | Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `AWS_PATH_STYLE` |
+| `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_SIGNATURE_VERSION` | AWS signature version to use. 2 or 4 are valid options. Digital Ocean Spaces and other providers may need 2. Defaults to `$AWS_SIGNATURE_VERSION` |
 | `GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`| Google project. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`|
 | `GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`| Google service account. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`|
 | `GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION`| Default Google key file. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION` (`/gcs/key.json`)|
+| `GITLAB_PACKAGES_ENABLED` | Enable/Disable Pakages support. Defaults to `true`. |
+| `GITLAB_PACKAGES_DIR` | Directory to store the packages data. Defaults to `$GITLAB_SHARED_DIR/packages` |
+| `GITLAB_PACKAGES_OBJECT_STORE_ENABLED` | Enables Object Store for Packages that will be remote stored. Defaults to `false` |
+| `GITLAB_PACKAGES_OBJECT_STORE_REMOTE_DIRECTORY` | Bucket name to store the packages. Defaults to `packages` |
+| `GITLAB_PACKAGES_OBJECT_STORE_DIRECT_UPLOAD` | Set to true to enable direct upload of Packages without the need of local shared storage.  Defaults to `false` |
+| `GITLAB_PACKAGES_OBJECT_STORE_BACKGROUND_UPLOAD` | Temporary option to limit automatic upload. Defaults to `false` |
+| `GITLAB_PACKAGES_OBJECT_STORE_PROXY_DOWNLOAD` | Passthrough all downloads via GitLab instead of using Redirects to Object Storage. Defaults to `false` |
+| `GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_PROVIDER` | Connection Provider for the Object Store. (`AWS` or `Google`) Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_PROVIDER` (`AWS`) |
+| `GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID` | AWS Access Key ID for the Bucket. Defaults to `$AWS_ACCESS_KEY_ID` |
+| `GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY` | AWS Secret Access Key. Defaults to `$AWS_SECRET_ACCESS_KEY` |
+| `GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_REGION` | AWS Region. Defaults to `$AWS_REGION` |
+| `GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_HOST` | Configure this for an compatible AWS host like minio. Defaults to `$AWS_HOST` |
+| `GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_ENDPOINT` | AWS Endpoint like `http://127.0.0.1:9000`. Defaults to `$AWS_ENDPOINT` |
+| `GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE` | Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `AWS_PATH_STYLE` |
+| `GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`| Google project. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`|
+| `GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`| Google service account. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`|
+| `GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION`| Default Google key file. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION` (`/gcs/key.json`)|
 | `GITLAB_UPLOADS_STORAGE_PATH` | The location where uploads objects are stored. Defaults to `$GITLAB_SHARED_DIR/public`. |
 | `GITLAB_UPLOADS_BASE_DIR` | Mapping for the `GITLAB_UPLOADS_STORAGE_PATH`. Defaults to `uploads/-/system` |
 | `GITLAB_UPLOADS_OBJECT_STORE_ENABLED` | Enables Object Store for UPLOADS that will be remote stored. Defaults to `false` |
@@ -880,10 +904,11 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_PROVIDER` | Connection Provider for the Object Store. (`AWS` or `Google`) Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_PROVIDER` (`AWS`) |
 | `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID` | AWS Access Key ID for the Bucket. Defaults to `AWS_ACCESS_KEY_ID` |
 | `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY` | AWS Secret Access Key. Defaults to `AWS_SECRET_ACCESS_KEY` |
-| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_REGION` | AWS Region. Defaults to `us-east-1` |
-| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_HOST` | Configure this for an compatible AWS host like minio. Defaults to `s3.amazonaws.com` |
-| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT` | AWS Endpoint like `http://127.0.0.1:9000`. Defaults to `nil` |
-| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE` | Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `true` |
+| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_REGION` | AWS Region. Defaults to `$AWS_REGION` |
+| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_HOST` | Configure this for an compatible AWS host like minio. Defaults to `$AWS_HOST` |
+| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT` | AWS Endpoint like `http://127.0.0.1:9000`. Defaults to `$AWS_ENDPOINT` |
+| `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE` | Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `AWS_PATH_STYLE` |
+| `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_SIGNATURE_VERSION` | AWS signature version to use. 2 or 4 are valid options. Digital Ocean Spaces and other providers may need 2. Defaults to `$AWS_SIGNATURE_VERSION` |
 | `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`| Google project. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`|
 | `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`| Google service account. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`|
 | `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION`| Default Google key file. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION` (`/gcs/key.json`)|
