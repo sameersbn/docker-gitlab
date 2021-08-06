@@ -17,7 +17,6 @@ GITLAB_CONFIG="${GITLAB_INSTALL_DIR}/config/gitlab.yml"
 GITLAB_DATABASE_CONFIG="${GITLAB_INSTALL_DIR}/config/database.yml"
 GITLAB_PUMA_CONFIG="${GITLAB_INSTALL_DIR}/config/puma.rb"
 GITLAB_RELATIVE_URL_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/relative_url.rb"
-GITLAB_RACK_ATTACK_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/rack_attack.rb"
 GITLAB_SMTP_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb"
 GITLAB_RESQUE_CONFIG="${GITLAB_INSTALL_DIR}/config/resque.yml"
 GITLAB_SECRETS_CONFIG="${GITLAB_INSTALL_DIR}/config/secrets.yml"
@@ -1647,7 +1646,6 @@ install_configuration_templates() {
   install_template ${GITLAB_USER}: gitlabhq/gitlab.yml ${GITLAB_CONFIG} 0640
   install_template ${GITLAB_USER}: gitlabhq/database.yml ${GITLAB_DATABASE_CONFIG} 0640
   install_template ${GITLAB_USER}: gitlabhq/puma.rb ${GITLAB_PUMA_CONFIG} 0644
-  install_template ${GITLAB_USER}: gitlabhq/rack_attack.rb ${GITLAB_RACK_ATTACK_CONFIG} 0644
   install_template ${GITLAB_USER}: gitlabhq/resque.yml ${GITLAB_RESQUE_CONFIG} 0640
   install_template ${GITLAB_USER}: gitlabhq/secrets.yml ${GITLAB_SECRETS_CONFIG} 0600
   install_template ${GITLAB_USER}: gitlab-shell/config.yml ${GITLAB_SHELL_CONFIG} 0640
