@@ -4,6 +4,10 @@ This file only reflects the changes that are made in this image. Please refer to
 https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
 **14.2.0**
+- gitlab: upgrade CE to v14.2.1
+- gitaly: upgrade to v14.2.1
+
+**14.2.0**
 - gitlab: upgrade CE to v14.2.0
 - gitaly: upgrade to v14.2.0
 - gitlab-pages: upgrade to v1.42.0
