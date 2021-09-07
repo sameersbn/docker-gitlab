@@ -3,7 +3,7 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
-**14.2.2**
+**14.2.3**
 - gitlab: upgrade CE to v14.2.3
 - gitaly: upgrade to v14.2.3
 
