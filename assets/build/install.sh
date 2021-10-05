@@ -62,6 +62,7 @@ exec_as_git git config --global core.autocrlf input
 exec_as_git git config --global gc.auto 0
 exec_as_git git config --global repack.writeBitmaps true
 exec_as_git git config --global receive.advertisePushOptions true
+exec_as_git git config --global advice.detachedHead false
 
 # shallow clone gitlab-foss
 echo "Cloning gitlab-foss v.${GITLAB_VERSION}..."
@@ -92,7 +93,9 @@ cd ${GITLAB_SHELL_INSTALL_DIR}
 exec_as_git cp -a config.yml.example config.yml
 
 echo "Compiling gitlab-shell golang executables..."
-exec_as_git bundle install -j"$(nproc)" --deployment --with development test
+exec_as_git bundle config set --local deployment 'true'
+exec_as_git bundle config set --local with 'development test'
+exec_as_git bundle install -j"$(nproc)"
 exec_as_git "PATH=$PATH" make verify setup
 
 # remove unused repositories directory created by gitlab-shell install
@@ -149,7 +152,9 @@ if [[ -d ${GEM_CACHE_DIR} ]]; then
   chown -R ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/vendor/cache
 fi
 
-exec_as_git bundle install -j"$(nproc)" --deployment --without development test mysql aws
+exec_as_git bundle config set --local deployment 'true'
+exec_as_git bundle config set --local without 'development test mysql aws'
+exec_as_git bundle install -j"$(nproc)"
 
 # make sure everything in ${GITLAB_HOME} is owned by ${GITLAB_USER} user
 chown -R ${GITLAB_USER}: ${GITLAB_HOME}
