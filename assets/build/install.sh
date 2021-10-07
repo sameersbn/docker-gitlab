@@ -19,10 +19,13 @@ export GOROOT PATH
 
 BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
   libc6-dev ruby${RUBY_VERSION}-dev \
+  libgpg-error-dev libassuan-dev libgpgme-dev \
   libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
   libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
   gettext libkrb5-dev"
+
+RUNTIME_DEPENDENCIES="libgpgme11"
 
 ## Execute a command as GITLAB_USER
 exec_as_git() {
@@ -35,7 +38,10 @@ exec_as_git() {
 
 # install build dependencies for gem installation
 apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ${BUILD_DEPENDENCIES}
+DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ${BUILD_DEPENDENCIES} ${RUNTIME_DEPENDENCIES}
+
+# mark manual to avoid autoremove runtime dependencies for gems
+DEBIAN_FRONTEND=noninteractive apt-mark manual ${RUNTIME_DEPENDENCIES}
 
 # PaX-mark ruby
 # Applying the mark late here does make the build usable on PaX kernels, but
@@ -149,6 +155,8 @@ if [[ -d ${GEM_CACHE_DIR} ]]; then
   chown -R ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/vendor/cache
 fi
 
+# ubuntu impish specified config : gem gpgme may fail during building gpgme native extension so ignore building
+exec_as_git bundle config set --local build.gpgme --use-system-libraries
 exec_as_git bundle install -j"$(nproc)" --deployment --without development test mysql aws
 
 # make sure everything in ${GITLAB_HOME} is owned by ${GITLAB_USER} user
