@@ -49,8 +49,6 @@ make -j"$(nproc)"
 make install
 cd "$PWD_ORG" && rm -rf /tmp/ruby
 
-gem install bundler -N -v 2.1.4
-
 # PaX-mark ruby
 # Applying the mark late here does make the build usable on PaX kernels, but
 # still the build itself must be executed on a non-PaX kernel. It's done here
