@@ -8,6 +8,9 @@ https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list
 - gitaly: upgrade to v14.3.2
 - gitlab-shell: upgrade to v13.21.1
 - gitlab-pages: upgrade to v1.44.0
+- ubuntu: upgrade to focal-20210921
+- ruby: upgrade to 2.7.4
+- Install ruby from source and not from apt
 
 **14.2.4**
 - gitlab: upgrade CE to v14.2.4
