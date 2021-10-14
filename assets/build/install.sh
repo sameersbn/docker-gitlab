@@ -93,7 +93,8 @@ exec_as_git cp -a config.yml.example config.yml
 
 echo "Compiling gitlab-shell golang executables..."
 exec_as_git bundle install -j"$(nproc)" --deployment --with development test
-exec_as_git "PATH=$PATH" make verify setup
+exec_as_git "${GOROOT}"/bin/go mod vendor
+exec_as_git "PATH=$PATH" make fmt verify setup
 
 # remove unused repositories directory created by gitlab-shell install
 rm -rf ${GITLAB_HOME}/repositories
