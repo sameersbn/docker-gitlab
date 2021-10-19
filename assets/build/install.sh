@@ -110,7 +110,8 @@ echo "Compiling gitlab-shell golang executables..."
 exec_as_git bundle config set --local deployment 'true'
 exec_as_git bundle config set --local with 'development test'
 exec_as_git bundle install -j"$(nproc)"
-exec_as_git "PATH=$PATH" make verify setup
+exec_as_git "${GOROOT}"/bin/go mod vendor
+exec_as_git "PATH=$PATH" make fmt verify setup
 
 # remove unused repositories directory created by gitlab-shell install
 rm -rf ${GITLAB_HOME}/repositories
