@@ -1,4 +1,4 @@
-FROM ubuntu:focal-20210827
+FROM ubuntu:focal-20211006
 
 ARG VERSION=14.3.0
 
