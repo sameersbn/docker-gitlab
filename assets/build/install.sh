@@ -10,6 +10,8 @@ GITLAB_WORKHORSE_BUILD_DIR=${GITLAB_INSTALL_DIR}/workhorse
 GITLAB_PAGES_BUILD_DIR=/tmp/gitlab-pages
 GITLAB_GITALY_BUILD_DIR=/tmp/gitaly
 
+RUBY_SRC_URL=https://cache.ruby-lang.org/pub/ruby/${RUBY_VERSION%.*}/ruby-${RUBY_VERSION}.tar.gz
+
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
 GOROOT=/tmp/go
@@ -18,7 +20,7 @@ PATH=${GOROOT}/bin:$PATH
 export GOROOT PATH
 
 BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
-  libc6-dev ruby${RUBY_VERSION}-dev \
+  libc6-dev \
   libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
   libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
@@ -37,11 +39,23 @@ exec_as_git() {
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ${BUILD_DEPENDENCIES}
 
+# build ruby from source
+echo "Building ruby v${RUBY_VERSION} from source..."
+PWD_ORG="$PWD"
+mkdir /tmp/ruby && cd /tmp/ruby
+curl --remote-name -Ss "${RUBY_SRC_URL}"
+printf '%s ruby-%s.tar.gz' "${RUBY_SOURCE_SHA256SUM}" "${RUBY_VERSION}" | sha256sum -c -
+tar xzf ruby-"${RUBY_VERSION}".tar.gz && cd ruby-"${RUBY_VERSION}"
+./configure --disable-install-rdoc --enable-shared
+make -j"$(nproc)"
+make install
+cd "$PWD_ORG" && rm -rf /tmp/ruby
+
 # PaX-mark ruby
 # Applying the mark late here does make the build usable on PaX kernels, but
 # still the build itself must be executed on a non-PaX kernel. It's done here
 # only for simplicity.
-paxctl -cvm "$(command -v ruby${RUBY_VERSION})"
+paxctl -cvm "$(command -v ruby)"
 # https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
 paxctl -cvm "$(command -v node)"
 
