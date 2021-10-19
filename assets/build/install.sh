@@ -10,6 +10,8 @@ GITLAB_WORKHORSE_BUILD_DIR=${GITLAB_INSTALL_DIR}/workhorse
 GITLAB_PAGES_BUILD_DIR=/tmp/gitlab-pages
 GITLAB_GITALY_BUILD_DIR=/tmp/gitaly
 
+RUBY_SRC_URL=https://cache.ruby-lang.org/pub/ruby/${RUBY_VERSION%.*}/ruby-${RUBY_VERSION}.tar.gz
+
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
 GOROOT=/tmp/go
@@ -41,7 +43,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ${BUIL
 echo "Building ruby v${RUBY_VERSION} from source..."
 PWD_ORG="$PWD"
 mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name -Ss "https://cache.ruby-lang.org/pub/ruby/${RUBY_VERSION%.*}/ruby-${RUBY_VERSION}.tar.gz"
+curl --remote-name -Ss "${RUBY_SRC_URL}"
 printf '%s ruby-%s.tar.gz' "${RUBY_SOURCE_SHA256SUM}" "${RUBY_VERSION}" | sha256sum -c -
 tar xzf ruby-"${RUBY_VERSION}".tar.gz && cd ruby-"${RUBY_VERSION}"
 ./configure --disable-install-rdoc --enable-shared
