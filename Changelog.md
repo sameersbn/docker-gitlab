@@ -1,7 +1,40 @@
 # Changelog
 
-This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
-https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
+This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
+
+**14.4.1**
+- gitlab: upgrade CE to v14.4.1
+- gitaly: upgrade to v14.4.1
+
+**14.4.0**
+- gitlab: upgrade CE to v14.4.0
+- gitaly: upgrade to v14.4.0
+- gitlab-pages: upgrade to v1.46.0
+
+**14.3.3**
+- gitlab: upgrade CE to v14.3.3
+- gitaly: upgrade to v14.3.3
+
+**14.3.2**
+- gitlab: upgrade CE to v14.3.2
+- gitaly: upgrade to v14.3.2
+- gitlab-shell: v13.21.1
+
+**14.3.1**
+- gitlab: upgrade CE to v14.3.1
+- gitaly: upgrade to v14.3.1
+
+**14.3.0**
+- gitlab: upgrade CE to v14.3.0
+- gitaly: upgrade to v14.3.0
+- gitlab-shell: v13.21.0
+- gitlab-pages: upgrade to v1.44.0
+- ruby: compile ruby from source and use v2.7.4
+- ubuntu: upgrade to focal-20211006
+
+**14.2.5**
+- gitlab: upgrade CE to v14.2.5
+- gitaly: upgrade to v14.2.5
 
 **14.2.4**
 - gitlab: upgrade CE to v14.2.4

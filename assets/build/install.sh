@@ -10,6 +10,8 @@ GITLAB_WORKHORSE_BUILD_DIR=${GITLAB_INSTALL_DIR}/workhorse
 GITLAB_PAGES_BUILD_DIR=/tmp/gitlab-pages
 GITLAB_GITALY_BUILD_DIR=/tmp/gitaly
 
+RUBY_SRC_URL=https://cache.ruby-lang.org/pub/ruby/${RUBY_VERSION%.*}/ruby-${RUBY_VERSION}.tar.gz
+
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
 GOROOT=/tmp/go
@@ -18,7 +20,7 @@ PATH=${GOROOT}/bin:$PATH
 export GOROOT PATH
 
 BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
-  libc6-dev ruby${RUBY_VERSION}-dev \
+  libc6-dev \
   libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
   libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
@@ -37,11 +39,23 @@ exec_as_git() {
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ${BUILD_DEPENDENCIES}
 
+# build ruby from source
+echo "Building ruby v${RUBY_VERSION} from source..."
+PWD_ORG="$PWD"
+mkdir /tmp/ruby && cd /tmp/ruby
+curl --remote-name -Ss "${RUBY_SRC_URL}"
+printf '%s ruby-%s.tar.gz' "${RUBY_SOURCE_SHA256SUM}" "${RUBY_VERSION}" | sha256sum -c -
+tar xzf ruby-"${RUBY_VERSION}".tar.gz && cd ruby-"${RUBY_VERSION}"
+./configure --disable-install-rdoc --enable-shared
+make -j"$(nproc)"
+make install
+cd "$PWD_ORG" && rm -rf /tmp/ruby
+
 # PaX-mark ruby
 # Applying the mark late here does make the build usable on PaX kernels, but
 # still the build itself must be executed on a non-PaX kernel. It's done here
 # only for simplicity.
-paxctl -cvm "$(command -v ruby${RUBY_VERSION})"
+paxctl -cvm "$(command -v ruby)"
 # https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
 paxctl -cvm "$(command -v node)"
 
@@ -62,6 +76,7 @@ exec_as_git git config --global core.autocrlf input
 exec_as_git git config --global gc.auto 0
 exec_as_git git config --global repack.writeBitmaps true
 exec_as_git git config --global receive.advertisePushOptions true
+exec_as_git git config --global advice.detachedHead false
 
 # shallow clone gitlab-foss
 echo "Cloning gitlab-foss v.${GITLAB_VERSION}..."
@@ -92,8 +107,11 @@ cd ${GITLAB_SHELL_INSTALL_DIR}
 exec_as_git cp -a config.yml.example config.yml
 
 echo "Compiling gitlab-shell golang executables..."
-exec_as_git bundle install -j"$(nproc)" --deployment --with development test
-exec_as_git "PATH=$PATH" make verify setup
+exec_as_git bundle config set --local deployment 'true'
+exec_as_git bundle config set --local with 'development test'
+exec_as_git bundle install -j"$(nproc)"
+exec_as_git "${GOROOT}"/bin/go mod vendor
+exec_as_git "PATH=$PATH" make fmt verify setup
 
 # remove unused repositories directory created by gitlab-shell install
 rm -rf ${GITLAB_HOME}/repositories
@@ -149,7 +167,9 @@ if [[ -d ${GEM_CACHE_DIR} ]]; then
   chown -R ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/vendor/cache
 fi
 
-exec_as_git bundle install -j"$(nproc)" --deployment --without development test mysql aws
+exec_as_git bundle config set --local deployment 'true'
+exec_as_git bundle config set --local without 'development test mysql aws'
+exec_as_git bundle install -j"$(nproc)"
 
 # make sure everything in ${GITLAB_HOME} is owned by ${GITLAB_USER} user
 chown -R ${GITLAB_USER}: ${GITLAB_HOME}
