@@ -5,6 +5,7 @@ This file only reflects the changes that are made in this image. Please refer to
 **14.4.4**
 - gitlab: upgrade CE to v14.4.4
 - gitaly: upgrade to v14.4.4
+- ruby: upgrade to v2.7.5
 
 **14.4.3**
 - gitlab: upgrade CE to v14.4.3
