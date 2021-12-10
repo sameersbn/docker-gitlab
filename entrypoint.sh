@@ -21,7 +21,6 @@ case ${1} in
         /usr/bin/supervisord -nc /etc/supervisor/supervisord.conf &
         SUPERVISOR_PID=$!
         migrate_database
-        /usr/bin/supervisorctl stop all
         kill -15 $SUPERVISOR_PID
         if ps h -p $SUPERVISOR_PID > /dev/null ; then
         wait $SUPERVISOR_PID || true
