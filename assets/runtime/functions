@@ -19,6 +19,7 @@ GITLAB_PUMA_CONFIG="${GITLAB_INSTALL_DIR}/config/puma.rb"
 GITLAB_RELATIVE_URL_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/relative_url.rb"
 GITLAB_SMTP_CONFIG="${GITLAB_INSTALL_DIR}/config/initializers/smtp_settings.rb"
 GITLAB_RESQUE_CONFIG="${GITLAB_INSTALL_DIR}/config/resque.yml"
+GITLAB_ACTIONCABLE_CONFIG="${GITLAB_INSTALL_DIR}/config/cable.yml"
 GITLAB_SECRETS_CONFIG="${GITLAB_INSTALL_DIR}/config/secrets.yml"
 GITLAB_ROBOTS_CONFIG="${GITLAB_INSTALL_DIR}/public/robots.txt"
 GITLAB_SHELL_CONFIG="${GITLAB_SHELL_INSTALL_DIR}/config.yml"
@@ -227,6 +228,18 @@ gitlab_configure_redis() {
   gitlab_check_redis_connection
 
   update_template ${GITLAB_RESQUE_CONFIG} \
+    REDIS_HOST \
+    REDIS_PORT \
+    REDIS_DB_NUMBER
+}
+
+gitlab_configure_actioncable() {
+  echo -n "Configuring gitlab::actioncable"
+
+  gitlab_finalize_redis_parameters
+  gitlab_check_redis_connection
+
+  update_template ${GITLAB_ACTIONCABLE_CONFIG} \
     REDIS_HOST \
     REDIS_PORT \
     REDIS_DB_NUMBER
@@ -1649,6 +1662,7 @@ install_configuration_templates() {
   install_template ${GITLAB_USER}: gitlabhq/resque.yml ${GITLAB_RESQUE_CONFIG} 0640
   install_template ${GITLAB_USER}: gitlabhq/secrets.yml ${GITLAB_SECRETS_CONFIG} 0600
   install_template ${GITLAB_USER}: gitlab-shell/config.yml ${GITLAB_SHELL_CONFIG} 0640
+  install_template ${GITLAB_USER}: gitlabhq/cable.yml ${GITLAB_ACTIONCABLE_CONFIG} 0640
 
   if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
     install_template ${GITLAB_USER}: gitlabhq/relative_url.rb ${GITLAB_RELATIVE_URL_CONFIG} 0644
@@ -1743,6 +1757,7 @@ configure_gitlab() {
 
   gitlab_configure_database
   gitlab_configure_redis
+  gitlab_configure_actioncable
   gitlab_configure_secrets
   gitlab_configure_sidekiq
   gitlab_configure_gitaly
