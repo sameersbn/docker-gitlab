@@ -62,6 +62,8 @@ COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
 
+ENV prometheus_multiproc_dir="/dev/shm"
+
 ARG BUILD_DATE
 ARG VCS_REF
 
