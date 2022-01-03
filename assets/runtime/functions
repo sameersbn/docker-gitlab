@@ -1661,6 +1661,7 @@ install_configuration_templates() {
   install_template ${GITLAB_USER}: gitlabhq/resque.yml ${GITLAB_RESQUE_CONFIG} 0640
   install_template ${GITLAB_USER}: gitlabhq/secrets.yml ${GITLAB_SECRETS_CONFIG} 0600
   install_template ${GITLAB_USER}: gitlab-shell/config.yml ${GITLAB_SHELL_CONFIG} 0640
+  install_template ${GITLAB_USER}: gitlabhq/cable.yml ${GITLAB_ACTIONCABLE_CONFIG} 0640
 
   if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
     install_template ${GITLAB_USER}: gitlabhq/relative_url.rb ${GITLAB_RELATIVE_URL_CONFIG} 0644
