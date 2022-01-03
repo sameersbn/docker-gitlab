@@ -241,7 +241,8 @@ gitlab_configure_actioncable() {
 
   update_template ${GITLAB_ACTIONCABLE_CONFIG} \
     REDIS_HOST \
-    REDIS_PORT
+    REDIS_PORT \
+    REDIS_DB_NUMBER
 }
 
 gitlab_configure_gitaly() {
