@@ -1,0 +1,14 @@
+# This is a template taken from here:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/cable.yml.example
+development:
+  adapter: redis
+  url: redis://localhost:6379
+  channel_prefix: gitlab_development
+test:
+  adapter: redis
+  url: redis://localhost:6379
+  channel_prefix: gitlab_test
+production:
+  adapter: redis
+  url: redis://{{REDIS_HOST}}:{{REDIS_PORT}}/{{REDIS_DB_NUMBER}}
+  channel_prefix: gitlab_production
