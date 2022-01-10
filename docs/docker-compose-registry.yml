@@ -6,6 +6,7 @@ services:
     image: redis:6.2.6
     command:
     - --loglevel warning
+    - --requirepass "p4ssw0rd"
     volumes:
     - redis:/var/lib/redis:Z
 
