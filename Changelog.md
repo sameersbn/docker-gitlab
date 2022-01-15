@@ -6,6 +6,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - gitlab: upgrade CE to v14.6.2
 - gitaly: upgrade to v14.6.2
 - golang: upgrade to v1.17.6
+- ubuntu: upgrade to focal-20220105
 
 **14.6.1**
 - gitlab: upgrade CE to v14.6.1
