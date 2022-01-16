@@ -228,9 +228,6 @@ gitlab_check_redis_connection() {
 
 gitlab_configure_redis() {
   echo -n "Configuring gitlab::redis"
-  if [[ -n ${REDIS_PASSWORD} ]]; then
-     REDIS_PASSWORD=':'${REDIS_PASSWORD}'@'
-  fi
 
   gitlab_finalize_redis_parameters
   gitlab_check_redis_connection
