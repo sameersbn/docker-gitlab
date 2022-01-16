@@ -10,5 +10,5 @@ test:
   channel_prefix: gitlab_test
 production:
   adapter: redis
-  url: redis://{{REDIS_PASSWORD}}{{REDIS_HOST}}:{{REDIS_PORT}}/{{REDIS_DB_NUMBER}}
+  url: redis://:{{REDIS_PASSWORD}}@{{REDIS_HOST}}:{{REDIS_PORT}}/{{REDIS_DB_NUMBER}}
   channel_prefix: gitlab_production
