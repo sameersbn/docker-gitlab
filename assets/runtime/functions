@@ -211,6 +211,7 @@ gitlab_check_redis_connection() {
     REDIS_FLAG="-a ${REDIS_PASSWORD}"
   fi
   timeout=60
+  echo "redis password :${REDIS_PASSWORD}, redis flag : ${REDIS_FLAG}"
   while ! redis-cli -h ${REDIS_HOST} ${REDIS_FLAG} -p ${REDIS_PORT} -n ${REDIS_DB_NUMBER} ping >/dev/null 2>&1
   do
     timeout=$(expr $timeout - 1)
