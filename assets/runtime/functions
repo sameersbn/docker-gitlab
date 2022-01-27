@@ -1501,11 +1501,25 @@ initialize_datadir() {
   chmod u+rwX ${GITLAB_LFS_OBJECTS_DIR}
   chown ${GITLAB_USER}: ${GITLAB_LFS_OBJECTS_DIR}
 
+  # create terraform_state directory
+  # TODO : parametarize path and replace with it (e.g. GITLAB_TERRAFORM_STATE_STORAGE_PATH) - see sameersbn/gitlab#2438
+  # TODO : wrap with "if [[ _ENABLED == true ]]" condition
+  mkdir -p ${GITLAB_SHARED_DIR}/terraform_state
+  chmod u+rwX ${GITLAB_SHARED_DIR}/terraform_state
+  chown ${GITLAB_USER}: ${GITLAB_SHARED_DIR}/terraform_state
+
   # create registry dir
   if [[ ${GITLAB_REGISTRY_ENABLED} == true ]]; then
     mkdir -p ${GITLAB_REGISTRY_DIR}
     chmod u+rwX ${GITLAB_REGISTRY_DIR}
     chown ${GITLAB_USER}: ${GITLAB_REGISTRY_DIR}
+  fi
+
+  # create packages directory
+  if [[ ${GITLAB_PACKAGES_ENABLED} == true ]]; then
+    mkdir -p ${GITLAB_PACKAGES_DIR}
+    chmod u+rwX ${GITLAB_PACKAGES_DIR}
+    chown ${GILTAB_USER}: ${GITLAB_PACKAGES_DIR}
   fi
 
   # create the backups directory
@@ -1574,9 +1588,19 @@ sanitize_datadir() {
   chmod -R u+rwX ${GITLAB_LFS_OBJECTS_DIR}
   chown -R ${GITLAB_USER}: ${GITLAB_LFS_OBJECTS_DIR}
 
+  # create terraform_state directory
+  # TODO : wrap with "if [[ _ENABLED ]]" condition
+  chmod u+rwX ${GITLAB_SHARED_DIR}/terraform_state
+  chown ${GITLAB_USER}: ${GITLAB_SHARED_DIR}/terraform_state
+
   if [[ ${GITLAB_REGISTRY_ENABLED} == true ]]; then
     chmod -R u+rwX ${GITLAB_REGISTRY_DIR}
     chown -R ${GITLAB_USER}: ${GITLAB_REGISTRY_DIR}
+  fi
+
+  if [[ ${GITLAB_PACKAGES_ENABLED} ]]; then
+    chmod u+rwX ${GITLAB_PACKAGES_DIR}
+    chown ${GILTAB_USER}: ${GITLAB_PACKAGES_DIR}
   fi
 
   find ${GITLAB_DATA_DIR}/uploads -type f -exec chmod 0644 {} \;
