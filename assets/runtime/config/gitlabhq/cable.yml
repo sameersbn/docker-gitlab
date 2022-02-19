@@ -1,5 +1,5 @@
 # This is a template taken from here:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/cable.yml.example
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/cable.yml.example
 development:
   adapter: redis
   url: redis://localhost:6379
