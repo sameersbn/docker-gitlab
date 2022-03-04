@@ -139,4 +139,6 @@ server {
     root {{GITLAB_INSTALL_DIR}}/public;
     internal;
   }
+
+  {{NGINX_CUSTOM_GITLAB_SERVER_CONFIG}}
 }
