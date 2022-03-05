@@ -1269,10 +1269,6 @@ AWS Endpoint like `http://127.0.0.1:9000`. Defaults to `$AWS_ENDPOINT`
 
 Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `AWS_PATH_STYLE`
 
-#### `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_SIGNATURE_VERSION`
-
-AWS signature version to use. 2 or 4 are valid options. Digital Ocean Spaces and other providers may need 2. Defaults to `$AWS_SIGNATURE_VERSION`
-
 #### `GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`
 
 Google project. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`
@@ -1739,7 +1735,7 @@ Enable mail delivery via SMTP. Defaults to `true` if `SMTP_USER` is defined, els
 
 #### `SMTP_DOMAIN`
 
-SMTP domain. Defaults to` www.gmail.com`
+SMTP domain. Defaults to `www.gmail.com`
 
 #### `SMTP_HOST`
 
