@@ -807,6 +807,7 @@ Below is the complete list of available options that can be used to customize yo
 | `GITLAB_EMAIL_SMIME_KEY_FILE` | Specifies the path to a S/MIME private key file in PEM format, unencrypted. Defaults to ``. |
 | `GITLAB_EMAIL_SMIME_CERT_FILE` | Specifies the path to a S/MIME public certificate key in PEM format. Defaults to ``. |
 | `GITLAB_DEFAULT_THEME` | Default theme ID, by default 2. (1 - Indigo, 2 - Dark, 3 - Light, 4 - Blue, 5 - Green, 6 - Light Indigo, 7 - Light Blue, 8 - Light Green, 9 - Red, 10 - Light Red) |
+| `GITLAB_ISSUE_CLOSING_PATTERN` | Issue closing pattern regex. See [GitLab's documentation](https://docs.gitlab.com/ee/administration/issue_closing_pattern.html) for more detail. Defaults to ` \b((?:[Cc]los(?:e[sd]?|ing)|\b[Ff]ix(?:e[sd]|ing)?|\b[Rr]esolv(?:e[sd]?|ing)|\b[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+) ` . |
 | `GITLAB_INCOMING_EMAIL_ADDRESS` | The incoming email address for reply by email. Defaults to the value of `IMAP_USER`, else defaults to `reply@example.com`. Please read the [reply by email](http://doc.gitlab.com/ce/incoming_email/README.html) documentation to currently set this parameter. |
 | `GITLAB_INCOMING_EMAIL_ENABLED` | Enable or disable gitlab reply by email feature. Defaults to the value of `IMAP_ENABLED`. |
 | `GITLAB_SIGNUP_ENABLED` | Enable or disable user signups (first run only). Default is `true`. |

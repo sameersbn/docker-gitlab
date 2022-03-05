@@ -1778,7 +1778,8 @@ configure_gitlab() {
     GITLAB_PROJECTS_LIMIT \
     GITLAB_USERNAME_CHANGE \
     GITLAB_DEFAULT_THEME \
-    GITLAB_CREATE_GROUP
+    GITLAB_CREATE_GROUP \
+    GITLAB_ISSUE_CLOSING_PATTERN
 
   gitlab_configure_database
   gitlab_configure_redis
