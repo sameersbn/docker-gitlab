@@ -1,14 +1,14 @@
-FROM ubuntu:focal-20211006
+FROM ubuntu:focal-20220113
 
-ARG VERSION=14.6.1
+ARG VERSION=14.8.2
 
 ENV GITLAB_VERSION=${VERSION} \
     RUBY_VERSION=2.7.5 \
     RUBY_SOURCE_SHA256SUM="2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1" \
-    GOLANG_VERSION=1.17.5 \
-    GITLAB_SHELL_VERSION=13.22.1 \
-    GITLAB_PAGES_VERSION=1.49.0 \
-    GITALY_SERVER_VERSION=14.6.1 \
+    GOLANG_VERSION=1.17.7 \
+    GITLAB_SHELL_VERSION=13.23.2 \
+    GITLAB_PAGES_VERSION=1.54.0 \
+    GITALY_SERVER_VERSION=14.8.2 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
@@ -61,6 +61,8 @@ RUN bash ${GITLAB_BUILD_DIR}/install.sh
 COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
+
+ENV prometheus_multiproc_dir="/dev/shm"
 
 ARG BUILD_DATE
 ARG VCS_REF

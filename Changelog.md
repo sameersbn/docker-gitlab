@@ -2,6 +2,50 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**14.8.2**
+- gitlab: upgrade CE to v14.8.2
+- gitaly: upgrade to v14.8.2
+
+**14.8.1**
+- gitlab: upgrade CE to v14.8.1
+- gitaly: upgrade to v14.8.1
+
+**14.8.0**
+- gitlab: upgrade CE to v14.8.0
+- gitaly: upgrade to v14.8.0
+- gitlab-pages: upgrade to v1.54.0
+- gitlab-shell: v13.23.2
+
+**14.7.3**
+- gitlab: upgrade CE to v14.7.3
+- gitaly: upgrade to v14.7.3
+- golang: upgrade to v1.17.7
+
+**14.7.2**
+- gitlab: upgrade CE to v14.7.2
+- gitaly: upgrade to v14.7.2
+- ubuntu: upgrade to focal-20220113
+
+**14.7.1**
+- gitlab: upgrade CE to v14.7.1
+- gitaly: upgrade to v14.7.1
+
+**14.7.0**
+- gitlab: upgrade CE to v14.7.0
+- gitaly: upgrade to v14.7.0
+- gitlab-shell: v13.22.2
+- gitlab-pages: upgrade to v1.51.0
+
+**14.6.3**
+- gitlab: upgrade CE to v14.6.3
+- gitaly: upgrade to v14.6.3
+
+**14.6.2**
+- gitlab: upgrade CE to v14.6.2
+- gitaly: upgrade to v14.6.2
+- golang: upgrade to v1.17.6
+- ubuntu: upgrade to focal-20220105
+
 **14.6.1**
 - gitlab: upgrade CE to v14.6.1
 - gitaly: upgrade to v14.6.1
