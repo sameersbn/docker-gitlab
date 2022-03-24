@@ -6,7 +6,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - gitlab: upgrade CE to v14.9.0
 - gitaly: upgrade to v14.9.0
 - gitlab-pages: upgrade to v1.56.0
-- gitlab-shell: upgrade to v13.24.1
+- gitlab-shell: upgrade to v13.24.0
 
 **14.8.4**
 - gitlab: upgrade CE to v14.8.4
