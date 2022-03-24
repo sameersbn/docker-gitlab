@@ -1001,6 +1001,7 @@ Below is the complete list of available options that can be used to customize yo
 | `NGINX_X_FORWARDED_PROTO` | Advanced configuration option for the `proxy_set_header X-Forwarded-Proto` setting in the gitlab nginx vHost configuration. Defaults to `https` when `GITLAB_HTTPS` is `true`, else defaults to `$scheme`. |
 | `NGINX_REAL_IP_RECURSIVE` | set to `on` if docker container runs behind a reverse proxy,you may not want the IP address of the proxy to show up as the client address. `off` by default. |
 | `NGINX_REAL_IP_TRUSTED_ADDRESSES` | You can have NGINX look for a different address to use by adding your reverse proxy to the `NGINX_REAL_IP_TRUSTED_ADDRESSES`. Currently only a single entry is permitted. No defaults. |
+| `NGINX_CUSTOM_GITLAB_SERVER_CONFIG` | Advanced configuration option. You can add custom configuration for nginx as you like (e.g. custom location proxy). This is similar to setting `nginx['custom_gitlab_server_config']` to `gitlab.rb` for gitlab-omnibus. No defaults. |
 | `REDIS_HOST` | The hostname of the redis server. Defaults to `localhost` |
 | `REDIS_PORT` | The connection port of the redis server. Defaults to `6379`. |
 | `REDIS_DB_NUMBER` | The redis database number. Defaults to '0'. |
