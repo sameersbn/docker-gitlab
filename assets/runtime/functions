@@ -1329,7 +1329,8 @@ nginx_configure_gitlab() {
     GITLAB_PORT \
     NGINX_PROXY_BUFFERING \
     NGINX_ACCEL_BUFFERING \
-    NGINX_X_FORWARDED_PROTO
+    NGINX_X_FORWARDED_PROTO \
+    NGINX_CUSTOM_GITLAB_SERVER_CONFIG
 
   nginx_configure_gitlab_ssl
   nginx_configure_gitlab_hsts
