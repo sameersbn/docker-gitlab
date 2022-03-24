@@ -94,4 +94,5 @@ server {
     internal;
   }
 
+  {{NGINX_CUSTOM_GITLAB_SERVER_CONFIG}}
 }
