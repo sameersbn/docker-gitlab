@@ -236,7 +236,7 @@ docker run --name gitlab -d \
 
 GitLab uses a database backend to store its data. You can configure this image to use PostgreSQL.
 
-*Note: GitLab requieres PostgreSQL now. So use an older image < 12.1 or migrate to PostgresSQL*
+*Note:* GitLab requieres PostgreSQL now. So use an older image < 12.1 or migrate to PostgresSQL
 
 #### PostgreSQL
 
@@ -256,7 +256,7 @@ Additionally since GitLab `8.6.0` the `pg_trgm` extension should also be loaded 
 
 We are now ready to start the GitLab application.
 
-*Assuming that the PostgreSQL server host is 192.168.1.100*
+*Note:* The following applies assuming that the PostgreSQL server host is `192.168.1.100`.
 
 ```bash
 docker run --name gitlab -d \
@@ -342,7 +342,7 @@ The internal redis server has been removed from the image. Please use a [linked 
 
 The image can be configured to use an external redis server. The configuration should be specified using environment variables while starting the GitLab image.
 
-*Assuming that the redis server host is 192.168.1.100*
+*Note:* The following applies assuming that the redis server host is `192.168.1.100`.
 
 ```bash
 docker run --name gitlab -it --rm \
