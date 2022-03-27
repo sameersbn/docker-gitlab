@@ -1,6 +1,6 @@
-[![](https://images.microbadger.com/badges/image/sameersbn/gitlab.svg)](http://microbadger.com/images/sameersbn/gitlab "Get your own image badge on microbadger.com")
-
 # sameersbn/gitlab:14.9.1
+
+[![CircleCI](https://circleci.com/gh/sameersbn/docker-gitlab/tree/master.svg?style=svg)](https://circleci.com/gh/sameersbn/docker-gitlab/tree/master)
 
 - [Introduction](#introduction)
     - [Changelog](Changelog.md)
@@ -199,7 +199,7 @@ docker run --name gitlab -d \
 
 *Please refer to [Available Configuration Parameters](#available-configuration-parameters) to understand `GITLAB_PORT` and other configuration options*
 
-__NOTE__: Please allow a couple of minutes for the GitLab application to start.
+**NOTE**: Please allow a couple of minutes for the GitLab application to start.
 
 Point your browser to `http://localhost:10080` and set a password for the `root` user account.
 
@@ -213,7 +213,7 @@ You should now have the GitLab application up and ready for testing. If you want
 
 GitLab is a code hosting software and as such you don't want to lose your code when the docker container is stopped/deleted. To avoid losing any data, you should mount a volume at,
 
-* `/home/git/data`
+- `/home/git/data`
 
 *Note: that if you are using the `docker-compose` approach, you must "inpect" the volumes (```docker volume inpect```) to check the mounted path.*
 
@@ -313,10 +313,10 @@ docker run --name gitlab -d --link gitlab-postgresql:postgresql \
 
 Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the postgresql container as they are specified in the `docker run` command for the postgresql container. This is made possible using the magic of docker links and works with the following images:
 
- - [postgres](https://hub.docker.com/_/postgres/)
- - [sameersbn/postgresql](https://quay.io/repository/sameersbn/postgresql/)
- - [orchardup/postgresql](https://hub.docker.com/r/orchardup/postgresql/)
- - [paintedfox/postgresql](https://hub.docker.com/r/paintedfox/postgresql/)
+- [postgres](https://hub.docker.com/_/postgres/)
+- [sameersbn/postgresql](https://quay.io/repository/sameersbn/postgresql/)
+- [orchardup/postgresql](https://hub.docker.com/r/orchardup/postgresql/)
+- [paintedfox/postgresql](https://hub.docker.com/r/paintedfox/postgresql/)
 
 #### Upgrading PostgreSQL
 
@@ -419,6 +419,7 @@ Access to the gitlab application can be secured using SSL so as to prevent unaut
 Jump to the [Using HTTPS with a load balancer](#using-https-with-a-load-balancer) section if you are using a load balancer such as hipache, haproxy or nginx.
 
 To secure your application via SSL you basically need two things:
+
 - **Private key (.key)**
 - **SSL certificate (.crt)**
 
@@ -469,7 +470,6 @@ In case use of docker-compose ...
 ```$>docker volume inspect```
 
 look for "< user >_gitlab-data" and copy the "certs" directory into the "Mountpoint"
-
 
 ```bash
 mkdir -p /srv/docker/gitlab/gitlab/certs
@@ -593,7 +593,7 @@ Refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/omniaut
 
 #### CAS3
 
-To enable the CAS OmniAuth provider you must register your application with your CAS instance. This requires the service URL GitLab will supply to CAS. It should be something like: https://git.example.com:443/users/auth/cas3/callback?url. By default handling for SLO is enabled, you only need to configure CAS for backchannel logout.
+To enable the CAS OmniAuth provider you must register your application with your CAS instance. This requires the service URL GitLab will supply to CAS. It should be something like: `https://git.example.com:443/users/auth/cas3/callback?url`. By default handling for SLO is enabled, you only need to configure CAS for backchannel logout.
 
 For example, if your cas server url is `https://sso.example.com`, then adding `--env 'OAUTH_CAS3_SERVER=https://sso.example.com'` to the docker run command enables support for CAS3 OAuth. Please refer to [Available Configuration Parameters](#available-configuration-parameters) for additional CAS3 configuration parameters.
 
@@ -709,14 +709,14 @@ Gitlab pages access control requires additional configuration before activating 
 
 Gitab pages access control makes use of the Gitlab OAuth Module.
 
- - Goto the Gitlab Admin area
- - Select `Applications` in the menu
- - Create `New Application`
-   - Name: `Gitlab Pages`
-   - Scopes:
-     - api
-   - Trusted: NO (Do not select)
-   - Redirect URI: https://projects.<GITLAB_PAGES_DOMAIN>/auth
+- Goto the Gitlab Admin area
+- Select `Applications` in the menu
+- Create `New Application`
+    - Name: `Gitlab Pages`
+    - Scopes:
+        - api
+    - Trusted: NO (Do not select)
+    - Redirect URI: `https://projects.<GITLAB_PAGES_DOMAIN>/auth`
 
 Note about the `Redirect URI`; this can be tricky to configure or figure out, What needs to be achieved is to following, the redirect URI needs to end up at the `gitlab-pages` daemon with the `/auth` endpoint.
 
@@ -740,7 +740,6 @@ Add to following environment variables to your Gitlab Container.
 | GITLAB_PAGES_ACCESS_REDIRECT_URI | Required | Redirect URI, non existing pages domain to redirect to pages daemon, `https://projects.example.io` |
 
 After you have enabled the gitlab pages access control. When you go to a project `General Settings` -> `Permissions` you can choose the pages persmission level for the project.
-
 
 ### External Issue Trackers
 
@@ -777,11 +776,9 @@ These options should contain something like:
 - `PIWIK_URL=piwik.example.org`
 - `PIWIK_SITE_ID=42`
 
-
 ### Available Configuration Parameters
 
 *Please refer the docker run command options for the `--env-file` flag where you can specify all required environment variables in a single file. This will save you from writing a potentially long docker run command. Alternatively you can use docker-compose. docker-compose users and Docker Swarm mode users can also use the [secrets and config file options](#docker-secrets-and-configs)*
-
 
 Below is the complete list of available options that can be used to customize your gitlab installation.
 
@@ -2023,7 +2020,7 @@ GitHub App Client secret. No defaults.
 
 #### `OAUTH_GITHUB_URL`
 
-Url to the GitHub Enterprise server. Defaults to https://github.com
+Url to the GitHub Enterprise server. Defaults to `https://github.com`
 
 #### `OAUTH_GITHUB_VERIFY_SSL`
 
@@ -2047,7 +2044,7 @@ BitBucket App Client secret. No defaults.
 
 #### `OAUTH_BITBUCKET_URL`
 
-Bitbucket URL. Defaults: https://bitbucket.org/
+Bitbucket URL. Defaults: `https://bitbucket.org/`
 
 #### `OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL`
 
@@ -2415,7 +2412,6 @@ docker-compose run --rm gitlab app:rake gitlab:backup:restore # List available b
 docker-compose run --rm gitlab app:rake gitlab:backup:restore BACKUP=1515629493_2020_12_06_13.10.0 # Choose to restore from 1515629493
 ```
 
-
 ## Host Key Backups (ssh)
 
 SSH keys are not backed up in the normal gitlab backup process. You
@@ -2477,7 +2473,7 @@ Or
 docker exec -it gitlab sudo -HEu git bundle exec rake gitlab:import:repos RAILS_ENV=production
 ```
 
-For a complete list of available rake tasks please refer https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks or the help section of your gitlab installation.
+For a complete list of available rake tasks please refer <https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks> or the help section of your gitlab installation.
 
 *P.S. Please avoid running the rake tasks for backup and restore operations on a running gitlab instance.*
 
@@ -2513,7 +2509,7 @@ Usage when using `docker-compose` can also be found there.
 >
 > Since GitLab release `8.6.0` PostgreSQL users should enable `pg_trgm` extension on the GitLab database. Refer to GitLab's [Postgresql Requirements](http://doc.gitlab.com/ce/install/requirements.html#postgresql-requirements) for more information
 >
-> If you're using `sameersbn/postgresql` then please upgrade to `sameersbn/postgresql:12-20200524` or later and add `DB_EXTENSION=pg_trgm,btree_gist` to the environment of the PostgreSQL container (see: https://github.com/sameersbn/docker-gitlab/blob/master/docker-compose.yml#L8).
+> If you're using `sameersbn/postgresql` then please upgrade to `sameersbn/postgresql:12-20200524` or later and add `DB_EXTENSION=pg_trgm,btree_gist` to the environment of the PostgreSQL container (see: <https://github.com/sameersbn/docker-gitlab/blob/master/docker-compose.yml#L8>).
 >
 > As of version 13.7.0, the required PostgreSQL is version 12.x. If you're using PostgreSQL image other than the above, please review section [Upgrading PostgreSQL](#upgrading-postgresql).
 
@@ -2550,7 +2546,6 @@ Replace `x.x.x` with the version you are upgrading from. For example, if you are
 - **Step 4**: Start the image
 
 > **Note**: Since GitLab `8.0.0` you need to provide the `GITLAB_SECRETS_DB_KEY_BASE` parameter while starting the image.
-
 > **Note**: Since GitLab `8.11.0` you need to provide the `GITLAB_SECRETS_SECRET_KEY_BASE` and `GITLAB_SECRETS_OTP_KEY_BASE` parameters while starting the image. These should initially both have the same value as the contents of the `/home/git/data/.secret` file. See [Available Configuration Parameters](#available-configuration-parameters) for more information on these parameters.
 
 ```bash
@@ -2609,10 +2604,10 @@ docker inspect --format "{{json .State.Health }}" $(docker-compose ps -q gitlab)
 
 # References
 
-* https://github.com/gitlabhq/gitlabhq
-* https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md
-* http://wiki.nginx.org/HttpSslModule
-* https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
-* https://github.com/gitlabhq/gitlab-recipes/blob/master/web-server/nginx/gitlab-ssl
-* https://github.com/jpetazzo/nsenter
-* https://jpetazzo.github.io/2014/03/23/lxc-attach-nsinit-nsenter-docker-0-9/
+- <https://github.com/gitlabhq/gitlabhq>
+- <https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md>
+- <http://wiki.nginx.org/HttpSslModule>
+- <https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html>
+- <https://github.com/gitlabhq/gitlab-recipes/blob/master/web-server/nginx/gitlab-ssl>
+- <https://github.com/jpetazzo/nsenter>
+- <https://jpetazzo.github.io/2014/03/23/lxc-attach-nsinit-nsenter-docker-0-9/>
