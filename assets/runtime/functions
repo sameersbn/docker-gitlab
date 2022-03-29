@@ -1642,9 +1642,13 @@ update_ssh_listen_port() {
 generate_healthcheck_script() {
   # configure healthcheck script
   ## https://docs.gitlab.com/ee/user/admin_area/monitoring/health_check.html
+  local HEALTHCHECK_PROTOCOL="http"
+  if [[ "${GITLAB_HTTPS}" == true ]]; then
+    HEALTHCHECK_PROTOCOL="${HEALTHCHECK_PROTOCOL}s"
+  fi
 cat > /usr/local/sbin/healthcheck <<EOF
 #!/bin/bash
-url=http://localhost${GITLAB_RELATIVE_URL_ROOT}/-/liveness
+url=${HEALTHCHECK_PROTOCOL}://localhost${GITLAB_RELATIVE_URL_ROOT}/-/liveness
 options=( '--insecure' '--location' '--silent' )
 curl "\${options[@]}" \$url
 [[ "\$(curl \${options[@]} -o /dev/null -I -w '%{http_code}' \$url)" == "200" ]]
