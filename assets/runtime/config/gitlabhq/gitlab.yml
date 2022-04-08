@@ -314,9 +314,9 @@ production: &base
         path_style: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE}} # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
         #end-uploads-aws
         #start-uploads-gcs
-        google_project: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT}}
-        google_client_email: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL}}
-        google_json_key_location: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION}}
+        google_project: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT}}
+        google_client_email: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL}}
+        google_json_key_location: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION}}
         #end-uploads-gcs
 
   ## Packages (maven repository, npm registry, etc...)
