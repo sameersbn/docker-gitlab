@@ -371,21 +371,28 @@ production: &base
 
   ## Terraform state
   terraform_state:
-    enabled: true
+    enabled: {{GITLAB_TERRAFORM_STATE_ENABLED}}
     # The location where Terraform state files are stored (default: shared/terraform_state).
-    # storage_path: shared/terraform_state
+    storage_path: {{GITLAB_TERRAFORM_STATE_STORAGE_PATH}}
     object_store:
-      enabled: false
-      remote_directory: terraform_state # The bucket name
+      enabled: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_ENABLED}}
+      remote_directory: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_REMOTE_DIRECTORY}} # The bucket name
       connection:
-        provider: AWS
-        aws_access_key_id: AWS_ACCESS_KEY_ID
-        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-        region: us-east-1
-        # host: 'localhost' # default: s3.amazonaws.com
-        # endpoint: 'http://127.0.0.1:9000' # default: nil
-        # aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
-        # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
+        provider: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_PROVIDER}}
+        #start-terraform_state-aws
+        aws_access_key_id: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID}}
+        aws_secret_access_key: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY}}
+        region: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_REGION}}
+        host: '{{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_HOST}}' # default: s3.amazonaws.com
+        endpoint: '{{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_ENDPOINT}}' # default: nil
+        aws_signature_version: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_SIGNATURE_VERSION}} # For creation of signed URLs. Set to 2 if provider does not support v4.
+        path_style: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE}} # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
+        #end-terraform_state-aws
+        #start-terraform_state-gcs
+        google_project: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT}}
+        google_client_email: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL}}
+        google_json_key_location: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION}}
+        #end-terraform_state-aws
 
   ## GitLab Pages
   pages:

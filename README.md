@@ -1218,6 +1218,62 @@ Google service account. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_CLIE
 
 Default Google key file. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION` (`/gcs/key.json`)
 
+##### `GITLAB_TERRAFORM_STATE_ENABLED`
+
+Enable/Disable Terraform State support. Defaults to `true`.
+
+##### `GITLAB_TERRAFORM_STATE_STORAGE_PATH`
+
+Directory to store the terraform state data. Defaults to `$GITLAB_SHARED_DIR/terraform_state`
+
+##### `GITLAB_TERRAFORM_STATE_OBJECT_STORE_ENABLED`
+
+Enables Object Store for Terraform state that will be remote stored. Defaults to `false`
+
+##### `GITLAB_TERRAFORM_STATE_OBJECT_STORE_REMOTE_DIRECTORY`
+
+Bucket name to store the Terraform state. Defaults to `terraform_state`
+
+##### `GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_PROVIDER`
+
+Connection Provider for the Object Store. (`AWS` or `Google`) Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_PROVIDER` (`AWS`)
+
+##### `GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID`
+
+AWS Access Key ID for the Bucket. Defaults to `$AWS_ACCESS_KEY_ID`
+
+##### `GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY`
+
+AWS Secret Access Key. Defaults to `$AWS_SECRET_ACCESS_KEY`
+
+##### `GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_REGION`
+
+AWS Region. Defaults to `$AWS_REGION`
+
+##### `GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_HOST`
+
+Configure this for an compatible AWS host like minio. Defaults to `$AWS_HOST`
+
+##### `GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_ENDPOINT`
+
+AWS Endpoint like `http://127.0.0.1:9000`. Defaults to `$AWS_ENDPOINT`
+
+##### `GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE`
+
+Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `AWS_PATH_STYLE`
+
+##### `GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`
+
+Google project. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT`
+
+##### `GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`
+
+Google service account. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL`
+
+##### `GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION`
+
+Default Google key file. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION` (`/gcs/key.json`)
+
 ##### `GITLAB_UPLOADS_STORAGE_PATH`
 
 The location where uploads objects are stored. Defaults to `$GITLAB_SHARED_DIR/public`.

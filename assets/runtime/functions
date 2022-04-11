@@ -1068,6 +1068,47 @@ gitlab_configure_packages() {
     GITLAB_PACKAGES_DIR
 }
 
+gitlab_configure_terraform_state() {
+  if [[ ${GITLAB_TERRAFORM_STATE_OBJECT_STORE_ENABLED} == true ]]; then
+    echo "Configuring gitlab::terraform_state:object_store"
+
+    if [[ "${GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_PROVIDER}" == "Google" ]]; then
+        echo " -> Google TERRAFORM STATE provider selected removing aws config"
+        exec_as_git sed -i "/#start-terraform_state-aws/,/#end-terraform_state-aws/d" ${GITLAB_CONFIG}
+        exec_as_git sed -i "/#start-terraform_state-gcs/d" ${GITLAB_CONFIG}
+        exec_as_git sed -i "/#end-terraform_state-gcs/d" ${GITLAB_CONFIG}
+    fi
+    if [[ "${GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_PROVIDER}" == "AWS" ]]; then
+      echo " -> AWS TERRAFORM STATE provider selected removing Google config"
+      exec_as_git sed -i "/#start-terraform_state-gcs/,/#end-terraform_state-gcs/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-terraform_state-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-terraform_state-aws/d" ${GITLAB_CONFIG}
+    fi
+
+    update_template ${GITLAB_CONFIG} \
+      GITLAB_TERRAFORM_STATE_OBJECT_STORE_ENABLED \
+      GITLAB_TERRAFORM_STATE_OBJECT_STORE_REMOTE_DIRECTORY \
+      GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_PROVIDER \
+      GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID \
+      GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY \
+      GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_REGION \
+      GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_HOST \
+      GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_ENDPOINT \
+      GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE \
+      GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_SIGNATURE_VERSION \
+      GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT \
+      GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL \
+      GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION
+  else
+    exec_as_git sed -i -e "/storage_path: {{GITLAB_TERRAFORM_STATE_STORAGE_PATH}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}" ${GITLAB_CONFIG}
+  fi
+
+  echo "Configuring gitlab::terraform_state..."
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_TERRAFORM_STATE_ENABLED \
+    GITLAB_TERRAFORM_STATE_STORAGE_PATH
+}
+
 gitlab_configure_lfs() {
   if [[ ${GITLAB_LFS_OBJECT_STORE_ENABLED} == true ]]; then
     echo "Configuring gitlab::lfs:object_store"
@@ -1801,6 +1842,7 @@ configure_gitlab() {
   gitlab_configure_ci
   gitlab_configure_artifacts
   gitlab_configure_packages
+  gitlab_configure_terraform_state
   gitlab_configure_lfs
   gitlab_configure_uploads
   gitlab_configure_mattermost
