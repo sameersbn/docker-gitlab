@@ -1544,11 +1544,11 @@ initialize_datadir() {
   chown ${GITLAB_USER}: ${GITLAB_LFS_OBJECTS_DIR}
 
   # create terraform_state directory
-  # TODO : parametarize path and replace with it (e.g. GITLAB_TERRAFORM_STATE_STORAGE_PATH) - see sameersbn/gitlab#2438
-  # TODO : wrap with "if [[ _ENABLED == true ]]" condition
-  mkdir -p ${GITLAB_SHARED_DIR}/terraform_state
-  chmod u+rwX ${GITLAB_SHARED_DIR}/terraform_state
-  chown ${GITLAB_USER}: ${GITLAB_SHARED_DIR}/terraform_state
+  if [[ ${GITLAB_TERRAFORM_STATE_ENABLED} == true ]]; then
+    mkdir -p ${GITLAB_TERRAFORM_STATE_STORAGE_PATH}
+    chmod u+rwX ${GITLAB_TERRAFORM_STATE_STORAGE_PATH}
+    chown ${GITLAB_USER}: ${GITLAB_TERRAFORM_STATE_STORAGE_PATH}
+  fi
 
   # create registry dir
   if [[ ${GITLAB_REGISTRY_ENABLED} == true ]]; then
