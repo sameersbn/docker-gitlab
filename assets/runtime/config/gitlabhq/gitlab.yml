@@ -392,7 +392,7 @@ production: &base
         google_project: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT}}
         google_client_email: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL}}
         google_json_key_location: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION}}
-        #end-terraform_state-aws
+        #end-terraform_state-gcs
 
   ## GitLab Pages
   pages:
