@@ -6,6 +6,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - gitlab: upgrade CE to v14.9.3
 - gitaly: upgrade to v14.9.3
 - golang: upgrade to v1.17.9
+- ruby: upgrade to v2.7.6
 - ubuntu: upgrade to focal-20220404
 
 **14.9.2**
