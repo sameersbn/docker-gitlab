@@ -1132,7 +1132,7 @@ AWS Endpoint like `http://127.0.0.1:9000`. Defaults to `$AWS_ENDPOINT`
 
 ##### `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE`
 
-Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `AWS_PATH_STYLE`
+Changes AWS Path Style to 'host/bucket_name/object' instead of 'bucket_name.host/object'. Defaults to `$AWS_PATH_STYLE`
 
 ##### `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_SIGNATURE_VERSION`
 
@@ -1236,7 +1236,7 @@ Bucket name to store the Terraform state. Defaults to `terraform_state`
 
 ##### `GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_PROVIDER`
 
-Connection Provider for the Object Store. (`AWS` or `Google`) Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_PROVIDER` (`AWS`)
+Connection Provider for the Object Store (AWS or Google). Defaults to $GITLAB_OBJECT_STORE_CONNECTION_PROVIDER (i.e. AWS).
 
 ##### `GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID`
 
