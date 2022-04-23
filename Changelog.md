@@ -1,6 +1,13 @@
 # Changelog
 
-This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
+This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in 
+GitLab.
+
+**14.10.0**
+- gitlab: upgrade CE to v14.10.0
+- gitaly: upgrade to v14.10.0
+- gitlab-shell: upgrade to v13.25.1
+- ubuntu: upgrade to focal-20220415
 
 **14.9.3**
 - gitlab: upgrade CE to v14.9.3
