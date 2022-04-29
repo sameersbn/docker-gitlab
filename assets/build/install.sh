@@ -92,7 +92,7 @@ GITLAB_PAGES_VERSION=${GITLAB_PAGES_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_
 
 # install bundler: use version specified in Gemfile.lock
 BUNDLER_VERSION="$(grep "BUNDLED WITH" ${GITLAB_INSTALL_DIR}/Gemfile.lock -A 1 | grep -v "BUNDLED WITH" | tr -d "[:space:]")"
-gem install bundler:"${BUNDLER_VERSION}" 
+gem install bundler:"${BUNDLER_VERSION}"
 
 # download golang
 echo "Downloading Go ${GOLANG_VERSION}..."
@@ -147,6 +147,10 @@ cp -a ${GITLAB_GITALY_BUILD_DIR}/ruby ${GITLAB_GITALY_INSTALL_DIR}/
 cp -a ${GITLAB_GITALY_BUILD_DIR}/config.toml.example ${GITLAB_GITALY_INSTALL_DIR}/config.toml
 rm -rf ${GITLAB_GITALY_INSTALL_DIR}/ruby/vendor/bundle/ruby/**/cache
 chown -R ${GITLAB_USER}: ${GITLAB_GITALY_INSTALL_DIR}
+
+# install git bundled with gitaly.
+make -C ${GITLAB_GITALY_BUILD_DIR} git GIT_PREFIX=/usr/local
+apt remove -y git-core
 
 # clean up
 rm -rf ${GITLAB_GITALY_BUILD_DIR}
@@ -456,4 +460,4 @@ rm -rf /var/lib/apt/lists/*
 # clean up caches
 rm -rf ${GITLAB_HOME}/.cache ${GITLAB_HOME}/.bundle ${GITLAB_HOME}/go
 rm -rf /root/.cache /root/.bundle ${GITLAB_HOME}/gitlab/node_modules
-rm -r /tmp/* 
+rm -r /tmp/*
