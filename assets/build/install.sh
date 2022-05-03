@@ -150,7 +150,6 @@ chown -R ${GITLAB_USER}: ${GITLAB_GITALY_INSTALL_DIR}
 
 # install git bundled with gitaly.
 make -C ${GITLAB_GITALY_BUILD_DIR} git GIT_PREFIX=/usr/local
-apt remove -y git-core
 
 # clean up
 rm -rf ${GITLAB_GITALY_BUILD_DIR}
