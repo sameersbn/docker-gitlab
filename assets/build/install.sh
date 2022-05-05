@@ -25,7 +25,7 @@ BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
   libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
   gettext libkrb5-dev \
-  libexpat1-dev libz-dev libpcre2-dev build-essential git-core"
+  libexpat1-dev libz-dev libpcre2-dev build-essential git"
 
 ## Execute a command as GITLAB_USER
 exec_as_git() {
