@@ -1561,7 +1561,7 @@ initialize_datadir() {
   if [[ ${GITLAB_PACKAGES_ENABLED} == true ]]; then
     mkdir -p ${GITLAB_PACKAGES_DIR}
     chmod u+rwX ${GITLAB_PACKAGES_DIR}
-    chown ${GILTAB_USER}: ${GITLAB_PACKAGES_DIR}
+    chown ${GITLAB_USER}: ${GITLAB_PACKAGES_DIR}
   fi
 
   # create the backups directory
@@ -1642,7 +1642,7 @@ sanitize_datadir() {
 
   if [[ ${GITLAB_PACKAGES_ENABLED} ]]; then
     chmod u+rwX ${GITLAB_PACKAGES_DIR}
-    chown ${GILTAB_USER}: ${GITLAB_PACKAGES_DIR}
+    chown ${GITLAB_USER}: ${GITLAB_PACKAGES_DIR}
   fi
 
   find ${GITLAB_DATA_DIR}/uploads -type f -exec chmod 0644 {} \;
