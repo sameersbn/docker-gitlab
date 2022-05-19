@@ -285,7 +285,7 @@ workflows:
     jobs:
       - shellcheck/check:
           name: shellcheck
-          ignore: SC2086,SC2181
+          exclude: SC2086,SC2181
           filters:
             tags:
               only: /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
