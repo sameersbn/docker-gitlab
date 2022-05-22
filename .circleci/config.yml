@@ -1,9 +1,9 @@
 version: 2.1
 
 orbs:
-  shellcheck: circleci/shellcheck@1.3.16
-  docker: circleci/docker@1.0.1
-  go: circleci/go@1.1.1
+  shellcheck: circleci/shellcheck@3.1.1
+  docker: circleci/docker@2.1.1
+  go: circleci/go@1.7.1
 
 commands:
   docker-build:
@@ -285,7 +285,8 @@ workflows:
     jobs:
       - shellcheck/check:
           name: shellcheck
-          ignore: SC2086,SC2181
+          exclude: SC2086,SC2181
+          external_sources: true
           filters:
             tags:
               only: /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
