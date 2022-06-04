@@ -980,6 +980,9 @@ gitlab_configure_ci() {
 }
 
 gitlab_configure_artifacts() {
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED
+
   if [[ ${GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED} == true ]]; then
     echo "Configuring gitlab::artifacts:object_store"
 
@@ -997,7 +1000,6 @@ gitlab_configure_artifacts() {
     fi
 
     update_template ${GITLAB_CONFIG} \
-      GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED \
       GITLAB_ARTIFACTS_OBJECT_STORE_REMOTE_DIRECTORY \
       GITLAB_ARTIFACTS_OBJECT_STORE_DIRECT_UPLOAD \
       GITLAB_ARTIFACTS_OBJECT_STORE_BACKGROUND_UPLOAD \
@@ -1025,6 +1027,9 @@ gitlab_configure_artifacts() {
 
 
 gitlab_configure_packages() {
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_PACKAGES_OBJECT_STORE_ENABLED
+
   if [[ ${GITLAB_PACKAGES_OBJECT_STORE_ENABLED} == true ]]; then
     echo "Configuring gitlab::packages:object_store"
 
@@ -1042,7 +1047,6 @@ gitlab_configure_packages() {
     fi
 
     update_template ${GITLAB_CONFIG} \
-      GITLAB_PACKAGES_OBJECT_STORE_ENABLED \
       GITLAB_PACKAGES_OBJECT_STORE_REMOTE_DIRECTORY \
       GITLAB_PACKAGES_OBJECT_STORE_DIRECT_UPLOAD \
       GITLAB_PACKAGES_OBJECT_STORE_BACKGROUND_UPLOAD \
@@ -1069,6 +1073,9 @@ gitlab_configure_packages() {
 }
 
 gitlab_configure_terraform_state() {
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_TERRAFORM_STATE_OBJECT_STORE_ENABLED
+  
   if [[ ${GITLAB_TERRAFORM_STATE_OBJECT_STORE_ENABLED} == true ]]; then
     echo "Configuring gitlab::terraform_state:object_store"
 
@@ -1086,7 +1093,6 @@ gitlab_configure_terraform_state() {
     fi
 
     update_template ${GITLAB_CONFIG} \
-      GITLAB_TERRAFORM_STATE_OBJECT_STORE_ENABLED \
       GITLAB_TERRAFORM_STATE_OBJECT_STORE_REMOTE_DIRECTORY \
       GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_PROVIDER \
       GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID \
@@ -1110,6 +1116,9 @@ gitlab_configure_terraform_state() {
 }
 
 gitlab_configure_lfs() {
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_LFS_OBJECT_STORE_ENABLED \
+  
   if [[ ${GITLAB_LFS_OBJECT_STORE_ENABLED} == true ]]; then
     echo "Configuring gitlab::lfs:object_store"
 
@@ -1127,7 +1136,6 @@ gitlab_configure_lfs() {
     fi
 
     update_template ${GITLAB_CONFIG} \
-      GITLAB_LFS_OBJECT_STORE_ENABLED \
       GITLAB_LFS_OBJECT_STORE_REMOTE_DIRECTORY \
       GITLAB_LFS_OBJECT_STORE_DIRECT_UPLOAD \
       GITLAB_LFS_OBJECT_STORE_BACKGROUND_UPLOAD \
@@ -1154,6 +1162,9 @@ gitlab_configure_lfs() {
 }
 
 gitlab_configure_uploads() {
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_UPLOADS_OBJECT_STORE_ENABLED
+
   if [[ ${GITLAB_UPLOADS_OBJECT_STORE_ENABLED} == true ]]; then
     echo "Configuring gitlab::uploads:object_store"
 
@@ -1171,7 +1182,6 @@ gitlab_configure_uploads() {
     fi
 
     update_template ${GITLAB_CONFIG} \
-      GITLAB_UPLOADS_OBJECT_STORE_ENABLED \
       GITLAB_UPLOADS_OBJECT_STORE_REMOTE_DIRECTORY \
       GITLAB_UPLOADS_OBJECT_STORE_DIRECT_UPLOAD \
       GITLAB_UPLOADS_OBJECT_STORE_BACKGROUND_UPLOAD \
