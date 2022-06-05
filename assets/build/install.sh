@@ -83,10 +83,10 @@ exec_as_git git config --global advice.detachedHead false
 echo "Cloning gitlab-foss v.${GITLAB_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
 
-if [[ -d "${GITLAB_BUILD_DIR}/patches" && -f "${GITLAB_BUILD_DIR}/patches/*.patch" ]]; then
-  echo "Applying patches for gitlab-foss..."
-  exec_as_git git -C ${GITLAB_INSTALL_DIR} apply --ignore-whitespace < ${GITLAB_BUILD_DIR}/patches/*.patch
-fi
+find "${GITLAB_BUILD_DIR}/patches/" -name "*.patch" | while read -r patch_file; do
+  printf "Applying patch %s for gitlab-foss...\n" "${patch_file}"
+  exec_as_git git -C ${GITLAB_INSTALL_DIR} apply --ignore-whitespace < "${patch_file}"
+done
 
 GITLAB_SHELL_VERSION=${GITLAB_SHELL_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_SHELL_VERSION)}
 GITLAB_PAGES_VERSION=${GITLAB_PAGES_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_PAGES_VERSION)}
