@@ -170,7 +170,7 @@ Step 1. Launch a postgresql container
 docker run --name gitlab-postgresql -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
-    --env 'DB_EXTENSION=pg_trgm' \
+    --env 'DB_EXTENSION=pg_trgm,btree_gist' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
     sameersbn/postgresql:12-20200524
 ```
