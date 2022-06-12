@@ -34,6 +34,12 @@ ${NOTABLE_CHANGES}
 
 For installation and usage instructions please refer to the [README](https://github.com/sameersbn/docker-gitlab/blob/${RELEASE}/README.md)
 
+## Important notes
+
+Please note that this version does not yet include any rework as a consequence of the major release and possibly some functions in our implementation might not be usable yet or only to a limited extent.
+
+You are kindly invited to provide contributions.
+
 ## Contributing
 
 If you find this image useful here's how you can help:
