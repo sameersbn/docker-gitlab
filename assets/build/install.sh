@@ -187,7 +187,11 @@ chown -R ${GITLAB_USER}: ${GITLAB_HOME}
 # gitlab.yml and database.yml are required for `assets:precompile`
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/resque.yml.example ${GITLAB_INSTALL_DIR}/config/resque.yml
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
+#
+# Temporary workaround, see <https://github.com/sameersbn/docker-gitlab/pull/2596>
+#
+# exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
+exec_as_git cp ${GITLAB_BUILD_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
 
 # Installs nodejs packages required to compile webpack
 exec_as_git yarn install --production --pure-lockfile
