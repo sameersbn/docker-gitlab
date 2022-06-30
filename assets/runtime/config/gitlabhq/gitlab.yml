@@ -1271,6 +1271,22 @@ production: &base
       # Ban an IP for one hour (3600s) after too many auth attempts
       bantime: {{RACK_ATTACK_BANTIME}}
 
+  gitlab_kas:
+      enabled: {{GITLAB_KAS_ENABLED}}
+      # File that contains the secret key for verifying access for gitlab-kas.
+      # Default is '.gitlab_kas_secret' relative to Rails.root (i.e. root of the GitLab app).
+      secret_file: {{GITLAB_KAS_SECRET}} # /home/git/gitlab/.gitlab_kas_secret
+
+      # The URL to the external KAS API (used by the Kubernetes agents)
+      external_url: {{GITLAB_KAS_EXTERNAL}} # wss://kas.example.com
+  
+      # The URL to the internal KAS API (used by the GitLab backend)
+      internal_url: {{GITLAB_KAS_INTERNAL}} # grpc://localhost:8153
+  
+      # The URL to the Kubernetes API proxy (used by GitLab users)
+      external_k8s_proxy_url: {{GITLAB_KAS_PROXY}} # https://localhost:8154 # default: nil
+
+
 development:
   <<: *base
 
