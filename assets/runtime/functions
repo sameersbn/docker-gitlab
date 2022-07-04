@@ -363,6 +363,17 @@ gitlab_configure_monitoring() {
     GITLAB_MONITORING_SIDEKIQ_EXPORTER_PORT
 }
 
+gitlab_configure_gitlab_kas() {
+  echo "Configuring gitlab::KAS..."
+
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_KAS_ENABLED \
+    GITLAB_KAS_SECRET \
+    GITLAB_KAS_EXTERNAL \
+    GITLAB_KAS_INTERNAL \
+    GITLAB_KAS_PROXY
+}
+
 gitlab_configure_gitlab_workhorse() {
   echo "Configuring gitlab::gitlab-workhorse..."
   update_template /etc/supervisor/conf.d/gitlab-workhorse.conf \
@@ -2041,6 +2052,7 @@ configure_gitlab() {
   gitlab_configure_pages
   gitlab_configure_sentry
   generate_healthcheck_script
+  gitlab_configure_gitlab_kas
   gitlab_configure_content_security_policy
 
   # remove stale gitlab.socket
