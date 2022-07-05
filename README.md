@@ -54,6 +54,7 @@
     - [Piwik](#piwik)
     - [Feature flags](#feature-flags)
     - [Exposing ssh port in dockerized gitlab-ce](docs/exposing-ssh-port.md)
+    - [Gitlab KAS](#Gitlab KAS)
     - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
     - [Creating Backups](#creating-backups)
@@ -913,6 +914,16 @@ Configuring gitlab::feature_flags...
 - git_push_create_all_pipelines : on
 ...
 ````
+
+#### Gitlab KAS
+
+Basic Gitlab KAS Settings 
+
+- `GITLAB_KAS_ENABLED=${GITLAB_KAS_ENABLED:-false}`
+- `GITLAB_KAS_SECRET=${GITLAB_INSTALL_DIR}/.gitlab_kas_secret}`
+- `GITLAB_KAS_EXTERNAL="wss://kas.example.com"}`
+- `GITLAB_KAS_INTERNAL="grpc://localhost:8153"}`
+- `GITLAB_KAS_PROXY=`
 
 #### Available Configuration Parameters
 
