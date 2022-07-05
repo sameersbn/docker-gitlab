@@ -55,6 +55,7 @@
     - [Piwik](#piwik)
     - [Feature flags](#feature-flags)
     - [Exposing ssh port in dockerized gitlab-ce](docs/exposing-ssh-port.md)
+    - [Gitlab KAS](#gitlab-kas)
     - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
     - [Creating Backups](#creating-backups)
@@ -935,6 +936,14 @@ Configuring gitlab::feature_flags...
 ...
 ````
 
+#### Gitlab KAS
+
+GitLab agent server for Kubernetes (KAS) is disabled by default, but you can enable it by setting configuration parameter [`GITLAB_KAS_ENABLED`](#GITLAB_KAS_ENABLED) to true.  
+By default, built-in `gitlab-kas` is used. But you can use an external installation of KAS by setting internal URL for the GItLab backend. Corresponding configuration parameter is [`GITLAB_KAS_INTERNAL`](#GITLAB_KAS_INTERNAL). 
+You can specify user-facing URL by setting [`GITLAB_KAS_EXTERNAL`](#GITLAB_KAS_EXTERNAL). If you set up proxy URL, use `GITLAB_KAS_PROXY`.
+
+See official documentation : https://docs.gitlab.com/ee/administration/clusters/kas.html
+
 #### Available Configuration Parameters
 
 *Please refer the docker run command options for the `--env-file` flag where you can specify all required environment variables in a single file. This will save you from writing a potentially long docker run command. Alternatively you can use docker-compose. docker-compose users and Docker Swarm mode users can also use the [secrets and config file options](#docker-secrets-and-configs)*
@@ -1264,6 +1273,26 @@ Cron notation for the GitLab admin email worker. Defaults to `'0 0 * * 0'`
 ##### `GITLAB_PERSONAL_ACCESS_TOKEN_EXPIRING_WORKER_CRON`
 
 Cron notation for the GitLab personal access tokens expiring worker. Defaults to `'0 1 * * *'`
+
+##### `GITLAB_KAS_ENABLED`
+
+Enable/Disable GitLab agent server for Kubernetes (KAS). See details on [official documentation](https://docs.gitlab.com/ee/administration/clusters/kas.html). Defaults to `false`
+
+##### `GITLAB_KAS_SECRET`
+
+File that contains the secret key for verifying access for GitLab KAS. Defaults to `${GITLAB_INSTALL_DIR}/.gitlab_kas_secret`
+
+##### `GITLAB_KAS_EXTERNAL`
+
+User-facing URL for the in-cluster agent. Defaults to `"wss://kas.example.com"`
+
+##### `GITLAB_KAS_INTERNAL`
+
+Internal URL for the GitLab backend. Defaults to `"grpc://localhost:8153"`
+
+##### `GITLAB_KAS_PROXY`
+
+The URL to the Kubernetes API proxy (used by GitLab users). No default.
 
 ##### `GITLAB_LFS_ENABLED`
 
