@@ -14,6 +14,22 @@ RUBY_SRC_URL=https://cache.ruby-lang.org/pub/ruby/${RUBY_VERSION%.*}/ruby-${RUBY
 
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
+# check system platform
+# TODO: cover as many variations as possible (depending on the platform supported by golang)
+case "$(uname -m)" in
+  "x86_64")
+    PLATFORM_NAME="amd64"
+    ;;
+  "aarch64")
+    PLATFORM_NAME="arm64"
+    ;;
+  *)
+    echo "The platform not supported ($(uname -a))"
+    exit 1
+esac
+
+GOLANG_ARCHIVE="go${GOLANG_VERSION}.linux-${PLATFORM_NAME}.tar.gz"
+
 GOROOT=/tmp/go
 PATH=${GOROOT}/bin:$PATH
 
@@ -97,9 +113,9 @@ BUNDLER_VERSION="$(grep "BUNDLED WITH" ${GITLAB_INSTALL_DIR}/Gemfile.lock -A 1 |
 gem install bundler:"${BUNDLER_VERSION}"
 
 # download golang
-echo "Downloading Go ${GOLANG_VERSION}..."
-wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
-tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
+echo "Downloading Go ${GOLANG_VERSION} for ${PLATFORM_NAME}..."
+wget -cnv https://storage.googleapis.com/golang/${GOLANG_ARCHIVE} -P ${GITLAB_BUILD_DIR}/
+tar -xf ${GITLAB_BUILD_DIR}/${GOLANG_ARCHIVE} -C /tmp/
 
 # install gitlab-shell
 echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
@@ -164,7 +180,7 @@ rm -rf ${GITLAB_GITALY_BUILD_DIR}
 
 # remove go
 go clean --modcache
-rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz ${GOROOT}
+rm -rf ${GITLAB_BUILD_DIR:?}/${GOLANG_ARCHIVE} ${GOROOT}
 
 # remove HSTS config from the default headers, we configure it in nginx
 exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
