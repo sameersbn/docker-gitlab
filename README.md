@@ -1247,6 +1247,27 @@ Default Google key file. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_JSO
 
 Cron notation for the GitLab pipeline schedule worker. Defaults to `'19 * * * *'`
 
++##### `GITLAB_KAS_ENABLED`
++
++Enable/Disable GitLab agent server for Kubernetes (KAS). See details on [official documentation](https://docs.gitlab.com/ee/administration/clusters/kas.html). Defaults to `false`
++
++##### `GITLAB_KAS_SECRET`
++
++File that contains the secret key for verifying access for GitLab KAS. Defaults to `${GITLAB_INSTALL_DIR}/.gitlab_kas_secret`
++
++##### `GITLAB_KAS_EXTERNAL`
++
++User-facing URL for the in-cluster agent. Defaults to `"wss://kas.example.com"`
++
++##### `GITLAB_KAS_INTERNAL`
++
++Internal URL for the GitLab backend. Defaults to `"grpc://localhost:8153"`
++
++##### `GITLAB_KAS_PROXY`
++
++The URL to the Kubernetes API proxy (used by GitLab users). No default.
++
+
 ##### `GITLAB_LFS_ENABLED`
 
 Enable/Disable Git LFS support. Defaults to `true`.
