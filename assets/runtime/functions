@@ -406,6 +406,10 @@ gitlab_configure_mailroom() {
       -e "/{{IMAP_STARTTLS}}/d" \
       -e "/{{IMAP_MAILBOX}}/d" \
       -e "/{{IMAP_TIMEOUT}}/d" \
+      -e "/{{IMAP_METHOD}}/d" \
+      -e "/{{IMAP_TENANT_ID}}/d" \
+      -e "/{{IMAP_CLIENT_ID}}/d" \
+      -e "/{{IMAP_CLIENT_SECRET}}/d" \
       ${GITLAB_CONFIG}
   fi
 
