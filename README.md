@@ -1873,19 +1873,19 @@ The name of the mailbox where incoming mail will end up. Defaults to `inbox`.
 
 ##### `IMAP_METHOD`
 
-Method blank or microsoft_graph
+If you want to use Microsoft Graph API, set to `microsoft_graph`. No default
 
 ##### `IMAP_TENANT_ID`
 
-Azure AD Tenant ID
+Azure AD Tenant ID. No default
 
 ##### `IMAP_CLIENT_ID`
 
-Azure AD App Client ID
+Azure AD App Client ID. No default
 
 ##### `IMAP_CLIENT_SECRET`
 
-Azure AD App Client Secret
+Azure AD App Client Secret. No default
 
 ##### `LDAP_ENABLED`
 
