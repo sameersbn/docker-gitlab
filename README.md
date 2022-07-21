@@ -409,6 +409,7 @@ docker run --name gitlab -d \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
     sameersbn/gitlab:15.1.2
 ```
+IMAP [Microsoft Graph](https://docs.gitlab.com/ee/administration/incoming_email.html#microsoft-graph)
 
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of IMAP parameters that can be specified.
 
@@ -1869,6 +1870,22 @@ Enable STARTSSL. Defaults to `false`.
 ##### `IMAP_MAILBOX`
 
 The name of the mailbox where incoming mail will end up. Defaults to `inbox`.
+
+##### `IMAP_METHOD`
+
+Method blank or microsoft_graph
+
+##### `IMAP_TENANT_ID`
+
+Azure AD Tenant ID
+
+##### `IMAP_CLIENT_ID`
+
+Azure AD App Client ID
+
+##### `IMAP_CLIENT_SECRET`
+
+Azure AD App Client Secret
 
 ##### `LDAP_ENABLED`
 
