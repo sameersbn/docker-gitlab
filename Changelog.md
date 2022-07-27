@@ -6,6 +6,8 @@ This file only reflects the changes that are made in this image. Please refer to
 
 - gitlab: upgrade CE to v15.2.0
 - gitaly: upgrade to v15.2.0
+- gitlab-shell: upgrade to v14.9.0
+- gitlab-pages: upgrade to v1.61.0
 
 **15.1.3**
 
