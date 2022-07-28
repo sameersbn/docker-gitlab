@@ -8,6 +8,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - gitaly: upgrade to v15.2.0
 - gitlab-shell: upgrade to v14.9.0
 - gitlab-pages: upgrade to v1.61.0
+- golang: upgrade to v1.17.12
 
 **15.1.3**
 
