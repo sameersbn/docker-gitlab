@@ -42,13 +42,19 @@ You are kindly invited to provide contributions.
 
 ### Version-specific instructions for upgrades
 
-Please consider the version specific upgrading instructions for [GitLab CE 15.0.x](https://docs.gitlab.com/ee/update/#1500) and [GitLab CE 15.1.x](https://docs.gitlab.com/ee/update/#1510)
+Please consider the version specific upgrading instructions for 
+* [GitLab CE 15.0.x](https://docs.gitlab.com/ee/update/#1500),
+* [GitLab CE 15.1.x](https://docs.gitlab.com/ee/update/#1510), and
+* [GitLab CE 15.1.x](https://docs.gitlab.com/ee/update/#1520):
 
 * Elasticsearch 6.8 is no longer supported. Before you upgrade to GitLab 15.0, update Elasticsearch to any 7.x version.
 * If you run external PostgreSQL, particularly AWS RDS, check you have a PostgreSQL bug fix to avoid the database crashing.
 * The use of encrypted S3 buckets with storage-specific configuration is no longer supported after removing support for using background_upload.
 * The certificate-based Kubernetes integration (DEPRECATED) is disabled by default, but you can be re-enable it through the certificate_based_clusters feature flag until GitLab 16.0.
 * In GitLab 15.1.0, we are switching Rails ActiveSupport::Digest to use SHA256 instead of MD5. This affects ETag key generation for resources such as raw Snippet file downloads. In order to ensure consistent ETag key generation across multiple web nodes when upgrading, all servers must first be upgraded to 15.1.Z before upgrading to 15.2.0 or later.
+* GitLab installations that have multiple web nodes should be upgraded to 15.1 before upgrading to 15.2 (and later) due to a configuration change in Rails that can result in inconsistent ETag key generation.
+* Some Sidekiq workers were renamed in this release. To avoid any disruption, run [the Rake tasks to migrate any pending jobs](https://docs.gitlab.com/ee/raketasks/sidekiq_job_migration.html#future-jobs) before starting the upgrade to GitLab 15.2.0.
+
 
 ## Contributing
 
