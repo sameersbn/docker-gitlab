@@ -689,6 +689,8 @@ Once you have the Client ID, Client secret and Tenant ID generated, configure th
 
 For example, if your Client ID is `xxx`, the Client secret is `yyy` and the Tenant ID is `zzz`, then adding `--env 'OAUTH_AZURE_API_KEY=xxx' --env 'OAUTH_AZURE_API_SECRET=yyy' --env 'OAUTH_AZURE_TENANT_ID=zzz'` to the docker run command enables support for Microsoft Azure OAuth.
 
+Also you can configure v2 endpoint (`azure_activedirectory_v2`) by using `OAUTH_AZURE_ACTIVEDIRECTORY_V2_CLIENT_ID`, `OAUTH_AZURE_ACTIVEDIRECTORY_V2_CLIENT_SECRET` and `OAUTH_AZURE_ACTIVEDIRECTORY_V2_TENANT_ID` environment variables. Optionally you can change label of login button using the `OAUTH_AZURE_ACTIVEDIRECTORY_V2_LABEL`.
+
 ##### Generic OAuth2
 
 To enable the Generic OAuth2 provider, you must register your application with your provider. You also need to confirm OAuth2 provider app's ID and secret, the client options and the user's response structure.
@@ -2193,6 +2195,22 @@ Azure Client secret. No defaults.
 ##### `OAUTH_AZURE_TENANT_ID`
 
 Azure Tenant ID. No defaults.
+
+#### `OAUTH_AZURE_ACTIVEDIRECTORY_V2_CLIENT_ID`
+
+Client ID for oauth provider `azure_activedirectory_v2`. If not set, corresponding oauth provider configuration will be removed from `gitlab.yml` during container startup. No defaults.
+
+#### `OAUTH_AZURE_ACTIVEDIRECTORY_V2_CLIENT_SECRET`
+
+Client secret for oauth provider `azure_activedirectory_v2`. If not set, corresponding oauth provider configuration will be removed from `gitlab.yml` during container startup. No defaults.
+
+#### `OAUTH_AZURE_ACTIVEDIRECTORY_V2_TENANT_ID`
+
+Tenant ID for oauth provider `azure_activedirectory_v2`. If not set, corresponding oauth provider configuration will be removed from `gitlab.yml` during container startup. No defaults.
+
+#### `OAUTH_AZURE_ACTIVEDIRECTORY_V2_LABEL`
+
+Optional label for login button for `azure_activedirectory_v2`. Defaults to `Azure AD v2`
 
 ##### `OAUTH2_GENERIC_APP_ID`
 
