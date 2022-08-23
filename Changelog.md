@@ -2,6 +2,14 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**15.3.0**
+
+- gitlab: upgrade CE to v15.3.0
+- gitaly: upgrade to v15.3.0
+- gitlab-shell: upgrade to v14.10.0
+- gitlab-pages: upgrade to v1.62.0
+- ubuntu: upgrade to focal-20220801
+
 **15.2.2**
 
 - gitlab: upgrade CE to v15.2.2
