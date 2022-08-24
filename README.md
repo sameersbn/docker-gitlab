@@ -54,7 +54,7 @@
     - [Piwik](#piwik)
     - [Feature flags](#feature-flags)
     - [Exposing ssh port in dockerized gitlab-ce](docs/exposing-ssh-port.md)
-    - [Gitlab KAS](#Gitlab-KAS)
+    - [Gitlab KAS](#gitlab-kas)
     - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
     - [Creating Backups](#creating-backups)
@@ -917,13 +917,11 @@ Configuring gitlab::feature_flags...
 
 #### Gitlab KAS
 
-Basic Gitlab KAS Settings 
+GitLab agent server for Kubernetes (KAS) is disabled by default, but you can enable it by setting configuration parameter [`GITLAB_KAS_ENABLED`](#GITLAB_KAS_ENABLED) to true.  
+By default, built-in `gitlab-kas` is used. But you can use an external installation of KAS by setting internal URL for the GItLab backend. Corresponding configuration parameter is [`GITLAB_KAS_INTERNAL`](#GITLAB_KAS_INTERNAL). 
+You can specify user-facing URL by setting [`GITLAB_KAS_EXTERNAL`](#GITLAB_KAS_EXTERNAL). If you set up proxy URL, use `GITLAB_KAS_PROXY`.
 
-- `GITLAB_KAS_ENABLED=${GITLAB_KAS_ENABLED:-false}`
-- `GITLAB_KAS_SECRET=${GITLAB_INSTALL_DIR}/.gitlab_kas_secret}`
-- `GITLAB_KAS_EXTERNAL="wss://kas.example.com"}`
-- `GITLAB_KAS_INTERNAL="grpc://localhost:8153"}`
-- `GITLAB_KAS_PROXY=`
+See official documentation : https://docs.gitlab.com/ee/administration/clusters/kas.html
 
 #### Available Configuration Parameters
 
