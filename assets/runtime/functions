@@ -372,6 +372,24 @@ gitlab_configure_gitlab_kas() {
     GITLAB_KAS_EXTERNAL \
     GITLAB_KAS_INTERNAL \
     GITLAB_KAS_PROXY
+
+  update_template ${GITLAB_KAS_CONFIG} \
+    GITLAB_RELATIVE_URL_ROOT \
+    GITLAB_KAS_SECRET \
+    GITLAB_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE \
+    GITLAB_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE \
+    REDIS_HOST \
+    REDIS_PORT \
+    GITLAB_KAS_REDIS_PASSWORD_FILE
+  
+  if [[ ! -f ${GITLAB_KAS_REDIS_PASSWORD_FILE} ]]; then
+    exec_as_git touch "${GITLAB_KAS_REDIS_PASSWORD_FILE}"
+    exec_as_git chmod 600 ${GITLAB_KAS_REDIS_PASSWORD_FILE}
+    # TODO: Once this image supports redis password authentication, write the password to a file here
+  fi
+
+  # enable/disable startup of gitlab-kas : set autostart / autorestart entry in supervisor config using GITLAB_KAS_ENABLED
+  update_template /etc/supervisor/conf.d/gitlab-kas.conf GITLAB_KAS_ENABLED
 }
 
 gitlab_configure_gitlab_workhorse() {
@@ -941,6 +959,23 @@ gitlab_configure_secrets() {
   if [[ ! -f "${pages_secret}" ]]; then
     exec_as_git openssl rand -base64 -out "${pages_secret}" 32
     chmod 600 "${pages_secret}"
+  fi
+
+  if [[ ! -f "${GITLAB_KAS_SECRET}" ]]; then
+    exec_as_git openssl rand -base64 -out "${GITLAB_KAS_SECRET}" 32
+    chmod 600 ${GITALB_KAS_SECRET}
+  fi
+
+  if [[ ! -f "${GITLAB_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE}" ]]; then
+    exec_as_git openssl rand -base64 -out "${GITLAB_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE}" 32
+    chmod 600 ${GITLAB_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE}
+  fi
+  
+  # KAS secret for private_api is not required so this can be empty string,
+  # but empty string is not match to "is file" condition so we don't care the case
+  if [[ ! -f "${GITLAB_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE}" ]]; then
+    exec_as_git openssl rand -base64 -out "${GITLAB_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE}" 32
+    chmod 600 ${GITLAB_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE}
   fi
 }
 
@@ -1991,6 +2026,10 @@ install_configuration_templates() {
   fi
 
   install_template ${GITLAB_USER}: gitaly/config.toml ${GITLAB_GITALY_CONFIG}
+  
+  if [[ ${GITLAB_KAS_ENABLED} == true ]]; then
+    install_template ${GITLAB_USER}: gitlab-agent/gitlab-kas_config.yaml ${GITLAB_KAS_CONFIG} 0640
+  fi
 }
 
 configure_gitlab() {
