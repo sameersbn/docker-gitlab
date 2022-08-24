@@ -5,10 +5,12 @@ GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-foss.git
 GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/-/archive/v${GITLAB_SHELL_VERSION}/gitlab-shell-v${GITLAB_SHELL_VERSION}.tar.bz2
 GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages.git
 GITLAB_GITALY_URL=https://gitlab.com/gitlab-org/gitaly.git
+GITLAB_AGENT_URL=https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent.git
 
 GITLAB_WORKHORSE_BUILD_DIR=${GITLAB_INSTALL_DIR}/workhorse
 GITLAB_PAGES_BUILD_DIR=/tmp/gitlab-pages
 GITLAB_GITALY_BUILD_DIR=/tmp/gitaly
+GITLAB_AGENT_BUILD_DIR=/tmp/gitlab-agent
 
 RUBY_SRC_URL=https://cache.ruby-lang.org/pub/ruby/${RUBY_VERSION%.*}/ruby-${RUBY_VERSION}.tar.gz
 
@@ -170,6 +172,18 @@ make -C ${GITLAB_GITALY_BUILD_DIR} git GIT_PREFIX=/usr/local
 
 # clean up
 rm -rf ${GITLAB_GITALY_BUILD_DIR}
+
+# download gitlab-agent (KAS)
+echo "Downloading gitlab-agent v.${GITLAB_AGENT_VERSION}..."
+git clone -q -b v${GITLAB_AGENT_VERSION} --depth 1 ${GITLAB_AGENT_URL} ${GITLAB_AGENT_BUILD_DIR}
+
+# install gitlab-agent (KAS)
+mkdir -p "${GITLAB_AGENT_INSTALL_DIR}"
+make -C ${GITLAB_AGENT_BUILD_DIR} kas TARGET_DIRECTORY=/usr/local/bin
+chown -R ${GITLAB_USER}: ${GITLAB_AGENT_INSTALL_DIR}
+
+# clean up
+rm -rf ${GITLAB_AGENT_BUILD_DIR}
 
 # remove go
 go clean --modcache
@@ -405,6 +419,20 @@ environment=HOME=${GITLAB_HOME}
 command=/usr/local/bin/gitaly ${GITLAB_GITALY_INSTALL_DIR}/config.toml
 user=git
 autostart=true
+autorestart=true
+stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+EOF
+
+# configure superisord to start gitlab-agent (KAS)
+cat > /etc/supervisor/conf.d/gitlab-kas.conf <<EOF
+[program:gitlab_kas]
+priority=5
+directory=${GITLAB_AGENT_INSTALL_DIR}
+environment=HOME=${GITLAB_HOME}
+command=/usr/local/bin/kas --configuration-file="${GITLAB_AGENT_INSTALL_DIR}/gitlab-kas_config.yaml"
+user=git
+autostart={{GITLAB_AGENT_BUILTIN_KAS_ENABLED}}
 autorestart=true
 stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
