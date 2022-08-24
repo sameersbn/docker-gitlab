@@ -29,6 +29,7 @@ GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/conf.d/gitlab-registry.conf"
 GITLAB_PAGES_NGINX_CONFIG="/etc/nginx/conf.d/gitlab-pages.conf"
 GITLAB_PAGES_CONFIG="${GITLAB_INSTALL_DIR}/gitlab-pages-config"
 GITLAB_GITALY_CONFIG="${GITLAB_GITALY_INSTALL_DIR}/config.toml"
+GITLAB_KAS_CONFIG="${GITLAB_AGENT_INSTALL_DIR}/gitlab-kas_config.yaml"
 
 # Compares two version strings `a` and `b`
 # Returns
@@ -373,23 +374,24 @@ gitlab_configure_gitlab_kas() {
     GITLAB_KAS_INTERNAL \
     GITLAB_KAS_PROXY
 
+  printf "Configuring gitlab-agent::KAS (enabled: %s)\n" "${GITLAB_AGENT_BUILTIN_KAS_ENABLED}"
   update_template ${GITLAB_KAS_CONFIG} \
     GITLAB_RELATIVE_URL_ROOT \
     GITLAB_KAS_SECRET \
-    GITLAB_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE \
-    GITLAB_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE \
+    GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE \
+    GITLAB_AGENT_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE \
     REDIS_HOST \
     REDIS_PORT \
-    GITLAB_KAS_REDIS_PASSWORD_FILE
+    GITLAB_AGENT_KAS_REDIS_PASSWORD_FILE
   
-  if [[ ! -f ${GITLAB_KAS_REDIS_PASSWORD_FILE} ]]; then
-    exec_as_git touch "${GITLAB_KAS_REDIS_PASSWORD_FILE}"
-    exec_as_git chmod 600 ${GITLAB_KAS_REDIS_PASSWORD_FILE}
+  if [[ -n ${GITLAB_AGENT_KAS_REDIS_PASSWORD_FILE} ]]; then
+    exec_as_git touch "${GITLAB_AGENT_KAS_REDIS_PASSWORD_FILE}"
+    exec_as_git chmod 600 "${GITLAB_AGENT_KAS_REDIS_PASSWORD_FILE}"
     # TODO: Once this image supports redis password authentication, write the password to a file here
   fi
 
-  # enable/disable startup of gitlab-kas : set autostart / autorestart entry in supervisor config using GITLAB_KAS_ENABLED
-  update_template /etc/supervisor/conf.d/gitlab-kas.conf GITLAB_KAS_ENABLED
+  # enable/disable startup of gitlab-kas : set autostart entry in supervisor config using GITLAB_AGENT_BUILTIN_KAS_ENABLED
+  update_template /etc/supervisor/conf.d/gitlab-kas.conf GITLAB_AGENT_BUILTIN_KAS_ENABLED
 }
 
 gitlab_configure_gitlab_workhorse() {
@@ -966,16 +968,16 @@ gitlab_configure_secrets() {
     chmod 600 ${GITALB_KAS_SECRET}
   fi
 
-  if [[ ! -f "${GITLAB_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE}" ]]; then
-    exec_as_git openssl rand -base64 -out "${GITLAB_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE}" 32
-    chmod 600 ${GITLAB_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE}
+  if [[ ! -f "${GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE}" ]]; then
+    exec_as_git openssl rand -base64 -out "${GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE}" 32
+    chmod 600 ${GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE}
   fi
   
   # KAS secret for private_api is not required so this can be empty string,
   # but empty string is not match to "is file" condition so we don't care the case
-  if [[ ! -f "${GITLAB_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE}" ]]; then
-    exec_as_git openssl rand -base64 -out "${GITLAB_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE}" 32
-    chmod 600 ${GITLAB_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE}
+  if [[ ! -f "${GITLAB_AGENT_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE}" ]]; then
+    exec_as_git openssl rand -base64 -out "${GITLAB_AGENT_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE}" 32
+    chmod 600 ${GITLAB_AGENT_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE}
   fi
 }
 
@@ -2027,7 +2029,7 @@ install_configuration_templates() {
 
   install_template ${GITLAB_USER}: gitaly/config.toml ${GITLAB_GITALY_CONFIG}
   
-  if [[ ${GITLAB_KAS_ENABLED} == true ]]; then
+  if [[ ${GITLAB_AGENT_BUILTIN_KAS_ENABLED} == true ]]; then
     install_template ${GITLAB_USER}: gitlab-agent/gitlab-kas_config.yaml ${GITLAB_KAS_CONFIG} 0640
   fi
 }
@@ -2334,6 +2336,7 @@ execute_raketask() {
     /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
     supervisorctl stop gitlab_extensions:*
     supervisorctl stop gitlab:*
+    supervisorctl stop gitlab_kas
     interactive=true
     for arg in $@
     do
