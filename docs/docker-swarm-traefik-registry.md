@@ -151,6 +151,7 @@ You can copy it and set it in the file like:
 - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
 - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alphanumeric-string
 - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alphanumeric-string
+- GITLAB_SECRETS_ENCRYPTED_SETTINGS_KEY_BASE=long-and-random-alphanumeric-string
 ```
 
 There are several other settings that you might want to configure, like email accounts for notifications, SMTP credentials to send emails, etc.
