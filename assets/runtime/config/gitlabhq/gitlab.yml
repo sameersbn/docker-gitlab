@@ -1023,6 +1023,12 @@ production: &base
             client_id: '{{OAUTH_AZURE_API_KEY}}',
             client_secret: '{{OAUTH_AZURE_API_SECRET}}',
             tenant_id: '{{OAUTH_AZURE_TENANT_ID}}' } }
+      - { name: 'azure_activedirectory_v2',
+          label: '{{OAUTH_AZURE_ACTIVEDIRECTORY_V2_LABEL}}',
+          args: {
+            client_id: '{{OAUTH_AZURE_ACTIVEDIRECTORY_V2_CLIENT_ID}}',
+            client_secret: '{{OAUTH_AZURE_ACTIVEDIRECTORY_V2_CLIENT_SECRET}}',
+            tenant_id: '{{OAUTH_AZURE_ACTIVEDIRECTORY_V2_TENANT_ID}}' } }
 
     # SSO maximum session duration in seconds. Defaults to CAS default of 8 hours.
     # cas3:
