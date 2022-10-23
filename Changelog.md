@@ -6,6 +6,7 @@ This file only reflects the changes that are made in this image. Please refer to
 
 - gitlab: upgrade CE to v15.5.0
 - gitaly: upgrade to v15.5.0
+- gitlab-shell: upgrade to v14.12.0
 
 
 **15.4.3**
