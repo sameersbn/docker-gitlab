@@ -1843,7 +1843,6 @@ configure_gitlab() {
     GITLAB_SSH_HOST \
     GITLAB_SSH_LISTEN_PORT \
     GITLAB_SSH_PORT \
-    GITLAB_SIGNUP_ENABLED \
     GITLAB_IMPERSONATION_ENABLED \
     GITLAB_PROJECTS_LIMIT \
     GITLAB_USERNAME_CHANGE \
@@ -1886,6 +1885,15 @@ configure_gitlab() {
   gitlab_configure_sentry
   generate_healthcheck_script
   gitlab_configure_content_security_policy
+
+  # some configurations are stored in database
+  ## GITLAB_SIGNUP_ENABLED : `signup_enabled` in `application_settings` table
+  ## avoid injection: set to false unless explicitly specified to be true
+  if [[ "${GITLAB_SIGNUP_ENABLED}" != true ]]; then
+    GITLAB_SIGNUP_ENABLED=false
+  fi
+  printf "Configurating application_settings.signup_enabled=%s :" ${GITLAB_SIGNUP_ENABLED}
+  PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d "${DB_NAME}" -Atw -c "UPDATE application_settings SET signup_enabled = ${GITLAB_SIGNUP_ENABLED}"
 
   # remove stale gitlab.socket
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket

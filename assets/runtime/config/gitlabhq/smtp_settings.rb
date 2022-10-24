@@ -9,6 +9,7 @@
 
 if Rails.env.production?
   Rails.application.config.action_mailer.delivery_method = :smtp
+  secrets = Gitlab::Email::SmtpConfig.secrets
 
   ActionMailer::Base.delivery_method = :smtp
   ActionMailer::Base.smtp_settings = {
@@ -16,6 +17,10 @@ if Rails.env.production?
     port: {{SMTP_PORT}},
     user_name: "{{SMTP_USER}}",
     password: "{{SMTP_PASS}}",
+    ## If you are using encrypted smtp credentials then you should instead use the secrets user_name/password
+    ## See: https://docs.gitlab.com/ee/administration/raketasks/smtp.html#secrets
+    # user_name: secrets.username,
+    # password: secrets.password,
     domain: "{{SMTP_DOMAIN}}",
     authentication: "{{SMTP_AUTHENTICATION}}",
     enable_starttls_auto: {{SMTP_STARTTLS}},
@@ -34,6 +39,7 @@ end
 #
 # if Rails.env.production?
 #   Rails.application.config.action_mailer.delivery_method = :smtp_pool
+#   secrets = Gitlab::Email::SmtpConfig.secrets
 #
 #   ActionMailer::Base.delivery_method = :smtp_pool
 #   ActionMailer::Base.smtp_pool_settings = {
@@ -43,6 +49,10 @@ end
 #       port: 465,
 #       user_name: "smtp",
 #       password: "123456",
+#       ## If you are using encrypted smtp credentials then you should instead use the secrets user_name/password
+#       ## See: https://docs.gitlab.com/ee/administration/raketasks/smtp.html#secrets
+#       # user_name: secrets.username,
+#       # password: secrets.password,
 #       domain: "gitlab.company.com",
 #       authentication: :login,
 #       enable_starttls_auto: true,
