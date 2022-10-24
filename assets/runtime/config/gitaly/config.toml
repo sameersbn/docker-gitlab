@@ -7,6 +7,11 @@ socket_path = "{{GITALY_SOCKET_PATH}}"
 # The directory where Gitaly's executables are stored
 bin_dir = "/usr/local/bin/"
 
+# # Optional: The directory where Gitaly can create all files required to
+# # properly operate at runtime. If not set, Gitaly will create a directory in
+# # the global temporary directory. This directory must exist.
+# runtime_dir = "/home/git/gitaly/run"
+
 # # Optional: listen on a TCP socket. This is insecure (no authentication)
 # listen_addr = "localhost:9999"
 # tls_listen_addr = "localhost:8888"
