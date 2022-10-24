@@ -43,10 +43,6 @@ secret_file: "{{GITLAB_SHELL_INSTALL_DIR}}/.gitlab_shell_secret"
 # file will not be read.
 # secret: "supersecret"
 
-# Parent directory for global custom hook directories (pre-receive.d, update.d, post-receive.d)
-# Default is hooks in the gitlab-shell directory.
-custom_hooks_dir: "{{GITLAB_SHELL_INSTALL_DIR}}/hooks"
-
 # Log file.
 # Default is gitlab-shell.log in the root directory.
 log_file: "{{GITLAB_LOG_DIR}}/gitlab-shell/gitlab-shell.log"

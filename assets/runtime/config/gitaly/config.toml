@@ -91,6 +91,10 @@ dir = "{{GITLAB_GITALY_INSTALL_DIR}}/ruby"
 # The directory where gitlab-shell is installed
 dir = "{{GITLAB_SHELL_INSTALL_DIR}}"
 
+[hooks]
+custom_hooks_dir = "{{GITLAB_SHELL_INSTALL_DIR}}/hooks"
+
+
 # # You can adjust the concurrency of each RPC endpoint
 # [[concurrency]]
 # rpc = "/gitaly.RepositoryService/GarbageCollect"
