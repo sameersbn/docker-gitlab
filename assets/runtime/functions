@@ -990,8 +990,7 @@ gitlab_configure_rack_attack() {
 gitlab_configure_ci() {
   echo "Configuring gitlab::ci..."
   update_template ${GITLAB_CONFIG} \
-    GITLAB_NOTIFY_ON_BROKEN_BUILDS \
-    GITLAB_NOTIFY_PUSHER GITLAB_BUILDS_DIR
+    GITLAB_NOTIFY_ON_BROKEN_BUILDS
 }
 
 gitlab_configure_artifacts() {

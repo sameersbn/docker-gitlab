@@ -124,8 +124,6 @@ services:
     - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alphanumeric-string
     - GITLAB_ROOT_PASSWORD=
     - GITLAB_ROOT_EMAIL=
-    - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
-    - GITLAB_NOTIFY_PUSHER=false
     - GITLAB_EMAIL=notifications@example.com
     - GITLAB_EMAIL_REPLY_TO=noreply@example.com
     - GITLAB_INCOMING_EMAIL_ADDRESS=reply@example.com

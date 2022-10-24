@@ -930,14 +930,6 @@ Global custom hooks directory. Defaults to `/home/git/gitlab-shell/hooks`.
 
 Sets the timeout for webhooks. Defaults to `10` seconds.
 
-##### `GITLAB_NOTIFY_ON_BROKEN_BUILDS`
-
-Enable or disable broken build notification emails. Defaults to `true`
-
-##### `GITLAB_NOTIFY_PUSHER`
-
-Add pusher to recipients list of broken build notification emails. Defaults to `false`
-
 ##### `GITLAB_REPOS_DIR`
 
 The git repositories folder in the container. Defaults to `/home/git/data/repositories`
