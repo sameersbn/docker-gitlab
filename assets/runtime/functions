@@ -959,23 +959,23 @@ gitlab_configure_analytics_google() {
   fi
 }
 
-gitlab_configure_analytics_piwik() {
-  if [[ -n ${PIWIK_URL} && -n ${PIWIK_SITE_ID} ]]; then
-    echo "Configuring gitlab::analytics:piwik..."
+gitlab_configure_analytics_matomo() {
+  if [[ -n ${MATOMO_URL} && -n ${MATOMO_SITE_ID} ]]; then
+    echo "Configuring gitlab::analytics:matomo..."
     update_template ${GITLAB_CONFIG} \
-      PIWIK_URL \
-      PIWIK_SITE_ID
+      MATOMO_URL \
+      MATOMO_SITE_ID
   else
     exec_as_git sed -i \
-      -e "/{{PIWIK_URL}}/d" \
-      -e "/{{PIWIK_SITE_ID}}/d" \
+      -e "/{{MATOMO_URL}}/d" \
+      -e "/{{MATOMO_SITE_ID}}/d" \
       ${GITLAB_CONFIG}
   fi
 }
 
 gitlab_configure_analytics() {
   gitlab_configure_analytics_google
-  gitlab_configure_analytics_piwik
+  gitlab_configure_analytics_matomo
 }
 
 gitlab_configure_rack_attack() {

@@ -1251,9 +1251,9 @@ production: &base
     ## Google analytics. Uncomment if you want it
     google_analytics_id: '{{GOOGLE_ANALYTICS_ID}}'
 
-    ## Piwik analytics.
-    piwik_url: '{{PIWIK_URL}}'
-    piwik_site_id: '{{PIWIK_SITE_ID}}'
+    ## Matomo analytics.
+    matomo_url: '{{MATOMO_URL}}'
+    matomo_site_id: '{{MATOMO_SITE_ID}}'
 
   rack_attack:
     git_basic_auth:

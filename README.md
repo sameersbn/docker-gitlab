@@ -49,7 +49,7 @@
     - [Gitlab Pages](#gitlab-pages)
     - [External Issue Trackers](#external-issue-trackers)
     - [Host UID / GID Mapping](#host-uid--gid-mapping)
-    - [Piwik](#piwik)
+    - [Matomo](#matomo)
     - [Exposing ssh port in dockerized gitlab-ce](docs/exposing-ssh-port.md)
     - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
@@ -770,13 +770,15 @@ docker run --name gitlab -d [OPTIONS] \
     sameersbn/gitlab:15.5.0 app:sanitize
 ```
 
-#### Piwik
+#### Matomo
 
-If you want to monitor your gitlab instance with [Piwik](http://piwik.org/), there are two options to setup: `PIWIK_URL` and `PIWIK_SITE_ID`.
+If you want to monitor your gitlab instance with [Matomo](https://matomo.org/), there are two options to setup: `MATOMO_URL` and `MATOMO_SITE_ID`.
 These options should contain something like:
 
-- `PIWIK_URL=piwik.example.org`
-- `PIWIK_SITE_ID=42`
+- `MATOMO_URL=matomo.example.org`
+- `MATOMO_SITE_ID=42`
+
+[Piwik have been changed the name to Matomo on Jan 2018](https://matomo.org/blog/2018/01/piwik-is-now-matomo/). Legacy configuration parameter `PIWIK_URL` and `PIWIK_SITE_ID` still works as fallback for corresponding parameter.
 
 #### Available Configuration Parameters
 
@@ -2280,13 +2282,21 @@ Sets the gid for group `git` to the specified gid. Defaults to `USERMAP_UID` if 
 
 Google Analytics ID. No defaults.
 
+##### `MATOMO_URL`
+
+Sets the Matomo URL. No defaults.
+
 ##### `PIWIK_URL`
 
-Sets the Piwik URL. No defaults.
+Works as Matomo URL fallback only when `MATOMO_URL` is not set. No defaults.
+
+##### `MATOMO_SITE_ID`
+
+Sets the Matomo site ID. No defaults.
 
 ##### `PIWIK_SITE_ID`
 
-Sets the Piwik site ID. No defaults.
+Works as Matomo URL fallback only when `MATOMO_SITE_ID` is not set. No defaults.
 
 ##### `AWS_BACKUPS`
 
