@@ -72,6 +72,11 @@ tag 'gitlab-puma-worker'
 #
 worker_timeout {{PUMA_TIMEOUT}}
 
+# https://github.com/puma/puma/blob/master/5.0-Upgrade.md#lower-latency-better-throughput
+if defined?(wait_for_less_busy_worker)
+  wait_for_less_busy_worker ENV.fetch('PUMA_WAIT_FOR_LESS_BUSY_WORKER', 0.001).to_f
+end
+
 # Use json formatter
 require_relative "{{GITLAB_INSTALL_DIR}}/lib/gitlab/puma_logging/json_formatter"
 
