@@ -612,6 +612,10 @@ production: &base
     elastic_index_bulk_cron_worker:
       cron: "*/1 * * * *"
 
+    # Periodically prune stale runners from namespaces having opted-in.
+    ci_runners_stale_group_runners_prune_worker_cron:
+      cron: "30 * * * *"
+
   registry:
     enabled: {{GITLAB_REGISTRY_ENABLED}}
     host: {{GITLAB_REGISTRY_HOST}}
