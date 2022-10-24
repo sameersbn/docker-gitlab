@@ -266,8 +266,6 @@ production: &base
     object_store:
       enabled: {{GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED}}
       remote_directory: {{GITLAB_ARTIFACTS_OBJECT_STORE_REMOTE_DIRECTORY}} # The bucket name
-      direct_upload: {{GITLAB_ARTIFACTS_OBJECT_STORE_DIRECT_UPLOAD}} # Set to true to enable direct upload of Artifacts without the need of local shared storage.
-      background_upload: {{GITLAB_ARTIFACTS_OBJECT_STORE_BACKGROUND_UPLOAD}} # Temporary option to limit automatic upload (Default: true)
       proxy_download: {{GITLAB_ARTIFACTS_OBJECT_STORE_PROXY_DOWNLOAD}} # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
         provider: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_PROVIDER}} # Only AWS supported at the moment
@@ -296,7 +294,6 @@ production: &base
     # object_store:
     #   enabled: false
     #   remote_directory: external-diffs
-    #   background_upload: false
     #   proxy_download: false
     #   connection:
     #     provider: AWS
@@ -312,8 +309,6 @@ production: &base
     object_store:
       enabled: {{GITLAB_LFS_OBJECT_STORE_ENABLED}}
       remote_directory: {{GITLAB_LFS_OBJECT_STORE_REMOTE_DIRECTORY}} # Bucket name
-      direct_upload: {{GITLAB_LFS_OBJECT_STORE_DIRECT_UPLOAD}} # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
-      background_upload: {{GITLAB_LFS_OBJECT_STORE_BACKGROUND_UPLOAD}} # Temporary option to limit automatic upload (Default: true)
       proxy_download: {{GITLAB_LFS_OBJECT_STORE_PROXY_DOWNLOAD}} # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
         provider: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_PROVIDER}}
@@ -346,8 +341,6 @@ production: &base
     object_store:
       enabled: {{GITLAB_UPLOADS_OBJECT_STORE_ENABLED}}
       remote_directory: {{GITLAB_UPLOADS_OBJECT_STORE_REMOTE_DIRECTORY}} # Bucket name
-      direct_upload: {{GITLAB_UPLOADS_OBJECT_STORE_DIRECT_UPLOAD}} # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
-      background_upload: {{GITLAB_UPLOADS_OBJECT_STORE_BACKGROUND_UPLOAD}} # Temporary option to limit automatic upload (Default: true)
       proxy_download: {{GITLAB_UPLOADS_OBJECT_STORE_PROXY_DOWNLOAD}} # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
         provider: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_PROVIDER}}
@@ -374,8 +367,6 @@ production: &base
     object_store:
       enabled: {{GITLAB_PACKAGES_OBJECT_STORE_ENABLED}}
       remote_directory: {{GITLAB_PACKAGES_OBJECT_STORE_REMOTE_DIRECTORY}} # The bucket name
-      direct_upload: {{GITLAB_PACKAGES_OBJECT_STORE_DIRECT_UPLOAD}} # Set to true to enable direct upload of Packages without the need of local shared storage.
-      background_upload: {{GITLAB_PACKAGES_OBJECT_STORE_BACKGROUND_UPLOAD}} # Temporary option to limit automatic upload (Default: true)
       proxy_download: {{GITLAB_PACKAGES_OBJECT_STORE_PROXY_DOWNLOAD}} # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
         provider: {{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_PROVIDER}} # Only AWS supported at the moment
@@ -403,8 +394,6 @@ production: &base
     object_store:
       enabled: false
       remote_directory: dependency_proxy # The bucket name
-      # direct_upload: false # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
-      # background_upload: false # Temporary option to limit automatic upload (Default: true)
       # proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
         provider: AWS
@@ -1326,7 +1315,6 @@ test:
     object_store:
       enabled: false
       remote_directory: artifacts # The bucket name
-      background_upload: false
       connection:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID
