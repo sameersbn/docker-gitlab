@@ -27,6 +27,10 @@ http_settings:
 # File used as authorized_keys for gitlab user
 auth_file: "{{GITLAB_HOME}}/.ssh/authorized_keys"
 
+# SSL certificate dir where custom certificates can be placed
+# https://golang.org/pkg/crypto/x509/
+# ssl_cert_dir: /opt/gitlab/embedded/ssl/certs/
+
 # File that contains the secret key for verifying access to GitLab.
 # Default is .gitlab_shell_secret in the gitlab-shell directory.
 secret_file: "{{GITLAB_SHELL_INSTALL_DIR}}/.gitlab_shell_secret"
