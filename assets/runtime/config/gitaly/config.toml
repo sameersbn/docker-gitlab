@@ -38,6 +38,13 @@ bin_dir = "/usr/local/bin/"
 # bin_path = "/usr/bin/git"
 # catfile_cache_size = 100
 #
+# # Set this setting to `true` to start ignoring gitconfig files installed in
+# # the system. This includes both system-level (e.g. '/etc/gitconffig') and
+# # global-level (e.g. `$HOME/.gitconfig`) files. This setting will become the
+# # default with v16.0. If you intend to override Git configuration you can do
+# # so via `[[git.config]]`. The default value is `false`.
+# ignore_gitconfig = false
+#
 # [[git.config]]
 # key = fetch.fsckObjects
 # value = true
