@@ -73,6 +73,8 @@ production: &base
         worker_src: "{{GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_WORKER_SRC}}"
         report_uri: "{{GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_REPORT_URI}}"
 
+    allowed_hosts: []
+
     # Trusted Proxies
     # Customize if you have GitLab behind a reverse proxy which is running on a different machine.
     # Add the IP address for your reverse proxy to the list, otherwise users will appear signed in from that address.
