@@ -15,6 +15,10 @@ user: git
 # "http+unix://%2Fpath%2Fto%2Fsocket"
 gitlab_url: "http://localhost:8080{{GITLAB_RELATIVE_URL_ROOT}}"
 
+# When a http+unix:// is used in gitlab_url, this is the relative URL root to GitLab.
+# Not used if gitlab_url is http:// or https://.
+# gitlab_relative_url_root: "/"
+
 # See installation.md#using-https for additional HTTPS configuration details.
 http_settings:
 #  read_timeout: 300
