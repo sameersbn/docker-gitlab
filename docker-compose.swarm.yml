@@ -114,7 +114,6 @@ services:
     - GITLAB_TIMEZONE=Kolkata
 
     - GITLAB_HTTPS=true
-    - SSL_SELF_SIGNED=false
 
     - GITLAB_HOST=${GITLAB_HOST?Variable not set}
     - GITLAB_PORT=443

@@ -49,7 +49,6 @@ services:
     - REDIS_PORT=6379
 
     - GITLAB_HTTPS=false
-    - SSL_SELF_SIGNED=false
 
     - GITLAB_HOST=gitlab.example.com
     - GITLAB_PORT=80

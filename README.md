@@ -483,13 +483,14 @@ Great! we are now just one step away from having our application secured.
 
 ##### Enabling HTTPS support
 
-HTTPS support can be enabled by setting the `GITLAB_HTTPS` option to `true`. Additionally, when using self-signed SSL certificates you need to the set `SSL_SELF_SIGNED` option to `true` as well. Assuming we are using self-signed certificates
+HTTPS support can be enabled by setting the `GITLAB_HTTPS` option to `true`.  
+Since corresponding setting `self_signed_cert` was removed in the gitlab-shell 13.26.0 release, the option `SSL_SELF_SIGNED`, that was used to indicate to use a self-signed certificate, is not used anymore. You don't need to set this option even if you're using a self-signed certificate.
 
 ```bash
 docker run --name gitlab -d \
     --publish 10022:22 --publish 10080:80 --publish 10443:443 \
     --env 'GITLAB_SSH_PORT=10022' --env 'GITLAB_PORT=10443' \
-    --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
+    --env 'GITLAB_HTTPS=true' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
     sameersbn/gitlab:15.5.0
 ```
@@ -504,7 +505,7 @@ With `NGINX_HSTS_MAXAGE` you can configure that value. The default value is `315
 
 ```bash
 docker run --name gitlab -d \
- --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
+ --env 'GITLAB_HTTPS=true' \
  --env 'NGINX_HSTS_MAXAGE=2592000' \
  --volume /srv/docker/gitlab/gitlab:/home/git/data \
  sameersbn/gitlab:15.5.0
@@ -516,7 +517,7 @@ If you want to completely disable HSTS set `NGINX_HSTS_ENABLED` to `false`.
 
 Load balancers like nginx/haproxy/hipache talk to backend applications over plain http and as such the installation of ssl keys and certificates are not required and should **NOT** be installed in the container. The SSL configuration has to instead be done at the load balancer.
 
-However, when using a load balancer you **MUST** set `GITLAB_HTTPS` to `true`. Additionally you will need to set the `SSL_SELF_SIGNED` option to `true` if self signed SSL certificates are in use.
+However, when using a load balancer you **MUST** set `GITLAB_HTTPS` to `true`.
 
 With this in place, you should configure the load balancer to support handling of https requests. But that is out of the scope of this document. Please refer to [Using SSL/HTTPS with HAProxy](http://seanmcgary.com/posts/using-sslhttps-with-haproxy) for information on the subject.
 
@@ -528,12 +529,11 @@ In summation, when using a load balancer, the docker command would look for the 
 docker run --name gitlab -d \
     --publish 10022:22 --publish 10080:80 \
     --env 'GITLAB_SSH_PORT=10022' --env 'GITLAB_PORT=443' \
-    --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
+    --env 'GITLAB_HTTPS=true' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
     sameersbn/gitlab:15.5.0
 ```
 
-Again, drop the `--env 'SSL_SELF_SIGNED=true'` option if you are using CA certified SSL certificates.
 
 In case GitLab responds to any kind of POST request (login, OAUTH, changing settings etc.) with a 422 HTTP Error, consider adding this to your reverse proxy configuration:
 
@@ -1593,10 +1593,6 @@ The value of the `worker-src` directive in the `Content-Security-Policy` header.
 ##### `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_REPORT_URI`
 
 The value of the `report-uri` directive in the `Content-Security-Policy` header
-
-##### `SSL_SELF_SIGNED`
-
-Set to `true` when using self signed ssl certificates. `false` by default.
 
 ##### `SSL_CERTIFICATE_PATH`
 
