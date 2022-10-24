@@ -1506,10 +1506,6 @@ Set default path for gitaly. defaults to `/home/git/gitaly`
 
 Set a gitaly token, blank by default.
 
-##### `GITLAB_MONITORING_UNICORN_SAMPLER_INTERVAL`
-
-Time between sampling of unicorn socket metrics, in seconds, defaults to `10`
-
 ##### `GITLAB_MONITORING_IP_WHITELIST`
 
 IP whitelist to access monitoring endpoints, defaults to `0.0.0.0/8`

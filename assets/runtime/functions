@@ -264,7 +264,6 @@ gitlab_configure_monitoring() {
   echo "Configuring gitlab::monitoring..."
 
   update_template ${GITLAB_CONFIG} \
-    GITLAB_MONITORING_UNICORN_SAMPLER_INTERVAL \
     GITLAB_MONITORING_IP_WHITELIST \
     GITLAB_MONITORING_SIDEKIQ_EXPORTER_ENABLED \
     GITLAB_MONITORING_SIDEKIQ_EXPORTER_ADDRESS \
