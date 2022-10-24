@@ -9,7 +9,7 @@ bin_dir = "/usr/local/bin/"
 
 # # Optional: listen on a TCP socket. This is insecure (no authentication)
 # listen_addr = "localhost:9999"
-# tls_listen_addr = "localhost:8888
+# tls_listen_addr = "localhost:8888"
 
 # # Optional: export metrics via Prometheus
 # prometheus_listen_addr = "localhost:9236"
