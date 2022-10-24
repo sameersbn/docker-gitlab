@@ -378,6 +378,7 @@ production: &base
   ## Packages (maven repository, npm registry, etc...)
   packages:
     enabled: {{GITLAB_PACKAGES_ENABLED}}
+    dpkg_deb_path: /usr/bin/dpkg-deb
     # The location where build packages are stored (default: shared/packages).
     path: {{GITLAB_PACKAGES_DIR}}
     object_store:
