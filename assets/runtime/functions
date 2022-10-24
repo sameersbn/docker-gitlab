@@ -180,7 +180,6 @@ gitlab_configure_database() {
     DB_NAME \
     DB_USER \
     DB_PASS \
-    DB_POOL \
     DB_PREPARED_STATEMENTS
 }
 

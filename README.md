@@ -1780,10 +1780,6 @@ The database database user. Defaults to `root`
 
 The database database password. Defaults to no password
 
-##### `DB_POOL`
-
-The database database connection pool count. Defaults to `10`.
-
 ##### `DB_PREPARED_STATEMENTS`
 
 Whether use database prepared statements. No defaults. But set to `false` if you want to use with [PgBouncer](https://pgbouncer.github.io/)
