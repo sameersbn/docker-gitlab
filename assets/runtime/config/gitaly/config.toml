@@ -32,6 +32,10 @@ bin_dir = "/usr/local/bin/"
 # [git]
 # bin_path = "/usr/bin/git"
 # catfile_cache_size = 100
+#
+# [[git.config]]
+# key = fetch.fsckObjects
+# value = true
 
 [[storage]]
 name = "default"
