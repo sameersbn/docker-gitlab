@@ -658,9 +658,9 @@ gitlab_configure_openid_connect() {
     OPENID_SEND_SCOPE_TO_TOKEN_ENDPOINT \
     OPENID_CLIENT_OPTIONS_IDENTIFIER \
     OPENID_CLIENT_OPTIONS_SECRET \
-    OPENID_CLIENT_OPTIONS_REDIRECT_URL \
+    OPENID_CLIENT_OPTIONS_REDIRECT_URI
   else
-      exec_as_git sed -i "/name: 'openid_connect'/,/{{OPENID_CLIENT_OPTIONS_REDIRECT_URL}}/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/name: 'openid_connect'/,/{{OPENID_CLIENT_OPTIONS_REDIRECT_URI}}/d" ${GITLAB_CONFIG}
   fi
 }
 

@@ -704,7 +704,7 @@ See [GitLab documentation](https://docs.gitlab.com/ee/integration/oauth2_generic
 
 To enable the OpenID Connect provider, you must register your application with your provider. You also need to confirm OpenID provider app's ID and secret, the client options and the user's response structure.
 
-As an example this code has been tested with ZITADEL, with the following variables: `OPENID_LABEL`, `OPENID_ICON`, `OPENID_SCOPE`, `OPENID_RESPONSE_TYPE`, `OPENID_ISSUER`, `OPENID_DISCOVERY`, `OPENID_CLIENT_AUTH_METHOD`, `OPENID_UID_FIELD`, `OPENID_SEND_SCOPE_TO_TOKEN_ENDPOINT`, `OPENID_CLIENT_OPTIONS_IDENTIFIER`, `OPENID_CLIENT_OPTIONS_SECRET` and `OPENID_CLIENT_OPTIONS_REDIRECT_URL`
+As an example this code has been tested with ZITADEL, with the following variables: `OPENID_LABEL`, `OPENID_ICON`, `OPENID_SCOPE`, `OPENID_RESPONSE_TYPE`, `OPENID_ISSUER`, `OPENID_DISCOVERY`, `OPENID_CLIENT_AUTH_METHOD`, `OPENID_UID_FIELD`, `OPENID_SEND_SCOPE_TO_TOKEN_ENDPOINT`, `OPENID_CLIENT_OPTIONS_IDENTIFIER`, `OPENID_CLIENT_OPTIONS_SECRET` and `OPENID_CLIENT_OPTIONS_REDIRECT_URI`
 
 See [GitLab documentation](https://docs.gitlab.com/ee/administration/auth/oidc.html) and [ZITADEL documentation](https://docs.zitadel.com/docs/guides/integrate/gitlab-self-hosted) for more details.
 
@@ -2322,7 +2322,7 @@ The client identifier as configured in the OpenID Connect service provider.
 
 The client secret as configured in the OpenID Connect service provider. (For example, [OmniAuth OpenIDConnect](https://github.com/omniauth/omniauth_openid_connect)) requires this. If the service provider doesn't require a secret, provide any value and it is ignored.
 
-##### `OPENID_CLIENT_OPTIONS_REDIRECT_URL` (optional)
+##### `OPENID_CLIENT_OPTIONS_REDIRECT_URI`
 
 The URL to the endpoint that ends the session. You can provide this URL if auto-discovery is disabled or unsuccessful.
 
