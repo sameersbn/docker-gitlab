@@ -641,6 +641,29 @@ gitlab_configure_oauth2_generic() {
   fi
 }
 
+gitlab_configure_openid_connect() {
+  if [[ -n ${OPENID_CLIENT_OPTIONS_IDENTIFIER} && \
+        -n ${OPENID_CLIENT_OPTIONS_SECRET} ]]; then
+    echo "Configuring gitlab::openid::connect..."
+    OAUTH_ENABLED=${OAUTH_ENABLED:-true}
+    update_template ${GITLAB_CONFIG} \
+    OPENID_LABEL \
+    OPENID_ICON \
+    OPENID_SCOPE \
+    OPENID_RESPONSE_TYPE \
+    OPENID_ISSUER \
+    OPENID_DISCOVERY \
+    OPENID_CLIENT_AUTH_METHOD \
+    OPENID_UID_FIELD \
+    OPENID_SEND_SCOPE_TO_TOKEN_ENDPOINT \
+    OPENID_CLIENT_OPTIONS_IDENTIFIER \
+    OPENID_CLIENT_OPTIONS_SECRET \
+    OPENID_CLIENT_OPTIONS_REDIRECT_URL \
+  else
+      exec_as_git sed -i "/name: 'openid_connect'/,/{{OPENID_CLIENT_OPTIONS_REDIRECT_URL}}/d" ${GITLAB_CONFIG}
+  fi
+}
+
 gitlab_configure_oauth_crowd() {
   if [[ -n ${OAUTH_CROWD_SERVER_URL} && \
         -n ${OAUTH_CROWD_APP_NAME} && \
