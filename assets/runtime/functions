@@ -740,6 +740,7 @@ gitlab_configure_oauth() {
   gitlab_configure_oauth_bitbucket
   gitlab_configure_oauth_saml
   gitlab_configure_oauth2_generic
+  gitlab_configure_openid_connect
   gitlab_configure_oauth_crowd
   gitlab_configure_oauth_auth0
   gitlab_configure_oauth_azure
