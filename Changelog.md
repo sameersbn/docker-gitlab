@@ -6,6 +6,7 @@ This file only reflects the changes that are made in this image. Please refer to
 
 - gitlab: upgrade CE to v15.3.5
 - gitaly: upgrade to v15.3.5
+- ubuntu: upgrade to focal-20221019
 
 **15.3.4**
 
