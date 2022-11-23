@@ -78,6 +78,7 @@ exec_as_git git config --global gc.auto 0
 exec_as_git git config --global repack.writeBitmaps true
 exec_as_git git config --global receive.advertisePushOptions true
 exec_as_git git config --global advice.detachedHead false
+exec_as_git git config --global --add safe.directory /home/git/gitlab
 
 # shallow clone gitlab-foss
 echo "Cloning gitlab-foss v.${GITLAB_VERSION}..."
@@ -122,6 +123,7 @@ rm -rf ${GITLAB_HOME}/repositories
 
 # build gitlab-workhorse
 echo "Build gitlab-workhorse"
+git config --global --add safe.directory /home/git/gitlab
 make -C ${GITLAB_WORKHORSE_BUILD_DIR} install
 # clean up
 rm -rf ${GITLAB_WORKHORSE_BUILD_DIR}
