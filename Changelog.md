@@ -2,6 +2,9 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+- ruby: upgrade to v2.7.7
+- ruby: upgrade to v3.0.4
+
 **15.6.2**
 
 - gitlab: upgrade CE to v15.6.2
