@@ -215,7 +215,7 @@ GitLab is a code hosting software and as such you don't want to lose your code w
 
 - `/home/git/data`
 
-*Note: that if you are using the `docker-compose` approach, you must "inpect" the volumes (```docker volume inpect```) to check the mounted path.*
+*Note: that if you are using the `docker-compose` approach, you must "inspect" the volumes (```docker volume inspect```) to check the mounted path.*
 
 SELinux users are also required to change the security context of the mount point so that it plays nicely with selinux.
 
