@@ -6,13 +6,14 @@ This file only reflects the changes that are made in this image. Please refer to
 - gitlab: upgrade CE to v15.7.0
 - gitaly: upgrade to v15.7.0
 - gitlab-pages: upgrade to v15.7.0
+- gitlab-shell: upgrade to v14.14.0
+- ruby: upgrade to v3.0.5
 
 **15.6.3**
 - gitlab: upgrade CE to v15.6.3
 - gitaly: upgrade to v15.6.3
 - gitlab-pages: upgrade to v15.6.3
 - ubuntu: upgrade to focal-20221130
-
 - ruby: upgrade to v2.7.7
 - ruby: upgrade to v3.0.4
 
