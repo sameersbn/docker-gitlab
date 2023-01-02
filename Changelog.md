@@ -2,6 +2,9 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**15.7.0-1**
+- postgresql: upgrade to postgresql 13
+
 **15.7.0**
 - gitlab: upgrade CE to v15.7.0
 - gitaly: upgrade to v15.7.0
