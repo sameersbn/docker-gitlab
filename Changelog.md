@@ -7,6 +7,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - gitlab: upgrade CE to v15.8.1
 - gitaly: upgrade to v15.8.1
 - gitlab-pages: upgrade to v15.8.1
+- ubuntu: upgrade to focal-20230126
 
 **15.8.0-1**
 
