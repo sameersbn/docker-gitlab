@@ -12,11 +12,11 @@ This file only reflects the changes that are made in this image. Please refer to
 
 - ruby: rollback to v2.7.7
 
-**15.8.1**
+**15.8.0**
 
-- gitlab: upgrade CE to v15.8.1
-- gitaly: upgrade to v15.8.1
-- gitlab-pages: upgrade to v15.8.1
+- gitlab: upgrade CE to v15.8.0
+- gitaly: upgrade to v15.8.0
+- gitlab-pages: upgrade to v15.8.0
 - gitlab-shell: upgrade to v14.15.0
 - golang: upgrade to v1.18.10
 
