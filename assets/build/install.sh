@@ -353,8 +353,6 @@ command=bundle exec sidekiq -c {{SIDEKIQ_CONCURRENCY}}
   -C ${GITLAB_INSTALL_DIR}/config/sidekiq_queues.yml
   -e ${RAILS_ENV}
   -t {{SIDEKIQ_SHUTDOWN_TIMEOUT}}
-  -P ${GITLAB_INSTALL_DIR}/tmp/pids/sidekiq.pid
-  -L ${GITLAB_INSTALL_DIR}/log/sidekiq.log
 user=git
 autostart=true
 autorestart=true
