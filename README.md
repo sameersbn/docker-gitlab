@@ -1746,7 +1746,7 @@ Timeout for sidekiq shutdown. Defaults to `4`
 
 ##### `SIDEKIQ_MEMORY_KILLER_MAX_RSS`
 
-Non-zero value enables the SidekiqMemoryKiller. Defaults to `1000000`. For additional options refer [Configuring the MemoryKiller](http://doc.gitlab.com/ce/operations/sidekiq_memory_killer.html)
+Non-zero value enables the SidekiqMemoryKiller. Defaults to `2000000`. For additional options refer [Configuring the MemoryKiller](http://doc.gitlab.com/ce/operations/sidekiq_memory_killer.html)
 
 ##### `GITLAB_SIDEKIQ_LOG_FORMAT`
 
