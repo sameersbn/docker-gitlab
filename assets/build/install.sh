@@ -246,6 +246,7 @@ sed -i \
   -e "s|^[#]*LogLevel INFO|LogLevel VERBOSE|" \
   -e "s|^[#]*AuthorizedKeysFile.*|AuthorizedKeysFile %h/.ssh/authorized_keys %h/.ssh/authorized_keys_proxy|" \
   /etc/ssh/sshd_config
+echo "AcceptEnv GIT_PROTOCOL" >> /etc/ssh/sshd_config # Allow clients to explicitly set the Git transfer protocol, e.g. to enable version 2.
 echo "UseDNS no" >> /etc/ssh/sshd_config
 
 # move supervisord.log file to ${GITLAB_LOG_DIR}/supervisor/
