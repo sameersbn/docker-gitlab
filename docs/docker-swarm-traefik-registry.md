@@ -368,7 +368,7 @@ gitlab-runner \
     --access-level not_protected \
     --builds-dir /tmp/builds \
     --docker-image docker:latest \
-    --docker-volumes /tmp/builds:/tmp/builds
+    --docker-volumes /tmp/builds:/tmp/builds \
     --docker-volumes /var/run/docker.sock:/var/run/docker.sock \
     --url $GITLAB_URL \
     --registration-token $GITLAB_TOKEN \
