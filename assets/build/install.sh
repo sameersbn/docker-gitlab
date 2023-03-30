@@ -251,6 +251,10 @@ echo "UseDNS no" >> /etc/ssh/sshd_config
 # move supervisord.log file to ${GITLAB_LOG_DIR}/supervisor/
 sed -i "s|^[#]*logfile=.*|logfile=${GITLAB_LOG_DIR}/supervisor/supervisord.log ;|" /etc/supervisor/supervisord.conf
 
+# silence "CRIT Server 'unix_http_server' running without any HTTP authentication checking" message
+# https://github.com/Supervisor/supervisor/issues/717
+sed -i '/\.sock/a password=dummy' /etc/supervisor/supervisord.conf
+sed -i '/\.sock/a username=dummy' /etc/supervisor/supervisord.conf
 # prevent confusing warning "CRIT Supervisor running as root" by clarify run as root
 #   user not defined in supervisord.conf by default, so just append it after [supervisord] block
 sed -i "/\[supervisord\]/a user=root" /etc/supervisor/supervisord.conf
