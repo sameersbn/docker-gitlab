@@ -220,12 +220,36 @@ gitlab_generate_postgresqlrc() {
   echo "${DB_CLIENT_VERSION_PACKAGE_NAME} ${DB_HOST}:${DB_PORT} ${DB_NAME}" | exec_as_git tee "${GITLAB_USER_POSTGRESQLRC}"
 }
 
+gitlab_uninstall_unused_database_client() {
+  if [[ -f "/home/${GITLAB_USER}/.postgresqlrc" ]]; then
+    # refer /home/${GITLAB_USER}/.postgresqlrc and pick up versions in use
+    # .postgresqlrc contains following information per line
+    #   database_major_version host:port database_name
+    # - ignore lines starts with # by specifying pattern /^[^#]/
+    # - first field is the version number in use.
+    # - cocnat whole lines into single string. convert newline to \|
+    #   this is escaped regex "OR"
+    # now we got the following regex that can be used as an option to grep:
+    #   \|-12\|-13
+    DB_CLIENT_VERSIONS_IN_USE="$(awk '/^[^#]/ {printf("\|-%s",$1)}' "/home/${GITLAB_USER}/.postgresqlrc")"
+
+    # we also need to keep postgresql-client-common package to switch based on ~/.postgresqlrc
+    REGEX_DB_CLIENT_VERSIONS_IN_USE="-common${DB_CLIENT_VERSIONS_IN_USE}"
+
+    # remove unused client using regex above
+    UNUSED_DB_CLIENTS=$(apt-cache pkgnames postgresql-client | grep -v -e "${REGEX_DB_CLIENT_VERSIONS_IN_USE}" | tr '\n' ' ')
+    echo "- Uninstalling unused client(s): ${UNUSED_DB_CLIENTS}"
+    DEBIAN_FRONTEND=noninteractive apt-get -qq remove -- ${UNUSED_DB_CLIENTS} >/dev/null
+  fi
+}
+
 gitlab_configure_database() {
   echo -n "Configuring gitlab::database"
 
   gitlab_finalize_database_parameters
   gitlab_check_database_connection
   gitlab_generate_postgresqlrc
+  gitlab_uninstall_unused_database_client
 
   update_template ${GITLAB_DATABASE_CONFIG} \
     DB_ENCODING \
