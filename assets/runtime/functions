@@ -149,7 +149,7 @@ gitlab_finalize_database_parameters() {
 
 gitlab_check_database_connection() {
 
-  prog=$(find /usr/lib/postgresql/ -name pg_isready)
+  prog=$(find /usr/lib/postgresql/ -name pg_isready -type f | sort | tail -n1)
   prog="${prog} -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -t 1"
 
   timeout=60
@@ -167,11 +167,65 @@ gitlab_check_database_connection() {
   echo
 }
 
+gitlab_generate_postgresqlrc() {
+  echo "Configuring /home/${GITLAB_USER}/.postgresqlrc to avoid version mismatch on dumping"
+  # server_version_num property is a number built from version string:
+  # https://www.postgresql.org/docs/15/libpq-status.html#LIBPQ-PQSERVERVERSION 
+  # > The result is formed by multiplying the server's major version number by 10000 and adding the minor version number. 
+  # > For example, version 10.1 will be returned as 100001, and version 11.0 will be returned as 110000. Zero is returned if the connection is bad.
+  # >
+  # > Prior to major version 10, PostgreSQL used three-part version numbers in which the first two parts together represented the major version.
+  # > For those versions, PQserverVersion uses two digits for each part;
+  # > for example version 9.1.5 will be returned as 90105, and version 9.2.0 will be returned as 90200.
+  #
+  # This difference also appends to apt package name.
+  # For example, in ubuntu:focal, postgresql-client-{8.2, 8.3, 8.4, 9.0, 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 10, 11, 12, 13, 14, 15} are available.
+  # 
+  DB_SERVER_VERSION=$(PGPASSWORD=${DB_PASS} psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d "${DB_NAME}" -Atw -c "SHOW server_version_num")
+  if [[ "${DB_SERVER_VERSION}" -eq 0 ]]; then
+    echo
+    echo "Could not retrieve database server version correctly. Aborting..."
+    return 1
+  fi
+
+  echo "- Detected server version: ${DB_SERVER_VERSION}"
+
+  # Anyway, we can get major version (8, 9, 10 and so on) by dividing by 10000.
+  # DB_SERVER_VERSION_MAJOR=${DB_SERVER_VERSION%%.*}
+  DB_SERVER_VERSION_MAJOR=$((DB_SERVER_VERSION/10000))
+  DB_CLIENT_VERSION_PACKAGE_NAME=
+
+  if [[ "${DB_SERVER_VERSION_MAJOR}" -ge 10 ]]; then
+    # v10 or later: use "rought major version" as version number in package name
+    DB_CLIENT_VERSION_PACKAGE_NAME=${DB_SERVER_VERSION_MAJOR}
+  else
+    # prior to v10: convert
+    # FIXME: rough implementation
+    # It exploits the fact that there is no version such as 9.10, and it lacks versatility.
+    # divide by 100, then replace first 0 to comma
+    DB_CLIENT_VERSION_PACKAGE_NAME=$((DB_SERVER_VERSION/100))
+    DB_CLIENT_VERSION_PACKAGE_NAME=${DB_CLIENT_VERSION_PACKAGE_NAME/0/.}
+  fi
+
+  # if exact-match client not found, select latest version from installed clients
+  if [[ "$(apt-cache pkgnames postgresql-client | grep -e "-${DB_CLIENT_VERSION_PACKAGE_NAME}" | wc -l)" -ne 1 ]]; then
+    LATEST_CLIENT="$(apt-cache pkgnames postgresql-client | grep -v -e "-common" | sort --version-sort | tail -n1)"
+    DB_CLIENT_VERSION_PACKAGE_NAME=${LATEST_CLIENT/postgresql-client-/}
+    echo "gitlab_generate_postgresqlrc(): WARNING - Suitable client not installed. postgresql-client-${DB_CLIENT_VERSION_PACKAGE_NAME} will be used but you may face issue (database in backup will be empty, for example)"
+  fi
+
+  # generate ~/.postgresqlrc to switch client version
+  GITLAB_USER_POSTGRESQLRC="/home/${GITLAB_USER}/.postgresqlrc"
+  echo "- Generating ${GITLAB_USER_POSTGRESQLRC}"
+  echo "${DB_CLIENT_VERSION_PACKAGE_NAME} ${DB_HOST}:${DB_PORT} ${DB_NAME}" | exec_as_git tee "${GITLAB_USER_POSTGRESQLRC}"
+}
+
 gitlab_configure_database() {
   echo -n "Configuring gitlab::database"
 
   gitlab_finalize_database_parameters
   gitlab_check_database_connection
+  gitlab_generate_postgresqlrc
 
   update_template ${GITLAB_DATABASE_CONFIG} \
     DB_ENCODING \
