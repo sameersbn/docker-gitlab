@@ -927,7 +927,8 @@ You can specify custom secret file by setting [`GITLAB_KAS_SECRET`](#gitlab_kas_
 
 To control whether launch built-in `gitlab-kas` on container startup or not, you can use configuration parameter [`GITLAB_AGENT_KAS_ENABLED`](#gitlab_agent_kas_enabled).
 
-You can specify custom secret file by setting [`GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE`](#gitlab_agent_kas_api_listen_authentication_secret_file) and [`GITLAB_AGENT_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE`](#gitlab_agent_kas_private_api_listen_authentication_secret_file). These secret files also be generated if they don't exist.
+You can specify custom secret file by setting [`GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE`](#gitlab_agent_kas_api_listen_authentication_secret_file) and [`GITLAB_AGENT_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE`](#gitlab_agent_kas_private_api_listen_authentication_secret_file). These secret files also be generated if they don't exist.  
+Authentication secret file will be set to same value of `GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE` but you can overwrite it by setting [`GITLAB_AGENT_KAS_GITLAB_AUTHENTICATION_SECRET_FILE`](#gitlab_agent_kas_gitlab_authentication_secret_file).
 
 Built-in KAS communicates to redis. The host and ports are set using `REDIS_HOST` and `REDIS_PORT`.  
 You can specify the password file path in `GITLAB_AGENT_KAS_REDIS_PASSWORD_FILE`, but please do not set the parameter. We still do not support password authentication for Redis. The password file should contain the redis authentication password, but this is not currently done because there is no way to specify the redis password. So please let this parameter empty. See [sameersbn/gitlab#1026](https://github.com/sameersbn/docker-gitlab/pull/1026)
@@ -1281,6 +1282,10 @@ The URL to the Kubernetes API proxy (used by GitLab users). No default.
 ##### `GITLAB_AGENT_KAS_ENABLED`
 
 Control startup behavior of built-in KAS. `autostart` value in supervisor configuration for KAS will be set to this value. Default to [`GITLAB_KAS_ENABLED`](#gitlab_kas_enabled)
+
+##### `GITLAB_AGENT_KAS_GITLAB_AUTHENTICATION_SECRET_FILE`
+
+An authentication secret file used to connect to gitlab from KAS. Defaults to `${GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE}`.
 
 ##### `GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE`
 
