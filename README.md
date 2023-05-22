@@ -242,7 +242,7 @@ GitLab uses a database backend to store its data. You can configure this image t
 
 **Important note:** This image is shipped with different versions of the `postgresql-client`.
 
-During the startup of the container, the major version of the database system is checked based on the specified connection destination. Only the version of the `postgresql-client`, that matches the major version of the Postgres database is used. All other versions of the `postgresql-client` are deleted at runtime.
+During the startup of the container, the major version of the database system is checked based on the specified connection destination. Only the version of the `postgresql-client`, that matches the major version of the Postgres database is used. If the major version of any version of the client does not match, the latest client is used (but may causes issues). All other versions of the `postgresql-client` are deleted at runtime.
 
 This behavior can be checked using the command `docker logs` and an output like the following should be available:
 
