@@ -38,7 +38,9 @@ For installation and usage instructions please refer to the [README](https://git
 
 Please note that this version does not yet include any rework as a consequence of the major release and possibly some functions in our implementation might not be usable yet or only to a limited extent.
 
-Don't forget to consider the version specific upgrading instructions for [GitLab CE](https://docs.gitlab.com/ee/update/) *before* upgrading your GitLab CE instance!
+Don't forget to consider the version specific upgrading instructions for [GitLab CE](https://docs.gitlab.com/ee/update/) **before** upgrading your GitLab CE instance!
+
+**GitLab 16.0 requires at least PostgreSQL 13.**
 
 You are kindly invited to provide contributions.
 
