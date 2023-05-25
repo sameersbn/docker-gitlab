@@ -7,9 +7,14 @@ socket_path = "{{GITALY_SOCKET_PATH}}"
 # The directory where Gitaly's executables are stored
 bin_dir = "/usr/local/bin/"
 
+# # Optional: The directory where Gitaly can create all files required to
+# # properly operate at runtime. If not set, Gitaly will create a directory in
+# # the global temporary directory. This directory must exist.
+# runtime_dir = "/home/git/gitaly/run"
+
 # # Optional: listen on a TCP socket. This is insecure (no authentication)
 # listen_addr = "localhost:9999"
-# tls_listen_addr = "localhost:8888
+# tls_listen_addr = "localhost:8888"
 
 # # Optional: export metrics via Prometheus
 # prometheus_listen_addr = "localhost:9236"
@@ -32,6 +37,17 @@ bin_dir = "/usr/local/bin/"
 # [git]
 # bin_path = "/usr/bin/git"
 # catfile_cache_size = 100
+#
+# # Set this setting to `true` to start ignoring gitconfig files installed in
+# # the system. This includes both system-level (e.g. '/etc/gitconffig') and
+# # global-level (e.g. `$HOME/.gitconfig`) files. This setting will become the
+# # default with v16.0. If you intend to override Git configuration you can do
+# # so via `[[git.config]]`. The default value is `false`.
+# ignore_gitconfig = false
+#
+# [[git.config]]
+# key = fetch.fsckObjects
+# value = true
 
 [[storage]]
 name = "default"
@@ -86,6 +102,10 @@ dir = "{{GITLAB_GITALY_INSTALL_DIR}}/ruby"
 [gitlab-shell]
 # The directory where gitlab-shell is installed
 dir = "{{GITLAB_SHELL_INSTALL_DIR}}"
+
+[hooks]
+custom_hooks_dir = "{{GITLAB_SHELL_INSTALL_DIR}}/hooks"
+
 
 # # You can adjust the concurrency of each RPC endpoint
 # [[concurrency]]

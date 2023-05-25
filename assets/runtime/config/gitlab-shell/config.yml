@@ -15,6 +15,10 @@ user: git
 # "http+unix://%2Fpath%2Fto%2Fsocket"
 gitlab_url: "http://localhost:8080{{GITLAB_RELATIVE_URL_ROOT}}"
 
+# When a http+unix:// is used in gitlab_url, this is the relative URL root to GitLab.
+# Not used if gitlab_url is http:// or https://.
+# gitlab_relative_url_root: "/"
+
 # See installation.md#using-https for additional HTTPS configuration details.
 http_settings:
 #  read_timeout: 300
@@ -22,18 +26,22 @@ http_settings:
 #  password: somepass
 #  ca_file: /etc/ssl/cert.pem
 #  ca_path: /etc/pki/tls/certs
-  self_signed_cert: {{SSL_SELF_SIGNED}}
+#
 
 # File used as authorized_keys for gitlab user
 auth_file: "{{GITLAB_HOME}}/.ssh/authorized_keys"
 
+# SSL certificate dir where custom certificates can be placed
+# https://golang.org/pkg/crypto/x509/
+# ssl_cert_dir: /opt/gitlab/embedded/ssl/certs/
+
 # File that contains the secret key for verifying access to GitLab.
 # Default is .gitlab_shell_secret in the gitlab-shell directory.
 secret_file: "{{GITLAB_SHELL_INSTALL_DIR}}/.gitlab_shell_secret"
-
-# Parent directory for global custom hook directories (pre-receive.d, update.d, post-receive.d)
-# Default is hooks in the gitlab-shell directory.
-custom_hooks_dir: "{{GITLAB_SHELL_INSTALL_DIR}}/hooks"
+#
+# The secret field supersedes the secret_file, and if set that
+# file will not be read.
+# secret: "supersecret"
 
 # Log file.
 # Default is gitlab-shell.log in the root directory.
@@ -42,7 +50,7 @@ log_file: "{{GITLAB_LOG_DIR}}/gitlab-shell/gitlab-shell.log"
 # Log level. INFO by default
 log_level: INFO
 
-# Log format. 'text' by default
+# Log format. 'json' by default, can be changed to 'text' if needed
 # log_format: json
 
 # Audit usernames.

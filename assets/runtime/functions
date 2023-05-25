@@ -258,7 +258,6 @@ gitlab_configure_database() {
     DB_NAME \
     DB_USER \
     DB_PASS \
-    DB_POOL \
     DB_PREPARED_STATEMENTS
 }
 
@@ -343,7 +342,6 @@ gitlab_configure_monitoring() {
   echo "Configuring gitlab::monitoring..."
 
   update_template ${GITLAB_CONFIG} \
-    GITLAB_MONITORING_UNICORN_SAMPLER_INTERVAL \
     GITLAB_MONITORING_IP_WHITELIST \
     GITLAB_MONITORING_SIDEKIQ_EXPORTER_ENABLED \
     GITLAB_MONITORING_SIDEKIQ_EXPORTER_ADDRESS \
@@ -1038,23 +1036,23 @@ gitlab_configure_analytics_google() {
   fi
 }
 
-gitlab_configure_analytics_piwik() {
-  if [[ -n ${PIWIK_URL} && -n ${PIWIK_SITE_ID} ]]; then
-    echo "Configuring gitlab::analytics:piwik..."
+gitlab_configure_analytics_matomo() {
+  if [[ -n ${MATOMO_URL} && -n ${MATOMO_SITE_ID} ]]; then
+    echo "Configuring gitlab::analytics:matomo..."
     update_template ${GITLAB_CONFIG} \
-      PIWIK_URL \
-      PIWIK_SITE_ID
+      MATOMO_URL \
+      MATOMO_SITE_ID
   else
     exec_as_git sed -i \
-      -e "/{{PIWIK_URL}}/d" \
-      -e "/{{PIWIK_SITE_ID}}/d" \
+      -e "/{{MATOMO_URL}}/d" \
+      -e "/{{MATOMO_SITE_ID}}/d" \
       ${GITLAB_CONFIG}
   fi
 }
 
 gitlab_configure_analytics() {
   gitlab_configure_analytics_google
-  gitlab_configure_analytics_piwik
+  gitlab_configure_analytics_matomo
 }
 
 gitlab_configure_rack_attack() {
@@ -1070,8 +1068,7 @@ gitlab_configure_rack_attack() {
 gitlab_configure_ci() {
   echo "Configuring gitlab::ci..."
   update_template ${GITLAB_CONFIG} \
-    GITLAB_NOTIFY_ON_BROKEN_BUILDS \
-    GITLAB_NOTIFY_PUSHER GITLAB_BUILDS_DIR
+    GITLAB_NOTIFY_ON_BROKEN_BUILDS
 }
 
 gitlab_configure_artifacts() {
@@ -1096,8 +1093,6 @@ gitlab_configure_artifacts() {
 
     update_template ${GITLAB_CONFIG} \
       GITLAB_ARTIFACTS_OBJECT_STORE_REMOTE_DIRECTORY \
-      GITLAB_ARTIFACTS_OBJECT_STORE_DIRECT_UPLOAD \
-      GITLAB_ARTIFACTS_OBJECT_STORE_BACKGROUND_UPLOAD \
       GITLAB_ARTIFACTS_OBJECT_STORE_PROXY_DOWNLOAD \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_PROVIDER \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID \
@@ -1143,8 +1138,6 @@ gitlab_configure_packages() {
 
     update_template ${GITLAB_CONFIG} \
       GITLAB_PACKAGES_OBJECT_STORE_REMOTE_DIRECTORY \
-      GITLAB_PACKAGES_OBJECT_STORE_DIRECT_UPLOAD \
-      GITLAB_PACKAGES_OBJECT_STORE_BACKGROUND_UPLOAD \
       GITLAB_PACKAGES_OBJECT_STORE_PROXY_DOWNLOAD \
       GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_PROVIDER \
       GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID \
@@ -1232,8 +1225,6 @@ gitlab_configure_lfs() {
 
     update_template ${GITLAB_CONFIG} \
       GITLAB_LFS_OBJECT_STORE_REMOTE_DIRECTORY \
-      GITLAB_LFS_OBJECT_STORE_DIRECT_UPLOAD \
-      GITLAB_LFS_OBJECT_STORE_BACKGROUND_UPLOAD \
       GITLAB_LFS_OBJECT_STORE_PROXY_DOWNLOAD \
       GITLAB_LFS_OBJECT_STORE_CONNECTION_PROVIDER \
       GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID \
@@ -1278,8 +1269,6 @@ gitlab_configure_uploads() {
 
     update_template ${GITLAB_CONFIG} \
       GITLAB_UPLOADS_OBJECT_STORE_REMOTE_DIRECTORY \
-      GITLAB_UPLOADS_OBJECT_STORE_DIRECT_UPLOAD \
-      GITLAB_UPLOADS_OBJECT_STORE_BACKGROUND_UPLOAD \
       GITLAB_UPLOADS_OBJECT_STORE_PROXY_DOWNLOAD \
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_PROVIDER \
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID \
@@ -1923,7 +1912,6 @@ configure_gitlab() {
     GITLAB_SSH_HOST \
     GITLAB_SSH_LISTEN_PORT \
     GITLAB_SSH_PORT \
-    GITLAB_SIGNUP_ENABLED \
     GITLAB_IMPERSONATION_ENABLED \
     GITLAB_PROJECTS_LIMIT \
     GITLAB_USERNAME_CHANGE \
@@ -1967,6 +1955,15 @@ configure_gitlab() {
   generate_healthcheck_script
   gitlab_configure_content_security_policy
 
+  # some configurations are stored in database
+  ## GITLAB_SIGNUP_ENABLED : `signup_enabled` in `application_settings` table
+  ## avoid injection: set to false unless explicitly specified to be true
+  if [[ "${GITLAB_SIGNUP_ENABLED}" != true ]]; then
+    GITLAB_SIGNUP_ENABLED=false
+  fi
+  printf "Configurating application_settings.signup_enabled=%s :" ${GITLAB_SIGNUP_ENABLED}
+  PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d "${DB_NAME}" -Atw -c "UPDATE application_settings SET signup_enabled = ${GITLAB_SIGNUP_ENABLED}"
+
   # remove stale gitlab.socket
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
 }
@@ -1978,7 +1975,6 @@ configure_gitlab_shell() {
     GITLAB_HOME \
     GITLAB_LOG_DIR \
     GITLAB_SHELL_INSTALL_DIR \
-    SSL_SELF_SIGNED \
     REDIS_HOST \
     REDIS_PORT \
     REDIS_DB_NUMBER

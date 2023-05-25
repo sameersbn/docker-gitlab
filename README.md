@@ -49,7 +49,7 @@
     - [Gitlab Pages](#gitlab-pages)
     - [External Issue Trackers](#external-issue-trackers)
     - [Host UID / GID Mapping](#host-uid--gid-mapping)
-    - [Piwik](#piwik)
+    - [Matomo](#matomo)
     - [Exposing ssh port in dockerized gitlab-ce](docs/exposing-ssh-port.md)
     - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
@@ -507,13 +507,14 @@ Great! we are now just one step away from having our application secured.
 
 ##### Enabling HTTPS support
 
-HTTPS support can be enabled by setting the `GITLAB_HTTPS` option to `true`. Additionally, when using self-signed SSL certificates you need to the set `SSL_SELF_SIGNED` option to `true` as well. Assuming we are using self-signed certificates
+HTTPS support can be enabled by setting the `GITLAB_HTTPS` option to `true`.  
+Since corresponding setting `self_signed_cert` was removed in the gitlab-shell 13.26.0 release, the option `SSL_SELF_SIGNED`, that was used to indicate to use a self-signed certificate, is not used anymore. You don't need to set this option even if you're using a self-signed certificate.
 
 ```bash
 docker run --name gitlab -d \
     --publish 10022:22 --publish 10080:80 --publish 10443:443 \
     --env 'GITLAB_SSH_PORT=10022' --env 'GITLAB_PORT=10443' \
-    --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
+    --env 'GITLAB_HTTPS=true' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
     sameersbn/gitlab:15.11.5
 ```
@@ -528,7 +529,7 @@ With `NGINX_HSTS_MAXAGE` you can configure that value. The default value is `315
 
 ```bash
 docker run --name gitlab -d \
- --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
+ --env 'GITLAB_HTTPS=true' \
  --env 'NGINX_HSTS_MAXAGE=2592000' \
  --volume /srv/docker/gitlab/gitlab:/home/git/data \
  sameersbn/gitlab:15.11.5
@@ -540,7 +541,7 @@ If you want to completely disable HSTS set `NGINX_HSTS_ENABLED` to `false`.
 
 Load balancers like nginx/haproxy/hipache talk to backend applications over plain http and as such the installation of ssl keys and certificates are not required and should **NOT** be installed in the container. The SSL configuration has to instead be done at the load balancer.
 
-However, when using a load balancer you **MUST** set `GITLAB_HTTPS` to `true`. Additionally you will need to set the `SSL_SELF_SIGNED` option to `true` if self signed SSL certificates are in use.
+However, when using a load balancer you **MUST** set `GITLAB_HTTPS` to `true`.
 
 With this in place, you should configure the load balancer to support handling of https requests. But that is out of the scope of this document. Please refer to [Using SSL/HTTPS with HAProxy](http://seanmcgary.com/posts/using-sslhttps-with-haproxy) for information on the subject.
 
@@ -552,12 +553,11 @@ In summation, when using a load balancer, the docker command would look for the 
 docker run --name gitlab -d \
     --publish 10022:22 --publish 10080:80 \
     --env 'GITLAB_SSH_PORT=10022' --env 'GITLAB_PORT=443' \
-    --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
+    --env 'GITLAB_HTTPS=true' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
     sameersbn/gitlab:15.11.5
 ```
 
-Again, drop the `--env 'SSL_SELF_SIGNED=true'` option if you are using CA certified SSL certificates.
 
 In case GitLab responds to any kind of POST request (login, OAUTH, changing settings etc.) with a 422 HTTP Error, consider adding this to your reverse proxy configuration:
 
@@ -794,13 +794,15 @@ docker run --name gitlab -d [OPTIONS] \
     sameersbn/gitlab:15.11.5 app:sanitize
 ```
 
-#### Piwik
+#### Matomo
 
-If you want to monitor your gitlab instance with [Piwik](http://piwik.org/), there are two options to setup: `PIWIK_URL` and `PIWIK_SITE_ID`.
+If you want to monitor your gitlab instance with [Matomo](https://matomo.org/), there are two options to setup: `MATOMO_URL` and `MATOMO_SITE_ID`.
 These options should contain something like:
 
-- `PIWIK_URL=piwik.example.org`
-- `PIWIK_SITE_ID=42`
+- `MATOMO_URL=matomo.example.org`
+- `MATOMO_SITE_ID=42`
+
+[Piwik have been changed the name to Matomo on Jan 2018](https://matomo.org/blog/2018/01/piwik-is-now-matomo/). Legacy configuration parameter `PIWIK_URL` and `PIWIK_SITE_ID` still works as fallback for corresponding parameter.
 
 #### Available Configuration Parameters
 
@@ -952,14 +954,6 @@ Global custom hooks directory. Defaults to `/home/git/gitlab-shell/hooks`.
 
 Sets the timeout for webhooks. Defaults to `10` seconds.
 
-##### `GITLAB_NOTIFY_ON_BROKEN_BUILDS`
-
-Enable or disable broken build notification emails. Defaults to `true`
-
-##### `GITLAB_NOTIFY_PUSHER`
-
-Add pusher to recipients list of broken build notification emails. Defaults to `false`
-
 ##### `GITLAB_REPOS_DIR`
 
 The git repositories folder in the container. Defaults to `/home/git/data/repositories`
@@ -1048,14 +1042,6 @@ Enables Object Store for Artifacts that will be remote stored. Defaults to `fals
 
 Bucket name to store the artifacts. Defaults to `artifacts`
 
-##### `GITLAB_ARTIFACTS_OBJECT_STORE_DIRECT_UPLOAD`
-
-Set to true to enable direct upload of Artifacts without the need of local shared storage.  Defaults to `false`
-
-##### `GITLAB_ARTIFACTS_OBJECT_STORE_BACKGROUND_UPLOAD`
-
-Temporary option to limit automatic upload. Defaults to `false`
-
 ##### `GITLAB_ARTIFACTS_OBJECT_STORE_PROXY_DOWNLOAD`
 
 Passthrough all downloads via GitLab instead of using Redirects to Object Storage. Defaults to `false`
@@ -1124,10 +1110,6 @@ Enables Object Store for LFS that will be remote stored. Defaults to `false`
 
 Bucket name to store the LFS. Defaults to `lfs-object`
 
-##### `GITLAB_LFS_OBJECT_STORE_BACKGROUND_UPLOAD`
-
-Temporary option to limit automatic upload. Defaults to `false`
-
 ##### `GITLAB_LFS_OBJECT_STORE_PROXY_DOWNLOAD`
 
 Passthrough all downloads via GitLab instead of using Redirects to Object Storage. Defaults to `false`
@@ -1191,14 +1173,6 @@ Enables Object Store for Packages that will be remote stored. Defaults to `false
 ##### `GITLAB_PACKAGES_OBJECT_STORE_REMOTE_DIRECTORY`
 
 Bucket name to store the packages. Defaults to `packages`
-
-##### `GITLAB_PACKAGES_OBJECT_STORE_DIRECT_UPLOAD`
-
-Set to true to enable direct upload of Packages without the need of local shared storage.  Defaults to `false`
-
-##### `GITLAB_PACKAGES_OBJECT_STORE_BACKGROUND_UPLOAD`
-
-Temporary option to limit automatic upload. Defaults to `false`
 
 ##### `GITLAB_PACKAGES_OBJECT_STORE_PROXY_DOWNLOAD`
 
@@ -1315,10 +1289,6 @@ Enables Object Store for UPLOADS that will be remote stored. Defaults to `false`
 ##### `GITLAB_UPLOADS_OBJECT_STORE_REMOTE_DIRECTORY`
 
 Bucket name to store the UPLOADS. Defaults to `uploads`
-
-##### `GITLAB_UPLOADS_OBJECT_STORE_BACKGROUND_UPLOAD`
-
-Temporary option to limit automatic upload. Defaults to `false`
 
 ##### `GITLAB_UPLOADS_OBJECT_STORE_PROXY_DOWNLOAD`
 
@@ -1528,10 +1498,6 @@ Set default path for gitaly. defaults to `/home/git/gitaly`
 
 Set a gitaly token, blank by default.
 
-##### `GITLAB_MONITORING_UNICORN_SAMPLER_INTERVAL`
-
-Time between sampling of unicorn socket metrics, in seconds, defaults to `10`
-
 ##### `GITLAB_MONITORING_IP_WHITELIST`
 
 IP whitelist to access monitoring endpoints, defaults to `0.0.0.0/8`
@@ -1619,10 +1585,6 @@ The value of the `worker-src` directive in the `Content-Security-Policy` header.
 ##### `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_REPORT_URI`
 
 The value of the `report-uri` directive in the `Content-Security-Policy` header
-
-##### `SSL_SELF_SIGNED`
-
-Set to `true` when using self signed ssl certificates. `false` by default.
 
 ##### `SSL_CERTIFICATE_PATH`
 
@@ -1803,10 +1765,6 @@ The database database user. Defaults to `root`
 ##### `DB_PASS`
 
 The database database password. Defaults to no password
-
-##### `DB_POOL`
-
-The database database connection pool count. Defaults to `10`.
 
 ##### `DB_PREPARED_STATEMENTS`
 
@@ -2308,13 +2266,21 @@ Sets the gid for group `git` to the specified gid. Defaults to `USERMAP_UID` if 
 
 Google Analytics ID. No defaults.
 
+##### `MATOMO_URL`
+
+Sets the Matomo URL. No defaults.
+
 ##### `PIWIK_URL`
 
-Sets the Piwik URL. No defaults.
+Works as Matomo URL fallback only when `MATOMO_URL` is not set. No defaults.
+
+##### `MATOMO_SITE_ID`
+
+Sets the Matomo site ID. No defaults.
 
 ##### `PIWIK_SITE_ID`
 
-Sets the Piwik site ID. No defaults.
+Works as Matomo URL fallback only when `MATOMO_SITE_ID` is not set. No defaults.
 
 ##### `AWS_BACKUPS`
 

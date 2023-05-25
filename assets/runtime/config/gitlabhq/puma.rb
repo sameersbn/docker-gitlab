@@ -72,10 +72,25 @@ tag 'gitlab-puma-worker'
 #
 worker_timeout {{PUMA_TIMEOUT}}
 
+# https://github.com/puma/puma/blob/master/5.0-Upgrade.md#lower-latency-better-throughput
+wait_for_less_busy_worker ENV.fetch('PUMA_WAIT_FOR_LESS_BUSY_WORKER', 0.001).to_f
+
+# https://github.com/puma/puma/blob/master/5.0-Upgrade.md#nakayoshi_fork
+nakayoshi_fork unless ENV['DISABLE_PUMA_NAKAYOSHI_FORK'] == 'true'
+
 # Use json formatter
 require_relative "{{GITLAB_INSTALL_DIR}}/lib/gitlab/puma_logging/json_formatter"
 
 json_formatter = Gitlab::PumaLogging::JSONFormatter.new
 log_formatter do |str|
   json_formatter.call(str)
+end
+
+lowlevel_error_handler do |ex, env|
+  if Raven.configuration.capture_allowed?
+    Raven.capture_exception(ex, tags: { 'handler': 'puma_low_level' }, extra: { puma_env: env })
+  end
+
+  # note the below is just a Rack response
+  [500, {}, ["An error has occurred and reported in the system's low-level error handler."]]
 end

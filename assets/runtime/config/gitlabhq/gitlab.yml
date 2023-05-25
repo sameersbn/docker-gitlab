@@ -6,9 +6,11 @@
 # This file should not receive new settings. All configuration options #
 # * are being moved to ApplicationSetting model!                       #
 # If a setting requires an application restart say so in that screen.  #
-# If you change this file in a Merge Request, please also create       #
+# If you change this file in a merge request, please also create       #
 # a MR on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests. #
 # For more details see https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/gitlab.yml.md #
+# Be sure to create a MR against the GDK configuration                 #
+# file (https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/support/templates/gitlab/config/gitlab.yml.erb) too. #
 ########################################################################
 #
 #
@@ -33,7 +35,11 @@ production: &base
     host: {{GITLAB_HOST}}
     port: {{GITLAB_PORT}} # Set to 443 if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
     https: {{GITLAB_HTTPS}} # Set to true if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
-    # The maximum time unicorn/puma can spend on the request. This needs to be smaller than the worker timeout.
+
+    # Uncomment this line if you want to configure the Rails asset host for a CDN.
+    # cdn_host: localhost
+
+    # The maximum time Puma can spend on the request. This needs to be smaller than the worker timeout.
     # Default is 95% of the worker timeout
     max_request_duration_seconds: 57
 
@@ -72,6 +78,8 @@ production: &base
         style_src: "{{GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_STYLE_SRC}}"
         worker_src: "{{GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_WORKER_SRC}}"
         report_uri: "{{GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_REPORT_URI}}"
+
+    allowed_hosts: []
 
     # Trusted Proxies
     # Customize if you have GitLab behind a reverse proxy which is running on a different machine.
@@ -115,11 +123,12 @@ production: &base
       # ca_certs_file: /home/git/gitlab/.gitlab_smime_ca_certs
 
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
+    # File location to read encrypted SMTP secrets from
+    # email_smtp_secret_file: /mnt/gitlab/smtp.yaml.enc # Default: shared/encrypted_settings/smtp.yaml.enc
 
     default_projects_limit: {{GITLAB_PROJECTS_LIMIT}}
     default_can_create_group: {{GITLAB_CREATE_GROUP}}  # default: true
     username_changing_enabled: {{GITLAB_USERNAME_CHANGE}} # default: true - User can change their username/namespace
-    signup_enabled: {{GITLAB_SIGNUP_ENABLED}}
     ## Default theme ID
     ##   1 - Indigo
     ##   2 - Dark
@@ -156,7 +165,7 @@ production: &base
     ### GraphQL Settings
     # Tells the rails application how long it has to complete a GraphQL request.
     # We suggest this value to be higher than the database timeout value
-    # and lower than the worker timeout set in unicorn/puma. (default: 30)
+    # and lower than the worker timeout set in Puma. (default: 30)
     # graphql_timeout: 30
 
     ## Repository downloads directory
@@ -170,9 +179,33 @@ production: &base
     ## Disable jQuery and CSS animations
     # disable_animations: true
 
+    ## Application settings cache expiry in seconds (default: 60)
+    # application_settings_cache_seconds: 60
+
+    ## Print initial root password to stdout during initialization (default: false)
+    # WARNING: setting this to true means that the root password will be printed in
+    # plaintext. This can be a security risk.
+    # display_initial_root_password: false
+
+  # Allows delivery of emails using Microsoft Graph API with OAuth 2.0 client credentials flow.
+  microsoft_graph_mailer:
+    enabled: false
+    # The unique identifier for the user. To use Microsoft Graph on behalf of the user.
+    # user_id: "YOUR-USER-ID"
+    # The directory tenant the application plans to operate against, in GUID or domain-name format.
+    # tenant: "YOUR-TENANT-ID"
+    # The application ID that's assigned to your app. You can find this information in the portal where you registered your app.
+    # client_id: "YOUR-CLIENT-ID"
+    # The client secret that you generated for your app in the app registration portal.
+    # client_secret: "YOUR-CLIENT-SECRET-ID"
+    # Defaults to "https://login.microsoftonline.com".
+    # azure_ad_endpoint:
+    # Defaults to "https://graph.microsoft.com".
+    # graph_endpoint:
+
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
-  # For documentation on how to set this up, see http://doc.gitlab.com/ce/administration/reply_by_email.html
+  # For documentation on how to set this up, see https://docs.gitlab.com/ee/administration/reply_by_email.html
   incoming_email:
     enabled: {{GITLAB_INCOMING_EMAIL_ENABLED}}
 
@@ -208,8 +241,38 @@ production: &base
     #
     # log_path: log/mail_room_json.log
 
-    # Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
+    # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
     expunge_deleted: false
+
+  ## Consolidated object store config
+  ## This will only take effect if the object_store sections are not defined
+  ## within the types (e.g. artifacts, lfs, etc.).
+  # object_store:
+  #   enabled: false
+  #   proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
+  #   connection:
+  #     provider: AWS # Only AWS supported at the moment
+  #     aws_access_key_id: AWS_ACCESS_KEY_ID
+  #     aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+  #     region: us-east-1
+  #     aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
+  #     endpoint: 'https://s3.amazonaws.com' # default: nil - Useful for S3 compliant services such as DigitalOcean Spaces
+  #   storage_options:
+  #     server_side_encryption: AES256 # AES256, aws:kms
+  #     server_side_encryption_kms_key_id: # Amazon Resource Name. See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html
+  #   objects:
+  #     artifacts:
+  #       bucket: artifacts
+  #     external_diffs:
+  #       bucket: external-diffs
+  #     lfs:
+  #       bucket: lfs-objects
+  #     uploads:
+  #       bucket: uploads
+  #     packages:
+  #       bucket: packages
+  #     dependency_proxy:
+  #       bucket: dependency_proxy
 
   ## Build Artifacts
   artifacts:
@@ -219,8 +282,6 @@ production: &base
     object_store:
       enabled: {{GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED}}
       remote_directory: {{GITLAB_ARTIFACTS_OBJECT_STORE_REMOTE_DIRECTORY}} # The bucket name
-      direct_upload: {{GITLAB_ARTIFACTS_OBJECT_STORE_DIRECT_UPLOAD}} # Set to true to enable direct upload of Artifacts without the need of local shared storage.
-      background_upload: {{GITLAB_ARTIFACTS_OBJECT_STORE_BACKGROUND_UPLOAD}} # Temporary option to limit automatic upload (Default: true)
       proxy_download: {{GITLAB_ARTIFACTS_OBJECT_STORE_PROXY_DOWNLOAD}} # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
         provider: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_PROVIDER}} # Only AWS supported at the moment
@@ -249,7 +310,6 @@ production: &base
     # object_store:
     #   enabled: false
     #   remote_directory: external-diffs
-    #   background_upload: false
     #   proxy_download: false
     #   connection:
     #     provider: AWS
@@ -265,8 +325,6 @@ production: &base
     object_store:
       enabled: {{GITLAB_LFS_OBJECT_STORE_ENABLED}}
       remote_directory: {{GITLAB_LFS_OBJECT_STORE_REMOTE_DIRECTORY}} # Bucket name
-      direct_upload: {{GITLAB_LFS_OBJECT_STORE_DIRECT_UPLOAD}} # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
-      background_upload: {{GITLAB_LFS_OBJECT_STORE_BACKGROUND_UPLOAD}} # Temporary option to limit automatic upload (Default: true)
       proxy_download: {{GITLAB_LFS_OBJECT_STORE_PROXY_DOWNLOAD}} # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
         provider: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_PROVIDER}}
@@ -299,8 +357,6 @@ production: &base
     object_store:
       enabled: {{GITLAB_UPLOADS_OBJECT_STORE_ENABLED}}
       remote_directory: {{GITLAB_UPLOADS_OBJECT_STORE_REMOTE_DIRECTORY}} # Bucket name
-      direct_upload: {{GITLAB_UPLOADS_OBJECT_STORE_DIRECT_UPLOAD}} # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
-      background_upload: {{GITLAB_UPLOADS_OBJECT_STORE_BACKGROUND_UPLOAD}} # Temporary option to limit automatic upload (Default: true)
       proxy_download: {{GITLAB_UPLOADS_OBJECT_STORE_PROXY_DOWNLOAD}} # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
         provider: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_PROVIDER}}
@@ -322,13 +378,12 @@ production: &base
   ## Packages (maven repository, npm registry, etc...)
   packages:
     enabled: {{GITLAB_PACKAGES_ENABLED}}
+    dpkg_deb_path: /usr/bin/dpkg-deb
     # The location where build packages are stored (default: shared/packages).
     path: {{GITLAB_PACKAGES_DIR}}
     object_store:
       enabled: {{GITLAB_PACKAGES_OBJECT_STORE_ENABLED}}
       remote_directory: {{GITLAB_PACKAGES_OBJECT_STORE_REMOTE_DIRECTORY}} # The bucket name
-      direct_upload: {{GITLAB_PACKAGES_OBJECT_STORE_DIRECT_UPLOAD}} # Set to true to enable direct upload of Packages without the need of local shared storage.
-      background_upload: {{GITLAB_PACKAGES_OBJECT_STORE_BACKGROUND_UPLOAD}} # Temporary option to limit automatic upload (Default: true)
       proxy_download: {{GITLAB_PACKAGES_OBJECT_STORE_PROXY_DOWNLOAD}} # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
         provider: {{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_PROVIDER}} # Only AWS supported at the moment
@@ -356,8 +411,6 @@ production: &base
     object_store:
       enabled: false
       remote_directory: dependency_proxy # The bucket name
-      # direct_upload: false # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
-      # background_upload: false # Temporary option to limit automatic upload (Default: true)
       # proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
         provider: AWS
@@ -394,6 +447,23 @@ production: &base
         google_json_key_location: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION}}
         #end-terraform_state-gcs
 
+  ## CI Secure Files
+  ci_secure_files:
+    enabled: true
+    # storage_path: shared/ci_secure_files
+    object_store:
+      enabled: false
+      remote_directory: ci-secure-files # The bucket name
+      connection:
+        provider: AWS
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+        # host: 'localhost' # default: s3.amazonaws.com
+        # endpoint: 'http://127.0.0.1:9000' # default: nil
+        # aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
+        # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
+
   ## GitLab Pages
   pages:
     enabled: {{GITLAB_PAGES_ENABLED}}
@@ -414,6 +484,18 @@ production: &base
     # File that contains the shared secret key for verifying access for gitlab-pages.
     # Default is '.gitlab_pages_secret' relative to Rails.root (i.e. root of the GitLab app).
     # secret_file: /home/git/gitlab/.gitlab_pages_secret
+    object_store:
+      enabled: false
+      remote_directory: pages # The bucket name
+      connection:
+        provider: AWS
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+    local_store:
+      enabled: true
+      # The location where pages are stored (default: shared/pages).
+      # path: shared/pages
 
   ## Mattermost
   ## For enabling Add to Mattermost button
@@ -424,7 +506,7 @@ production: &base
   ## Gravatar
   ## If using gravatar.com, there's nothing to change here. For Libravatar
   ## you'll need to provide the custom URLs. For more information,
-  ## see: https://docs.gitlab.com/ee/customization/libravatar.html
+  ## see: https://docs.gitlab.com/ee/administration/libravatar.html
   gravatar:
     enabled: {{GITLAB_GRAVATAR_ENABLED}}
     # Gravatar/Libravatar URLs: possible placeholders: %{hash} %{size} %{email} %{username}
@@ -515,24 +597,19 @@ production: &base
     geo_secondary_registry_consistency_worker:
       cron: "* * * * *"
 
-    # GitLab Geo file download dispatch worker
-    # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
-    geo_file_download_dispatch_worker:
-      cron: "*/1 * * * *"
-
     # GitLab Geo migrated local files clean up worker
     # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
     geo_migrated_local_files_clean_up_worker:
       cron: "15 */6 * * *"
 
-    # Export pseudonymized data in CSV format for analysis
-    pseudonymizer_worker:
-      cron: "0 * * * *"
-
     # Elasticsearch bulk updater for incremental updates.
     # NOTE: This will only take effect if elasticsearch is enabled.
     elastic_index_bulk_cron_worker:
       cron: "*/1 * * * *"
+
+    # Periodically prune stale runners from namespaces having opted-in.
+    ci_runners_stale_group_runners_prune_worker_cron:
+      cron: "30 * * * *"
 
   registry:
     enabled: {{GITLAB_REGISTRY_ENABLED}}
@@ -575,7 +652,7 @@ production: &base
       # enabled: true
       # primary_api_url: http://localhost:5000/ # internal address to the primary registry, will be used by GitLab to directly communicate with primary registry API
 
-  ## Feature Flag https://docs.gitlab.com/ee/user/project/operations/feature_flags.html
+  ## Feature Flag https://docs.gitlab.com/ee/operations/feature_flags.html
   feature_flags:
     unleash:
       # enabled: false
@@ -589,12 +666,6 @@ production: &base
 
   gitlab_ci:
     # Default project notifications settings:
-    #
-    # Send emails only on broken builds (default: true)
-    all_broken_builds: {{GITLAB_NOTIFY_ON_BROKEN_BUILDS}}
-    #
-    # Add pusher to recipients list (default: false)
-    add_pusher: {{GITLAB_NOTIFY_PUSHER}}
 
     # The location where build traces are stored (default: builds/). Relative paths are relative to Rails.root
     builds_path: {{GITLAB_BUILDS_DIR}}
@@ -1107,20 +1178,6 @@ production: &base
       remote_directory: '{{GCS_BACKUP_BUCKET}}'
       #end-gcs
 
-  ## Pseudonymizer exporter
-  pseudonymizer:
-    # Tables manifest that specifies the fields to extract and pseudonymize.
-    manifest: config/pseudonymizer.yml
-    upload:
-      remote_directory: 'gitlab-elt'
-      # Fog storage connection settings, see http://fog.io/storage/ .
-      connection:
-      #   provider: AWS
-      #   region: eu-west-1
-      #   aws_access_key_id: AKIAKIAKI
-      #   aws_secret_access_key: 'secret123'
-      #   # The remote 'directory' to store the CSV files. For S3, this would be the bucket name.
-
   ## GitLab Shell settings
   gitlab_shell:
     path: {{GITLAB_SHELL_INSTALL_DIR}}/
@@ -1173,10 +1230,6 @@ production: &base
   ## Monitoring
   # Built in monitoring settings
   monitoring:
-    # Time between sampling of unicorn socket metrics, in seconds
-    unicorn_sampler_interval: {{GITLAB_MONITORING_UNICORN_SAMPLER_INTERVAL}}
-    # Time between sampling of Puma metrics, in seconds
-    # puma_sampler_interval: 5
     # IP whitelist to access monitoring endpoints
     ip_whitelist:
       - 127.0.0.0/8
@@ -1188,7 +1241,7 @@ production: &base
      address: {{GITLAB_MONITORING_SIDEKIQ_EXPORTER_ADDRESS}}
      port: {{GITLAB_MONITORING_SIDEKIQ_EXPORTER_PORT}}
 
-    # Web exporter is webserver built in to Unicorn/Puma to expose Prometheus metrics
+    # Web exporter is a dedicated Rack server running alongside Puma to expose Prometheus metrics
     # It runs alongside the `/metrics` endpoints to ease the publish of metrics
     web_exporter:
     #  enabled: true
@@ -1221,9 +1274,10 @@ production: &base
     ## Google analytics. Uncomment if you want it
     google_analytics_id: '{{GOOGLE_ANALYTICS_ID}}'
 
-    ## Piwik analytics.
-    piwik_url: '{{PIWIK_URL}}'
-    piwik_site_id: '{{PIWIK_SITE_ID}}'
+    ## Matomo analytics.
+    matomo_url: '{{MATOMO_URL}}'
+    matomo_site_id: '{{MATOMO_SITE_ID}}'
+    matomo_disable_cookies: false
 
   rack_attack:
     git_basic_auth:
@@ -1300,7 +1354,6 @@ test:
     object_store:
       enabled: false
       remote_directory: artifacts # The bucket name
-      background_upload: false
       connection:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID
@@ -1359,6 +1412,17 @@ test:
     # user: YOUR_USERNAME
   pages:
     path: tmp/tests/pages
+    object_store:
+      enabled: false
+      remote_directory: pages # The bucket name
+      connection:
+        provider: AWS
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+    local_store:
+      enabled: true
+      path: tmp/tests/pages
   repositories:
     storages:
       default:
@@ -1372,17 +1436,6 @@ test:
     secret_file: tmp/gitlab_workhorse_test_secret
   backup:
     path: tmp/tests/backups
-  pseudonymizer:
-    manifest: config/pseudonymizer.yml
-    upload:
-      # The remote 'directory' to store the CSV files. For S3, this would be the bucket name.
-      remote_directory: gitlab-elt.test
-      # Fog storage connection settings, see http://fog.io/storage/
-      connection:
-        provider: AWS # Only AWS supported at the moment
-        aws_access_key_id: AWS_ACCESS_KEY_ID
-        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-        region: us-east-1
   gitlab_shell:
     path: tmp/tests/gitlab-shell/
     authorized_keys_file: tmp/tests/authorized_keys
