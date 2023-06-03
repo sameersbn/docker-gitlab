@@ -237,7 +237,16 @@ gitlab_uninstall_unused_database_client() {
     REGEX_DB_CLIENT_VERSIONS_IN_USE="-common${DB_CLIENT_VERSIONS_IN_USE}"
 
     # remove unused client using regex above
-    UNUSED_DB_CLIENTS=$(apt-cache pkgnames postgresql-client | grep -v -e "${REGEX_DB_CLIENT_VERSIONS_IN_USE}" | tr '\n' ' ')
+    # grep may return non-zero code on mo match, so fake the exit code with the `|| true` to swallow that
+    UNUSED_DB_CLIENTS=$(apt-cache pkgnames postgresql-client | grep -v -e "${REGEX_DB_CLIENT_VERSIONS_IN_USE}" || true)
+    if [[ "${UNUSED_DB_CLIENTS}" == "" ]]; then
+      echo "- All installed version of clients are in use. Did not uninstalled any client..."
+      return
+    fi
+
+    # just to get clean log, convert newline (package name delimiter) to single whitespace
+    UNUSED_DB_CLIENTS=$(echo ${UNUSED_DB_CLIENTS} | tr '\n' ' ')
+
     echo "- Uninstalling unused client(s): ${UNUSED_DB_CLIENTS}"
     DEBIAN_FRONTEND=noninteractive apt-get -qq -y purge -- ${UNUSED_DB_CLIENTS} >/dev/null
   fi
