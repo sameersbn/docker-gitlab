@@ -257,9 +257,8 @@ Configuring gitlab::database
 …
 ````
 
-Please note furthermore, that only combatible versions of the `postgresql-client` to GitLab are shipped with this image. Currently these belogn to
+Please note furthermore, that only compatible versions of the `postgresql-client` to GitLab are shipped with this image. Currently these belong to
 
-- `postgresql-client-12`,
 - `postgresql-client-13`,
 - `postgresql-client-14`,
 - and `postgresql-client-15`.
