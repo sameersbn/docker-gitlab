@@ -4,6 +4,13 @@ This file only reflects the changes that are made in this image. Please refer to
 
 **16.0.1**
 
+- gitlab: upgrade CE to v16.0.2
+- gitaly: upgrade to v16.0.2
+- gitlab-pages: upgrade to v16.0.2
+- golang: upgrade to v1.20.5
+
+**16.0.1**
+
 - gitlab: upgrade CE to v16.0.1
 - gitaly: upgrade to v16.0.1
 - gitlab-pages: upgrade to v16.0.1
