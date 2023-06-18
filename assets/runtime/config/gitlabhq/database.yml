@@ -21,3 +21,4 @@ production:
     port: {{DB_PORT}}
     username: {{DB_USER}}
     password: "{{DB_PASS}}"
+    pool: {{DB_POOL}}
