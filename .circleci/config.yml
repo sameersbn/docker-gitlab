@@ -76,7 +76,7 @@ commands:
                     done
                   done
 
-                  docker build
+                  docker buildx build --platform=linux/amd64,linux/arm64 
                   <<#parameters.extra_build_args>><<parameters.extra_build_args>><</parameters.extra_build_args>>
                   \
                     --cache-from <<parameters.cache_from>> \
@@ -102,7 +102,7 @@ commands:
                     done
                   done
 
-                  docker build
+                  docker buildx build --platform=linux/amd64,linux/arm64 
                   <<#parameters.extra_build_args>><<parameters.extra_build_args>><</parameters.extra_build_args>>
                   \
                     -f <<parameters.path>>/<<parameters.dockerfile>> \
