@@ -2,13 +2,22 @@ GitLab Container Registry
 =========================
 Since `8.8.0` GitLab introduces a container registry. GitLab is helping to authenticate the user against the registry and proxy it via Nginx. By [Registry](https://docs.docker.com/registry) we mean the registry from docker whereas *Container Registry* is the feature in GitLab.
 
+- [GitLab Container Registry](#gitlab-container-registry)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
+  - [Setup with Nginx as Reverse Proxy](#setup-with-nginx-as-reverse-proxy)
+    - [Create auth tokens](#create-auth-tokens)
+    - [Update docker-compose.yml](#update-docker-composeyml)
+    - [Nginx Site Configuration](#nginx-site-configuration)
 - [Configuration](#configuration)
+  - [Available Parameters](#available-parameters)
+  - [Container Registry storage driver](#container-registry-storage-driver)
+    - [Example for Amazon Simple Storage Service (s3)](#example-for-amazon-simple-storage-service-s3)
+  - [Storage limitations](#storage-limitations)
 - [Maintenance](#maintenance)
-    - [Creating Backups](#creating-backups)
-    - [Restoring Backups](#restoring-backups)
-- [Upgrading from an existing GitLab instance](#Upgrading-from-an-existing-GitLab-instance)
+  - [Creating Backups](#creating-backups)
+  - [Restoring Backups](#restoring-backups)
+- [Upgrading from an existing GitLab installation](#upgrading-from-an-existing-gitlab-installation)
 
 # Prerequisites
 
@@ -289,7 +298,7 @@ docker stop registry gitlab && docker rm registry gitlab
 Execute the rake task with a removeable container.
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:16.2.1 app:rake gitlab:backup:create
+    sameersbn/gitlab:16.2.2 app:rake gitlab:backup:create
 ```
 ## Restoring Backups
 
@@ -305,7 +314,7 @@ Execute the rake task to restore a backup. Make sure you run the container in in
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:16.2.1 app:rake gitlab:backup:restore
+    sameersbn/gitlab:16.2.2 app:rake gitlab:backup:restore
 ```
 
 The list of all available backups will be displayed in reverse chronological order. Select the backup you want to restore and continue.
@@ -314,7 +323,7 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:16.2.1 app:rake gitlab:backup:restore BACKUP=1417624827
+    sameersbn/gitlab:16.2.2 app:rake gitlab:backup:restore BACKUP=1417624827
 ```
 
 # Upgrading from an existing GitLab installation
@@ -325,7 +334,7 @@ If you want enable this feature for an existing instance of GitLab you need to d
 - **Step 1**: Update the docker image.
 
 ```bash
-docker pull sameersbn/gitlab:16.2.1
+docker pull sameersbn/gitlab:16.2.2
 ```
 
 - **Step 2**: Stop and remove the currently running image
@@ -378,7 +387,7 @@ docker run --name gitlab -d [PREVIOUS_OPTIONS] \
 --env 'GITLAB_REGISTRY_CERT_PATH=/certs/registry-auth.crt' \
 --env 'GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key' \
 --link registry:registry
-sameersbn/gitlab:16.2.1
+sameersbn/gitlab:16.2.2
 ```
 
 
