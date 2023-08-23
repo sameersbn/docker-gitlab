@@ -1,0 +1,13 @@
+diff --git a/lib/gitlab/content_security_policy/config_loader.rb b/lib/gitlab/content_security_policy/config_loader.rb
+index 9fb3c7d362f..d012c8b3b7b 100644
+--- a/lib/gitlab/content_security_policy/config_loader.rb
++++ b/lib/gitlab/content_security_policy/config_loader.rb
+@@ -84,7 +84,7 @@ def allow_snowplow_micro(directives)
+         end
+ 
+         def allow_lfs(directives)
+-          return unless Gitlab.config.lfs.enabled && LfsObjectUploader.direct_download_enabled?
++          return unless Gitlab.config.lfs.enabled && Gitlab.config.lfs.object_store.enabled && LfsObjectUploader.direct_download_enabled?
+ 
+           lfs_url = build_lfs_url
+           return unless lfs_url.present?
