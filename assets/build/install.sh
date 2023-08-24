@@ -98,7 +98,7 @@ gem install bundler:"${BUNDLER_VERSION}"
 
 # download golang
 echo "Downloading Go ${GOLANG_VERSION}..."
-dpkgArch="$(dpkg --print-architecture)"
+dpkgArch="$(dpkg-architecture -qDEB_HOST_ARCH)"
 wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-${dpkgArch}.tar.gz -P ${GITLAB_BUILD_DIR}/
 tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-${dpkgArch}.tar.gz -C /tmp/
 
