@@ -1231,7 +1231,7 @@ production: &base
       enabled: {{RACK_ATTACK_ENABLED}}
       #
       # Whitelist requests from 127.0.0.1 for web proxies (NGINX/Apache) with incorrect headers
-      ip_whitelist: ["{{RACK_ATTACK_WHITELIST}}"]
+      ip_whitelist: {{RACK_ATTACK_WHITELIST}}
       #
       # Limit the number of Git HTTP authentication attempts per IP
       maxretry: {{RACK_ATTACK_MAXRETRY}}
