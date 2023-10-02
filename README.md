@@ -2279,6 +2279,14 @@ The OAuth2 generic user name. No defaults
 
 The OAuth2 generic user email. No defaults
 
+##### `OAUTH2_GENERIC_AUTHORIZE_PARAMS_SCOPE`
+
+The scope of your OAuth2 provider. No defaults
+
+##### `OAUTH2_GENERIC_LABEL`
+
+The label of your OAuth2 provider. No defaults
+
 ##### `OAUTH2_GENERIC_NAME`
 
 The name of your OAuth2 provider. No defaults
