@@ -1017,6 +1017,8 @@ production: &base
               email: '{{OAUTH2_GENERIC_USER_EMAIL}}'
               }
             },
+            authorize_params: { scope: "{{OAUTH2_GENERIC_AUTHORIZE_PARAMS_SCOPE}}" },
+            label: '{{OAUTH2_GENERIC_LABEL}}',
             name: '{{OAUTH2_GENERIC_NAME}}' }}
       - { name: 'azure_oauth2',
           args: {
