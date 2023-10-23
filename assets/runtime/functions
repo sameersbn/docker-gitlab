@@ -1068,6 +1068,24 @@ gitlab_configure_analytics() {
 
 gitlab_configure_rack_attack() {
   echo "Configuring gitlab::rack_attack..."
+
+  # validity check : RACK_ATTACK_WHITELIST should be an array of valid IP Address string
+  echo " Validating RACK_ATTACK_WHITELIST..."
+  /usr/bin/env ruby << SCRIPT
+  require 'ipaddr'
+  ${RACK_ATTACK_WHITELIST}.each do |host|
+    begin
+      printf("  input=%s, to_range=%s\n", host, IPAddr.new(host).to_range)
+    rescue IPAddr::InvalidAddressError => e
+      p e
+      exit 1
+    rescue => e
+      put "Unexpected error", e
+      exit 1
+    end
+  end
+SCRIPT
+
   update_template ${GITLAB_CONFIG} \
     RACK_ATTACK_ENABLED \
     RACK_ATTACK_WHITELIST \

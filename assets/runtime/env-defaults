@@ -544,7 +544,31 @@ PIWIK_SITE_ID=${PIWIK_SITE_ID:-}
 
 ## RACK ATTACK
 RACK_ATTACK_ENABLED=${RACK_ATTACK_ENABLED:-true}
-RACK_ATTACK_WHITELIST=${RACK_ATTACK_WHITELIST:-"127.0.0.1"}
+RACK_ATTACK_WHITELIST=${RACK_ATTACK_WHITELIST:-'["127.0.0.1"]'}
+RACK_ATTACK_WHITELIST=${RACK_ATTACK_WHITELIST// /}
+# Backward compatibility : See sameersbn/docker-gitlab#2828
+# Pre-check: each host is surrounded by single / double quotation
+# if not, generated string will be [127.0.0.1] for example and ruby raises error
+RACK_ATTACK_WHITELIST_ORIGIN=${RACK_ATTACK_WHITELIST}
+# remove [], then iterate entries
+RACK_ATTACK_WHITELIST=${RACK_ATTACK_WHITELIST#"["}
+RACK_ATTACK_WHITELIST=${RACK_ATTACK_WHITELIST%"]"}
+IFS_ORG=${IFS}
+IFS=,
+for host in ${RACK_ATTACK_WHITELIST}; do
+  # Both single / double quotation may be used
+  if ! [[ ${host} =~ ^(\"|\').*(\"|\')$ ]]; then
+    RACK_ATTACK_WHITELIST=${RACK_ATTACK_WHITELIST/${host}/\"${host//(\'|\")/}\"}
+  fi
+done
+IFS=$IFS_ORG
+# surround with []
+RACK_ATTACK_WHITELIST="[${RACK_ATTACK_WHITELIST}]"
+if [[ "${RACK_ATTACK_WHITELIST}" != "${RACK_ATTACK_WHITELIST_ORIGIN}" ]]; then
+  printf "[warning] RACK_ATTACK_WHITELIST must be a yaml sequence of hosts.\nFixing from %s to %s\n" \
+    "${RACK_ATTACK_WHITELIST_ORIGIN}" \
+    "${RACK_ATTACK_WHITELIST}"
+fi
 RACK_ATTACK_MAXRETRY=${RACK_ATTACK_MAXRETRY:-10}
 RACK_ATTACK_FINDTIME=${RACK_ATTACK_FINDTIME:-60}
 RACK_ATTACK_BANTIME=${RACK_ATTACK_BANTIME:-3600}
