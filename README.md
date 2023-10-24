@@ -2025,7 +2025,7 @@ Comma separated list if oauth providers to disallow access to `internal` project
 
 ##### `OAUTH_ALLOW_BYPASS_TWO_FACTOR`
 
-Comma separated list of oauth providers where users can sign in without using two-factor authentication (2FA). Defaults to `[]`.
+Specify oauth providers where users can sign in without using two-factor authentication (2FA). You can define this using an array of providers like `["twitter", "google_oauth2"]`. Setting this to `true` or `false` applies to all - allow all or none. Defaults to `false`.
 
 ##### `OAUTH_CAS3_LABEL`
 
