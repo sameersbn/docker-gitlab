@@ -2023,6 +2023,10 @@ Allow users with existing accounts to login and auto link their account via the 
 
 Comma separated list if oauth providers to disallow access to `internal` projects. Users creating accounts via these providers will have access internal projects. Accepted values are `cas3`, `github`, `bitbucket`, `gitlab`, `google_oauth2`, `facebook`, `twitter`, `saml`, `crowd`, `auth0` and `azure_oauth2`. No default.
 
+##### `OAUTH_ALLOW_BYPASS_TWO_FACTOR`
+
+Comma separated list of oauth providers where users can sign in without using two-factor authentication (2FA). Defaults to `[]`.
+
 ##### `OAUTH_CAS3_LABEL`
 
 The "Sign in with" button label. Defaults to "cas3".
