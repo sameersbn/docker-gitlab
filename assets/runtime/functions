@@ -819,7 +819,8 @@ gitlab_configure_oauth() {
     OAUTH_AUTO_LINK_LDAP_USER \
     OAUTH_AUTO_LINK_SAML_USER \
     OAUTH_AUTO_LINK_USER \
-    OAUTH_EXTERNAL_PROVIDERS
+    OAUTH_EXTERNAL_PROVIDERS \
+    OAUTH_ALLOW_BYPASS_TWO_FACTOR
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
     cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2|azure_activedirectory_v2|oauth2_generic|$OAUTH2_GENERIC_NAME)
