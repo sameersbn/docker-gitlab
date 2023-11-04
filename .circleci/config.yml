@@ -232,6 +232,9 @@ jobs:
           name: Wait for stack bootup
           command: sleep 90
       - run:
+          name: Show logs
+          command: docker-compose logs
+      - run:
           name: Test image bootup
           command: |
             docker run --network container:$(docker-compose ps -q gitlab) \
