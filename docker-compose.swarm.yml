@@ -12,7 +12,7 @@ services:
           - node.labels.gitlab.redis-data == true
 
   postgresql:
-    image: sameersbn/postgresql:12-20200524
+    image: sameersbn/postgresql:14-20230628
     volumes:
     - postgresql-data:/var/lib/postgresql:Z
     environment:
@@ -63,7 +63,7 @@ services:
       - traefik-public
 
   gitlab:
-    image: sameersbn/gitlab:16.1.2
+    image: sameersbn/gitlab:16.6.0
     depends_on:
     - redis
     - postgresql

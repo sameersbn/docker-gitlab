@@ -11,7 +11,7 @@ services:
 
   postgresql:
     restart: always
-    image: sameersbn/postgresql:12-20200524
+    image: sameersbn/postgresql:14-20230628
     volumes:
     - postgresql:/var/lib/postgresql:Z
     environment:
@@ -22,7 +22,7 @@ services:
 
   gitlab:
     restart: always
-    image: sameersbn/gitlab:16.1.2
+    image: sameersbn/gitlab:16.6.0
     volumes:
     - gitlab-data:/home/git/data:Z
     - gitlab-logs:/var/log/gitlab

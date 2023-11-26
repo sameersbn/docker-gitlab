@@ -722,6 +722,8 @@ gitlab_configure_oauth2_generic() {
     OAUTH2_GENERIC_USER_UID \
     OAUTH2_GENERIC_USER_NAME \
     OAUTH2_GENERIC_USER_EMAIL \
+    OAUTH2_GENERIC_AUTHORIZE_PARAMS_SCOPE \
+    OAUTH2_GENERIC_LABEL \
     OAUTH2_GENERIC_NAME
   else
       exec_as_git sed -i "/name: 'oauth2_generic'/,/{{OAUTH2_GENERIC_NAME}}/d" ${GITLAB_CONFIG}
@@ -817,7 +819,8 @@ gitlab_configure_oauth() {
     OAUTH_AUTO_LINK_LDAP_USER \
     OAUTH_AUTO_LINK_SAML_USER \
     OAUTH_AUTO_LINK_USER \
-    OAUTH_EXTERNAL_PROVIDERS
+    OAUTH_EXTERNAL_PROVIDERS \
+    OAUTH_ALLOW_BYPASS_TWO_FACTOR
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
     cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2|azure_activedirectory_v2|oauth2_generic|$OAUTH2_GENERIC_NAME)
@@ -1068,6 +1071,24 @@ gitlab_configure_analytics() {
 
 gitlab_configure_rack_attack() {
   echo "Configuring gitlab::rack_attack..."
+
+  # validity check : RACK_ATTACK_WHITELIST should be an array of valid IP Address string
+  echo " Validating RACK_ATTACK_WHITELIST..."
+  /usr/bin/env ruby << SCRIPT
+  require 'ipaddr'
+  ${RACK_ATTACK_WHITELIST}.each do |host|
+    begin
+      printf("  input=%s, to_range=%s\n", host, IPAddr.new(host).to_range)
+    rescue IPAddr::InvalidAddressError => e
+      p e
+      exit 1
+    rescue => e
+      put "Unexpected error", e
+      exit 1
+    end
+  end
+SCRIPT
+
   update_template ${GITLAB_CONFIG} \
     RACK_ATTACK_ENABLED \
     RACK_ATTACK_WHITELIST \

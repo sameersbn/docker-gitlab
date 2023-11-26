@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   shellcheck: circleci/shellcheck@3.1.1
-  docker: circleci/docker@2.1.1
+  docker: circleci/docker@2.4.0
   go: circleci/go@1.7.1
 
 commands:
@@ -231,6 +231,9 @@ jobs:
       - run:
           name: Wait for stack bootup
           command: sleep 90
+      - run:
+          name: Show logs
+          command: docker-compose logs
       - run:
           name: Test image bootup
           command: |

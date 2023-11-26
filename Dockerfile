@@ -1,14 +1,14 @@
-FROM ubuntu:focal-20230624
+FROM ubuntu:focal-20231003
 
-ARG VERSION=16.1.2
+ARG VERSION=16.6.0
 
 ENV GITLAB_VERSION=${VERSION} \
     RUBY_VERSION=3.0.6 \
     RUBY_SOURCE_SHA256SUM="6e6cbd490030d7910c0ff20edefab4294dfcd1046f0f8f47f78b597987ac683e" \
-    GOLANG_VERSION=1.20.5 \
-    GITLAB_SHELL_VERSION=14.23.0 \
-    GITLAB_PAGES_VERSION=16.1.2 \
-    GITALY_SERVER_VERSION=16.1.2 \
+    GOLANG_VERSION=1.21.4 \
+    GITLAB_SHELL_VERSION=14.30.0 \
+    GITLAB_PAGES_VERSION=16.6.0 \
+    GITALY_SERVER_VERSION=16.6.0 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
@@ -37,7 +37,7 @@ RUN set -ex && \
  && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
  && echo 'deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
  && wget --quiet -O - https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
- && echo 'deb https://deb.nodesource.com/node_16.x focal main' > /etc/apt/sources.list.d/nodesource.list \
+ && echo 'deb https://deb.nodesource.com/node_18.x focal main' > /etc/apt/sources.list.d/nodesource.list \
  && wget --quiet -O - https://dl.yarnpkg.com/debian/pubkey.gpg  | apt-key add - \
  && echo 'deb https://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list.d/yarn.list \
  && set -ex \

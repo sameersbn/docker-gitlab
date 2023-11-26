@@ -918,7 +918,7 @@ production: &base
     # This option should only be configured for providers which already have two factor.
     # This configration dose not apply to SAML.
     # (default: false)
-    allow_bypass_two_factor: null
+    allow_bypass_two_factor: {{OAUTH_ALLOW_BYPASS_TWO_FACTOR}}
 
     ## Auth providers
     # Uncomment the following lines and fill in the data of the auth provider you want to use
@@ -1017,6 +1017,8 @@ production: &base
               email: '{{OAUTH2_GENERIC_USER_EMAIL}}'
               }
             },
+            authorize_params: { scope: "{{OAUTH2_GENERIC_AUTHORIZE_PARAMS_SCOPE}}" },
+            label: '{{OAUTH2_GENERIC_LABEL}}',
             name: '{{OAUTH2_GENERIC_NAME}}' }}
       - { name: 'azure_oauth2',
           args: {
@@ -1231,7 +1233,7 @@ production: &base
       enabled: {{RACK_ATTACK_ENABLED}}
       #
       # Whitelist requests from 127.0.0.1 for web proxies (NGINX/Apache) with incorrect headers
-      ip_whitelist: ["{{RACK_ATTACK_WHITELIST}}"]
+      ip_whitelist: {{RACK_ATTACK_WHITELIST}}
       #
       # Limit the number of Git HTTP authentication attempts per IP
       maxretry: {{RACK_ATTACK_MAXRETRY}}
