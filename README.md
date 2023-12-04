@@ -93,9 +93,9 @@ See [Contributors](../../graphs/contributors) for the complete list developers t
 
 ## Issues
 
-Docker is a relatively new project and is active being developed and tested by a thriving community of developers and testers and every release of docker features many enhancements and bugfixes.
+Docker is actively being developed and tested by a thriving community of developers and testers and every release of Docker features many enhancements and bugfixes.
 
-Given the nature of the development and release cycle it is very important that you have the latest version of docker installed because any issue that you encounter might have already been fixed with a newer docker release.
+Given the nature of the development and release cycle it is very important that you have the latest version of Docker installed because any issue that you encounter might have already been fixed with a newer Docker release.
 
 Install the most recent version of the Docker Engine for your platform using the [official Docker releases](http://docs.docker.com/engine/installation/), which can also be installed using:
 
