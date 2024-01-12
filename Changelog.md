@@ -7,6 +7,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - gitlab: upgrade CE to v16.7.2
 - gitaly: upgrade to v16.7.2
 - gitlab-pages: upgrade to v16.7.2
+- golang: upgrade to v1.21.6
 
 **16.7.0**
 
