@@ -1,0 +1,20 @@
+diff --git a/lib/tasks/gitlab/assets.rake b/lib/tasks/gitlab/assets.rake
+index b8a6e7018767..5096d81ea63f 100644
+--- a/lib/tasks/gitlab/assets.rake
++++ b/lib/tasks/gitlab/assets.rake
+@@ -96,7 +96,14 @@ namespace :gitlab do
+       puts "Assets SHA256 for `HEAD`: #{Tasks::Gitlab::Assets.head_assets_sha256.inspect}"
+ 
+       if Tasks::Gitlab::Assets.head_assets_sha256 != Tasks::Gitlab::Assets.master_assets_sha256
+-        FileUtils.rm_rf([Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR] + Dir.glob('app/assets/javascripts/locale/**/app.js'))
++        # sameersbn/gitlab takes a cache of public_assets_dir by symlinking to volume to speedup relaunch (if relative url is used)
++        # so do not remove the directory directly, empty instead
++        # Dir.glob("*") ignores dotfiles (even it is fine to remove here), so list up children manually
++        removal_targets = Dir.glob('app/assets/javascripts/locale/**/app.js')
++        if Dir.exists?(Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR)
++          removal_targets += Dir.children(Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR).map {|child| File.join(Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR, child)} 
++        end
++        FileUtils.rm_rf(removal_targets, secure: true)
+ 
+         # gettext:compile needs to run before rake:assets:precompile because
+         # app/assets/javascripts/locale/**/app.js are pre-compiled by Sprockets
