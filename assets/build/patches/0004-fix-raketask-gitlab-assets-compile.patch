@@ -12,7 +12,7 @@ index b8a6e7018767..5096d81ea63f 100644
 +        # Dir.glob("*") ignores dotfiles (even it is fine to remove here), so list up children manually
 +        removal_targets = Dir.glob('app/assets/javascripts/locale/**/app.js')
 +        if Dir.exist?(Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR)
-+          removal_targets += Dir.children(Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR).map {|child| File.join(Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR, child)} 
++          removal_targets += Dir.children(Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR).map {|child| File.join(Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR, child)}
 +        end
 +        FileUtils.rm_rf(removal_targets, secure: true)
  
