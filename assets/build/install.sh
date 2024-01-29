@@ -84,7 +84,7 @@ exec_as_git git config --global --add safe.directory /home/git/gitlab
 echo "Cloning gitlab-foss v.${GITLAB_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
 
-find "${GITLAB_BUILD_DIR}/patches/" -name "*.patch" | while read -r patch_file; do
+find "${GITLAB_BUILD_DIR}/patches/gitlabhq" -name "*.patch" | while read -r patch_file; do
   printf "Applying patch %s for gitlab-foss...\n" "${patch_file}"
   exec_as_git git -C ${GITLAB_INSTALL_DIR} apply --ignore-whitespace < "${patch_file}"
 done
