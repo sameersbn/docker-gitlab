@@ -47,6 +47,10 @@ mkdir /tmp/ruby && cd /tmp/ruby
 curl --remote-name -Ss "${RUBY_SRC_URL}"
 printf '%s ruby-%s.tar.gz' "${RUBY_SOURCE_SHA256SUM}" "${RUBY_VERSION}" | sha256sum -c -
 tar xzf ruby-"${RUBY_VERSION}".tar.gz && cd ruby-"${RUBY_VERSION}"
+find "${GITLAB_BUILD_DIR}/patches/ruby" -name "*.patch" | while read -r patch_file; do
+  echo "Applying patch ${patch_file}"
+  patch -p1 -i "${patch_file}"
+done
 ./configure --disable-install-rdoc --enable-shared
 make -j"$(nproc)"
 make install
