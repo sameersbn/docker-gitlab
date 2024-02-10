@@ -1659,7 +1659,12 @@ initialize_datadir() {
   chmod u+rwX ${GITLAB_SHARED_DIR}
   chown ${GITLAB_USER}: ${GITLAB_SHARED_DIR}
 
-  # create attifacts dir
+  # create the ci_secure_files directory
+  mkdir -p ${GITLAB_SHARED_DIR}/ci_secure_files
+  chmod u+rwX ${GITLAB_SHARED_DIR}/ci_secure_files
+  chown ${GITLAB_USER}: ${GITLAB_SHARED_DIR}/ci_secure_files
+
+  # create artifacts dir
   mkdir -p ${GITLAB_ARTIFACTS_DIR}
   chmod u+rwX ${GITLAB_ARTIFACTS_DIR}
   chown ${GITLAB_USER}: ${GITLAB_ARTIFACTS_DIR}
