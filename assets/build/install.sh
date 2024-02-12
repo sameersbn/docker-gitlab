@@ -47,6 +47,10 @@ mkdir /tmp/ruby && cd /tmp/ruby
 curl --remote-name -Ss "${RUBY_SRC_URL}"
 printf '%s ruby-%s.tar.gz' "${RUBY_SOURCE_SHA256SUM}" "${RUBY_VERSION}" | sha256sum -c -
 tar xzf ruby-"${RUBY_VERSION}".tar.gz && cd ruby-"${RUBY_VERSION}"
+find "${GITLAB_BUILD_DIR}/patches/ruby" -name "*.patch" | while read -r patch_file; do
+  echo "Applying patch ${patch_file}"
+  patch -p1 -i "${patch_file}"
+done
 ./configure --disable-install-rdoc --enable-shared
 make -j"$(nproc)"
 make install
@@ -84,7 +88,7 @@ exec_as_git git config --global --add safe.directory /home/git/gitlab
 echo "Cloning gitlab-foss v.${GITLAB_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
 
-find "${GITLAB_BUILD_DIR}/patches/" -name "*.patch" | while read -r patch_file; do
+find "${GITLAB_BUILD_DIR}/patches/gitlabhq" -name "*.patch" | while read -r patch_file; do
   printf "Applying patch %s for gitlab-foss...\n" "${patch_file}"
   exec_as_git git -C ${GITLAB_INSTALL_DIR} apply --ignore-whitespace < "${patch_file}"
 done

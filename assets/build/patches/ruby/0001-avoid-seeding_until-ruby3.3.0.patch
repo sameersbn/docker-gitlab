@@ -1,0 +1,45 @@
+From 64e503eb62aff0952b655e9a86217e355f786146 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E5=8D=9C=E9=83=A8=E6=98=8C=E5=B9=B3?=
+ <shyouhei@ruby-lang.org>
+Date: Thu, 13 Apr 2023 15:36:24 +0900
+Subject: [PATCH] avoid seeding
+
+OpenSSL's man page previously stated that "the application is
+responsible for seeding the PRNG by calling RAND_add" (see [1]).
+So we had this code.  However things changed.  They no longer
+say so, instead "manual (re-)seeding of the default OpenSSL
+random generator is not necessary" now (see [2]).  It seems all
+OpenSSL versions that we support now already behaves like this.
+Let's follow that.
+
+[1]: https://www.openssl.org/docs/man1.0.2/man3/RAND_add.html
+[2]: https://www.openssl.org/docs/manmaster/man3/RAND_add.html
+---
+ lib/securerandom.rb | 11 -----------
+ 1 file changed, 11 deletions(-)
+
+diff --git a/lib/securerandom.rb b/lib/securerandom.rb
+index 07ae048634..c5be6ce734 100644
+--- a/lib/securerandom.rb
++++ b/lib/securerandom.rb
+@@ -47,17 +47,6 @@ def bytes(n)
+     private
+ 
+     def gen_random_openssl(n)
+-      @pid = 0 unless defined?(@pid)
+-      pid = $$
+-      unless @pid == pid
+-        now = Process.clock_gettime(Process::CLOCK_REALTIME, :nanosecond)
+-        OpenSSL::Random.random_add([now, @pid, pid].join(""), 0.0)
+-        seed = Random.urandom(16)
+-        if (seed)
+-          OpenSSL::Random.random_add(seed, 16)
+-        end
+-        @pid = pid
+-      end
+       return OpenSSL::Random.random_bytes(n)
+     end
+ 
+-- 
+2.43.0.windows.1
+
