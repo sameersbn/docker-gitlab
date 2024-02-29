@@ -2006,6 +2006,10 @@ configure_gitlab() {
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
 }
 
+configure_gitlab_requires_db() {
+  :
+}
+
 configure_gitlab_shell() {
   echo "Configuring gitlab-shell..."
   update_template ${GITLAB_SHELL_CONFIG} \
