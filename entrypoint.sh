@@ -21,12 +21,12 @@ case ${1} in
         /usr/bin/supervisord -nc /etc/supervisor/supervisord.conf &
         SUPERVISOR_PID=$!
         migrate_database
-        configure_gitlab_requires_db
         kill -15 $SUPERVISOR_PID
         if ps h -p $SUPERVISOR_PID > /dev/null ; then
         wait $SUPERVISOR_PID || true
         fi
         rm -rf /var/run/supervisor.sock
+        configure_gitlab_requires_db
         exec /usr/bin/supervisord -nc /etc/supervisor/supervisord.conf
         ;;
       app:init)
