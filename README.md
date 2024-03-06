@@ -156,6 +156,10 @@ Generate random strings that are at least `64` characters long for each of `GITL
 
 > **Tip**: You can generate a random string using `pwgen -Bsv1 64` and assign it as the value of `GITLAB_SECRETS_DB_KEY_BASE`.
 
+Also, you have to generate a RSA private key for `GITLAB_SECRETS_OPENID_CONNECT_SIGNING_KEY`. This value is used for the signing key for OpenID Connect.
+
+> **Tip**: You can generate one using `openssl genrsa -out - 2048` and assign it as the value of `GITLAB_SECRETS_OPENID_CONNECT_SIGNING_KEY`.
+
 Start GitLab using:
 
 ```bash
@@ -838,6 +842,10 @@ Encryption key for session secrets. Ensure that your key is at least 64 characte
 ##### `GITLAB_SECRETS_OTP_KEY_BASE`
 
  Encryption key for OTP related stuff with  GitLab. Ensure that your key is at least 64 characters long and that you don't lose it. **If you lose or change this secret, 2FA will stop working for all users.** You can generate one using `pwgen -Bsv1 64`. No defaults.
+
+##### `GITLAB_SECRETS_OPENID_CONNECT_SIGNING_KEY`
+
+ The signing key for OpenID Connect. **If you lose or change this secret, things like 2FA, settings and internal stuff will stop working for all users.** You can generate one using `openssl genrsa -out - 2048`. No defaults.
 
 ##### `GITLAB_TIMEZONE`
 
@@ -2668,6 +2676,7 @@ Replace `x.x.x` with the version you are upgrading from. For example, if you are
 
 > **Note**: Since GitLab `8.0.0` you need to provide the `GITLAB_SECRETS_DB_KEY_BASE` parameter while starting the image.
 > **Note**: Since GitLab `8.11.0` you need to provide the `GITLAB_SECRETS_SECRET_KEY_BASE` and `GITLAB_SECRETS_OTP_KEY_BASE` parameters while starting the image. These should initially both have the same value as the contents of the `/home/git/data/.secret` file. See [Available Configuration Parameters](#available-configuration-parameters) for more information on these parameters.
+> **Note**: Since GitLab `16.0.0` you need to provide the `GITLAB_SECRETS_OPENID_CONNECT_SIGNING_KEY` parameter while starting the image. See [Available Configuration Parameters](#available-configuration-parameters) for more information on these parameters.
 
 ```bash
 docker run --name gitlab -d [OPTIONS] sameersbn/gitlab:16.9.1
