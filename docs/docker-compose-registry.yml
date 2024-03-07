@@ -22,7 +22,7 @@ services:
 
   gitlab:
     restart: always
-    image: sameersbn/gitlab:16.9.1
+    image: sameersbn/gitlab:16.9.2
     volumes:
     - gitlab-data:/home/git/data:Z
     - gitlab-logs:/var/log/gitlab
