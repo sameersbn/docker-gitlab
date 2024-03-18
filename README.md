@@ -2676,7 +2676,7 @@ Replace `x.x.x` with the version you are upgrading from. For example, if you are
 
 > **Note**: Since GitLab `8.0.0` you need to provide the `GITLAB_SECRETS_DB_KEY_BASE` parameter while starting the image.
 > **Note**: Since GitLab `8.11.0` you need to provide the `GITLAB_SECRETS_SECRET_KEY_BASE` and `GITLAB_SECRETS_OTP_KEY_BASE` parameters while starting the image. These should initially both have the same value as the contents of the `/home/git/data/.secret` file. See [Available Configuration Parameters](#available-configuration-parameters) for more information on these parameters.
-> **Note**: Since GitLab `16.0.0` you need to provide the `GITLAB_SECRETS_OPENID_CONNECT_SIGNING_KEY` parameter while starting the image. See [Available Configuration Parameters](#available-configuration-parameters) for more information on these parameters.
+> **Note**: Since GitLab `16.0.0` you need to provide the [`GITLAB_SECRETS_OPENID_CONNECT_SIGNING_KEY`](#gitlab_secrets_openid_connect_signing_key) parameter while starting the image. See [Available Configuration Parameters](#available-configuration-parameters) for more information on these parameters.
 
 ```bash
 docker run --name gitlab -d [OPTIONS] sameersbn/gitlab:16.9.1
