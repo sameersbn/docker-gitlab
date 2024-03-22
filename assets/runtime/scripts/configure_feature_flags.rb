@@ -38,9 +38,13 @@ class FeatureFlagCLI
 
     op.on("-d", "--disable feature_a,feature_b,feature_c", Array, "comma-separated list of feature flags to be disabled (defaults: ${opts[:to_be_disabled]})") { |v|
       opts[:to_be_disabled] = v.uniq
+      puts "- Specified feature flags to be disabled"
+      puts opts[:to_be_disabled].map { |f| format("--- %<opt>s", opt: f) }
     }
     op.on("-e", "--enable feature_a,feature_b,feature_c", Array, "comma-separated list of feature flags to be enabled (defaults: ${opts[:to_be_enabled]})") { |v|
       opts[:to_be_enabled] = v.uniq
+      puts "- Specified feature flags to be enabled"
+      puts opts[:to_be_enabled].map { |f| format("--- %<opt>s", opt: f) }
     }
 
     begin
@@ -58,8 +62,6 @@ class FeatureFlagCLI
   def run
     succeed, opts, args = parse_options
     if succeed
-      puts "- specified feature flags: #{opts.to_s}"
-
       available_flags = self.available_feature_flags
       disable_targets = available_flags & opts[:to_be_disabled]
       enable_targets = available_flags & opts[:to_be_disabled]
@@ -76,7 +78,8 @@ class FeatureFlagCLI
       invalid_disable_targets = opts[:to_be_disabled] - disable_targets
       invalid_targets = invalid_disable_targets | invalid_enable_targets
       if invalid_targets.length > 0
-        puts "- Following flags are probably invalid and have been ignored: #{invalid_enable_targets.to_a.join(",")}"
+        puts "- Following flags are probably invalid and have been ignored"
+        puts invalid_targets.map { |f| format("--- %<name>s", name: f) }
       end
     end
 
