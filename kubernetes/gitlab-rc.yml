@@ -27,6 +27,8 @@ spec:
           value: long-and-random-alpha-numeric-string
         - name: GITLAB_SECRETS_OTP_KEY_BASE
           value: long-and-random-alpha-numeric-string
+        - name: GITLAB_SECRETS_ENCRYPTED_SETTINGS_KEY_BASE
+          value: long-and-random-alpha-numeric-string
 
         - name: GITLAB_ROOT_PASSWORD
           value:
