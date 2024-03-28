@@ -50,6 +50,7 @@
     - [External Issue Trackers](#external-issue-trackers)
     - [Host UID / GID Mapping](#host-uid--gid-mapping)
     - [Piwik](#piwik)
+    - [Feature flags](#feature-flags)
     - [Exposing ssh port in dockerized gitlab-ce](docs/exposing-ssh-port.md)
     - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
@@ -800,6 +801,52 @@ These options should contain something like:
 
 - `PIWIK_URL=piwik.example.org`
 - `PIWIK_SITE_ID=42`
+
+#### Feature flags
+
+In this section, we talk about feature flags that administrators can change the state (See <https://docs.gitlab.com/ee/administration/feature_flags.html>). If you are looking for documentation for "Feature flags" that configured on project deploy settings, see <https://docs.gitlab.com/ee/operations/feature_flags.html>
+
+GitLab adopted feature flags strategies to deploy features in an early stage of development so that they can be incrementally rolled out. GitLab administrators with access to the [Rails console](https://docs.gitlab.com/ee/administration/feature_flags.html#how-to-enable-and-disable-features-behind-flags) or the [Feature flags API](https://docs.gitlab.com/ee/api/features.html) can control them (note that `sameersbn/gitlab` is a container image that provides GitLab installations from the source).  
+You can see all feature flags in GitLab at corresponding version of documentation: <https://docs.gitlab.com/ee/user/feature_flags.html>  
+
+For `sameersbn/gitlab`, you can control them via environment parameter [`GITLAB_FEATURE_FLAGS_DISABLE_TARGETS`](#gitlab_feature_flags_disable_targets) and [`GITLAB_FEATURE_FLAGS_ENABLE_TARGETS`](#gitlab_feature_flags_enable_targets) in addition to the above methods.  
+This image searches yml files in [`${GITLAB_INSTALL_DIR}/config/feature_flags`](https://gitlab.com/gitlab-org/gitlab-foss/-/tree/master/config/feature_flags) (typically `/home/git/gitlab/config/feature_flags/`) recursively and use the file list as a source of active feature flags.
+
+Here is a part of example `docker-compose.yml`:
+
+````yml
+services:
+  gitlab:
+    image: sameersbn/gitlab:latest
+    environment:
+    - GITLAB_FEATURE_FLAGS_DISABLE_TARGETS=auto_devops_banner_disabled,ci_enable_live_trace
+    - GITLAB_FEATURE_FLAGS_ENABLE_TARGETS=git_push_create_all_pipelines,build_service_proxy
+````
+
+Once the container up, you can see following messages in container log like below.  
+
+````sh
+...
+Configuring gitlab::feature_flags...
+- specified feature flags: {:to_be_disabled=>["auto_devops_banner_disabled", "ci_enable_live_trace"], :to_be_enabled=>["git_push_create_all_pipelines", "build_service_proxy"]}
+- auto_devops_banner_disabled : off
+- ci_enable_live_trace : off
+- git_push_create_all_pipelines : on
+- build_service_proxy : on
+...
+````
+
+If specified flag names are not included in the list, they will be ignored and appears to container log like below:
+
+````sh
+...
+Configuring gitlab::feature_flags...
+- specified feature flags: {:to_be_disabled=>["auto_devops_banner_disabled", "invalid_flag_name"], :to_be_enabled=>["git_push_create_all_pipelines", "another_invalid_flag_name"]}
+- Following flags are probably invalid and have been ignored: invalid_flag_name,another_invalid_flag_name
+- auto_devops_banner_disabled : off
+- git_push_create_all_pipelines : on
+...
+````
 
 #### Available Configuration Parameters
 
@@ -1618,6 +1665,17 @@ The value of the `worker-src` directive in the `Content-Security-Policy` header.
 ##### `GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_REPORT_URI`
 
 The value of the `report-uri` directive in the `Content-Security-Policy` header
+
+##### `GITLAB_FEATURE_FLAGS_DISABLE_TARGETS`
+
+Comma separated list of feature flag names to be disabled. No whitespace is allowed.  
+You can see all feature flags in GitLab at corresponding version of documentation: <https://docs.gitlab.com/ee/user/feature_flags.html>  
+Feature flags name and its statement will be appear to container log. Note that some of the feature flags are implicitly enabled or disabled by GitLab itself, and are not appear to container log.  
+No defaults.
+
+##### `GITLAB_FEATURE_FLAGS_ENABLE_TARGETS`
+
+This parameter is the same as [`GITLAB_FEATURE_FLAGS_DISABLE_TARGETS`](#gitlab_feature_flags_enable_targets), except its purpose is to enable the feature flag. No defaults.
 
 ##### `SSL_SELF_SIGNED`
 

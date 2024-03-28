@@ -2006,6 +2006,57 @@ configure_gitlab() {
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
 }
 
+# feature flags are recorded to database (schema "application_settings") so requires DB is (at least) initialized
+gitlab_configure_feature_flags() {  
+  echo "Configuring gitlab::feature_flags..."
+
+  if [[ -z "${GITLAB_FEATURE_FLAGS_ENABLE_TARGETS}" && -z "${GITLAB_FEATURE_FLAGS_ENABLE_TARGETS}" ]]; then
+    # Do nothing and reports no error if no targets specified
+    echo "- No targets specified. skipping..."
+    return 0
+  fi
+
+  # Build command line argument for script only when target is specified
+  # If not, scripts fails because option specifier is recognized as feature flags for example
+  # like "--disable --enable" : for this case, --disable is recognized as a value of option "--enable"
+  if [[ -n "${GITLAB_FEATURE_FLAGS_DISABLE_TARGETS}" ]]; then
+    GITLAB_FEATURE_FLAGS_DISABLE_TARGETS="--disable ${GITLAB_FEATURE_FLAGS_DISABLE_TARGETS}"
+  fi
+  # The same goes for --enable (this is the last option passed to "rails runner" that will be run below)
+  # For this case (final option), it throws "missing argument" error for execution like:
+  # like "--disable feature1,feature2 --enable"
+  if [[ -n "${GITLAB_FEATURE_FLAGS_ENABLE_TARGETS}" ]]; then
+    GITLAB_FEATURE_FLAGS_ENABLE_TARGETS="--enable ${GITLAB_FEATURE_FLAGS_ENABLE_TARGETS}"
+  fi
+
+  PWD_ORG=${PWD}
+  cd "${GITLAB_INSTALL_DIR}"
+
+  # copy the script to temporal directory : to avoid permission issue
+  cp "${GITLAB_RUNTIME_DIR}/scripts/configure_feature_flags.rb" "${GITLAB_TEMP_DIR}/"
+  chown "${GITLAB_USER}:" "${GITLAB_TEMP_DIR}/configure_feature_flags.rb"
+
+  echo "- Launching rails runner to set feature flags. This will take some time...."
+
+  # If arguments are empty, the script will do nothing and print object dump like below:
+  #  - specified feature flags: {:to_be_disabled=>[], :to_be_enabled=>[]}
+  # DO NOT qupte variables : word splitting must be enabled.
+  # If disabled, whole string like '--disable feature_name_1,feature_name_2'
+  # will be recognized as single option and results to invalid argument error
+  #
+  # shellcheck disable=SC2086
+  exec_as_git bundle exec rails runner "${GITLAB_TEMP_DIR}/configure_feature_flags.rb" \
+    ${GITLAB_FEATURE_FLAGS_DISABLE_TARGETS} \
+    ${GITLAB_FEATURE_FLAGS_ENABLE_TARGETS}
+
+  rm "${GITLAB_TEMP_DIR}/configure_feature_flags.rb"
+  cd "${PWD_ORG}"
+}
+
+configure_gitlab_requires_db() {
+  gitlab_configure_feature_flags
+}
+
 configure_gitlab_shell() {
   echo "Configuring gitlab-shell..."
   update_template ${GITLAB_SHELL_CONFIG} \
