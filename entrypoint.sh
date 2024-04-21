@@ -26,6 +26,7 @@ case ${1} in
         wait $SUPERVISOR_PID || true
         fi
         rm -rf /var/run/supervisor.sock
+        configure_gitlab_requires_db
         exec /usr/bin/supervisord -nc /etc/supervisor/supervisord.conf
         ;;
       app:init)

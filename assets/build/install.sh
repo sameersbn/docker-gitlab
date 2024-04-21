@@ -47,6 +47,10 @@ mkdir /tmp/ruby && cd /tmp/ruby
 curl --remote-name -Ss "${RUBY_SRC_URL}"
 printf '%s ruby-%s.tar.gz' "${RUBY_SOURCE_SHA256SUM}" "${RUBY_VERSION}" | sha256sum -c -
 tar xzf ruby-"${RUBY_VERSION}".tar.gz && cd ruby-"${RUBY_VERSION}"
+find "${GITLAB_BUILD_DIR}/patches/ruby" -name "*.patch" | while read -r patch_file; do
+  echo "Applying patch ${patch_file}"
+  patch -p1 -i "${patch_file}"
+done
 ./configure --disable-install-rdoc --enable-shared
 make -j"$(nproc)"
 make install
@@ -78,15 +82,16 @@ exec_as_git git config --global gc.auto 0
 exec_as_git git config --global repack.writeBitmaps true
 exec_as_git git config --global receive.advertisePushOptions true
 exec_as_git git config --global advice.detachedHead false
+exec_as_git git config --global --add safe.directory /home/git/gitlab
 
 # shallow clone gitlab-foss
 echo "Cloning gitlab-foss v.${GITLAB_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
 
-if [[ -d "${GITLAB_BUILD_DIR}/patches" && -f "${GITLAB_BUILD_DIR}/patches/*.patch" ]]; then
-  echo "Applying patches for gitlab-foss..."
-  exec_as_git git -C ${GITLAB_INSTALL_DIR} apply --ignore-whitespace < ${GITLAB_BUILD_DIR}/patches/*.patch
-fi
+find "${GITLAB_BUILD_DIR}/patches/gitlabhq" -name "*.patch" | while read -r patch_file; do
+  printf "Applying patch %s for gitlab-foss...\n" "${patch_file}"
+  exec_as_git git -C ${GITLAB_INSTALL_DIR} apply --ignore-whitespace < "${patch_file}"
+done
 
 GITLAB_SHELL_VERSION=${GITLAB_SHELL_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_SHELL_VERSION)}
 GITLAB_PAGES_VERSION=${GITLAB_PAGES_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_PAGES_VERSION)}
@@ -122,6 +127,7 @@ rm -rf ${GITLAB_HOME}/repositories
 
 # build gitlab-workhorse
 echo "Build gitlab-workhorse"
+git config --global --add safe.directory /home/git/gitlab
 make -C ${GITLAB_WORKHORSE_BUILD_DIR} install
 # clean up
 rm -rf ${GITLAB_WORKHORSE_BUILD_DIR}
@@ -144,7 +150,12 @@ git clone -q -b v${GITALY_SERVER_VERSION} --depth 1 ${GITLAB_GITALY_URL} ${GITLA
 # install gitaly
 make -C ${GITLAB_GITALY_BUILD_DIR} install
 mkdir -p ${GITLAB_GITALY_INSTALL_DIR}
-cp -a ${GITLAB_GITALY_BUILD_DIR}/ruby ${GITLAB_GITALY_INSTALL_DIR}/
+# The following line causes some issues. However, according to
+# <https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5512> and 
+# <https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5671> there seems to
+# be some attempts to remove ruby from gitaly.
+#
+# cp -a ${GITLAB_GITALY_BUILD_DIR}/ruby ${GITLAB_GITALY_INSTALL_DIR}/
 cp -a ${GITLAB_GITALY_BUILD_DIR}/config.toml.example ${GITLAB_GITALY_INSTALL_DIR}/config.toml
 rm -rf ${GITLAB_GITALY_INSTALL_DIR}/ruby/vendor/bundle/ruby/**/cache
 chown -R ${GITLAB_USER}: ${GITLAB_GITALY_INSTALL_DIR}
@@ -187,11 +198,15 @@ chown -R ${GITLAB_USER}: ${GITLAB_HOME}
 # gitlab.yml and database.yml are required for `assets:precompile`
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/resque.yml.example ${GITLAB_INSTALL_DIR}/config/resque.yml
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
+#
+# Temporary workaround, see <https://github.com/sameersbn/docker-gitlab/pull/2596>
+#
+# exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
+cp ${GITLAB_BUILD_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
+chown ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/config/database.yml
 
 # Installs nodejs packages required to compile webpack
 exec_as_git yarn install --production --pure-lockfile
-exec_as_git yarn add ajv@^4.0.0
 
 echo "Compiling assets. Please be patient, this could take a while..."
 exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true NODE_OPTIONS="--max-old-space-size=4096"
@@ -240,10 +255,19 @@ sed -i \
   -e "s|^[#]*LogLevel INFO|LogLevel VERBOSE|" \
   -e "s|^[#]*AuthorizedKeysFile.*|AuthorizedKeysFile %h/.ssh/authorized_keys %h/.ssh/authorized_keys_proxy|" \
   /etc/ssh/sshd_config
+echo "AcceptEnv GIT_PROTOCOL" >> /etc/ssh/sshd_config # Allow clients to explicitly set the Git transfer protocol, e.g. to enable version 2.
 echo "UseDNS no" >> /etc/ssh/sshd_config
 
 # move supervisord.log file to ${GITLAB_LOG_DIR}/supervisor/
 sed -i "s|^[#]*logfile=.*|logfile=${GITLAB_LOG_DIR}/supervisor/supervisord.log ;|" /etc/supervisor/supervisord.conf
+
+# silence "CRIT Server 'unix_http_server' running without any HTTP authentication checking" message
+# https://github.com/Supervisor/supervisor/issues/717
+sed -i '/\.sock/a password=dummy' /etc/supervisor/supervisord.conf
+sed -i '/\.sock/a username=dummy' /etc/supervisor/supervisord.conf
+# prevent confusing warning "CRIT Supervisor running as root" by clarify run as root
+#   user not defined in supervisord.conf by default, so just append it after [supervisord] block
+sed -i "/\[supervisord\]/a user=root" /etc/supervisor/supervisord.conf
 
 # move nginx logs to ${GITLAB_LOG_DIR}/nginx
 sed -i \
@@ -343,8 +367,6 @@ command=bundle exec sidekiq -c {{SIDEKIQ_CONCURRENCY}}
   -C ${GITLAB_INSTALL_DIR}/config/sidekiq_queues.yml
   -e ${RAILS_ENV}
   -t {{SIDEKIQ_SHUTDOWN_TIMEOUT}}
-  -P ${GITLAB_INSTALL_DIR}/tmp/pids/sidekiq.pid
-  -L ${GITLAB_INSTALL_DIR}/log/sidekiq.log
 user=git
 autostart=true
 autorestart=true

@@ -1,7 +1,579 @@
 # Changelog
 
-This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in
-GitLab.
+This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
+
+**16.10.2**
+
+- gitlab: upgrade CE to v16.10.2
+- gitaly: upgrade to v16.10.2
+- gitlab-pages: upgrade to v16.10.2
+- golang: upgrade to v1.22.2
+
+**16.10.1**
+
+- gitlab: upgrade CE to v16.10.1
+- gitaly: upgrade to v16.10.1
+- gitlab-pages: upgrade to v16.10.1
+
+**16.10.0**
+
+- gitlab: upgrade CE to v16.10.0
+- gitaly: upgrade to v16.10.0
+- gitlab-pages: upgrade to v16.10.0
+- gitlab-shell: upgrade to v14.34.0
+
+**16.9.2**
+
+- gitlab: upgrade CE to v16.9.2
+- gitaly: upgrade to v16.9.2
+- gitlab-pages: upgrade to v16.9.2
+- golang: upgrade to v1.22.1
+- ubuntu: upgrade to focal-20240216
+
+**16.9.1**
+
+- gitlab: upgrade CE to v16.9.1
+- gitaly: upgrade to v16.9.1
+- gitlab-pages: upgrade to v16.9.1
+
+**16.9.0**
+
+- gitlab: upgrade CE to v16.9.0
+- gitaly: upgrade to v16.9.0
+- gitlab-pages: upgrade to v16.9.0
+
+**16.8.2**
+
+- gitlab: upgrade CE to v16.8.2
+- gitaly: upgrade to v16.8.2
+- gitlab-pages: upgrade to v16.8.2
+- golang: upgrade to v1.22.0
+- ubuntu: upgrade to focal-20240123
+
+**16.8.1**
+
+- gitlab: upgrade CE to v16.8.1
+- gitaly: upgrade to v16.8.1
+- gitlab-pages: upgrade to v16.8.1
+- gitlab-shell: upgrade to v14.33.0
+
+**16.8.0**
+
+- gitlab: upgrade CE to v16.8.0
+- gitaly: upgrade to v16.8.0
+- gitlab-pages: upgrade to v16.8.0
+
+**16.7.3**
+
+- gitlab: upgrade CE to v16.7.3
+- gitaly: upgrade to v16.7.3
+- gitlab-pages: upgrade to v16.7.3
+
+**16.7.2**
+
+- gitlab: upgrade CE to v16.7.2
+- gitaly: upgrade to v16.7.2
+- gitlab-pages: upgrade to v16.7.2
+- golang: upgrade to v1.21.6
+
+**16.7.0**
+
+- gitlab: upgrade CE to v16.7.0
+- gitaly: upgrade to v16.7.0
+- gitlab-pages: upgrade to v16.7.0
+- gitlab-shell: upgrade to v14.32.0
+- ruby: upgrade to v3.1.4
+
+**16.6.2**
+
+- gitlab: upgrade CE to v16.6.2
+- gitaly: upgrade to v16.6.2
+- gitlab-pages: upgrade to v16.6.2
+- golang: upgrade to v1.21.5
+- ubuntu: upgrade to focal-20231211
+
+**16.6.1**
+
+- gitlab: upgrade CE to v16.6.1
+- gitaly: upgrade to v16.6.1
+- gitlab-pages: upgrade to v16.6.1
+- ubuntu: upgrade to focal-20231128
+
+**16.6.0**
+
+- gitlab: upgrade CE to v16.6.0
+- gitaly: upgrade to v16.6.0
+- gitlab-pages: upgrade to v16.6.0
+- gitlab-shell: upgrade to v14.30.0
+- golang: upgrade to v1.21.4
+
+**16.5.1**
+
+- gitlab: upgrade CE to v16.5.1
+- gitaly: upgrade to v16.5.1
+- gitlab-pages: upgrade to v16.5.1
+
+**16.5.0**
+
+- gitlab: upgrade CE to v16.5.0
+- gitaly: upgrade to v16.5.0
+- gitlab-pages: upgrade to v16.5.0
+- gitlab-shell: upgrade to v14.29.0
+- golang: upgrade to v1.21.3
+- ubuntu: upgrade to focal-20231003
+
+**16.4.1**
+
+- gitlab: upgrade CE to v16.4.1
+- gitaly: upgrade to v16.4.1
+- gitlab-pages: upgrade to v16.4.1
+
+**16.4.0**
+
+- gitlab: upgrade CE to v16.4.0
+- gitaly: upgrade to v16.4.0
+- gitlab-pages: upgrade to v16.4.0
+- gitlab-shell: upgrade to v14.28.0
+
+**16.3.4**
+
+- gitlab: upgrade CE to v16.3.4
+- gitaly: upgrade to v16.3.4
+- gitlab-pages: upgrade to v16.3.4
+
+**16.3.3**
+
+- gitlab: upgrade CE to v16.3.3
+- gitaly: upgrade to v16.3.3
+- gitlab-pages: upgrade to v16.3.3
+
+**16.3.2**
+
+- gitlab: upgrade CE to v16.3.2
+- gitaly: upgrade to v16.3.2
+- gitlab-pages: upgrade to v16.3.2
+- golang: upgrade to v1.21.1
+
+**16.3.1**
+
+- gitlab: upgrade CE to v16.3.1
+- gitaly: upgrade to v16.3.1
+- gitlab-pages: upgrade to v16.3.1
+
+**16.3.0**
+
+- gitlab: upgrade CE to v16.3.0
+- gitaly: upgrade to v16.3.0
+- gitlab-pages: upgrade to v16.3.0
+
+**16.2.4**
+
+- gitlab: upgrade CE to v16.2.4
+- gitaly: upgrade to v16.2.4
+- gitlab-pages: upgrade to v16.2.4
+- golang: upgrade to v1.21.0
+
+**16.2.3**
+
+- gitlab: upgrade CE to v16.2.3
+- gitaly: upgrade to v16.2.3
+- gitlab-pages: upgrade to v16.2.3
+
+**16.2.2**
+
+- gitlab: upgrade CE to v16.2.2
+- gitaly: upgrade to v16.2.2
+- gitlab-pages: upgrade to v16.2.2
+- golang: upgrade to v1.20.7
+- ubuntu: upgrade to focal-20230801
+
+**16.2.1**
+
+- gitlab: upgrade CE to v16.2.1
+- gitaly: upgrade to v16.2.1
+- gitlab-pages: upgrade to v16.2.1
+
+**16.2.0**
+
+- gitlab: upgrade CE to v16.2.0
+- gitaly: upgrade to v16.2.0
+- gitlab-pages: upgrade to v16.2.0
+- golang: upgrade to v1.20.6
+
+**16.1.2**
+
+- gitlab: upgrade CE to v16.1.2
+- gitaly: upgrade to v16.1.2
+- gitlab-pages: upgrade to v16.1.2
+- ubuntu: upgrade to focal-20230624
+
+**16.1.1**
+
+- gitlab: upgrade CE to v16.1.1
+- gitaly: upgrade to v16.1.1
+- gitlab-pages: upgrade to v16.1.1
+
+**16.1.0**
+
+- gitlab: upgrade CE to v16.1.0
+- gitaly: upgrade to v16.1.0
+- gitlab-pages: upgrade to v16.1.0
+- gitlab-shell: upgrade to v14.23.0
+
+**16.0.5**
+
+- gitlab: upgrade CE to v16.0.5
+- gitaly: upgrade to v16.0.5
+- gitlab-pages: upgrade to v16.0.5
+- ubuntu: upgrade to focal-20230605
+
+**16.0.4**
+
+- gitlab: upgrade CE to v16.0.4
+- gitaly: upgrade to v16.0.4
+- gitlab-pages: upgrade to v16.0.4
+
+**16.0.3**
+
+- gitlab: upgrade CE to v16.0.3
+- gitaly: upgrade to v16.0.3
+- gitlab-pages: upgrade to v16.0.3
+
+**16.0.2**
+
+- gitlab: upgrade CE to v16.0.2
+- gitaly: upgrade to v16.0.2
+- gitlab-pages: upgrade to v16.0.2
+- golang: upgrade to v1.20.5
+
+**16.0.1**
+
+- gitlab: upgrade CE to v16.0.1
+- gitaly: upgrade to v16.0.1
+- gitlab-pages: upgrade to v16.0.1
+
+**16.0.0**
+
+- gitlab: upgrade CE to v16.0.0
+- gitaly: upgrade to v16.0.0
+- gitlab-pages: upgrade to v16.0.0
+- gitlab-shell: upgrade to v14.20.0
+
+**15.11.5**
+
+- gitlab: upgrade CE to v15.11.5
+- gitaly: upgrade to v15.11.5
+- gitlab-pages: upgrade to v15.11.5
+
+**15.11.4**
+
+- gitlab: upgrade CE to v15.11.4
+- gitaly: upgrade to v15.11.4
+- gitlab-pages: upgrade to v15.11.4
+
+**15.11.3**
+
+- gitlab: upgrade CE to v15.11.3
+- gitaly: upgrade to v15.11.3
+- gitlab-pages: upgrade to v15.11.3
+- ruby: upgrade to v3.0.6
+
+**15.11.2**
+
+- gitlab: upgrade CE to v15.11.2
+- gitaly: upgrade to v15.11.2
+- gitlab-pages: upgrade to v15.11.2
+
+**15.11.1**
+
+- gitlab: upgrade CE to v15.11.1
+- gitaly: upgrade to v15.11.1
+- gitlab-pages: upgrade to v15.11.1
+- golang: upgrade to v1.20.4
+
+**15.11.0**
+
+- gitlab: upgrade CE to v15.11.0
+- gitaly: upgrade to v15.11.0
+- gitlab-pages: upgrade to v15.11.0
+- ubuntu: upgrade to focal-20230412
+
+**15.10.3**
+
+- gitlab: upgrade CE to v15.10.3
+- gitaly: upgrade to v15.10.3
+- gitlab-pages: upgrade to v15.10.3
+
+**15.10.2**
+
+- gitlab: upgrade CE to v15.10.2
+- gitaly: upgrade to v15.10.2
+- gitlab-pages: upgrade to v15.10.2
+- golang: upgrade to v1.20.3
+
+**15.10.1**
+
+- gitlab: upgrade CE to v15.10.1
+- gitaly: upgrade to v15.10.1
+- gitlab-pages: upgrade to v15.10.1
+- ruby: upgrade to v2.7.8
+- ubuntu: upgrade to focal-20230308
+
+**15.10.0**
+
+- gitlab: upgrade CE to v15.10.0
+- gitaly: upgrade to v15.10.0
+- gitlab-pages: upgrade to v15.10.0
+- gitlab-shell: upgrade to v14.18.0
+- ubuntu: upgrade to focal-20230308
+
+**15.9.3**
+
+- gitlab: upgrade CE to v15.9.3
+- gitaly: upgrade to v15.9.3
+- gitlab-pages: upgrade to v15.9.3
+- golang: upgrade to v1.20.2
+
+**15.9.2**
+
+- gitlab: upgrade CE to v15.9.2
+- gitaly: upgrade to v15.9.2
+- gitlab-pages: upgrade to v15.9.2
+- ubuntu: upgrade to focal-20230301
+
+**15.9.1**
+
+- gitlab: upgrade CE to v15.9.1
+- gitaly: upgrade to v15.9.1
+- gitlab-pages: upgrade to v15.9.1
+
+**15.9.0**
+
+- gitlab: upgrade CE to v15.9.0
+- gitaly: upgrade to v15.9.0
+- gitlab-pages: upgrade to v15.9.0
+- gitlab-shell: upgrade to v14.17.0
+
+**15.8.2**
+
+- gitlab: upgrade CE to v15.8.2
+- gitaly: upgrade to v15.8.2
+- gitlab-pages: upgrade to v15.8.2
+- golang: upgrade to v1.19.6
+
+**15.8.1**
+
+- gitlab: upgrade CE to v15.8.1
+- gitaly: upgrade to v15.8.1
+- gitlab-pages: upgrade to v15.8.1
+- ubuntu: upgrade to focal-20230126
+
+**15.8.0-1**
+
+- ruby: rollback to v2.7.7
+
+**15.8.0**
+
+- gitlab: upgrade CE to v15.8.0
+- gitaly: upgrade to v15.8.0
+- gitlab-pages: upgrade to v15.8.0
+- gitlab-shell: upgrade to v14.15.0
+- golang: upgrade to v1.18.10
+
+**15.7.5**
+
+- gitlab: upgrade CE to v15.7.5
+- gitaly: upgrade to v15.7.5
+- gitlab-pages: upgrade to v15.7.5
+
+**15.7.3**
+
+- gitlab: upgrade CE to v15.7.3
+- gitaly: upgrade to v15.7.3
+- gitlab-pages: upgrade to v15.7.3
+
+**15.7.2**
+
+- gitlab: upgrade CE to v15.7.2
+- gitaly: upgrade to v15.7.2
+- gitlab-pages: upgrade to v15.7.2
+
+**15.7.1**
+
+- gitlab: upgrade CE to v15.7.1
+- gitaly: upgrade to v15.7.1
+- gitlab-pages: upgrade to v15.7.1
+
+**15.7.0**
+
+- gitlab: upgrade CE to v15.7.0
+- gitaly: upgrade to v15.7.0
+- gitlab-pages: upgrade to v15.7.0
+- gitlab-shell: upgrade to v14.14.0
+- ruby: upgrade to v3.0.5
+
+**15.6.3**
+
+- gitlab: upgrade CE to v15.6.3
+- gitaly: upgrade to v15.6.3
+- gitlab-pages: upgrade to v15.6.3
+- ubuntu: upgrade to focal-20221130
+- ruby: upgrade to v2.7.7
+- ruby: upgrade to v3.0.4
+
+**15.6.2**
+
+- gitlab: upgrade CE to v15.6.2
+- gitaly: upgrade to v15.6.2
+
+**15.6.1**
+
+- gitlab: upgrade CE to v15.6.1
+- gitaly: upgrade to v15.6.1
+
+**15.6.0**
+
+- gitlab: upgrade CE to v15.6.0
+- gitaly: upgrade to v15.6.0
+- gitlab-shell: upgrade to v14.13.0
+- gitlab-pages: upgrade to v1.63.0
+- golang: upgrade to v1.18.8
+
+**15.5.4**
+
+- gitlab: upgrade CE to v15.5.4
+- gitaly: upgrade to v15.5.4
+
+**15.5.3**
+
+- gitlab: upgrade CE to v15.5.3
+- gitaly: upgrade to v15.5.3
+
+**15.5.2**
+
+- gitlab: upgrade CE to v15.5.2
+- gitaly: upgrade to v15.5.2
+- ubuntu: upgrade to focal-20221019
+
+**15.5.1**
+
+- gitlab: upgrade CE to v15.5.1
+- gitaly: upgrade to v15.5.1
+
+**15.5.0**
+
+- gitlab: upgrade CE to v15.5.0
+- gitaly: upgrade to v15.5.0
+- gitlab-shell: upgrade to v14.12.0
+
+
+**15.4.3**
+
+- gitlab: upgrade CE to v15.4.3
+- gitaly: upgrade to v15.4.3
+- ubuntu: upgrade to focal-20220922
+
+**15.4.2**
+
+- gitlab: upgrade CE to v15.4.2
+- gitaly: upgrade to v15.4.2
+
+**15.4.1**
+
+- gitlab: upgrade CE to v15.4.1
+- gitaly: upgrade to v15.4.1
+
+**15.4.0**
+
+- gitlab: upgrade CE to v15.4.0
+- gitaly: upgrade to v15.4.0
+- ubuntu: upgrade tofocal-20220826
+
+**15.3.3**
+
+- gitlab: upgrade CE to v15.3.3
+- gitaly: upgrade to v15.3.3
+
+**15.3.2**
+
+- gitlab: upgrade CE to v15.3.2
+- gitaly: upgrade to v15.3.2
+
+**15.3.1**
+
+- gitlab: upgrade CE to v15.3.1
+- gitaly: upgrade to v15.3.1
+
+**15.3.0**
+
+- gitlab: upgrade CE to v15.3.0
+- gitaly: upgrade to v15.3.0
+- gitlab-shell: upgrade to v14.10.0
+- gitlab-pages: upgrade to v1.62.0
+- ubuntu: upgrade to focal-20220801
+
+**15.2.2**
+
+- gitlab: upgrade CE to v15.2.2
+- gitaly: upgrade to v15.2.2
+- golang: upgrade to v1.17.13
+
+**15.2.1**
+
+- gitlab: upgrade CE to v15.2.1
+- gitaly: upgrade to v15.2.1
+- gitlab-pages: upgrade to v1.61.1
+
+**15.2.0**
+
+- gitlab: upgrade CE to v15.2.0
+- gitaly: upgrade to v15.2.0
+- gitlab-shell: upgrade to v14.9.0
+- gitlab-pages: upgrade to v1.61.0
+- golang: upgrade to v1.17.12
+
+**15.1.3**
+
+- gitlab: upgrade CE to v15.1.3
+- gitaly: upgrade to v15.1.3
+
+**15.1.2**
+
+- gitlab: upgrade CE to v15.1.2
+- gitaly: upgrade to v15.1.2
+
+**15.1.1**
+
+- gitlab: upgrade CE to v15.1.1
+- gitaly: upgrade to v15.1.1
+
+**15.1.0**
+
+- gitlab: upgrade CE to v15.1.0
+- gitaly: upgrade to v15.1.0
+- gitlab-shell: upgrade to v14.7.4
+- gitlab-pages: upgrade to v1.59.0
+
+**15.0.3**
+- gitlab: upgrade CE to v15.0.3
+- gitaly: upgrade to v15.0.3
+
+**15.0.2**
+- gitlab: upgrade CE to v15.0.2
+- gitaly: upgrade to v15.0.2
+- ubuntu: upgrade to focal-20220531
+
+**15.0.1**
+- gitlab: upgrade CE to v15.0.1
+- gitaly: upgrade to v15.0.1
+- golang: upgrade to v1.17.11
+
+**15.0.0**
+- gitlab: upgrade CE to v15.0.0
+- gitaly: upgrade to v15.0.0
+- golang: upgrade to v1.17.10
+- gitlab-shell: upgrade to v14.3.0
+- gitlab-pages: upgrade to v1.58.0
 
 **14.10.3**
 - gitlab: upgrade CE to v14.10.3

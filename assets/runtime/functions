@@ -149,7 +149,7 @@ gitlab_finalize_database_parameters() {
 
 gitlab_check_database_connection() {
 
-  prog=$(find /usr/lib/postgresql/ -name pg_isready)
+  prog=$(find /usr/lib/postgresql/ -name pg_isready -type f | sort | tail -n1)
   prog="${prog} -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -t 1"
 
   timeout=60
@@ -167,11 +167,98 @@ gitlab_check_database_connection() {
   echo
 }
 
+gitlab_generate_postgresqlrc() {
+  echo "Configuring /home/${GITLAB_USER}/.postgresqlrc to avoid version mismatch on dumping"
+  # server_version_num property is a number built from version string:
+  # https://www.postgresql.org/docs/15/libpq-status.html#LIBPQ-PQSERVERVERSION 
+  # > The result is formed by multiplying the server's major version number by 10000 and adding the minor version number. 
+  # > For example, version 10.1 will be returned as 100001, and version 11.0 will be returned as 110000. Zero is returned if the connection is bad.
+  # >
+  # > Prior to major version 10, PostgreSQL used three-part version numbers in which the first two parts together represented the major version.
+  # > For those versions, PQserverVersion uses two digits for each part;
+  # > for example version 9.1.5 will be returned as 90105, and version 9.2.0 will be returned as 90200.
+  #
+  # This difference also appends to apt package name.
+  # For example, in ubuntu:focal, postgresql-client-{8.2, 8.3, 8.4, 9.0, 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 10, 11, 12, 13, 14, 15} are available.
+  # 
+  DB_SERVER_VERSION=$(PGPASSWORD=${DB_PASS} psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d "${DB_NAME}" -Atw -c "SHOW server_version_num")
+  if [[ "${DB_SERVER_VERSION}" -eq 0 ]]; then
+    echo
+    echo "Could not retrieve database server version correctly. Aborting..."
+    return 1
+  fi
+
+  echo "- Detected server version: ${DB_SERVER_VERSION}"
+
+  # Anyway, we can get major version (8, 9, 10 and so on) by dividing by 10000.
+  # DB_SERVER_VERSION_MAJOR=${DB_SERVER_VERSION%%.*}
+  DB_SERVER_VERSION_MAJOR=$((DB_SERVER_VERSION/10000))
+  DB_CLIENT_VERSION_PACKAGE_NAME=
+
+  if [[ "${DB_SERVER_VERSION_MAJOR}" -ge 10 ]]; then
+    # v10 or later: use "rought major version" as version number in package name
+    DB_CLIENT_VERSION_PACKAGE_NAME=${DB_SERVER_VERSION_MAJOR}
+  else
+    # prior to v10: convert
+    # FIXME: rough implementation
+    # It exploits the fact that there is no version such as 9.10, and it lacks versatility.
+    # divide by 100, then replace first 0 to comma
+    DB_CLIENT_VERSION_PACKAGE_NAME=$((DB_SERVER_VERSION/100))
+    DB_CLIENT_VERSION_PACKAGE_NAME=${DB_CLIENT_VERSION_PACKAGE_NAME/0/.}
+  fi
+
+  # if exact-match client not found, select latest version from installed clients
+  if [[ "$(apt-cache pkgnames postgresql-client | grep -e "-${DB_CLIENT_VERSION_PACKAGE_NAME}" | wc -l)" -ne 1 ]]; then
+    LATEST_CLIENT="$(apt-cache pkgnames postgresql-client | grep -v -e "-common" | sort --version-sort | tail -n1)"
+    DB_CLIENT_VERSION_PACKAGE_NAME=${LATEST_CLIENT/postgresql-client-/}
+    echo "gitlab_generate_postgresqlrc(): WARNING - Suitable client not installed. postgresql-client-${DB_CLIENT_VERSION_PACKAGE_NAME} will be used but you may face issue (database in backup will be empty, for example)"
+  fi
+
+  # generate ~/.postgresqlrc to switch client version
+  GITLAB_USER_POSTGRESQLRC="/home/${GITLAB_USER}/.postgresqlrc"
+  echo "- Generating ${GITLAB_USER_POSTGRESQLRC}"
+  echo "${DB_CLIENT_VERSION_PACKAGE_NAME} ${DB_HOST}:${DB_PORT} ${DB_NAME}" | exec_as_git tee "${GITLAB_USER_POSTGRESQLRC}"
+}
+
+gitlab_uninstall_unused_database_client() {
+  if [[ -f "/home/${GITLAB_USER}/.postgresqlrc" ]]; then
+    # refer /home/${GITLAB_USER}/.postgresqlrc and pick up versions in use
+    # .postgresqlrc contains following information per line
+    #   database_major_version host:port database_name
+    # - ignore lines starts with # by specifying pattern /^[^#]/
+    # - first field is the version number in use.
+    # - cocnat whole lines into single string. convert newline to \|
+    #   this is escaped regex "OR"
+    # now we got the following regex that can be used as an option to grep:
+    #   \|-12\|-13
+    DB_CLIENT_VERSIONS_IN_USE="$(awk '/^[^#]/ {printf("\|-%s",$1)}' "/home/${GITLAB_USER}/.postgresqlrc")"
+
+    # we also need to keep postgresql-client-common package to switch based on ~/.postgresqlrc
+    REGEX_DB_CLIENT_VERSIONS_IN_USE="-common${DB_CLIENT_VERSIONS_IN_USE}"
+
+    # remove unused client using regex above
+    # grep may return non-zero code on mo match, so fake the exit code with the `|| true` to swallow that
+    UNUSED_DB_CLIENTS=$(apt-cache pkgnames postgresql-client | grep -v -e "${REGEX_DB_CLIENT_VERSIONS_IN_USE}" || true)
+    if [[ "${UNUSED_DB_CLIENTS}" == "" ]]; then
+      echo "- All installed version of clients are in use. Did not uninstalled any client..."
+      return
+    fi
+
+    # just to get clean log, convert newline (package name delimiter) to single whitespace
+    UNUSED_DB_CLIENTS=$(echo ${UNUSED_DB_CLIENTS} | tr '\n' ' ')
+
+    echo "- Uninstalling unused client(s): ${UNUSED_DB_CLIENTS}"
+    DEBIAN_FRONTEND=noninteractive apt-get -qq -y purge -- ${UNUSED_DB_CLIENTS} >/dev/null
+  fi
+}
+
 gitlab_configure_database() {
   echo -n "Configuring gitlab::database"
 
   gitlab_finalize_database_parameters
   gitlab_check_database_connection
+  gitlab_generate_postgresqlrc
+  gitlab_uninstall_unused_database_client
 
   update_template ${GITLAB_DATABASE_CONFIG} \
     DB_ENCODING \
@@ -635,6 +722,8 @@ gitlab_configure_oauth2_generic() {
     OAUTH2_GENERIC_USER_UID \
     OAUTH2_GENERIC_USER_NAME \
     OAUTH2_GENERIC_USER_EMAIL \
+    OAUTH2_GENERIC_AUTHORIZE_PARAMS_SCOPE \
+    OAUTH2_GENERIC_LABEL \
     OAUTH2_GENERIC_NAME
   else
       exec_as_git sed -i "/name: 'oauth2_generic'/,/{{OAUTH2_GENERIC_NAME}}/d" ${GITLAB_CONFIG}
@@ -688,6 +777,22 @@ gitlab_configure_oauth_azure() {
   fi
 }
 
+gitlab_configure_oauth_azure_ad_v2() {
+  # we don't check if OAUTH_AZURE_ACTIVEDIRECTORY_V2_LABEL because it is optional
+  if [[ -n ${OAUTH_AZURE_ACTIVEDIRECTORY_V2_CLIENT_ID} && \
+        -n ${OAUTH_AZURE_ACTIVEDIRECTORY_V2_CLIENT_SECRET} && \
+        -n ${OAUTH_AZURE_ACTIVEDIRECTORY_V2_TENANT_ID} ]]; then
+    echo "Configuring gitlab::oauth::azure_activedirectory_v2..."
+    update_template ${GITLAB_CONFIG} \
+      OAUTH_AZURE_ACTIVEDIRECTORY_V2_LABEL \
+      OAUTH_AZURE_ACTIVEDIRECTORY_V2_CLIENT_ID \
+      OAUTH_AZURE_ACTIVEDIRECTORY_V2_CLIENT_SECRET \
+      OAUTH_AZURE_ACTIVEDIRECTORY_V2_TENANT_ID
+  else
+    exec_as_git sed -i "/name: 'azure_activedirectory_v2'/,/{{OAUTH_AZURE_ACTIVEDIRECTORY_V2_TENANT_ID}}/d" ${GITLAB_CONFIG}
+  fi
+}
+
 gitlab_configure_oauth() {
   echo "Configuring gitlab::oauth..."
 
@@ -704,6 +809,7 @@ gitlab_configure_oauth() {
   gitlab_configure_oauth_crowd
   gitlab_configure_oauth_auth0
   gitlab_configure_oauth_azure
+  gitlab_configure_oauth_azure_ad_v2
 
   OAUTH_ENABLED=${OAUTH_ENABLED:-false}
   update_template ${GITLAB_CONFIG} \
@@ -713,10 +819,11 @@ gitlab_configure_oauth() {
     OAUTH_AUTO_LINK_LDAP_USER \
     OAUTH_AUTO_LINK_SAML_USER \
     OAUTH_AUTO_LINK_USER \
-    OAUTH_EXTERNAL_PROVIDERS
+    OAUTH_EXTERNAL_PROVIDERS \
+    OAUTH_ALLOW_BYPASS_TWO_FACTOR
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
-    cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2|oauth2_generic|$OAUTH2_GENERIC_NAME)
+    cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2|azure_activedirectory_v2|oauth2_generic|$OAUTH2_GENERIC_NAME)
       update_template ${GITLAB_CONFIG} OAUTH_AUTO_SIGN_IN_WITH_PROVIDER
       ;;
     *)
@@ -964,6 +1071,24 @@ gitlab_configure_analytics() {
 
 gitlab_configure_rack_attack() {
   echo "Configuring gitlab::rack_attack..."
+
+  # validity check : RACK_ATTACK_WHITELIST should be an array of valid IP Address string
+  echo " Validating RACK_ATTACK_WHITELIST..."
+  /usr/bin/env ruby << SCRIPT
+  require 'ipaddr'
+  ${RACK_ATTACK_WHITELIST}.each do |host|
+    begin
+      printf("  input=%s, to_range=%s\n", host, IPAddr.new(host).to_range)
+    rescue IPAddr::InvalidAddressError => e
+      p e
+      exit 1
+    rescue => e
+      put "Unexpected error", e
+      exit 1
+    end
+  end
+SCRIPT
+
   update_template ${GITLAB_CONFIG} \
     RACK_ATTACK_ENABLED \
     RACK_ATTACK_WHITELIST \
@@ -980,6 +1105,9 @@ gitlab_configure_ci() {
 }
 
 gitlab_configure_artifacts() {
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED
+
   if [[ ${GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED} == true ]]; then
     echo "Configuring gitlab::artifacts:object_store"
 
@@ -997,7 +1125,6 @@ gitlab_configure_artifacts() {
     fi
 
     update_template ${GITLAB_CONFIG} \
-      GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED \
       GITLAB_ARTIFACTS_OBJECT_STORE_REMOTE_DIRECTORY \
       GITLAB_ARTIFACTS_OBJECT_STORE_DIRECT_UPLOAD \
       GITLAB_ARTIFACTS_OBJECT_STORE_BACKGROUND_UPLOAD \
@@ -1025,6 +1152,9 @@ gitlab_configure_artifacts() {
 
 
 gitlab_configure_packages() {
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_PACKAGES_OBJECT_STORE_ENABLED
+
   if [[ ${GITLAB_PACKAGES_OBJECT_STORE_ENABLED} == true ]]; then
     echo "Configuring gitlab::packages:object_store"
 
@@ -1042,7 +1172,6 @@ gitlab_configure_packages() {
     fi
 
     update_template ${GITLAB_CONFIG} \
-      GITLAB_PACKAGES_OBJECT_STORE_ENABLED \
       GITLAB_PACKAGES_OBJECT_STORE_REMOTE_DIRECTORY \
       GITLAB_PACKAGES_OBJECT_STORE_DIRECT_UPLOAD \
       GITLAB_PACKAGES_OBJECT_STORE_BACKGROUND_UPLOAD \
@@ -1069,6 +1198,9 @@ gitlab_configure_packages() {
 }
 
 gitlab_configure_terraform_state() {
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_TERRAFORM_STATE_OBJECT_STORE_ENABLED
+  
   if [[ ${GITLAB_TERRAFORM_STATE_OBJECT_STORE_ENABLED} == true ]]; then
     echo "Configuring gitlab::terraform_state:object_store"
 
@@ -1086,7 +1218,6 @@ gitlab_configure_terraform_state() {
     fi
 
     update_template ${GITLAB_CONFIG} \
-      GITLAB_TERRAFORM_STATE_OBJECT_STORE_ENABLED \
       GITLAB_TERRAFORM_STATE_OBJECT_STORE_REMOTE_DIRECTORY \
       GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_PROVIDER \
       GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID \
@@ -1110,6 +1241,9 @@ gitlab_configure_terraform_state() {
 }
 
 gitlab_configure_lfs() {
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_LFS_OBJECT_STORE_ENABLED \
+  
   if [[ ${GITLAB_LFS_OBJECT_STORE_ENABLED} == true ]]; then
     echo "Configuring gitlab::lfs:object_store"
 
@@ -1127,7 +1261,6 @@ gitlab_configure_lfs() {
     fi
 
     update_template ${GITLAB_CONFIG} \
-      GITLAB_LFS_OBJECT_STORE_ENABLED \
       GITLAB_LFS_OBJECT_STORE_REMOTE_DIRECTORY \
       GITLAB_LFS_OBJECT_STORE_DIRECT_UPLOAD \
       GITLAB_LFS_OBJECT_STORE_BACKGROUND_UPLOAD \
@@ -1154,6 +1287,9 @@ gitlab_configure_lfs() {
 }
 
 gitlab_configure_uploads() {
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_UPLOADS_OBJECT_STORE_ENABLED
+
   if [[ ${GITLAB_UPLOADS_OBJECT_STORE_ENABLED} == true ]]; then
     echo "Configuring gitlab::uploads:object_store"
 
@@ -1171,7 +1307,6 @@ gitlab_configure_uploads() {
     fi
 
     update_template ${GITLAB_CONFIG} \
-      GITLAB_UPLOADS_OBJECT_STORE_ENABLED \
       GITLAB_UPLOADS_OBJECT_STORE_REMOTE_DIRECTORY \
       GITLAB_UPLOADS_OBJECT_STORE_DIRECT_UPLOAD \
       GITLAB_UPLOADS_OBJECT_STORE_BACKGROUND_UPLOAD \
@@ -1524,7 +1659,12 @@ initialize_datadir() {
   chmod u+rwX ${GITLAB_SHARED_DIR}
   chown ${GITLAB_USER}: ${GITLAB_SHARED_DIR}
 
-  # create attifacts dir
+  # create the ci_secure_files directory
+  mkdir -p ${GITLAB_SHARED_DIR}/ci_secure_files
+  chmod u+rwX ${GITLAB_SHARED_DIR}/ci_secure_files
+  chown ${GITLAB_USER}: ${GITLAB_SHARED_DIR}/ci_secure_files
+
+  # create artifacts dir
   mkdir -p ${GITLAB_ARTIFACTS_DIR}
   chmod u+rwX ${GITLAB_ARTIFACTS_DIR}
   chown ${GITLAB_USER}: ${GITLAB_ARTIFACTS_DIR}
@@ -1660,7 +1800,7 @@ generate_ssh_key() {
 }
 
 generate_ssh_host_keys() {
-  sed -i "s|^[#]*MaxStartups 10:30:60|MaxStartups ${GITLAB_SSH_MAXSTARTUPS}|" /etc/ssh/sshd_config
+  sed -i "s|^[#]*MaxStartups[^$]*|MaxStartups ${GITLAB_SSH_MAXSTARTUPS}|" /etc/ssh/sshd_config
   sed -i "s|#HostKey /etc/ssh/|HostKey ${GITLAB_DATA_DIR}/ssh/|g" /etc/ssh/sshd_config
   if [[ ! -e ${GITLAB_DATA_DIR}/ssh/ssh_host_rsa_key ]]; then
     echo -n "Generating OpenSSH host keys... "
@@ -1866,6 +2006,57 @@ configure_gitlab() {
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
 }
 
+# feature flags are recorded to database (schema "application_settings") so requires DB is (at least) initialized
+gitlab_configure_feature_flags() {  
+  echo "Configuring gitlab::feature_flags..."
+
+  if [[ -z "${GITLAB_FEATURE_FLAGS_ENABLE_TARGETS}" && -z "${GITLAB_FEATURE_FLAGS_ENABLE_TARGETS}" ]]; then
+    # Do nothing and reports no error if no targets specified
+    echo "- No targets specified. skipping..."
+    return 0
+  fi
+
+  # Build command line argument for script only when target is specified
+  # If not, scripts fails because option specifier is recognized as feature flags for example
+  # like "--disable --enable" : for this case, --disable is recognized as a value of option "--enable"
+  if [[ -n "${GITLAB_FEATURE_FLAGS_DISABLE_TARGETS}" ]]; then
+    GITLAB_FEATURE_FLAGS_DISABLE_TARGETS="--disable ${GITLAB_FEATURE_FLAGS_DISABLE_TARGETS}"
+  fi
+  # The same goes for --enable (this is the last option passed to "rails runner" that will be run below)
+  # For this case (final option), it throws "missing argument" error for execution like:
+  # like "--disable feature1,feature2 --enable"
+  if [[ -n "${GITLAB_FEATURE_FLAGS_ENABLE_TARGETS}" ]]; then
+    GITLAB_FEATURE_FLAGS_ENABLE_TARGETS="--enable ${GITLAB_FEATURE_FLAGS_ENABLE_TARGETS}"
+  fi
+
+  PWD_ORG=${PWD}
+  cd "${GITLAB_INSTALL_DIR}"
+
+  # copy the script to temporal directory : to avoid permission issue
+  cp "${GITLAB_RUNTIME_DIR}/scripts/configure_feature_flags.rb" "${GITLAB_TEMP_DIR}/"
+  chown "${GITLAB_USER}:" "${GITLAB_TEMP_DIR}/configure_feature_flags.rb"
+
+  echo "- Launching rails runner to set feature flags. This will take some time...."
+
+  # If arguments are empty, the script will do nothing and print object dump like below:
+  #  - specified feature flags: {:to_be_disabled=>[], :to_be_enabled=>[]}
+  # DO NOT qupte variables : word splitting must be enabled.
+  # If disabled, whole string like '--disable feature_name_1,feature_name_2'
+  # will be recognized as single option and results to invalid argument error
+  #
+  # shellcheck disable=SC2086
+  exec_as_git bundle exec rails runner "${GITLAB_TEMP_DIR}/configure_feature_flags.rb" \
+    ${GITLAB_FEATURE_FLAGS_DISABLE_TARGETS} \
+    ${GITLAB_FEATURE_FLAGS_ENABLE_TARGETS}
+
+  rm "${GITLAB_TEMP_DIR}/configure_feature_flags.rb"
+  cd "${PWD_ORG}"
+}
+
+configure_gitlab_requires_db() {
+  gitlab_configure_feature_flags
+}
+
 configure_gitlab_shell() {
   echo "Configuring gitlab-shell..."
   update_template ${GITLAB_SHELL_CONFIG} \
@@ -2035,7 +2226,6 @@ migrate_database() {
       echo "Prepare recomplie assets... Installing missing node_modules for assets"
       chown -R ${GITLAB_USER}: ${GITLAB_HOME}/gitlab/node_modules
       exec_as_git yarn install --production --pure-lockfile
-      exec_as_git yarn add ajv@^4.0.0
       echo "Recompiling assets (relative_url in use), this could take a while..."
       exec_as_git bundle exec rake gitlab:assets:compile NODE_OPTIONS="--max-old-space-size=4096" >/dev/null 2>&1
     fi

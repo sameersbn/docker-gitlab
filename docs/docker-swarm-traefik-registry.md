@@ -331,6 +331,7 @@ docker run -d \
     --name gitlab-runner \
     --restart always \
     -v gitlab-runner:/etc/gitlab-runner \
+    -v /tmp/builds:/tmp/builds \
     -v /var/run/docker.sock:/var/run/docker.sock \
     gitlab/gitlab-runner:latest
 ```
@@ -363,7 +364,11 @@ gitlab-runner \
     register -n \
     --name "Docker Runner" \
     --executor docker \
+    --locked false \
+    --access-level not_protected \
+    --builds-dir /tmp/builds \
     --docker-image docker:latest \
+    --docker-volumes /tmp/builds:/tmp/builds \
     --docker-volumes /var/run/docker.sock:/var/run/docker.sock \
     --url $GITLAB_URL \
     --registration-token $GITLAB_TOKEN \

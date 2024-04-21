@@ -34,9 +34,19 @@ ${NOTABLE_CHANGES}
 
 For installation and usage instructions please refer to the [README](https://github.com/sameersbn/docker-gitlab/blob/${RELEASE}/README.md)
 
+## Important notes
+
+Please note that this version does not yet include any rework as a consequence of the major release and possibly some functions in our implementation might not be usable yet or only to a limited extent.
+
+Don't forget to consider the version specific upgrading instructions for [GitLab CE](https://docs.gitlab.com/ee/update/) **before** upgrading your GitLab CE instance!
+
+Please note:
+- GitLab 16.6.x requires at least PostgreSQL 13.
+- As of GitLab 16.7, PostgreSQL 14 is the default version. However, PostgreSQL 14 isn't supported on Geo deployments and is planned for future releases (see <https://docs.gitlab.com/ee/update/versions/gitlab_16_changes.html#1670>).
+
 ## Contributing
 
-If you find this image useful here's how you can help:
+You are kindly invited to provide contributions. If you find this image useful here's how you can help:
 
 - Send a Pull Request with your awesome new features and bug fixes
 - Be a part of the community and help resolve [issues](https://github.com/sameersbn/docker-gitlab/issues)

@@ -39,7 +39,6 @@ bind 'tcp://127.0.0.1:8080'
 workers {{PUMA_WORKERS}}
 
 require_relative "{{GITLAB_INSTALL_DIR}}/lib/gitlab/cluster/lifecycle_events"
-require_relative "{{GITLAB_INSTALL_DIR}}/lib/gitlab/cluster/puma_worker_killer_initializer"
 
 on_restart do
   # Signal application hooks that we're about to restart
@@ -60,6 +59,11 @@ on_worker_boot do
   Gitlab::Cluster::LifecycleEvents.do_worker_start
 end
 
+on_worker_shutdown do
+  # Signal application hooks that a worker is shutting down
+  Gitlab::Cluster::LifecycleEvents.do_worker_stop
+end
+
 # Preload the application before starting the workers; this conflicts with
 # phased restart feature. (off by default)
 preload_app!
@@ -72,10 +76,22 @@ tag 'gitlab-puma-worker'
 #
 worker_timeout {{PUMA_TIMEOUT}}
 
+# https://github.com/puma/puma/blob/master/5.0-Upgrade.md#lower-latency-better-throughput
+wait_for_less_busy_worker ENV.fetch('PUMA_WAIT_FOR_LESS_BUSY_WORKER', 0.001).to_f
+
 # Use json formatter
 require_relative "{{GITLAB_INSTALL_DIR}}/lib/gitlab/puma_logging/json_formatter"
 
 json_formatter = Gitlab::PumaLogging::JSONFormatter.new
 log_formatter do |str|
   json_formatter.call(str)
+end
+
+lowlevel_error_handler do |ex, env|
+  if Raven.configuration.capture_allowed?
+    Raven.capture_exception(ex, tags: { 'handler': 'puma_low_level' }, extra: { puma_env: env })
+  end
+
+  # note the below is just a Rack response
+  [500, {}, ["An error has occurred and reported in the system's low-level error handler."]]
 end

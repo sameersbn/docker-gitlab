@@ -1,14 +1,14 @@
-FROM ubuntu:focal-20220426
+FROM ubuntu:focal-20240216
 
-ARG VERSION=14.10.3
+ARG VERSION=16.10.2
 
 ENV GITLAB_VERSION=${VERSION} \
-    RUBY_VERSION=2.7.6 \
-    RUBY_SOURCE_SHA256SUM="e7203b0cc09442ed2c08936d483f8ac140ec1c72e37bb5c401646b7866cb5d10" \
-    GOLANG_VERSION=1.17.9 \
-    GITLAB_SHELL_VERSION=13.25.1 \
-    GITLAB_PAGES_VERSION=1.56.1 \
-    GITALY_SERVER_VERSION=14.10.3 \
+    RUBY_VERSION=3.2.3 \
+    RUBY_SOURCE_SHA256SUM="af7f1757d9ddb630345988139211f1fd570ff5ba830def1cc7c468ae9b65c9ba" \
+    GOLANG_VERSION=1.22.2 \
+    GITLAB_SHELL_VERSION=14.34.0 \
+    GITLAB_PAGES_VERSION=16.10.2 \
+    GITALY_SERVER_VERSION=16.10.2 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
@@ -37,14 +37,15 @@ RUN set -ex && \
  && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
  && echo 'deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
  && wget --quiet -O - https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
- && echo 'deb https://deb.nodesource.com/node_16.x focal main' > /etc/apt/sources.list.d/nodesource.list \
+ && echo 'deb https://deb.nodesource.com/node_18.x focal main' > /etc/apt/sources.list.d/nodesource.list \
  && wget --quiet -O - https://dl.yarnpkg.com/debian/pubkey.gpg  | apt-key add - \
  && echo 'deb https://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list.d/yarn.list \
  && set -ex \
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
       sudo supervisor logrotate locales curl \
-      nginx openssh-server postgresql-client-12 postgresql-contrib-12 redis-tools \
+      nginx openssh-server postgresql-contrib redis-tools \
+      postgresql-client-13 postgresql-client-14 postgresql-client-15 \
       python3 python3-docutils nodejs yarn gettext-base graphicsmagick \
       libpq5 zlib1g libyaml-0-2 libssl1.1 \
       libgdbm6 libreadline8 libncurses5 libffi7 \

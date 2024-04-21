@@ -12,4 +12,13 @@ production:
     password: "{{DB_PASS}}"
     pool: {{DB_POOL}}
     prepared_statements: {{DB_PREPARED_STATEMENTS}}
-
+  ci:
+    adapter: postgresql
+    encoding: {{DB_ENCODING}}
+    database: {{DB_NAME}}
+    database_tasks: false
+    host: {{DB_HOST}}
+    port: {{DB_PORT}}
+    username: {{DB_USER}}
+    password: "{{DB_PASS}}"
+    pool: {{DB_POOL}}
