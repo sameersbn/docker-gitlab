@@ -46,6 +46,7 @@
         - [Crowd](#crowd)
         - [Microsoft Azure](#microsoft-azure)
         - [Generic OAuth2](#Generic-OAuth2)
+        - [OpenID Connect](#openid-connect)
     - [Gitlab Pages](#gitlab-pages)
     - [External Issue Trackers](#external-issue-trackers)
     - [Host UID / GID Mapping](#host-uid--gid-mapping)
@@ -722,6 +723,14 @@ To enable the Generic OAuth2 provider, you must register your application with y
 As an example this code has been tested with Keycloak, with the following variables: `OAUTH2_GENERIC_APP_ID`, `OAUTH2_GENERIC_APP_SECRET`, `OAUTH2_GENERIC_CLIENT_SITE`, `OAUTH2_GENERIC_CLIENT_USER_INFO_URL`, `OAUTH2_GENERIC_CLIENT_AUTHORIZE_URL`, `OAUTH2_GENERIC_CLIENT_TOKEN_URL`, `OAUTH2_GENERIC_CLIENT_END_SESSION_ENDPOINT`, `OAUTH2_GENERIC_ID_PATH`, `OAUTH2_GENERIC_USER_UID`, `OAUTH2_GENERIC_USER_NAME`, `OAUTH2_GENERIC_USER_EMAIL`, `OAUTH2_GENERIC_AUTHORIZE_PARAMS_SCOPE`, `OAUTH2_GENERIC_LABEL` and `OAUTH2_GENERIC_NAME`.
 
 See [GitLab documentation](https://docs.gitlab.com/ee/integration/oauth2_generic.html#sign-into-gitlab-with-almost-any-oauth2-provider) and [Omniauth-oauth2-generic documentation](https://gitlab.com/satorix/omniauth-oauth2-generic) for more details.
+
+#### OpenID Connect
+
+To enable the OpenID Connect provider, you must register your application with your provider. You also need to confirm OpenID provider app's ID and secret, the client options and the user's response structure.
+
+As an example this code has been tested with Keycloak, with the following variables: `OAUTH2_OPENID_LABEL`, `OAUTH2_OPENID_ICON`, `OAUTH2_OPENID_SCOPE`, `OAUTH2_OPENID_RESPONSE_TYPE`, `OAUTH2_OPENID_ISSUER`, `OAUTH2_OPENID_DISCOVERY`, `OAUTH2_OPENID_CLIENT_AUTH_METHOD`, `OAUTH2_OPENID_UID_FIELD`, `OAUTH2_OPENID_SEND_SCOPE_TO_TOKEN_ENDPOINT`, `OAUTH2_OPENID_CLIENT_OPTIONS_IDENTIFIER`, `OAUTH2_OPENID_CLIENT_OPTIONS_SECRET` and `OAUTH2_OPENID_CLIENT_OPTIONS_REDIRECT_URI`
+
+See [GitLab documentation](https://docs.gitlab.com/ee/administration/auth/oidc.html) for more details.
 
 #### Gitlab Pages
 
@@ -2352,6 +2361,63 @@ The label of your OAuth2 provider. No defaults
 ##### `OAUTH2_GENERIC_NAME`
 
 The name of your OAuth2 provider. No defaults
+
+##### `OAUTH2_OPENID_LABEL`
+
+The label that appears on the login page
+
+##### `OAUTH2_OPENID_ICON` (optional)
+
+The icon that appears on the login page. Icons for the major social login platforms are built into GitLab, but you can override these icons by specifying this parameter. GitLab accepts both local paths and absolute URLs.
+
+##### `OAUTH2_OPENID_SCOPE`
+
+Defaults to `["openid", "profile", "email"]`.
+
+##### `OAUTH2_OPENID_RESPONSE_TYPE`
+
+Defaults to `code`.
+
+##### `OAUTH2_OPENID_ISSUER` (optional)
+
+The URL that points to the OpenID Connect provider (for example, `https://example.com/auth/realms/your-realm`). If this value is not provided, the URL is constructed from `client_options` in the following format: `<client_options.scheme>://<client_options.host>:<client_options.port>`.
+
+##### `OAUTH2_OPENID_DISCOVERY`
+
+If `discovery` is set to `true`, the OpenID Connect provider attempts to automatically discover the client options using `<your_oidc_url>/.well-known/openid-configuration`. Defaults to `false`.
+
+##### `OAUTH2_OPENID_CLIENT_AUTH_METHOD` (optional)
+
+Specifies the method used for authenticating the client with the OpenID Connect provider.
+
+Supported values are:
+
+- `basic` - HTTP Basic Authentication.
+- `jwt_bearer` - JWT-based authentication (private key and client secret signing).
+- `mtls` - Mutual TLS or X.509 certificate validation.
+- Any other value posts the client ID and secret in the request body.
+
+If not specified, this value defaults to `basic`.
+
+##### `OAUTH2_OPENID_UID_FIELD` (optional)
+
+The field name from `user_info.raw_attributes` that defines the value for `uid` (for example, `preferred_username`). If you do not provide this value, or the field with the configured value is missing from the `user_info.raw_attributes` details, `uid` uses the `sub` field.
+
+##### `OAUTH2_OPENID_SEND_SCOPE_TO_TOKEN_ENDPOINT`
+
+The `send_scope_to_token_endpoint` is `true` by default, so the `scope` parameter is normally included in requests to the token endpoint. However, if your OpenID Connect provider does not accept the `scope` parameter in such requests, set this to `false`.
+
+##### `OAUTH2_OPENID_CLIENT_OPTIONS_IDENTIFIER`
+
+The client identifier as configured in the OpenID Connect service provider.
+
+##### `OAUTH2_OPENID_CLIENT_OPTIONS_SECRET`
+
+The client secret as configured in the OpenID Connect service provider. (For example, [OmniAuth OpenIDConnect](https://github.com/omniauth/omniauth_openid_connect)) requires this. If the service provider doesn't require a secret, provide any value and it is ignored.
+
+##### `OAUTH2_OPENID_CLIENT_OPTIONS_REDIRECT_URI`
+
+The URL to the endpoint that ends the session. You can provide this URL if auto-discovery is disabled or unsuccessful.
 
 ##### `GITLAB_GRAVATAR_ENABLED`
 
