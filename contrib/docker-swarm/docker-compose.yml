@@ -3,7 +3,7 @@ version: '3.4'
 services:
   redis:
     restart: always
-    image: redis:6.2.6
+    image: redis:6.2
     command:
     - --loglevel warning
     volumes:
