@@ -2221,7 +2221,7 @@ migrate_database() {
         mkdir -p ${GITLAB_HOME}/gitlab/node_modules
         chown -R ${GITLAB_USER}: ${GITLAB_HOME}/gitlab/node_modules
       fi
-      echo "Prepare recomplie assets... Installing missing node_modules for assets"
+      echo "Prepare recompile assets... Installing missing node_modules for assets"
       chown -R ${GITLAB_USER}: ${GITLAB_HOME}/gitlab/node_modules
       exec_as_git yarn install --production --pure-lockfile
       echo "Recompiling assets (relative_url in use), this could take a while..."
