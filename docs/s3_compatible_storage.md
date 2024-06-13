@@ -122,6 +122,7 @@ services:
     - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
     - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alphanumeric-string
     - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alphanumeric-string
+    - GITLAB_SECRETS_ENCRYPTED_SETTINGS_KEY_BASE=long-and-random-alphanumeric-string
     - GITLAB_ROOT_PASSWORD=
     - GITLAB_ROOT_EMAIL=
     - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true

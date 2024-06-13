@@ -858,7 +858,8 @@ gitlab_configure_secrets() {
   update_template ${GITLAB_SECRETS_CONFIG} \
   GITLAB_SECRETS_DB_KEY_BASE \
   GITLAB_SECRETS_SECRET_KEY_BASE \
-  GITLAB_SECRETS_OTP_KEY_BASE
+  GITLAB_SECRETS_OTP_KEY_BASE \
+  GITLAB_SECRETS_ENCRYPTED_SETTINGS_KEY_BASE
 
   local shell_secret="${GITLAB_INSTALL_DIR}/.gitlab_shell_secret"
   if [[ ! -f "${shell_secret}" ]]; then
