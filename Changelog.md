@@ -4,8 +4,8 @@ This file only reflects the changes that are made in this image. Please refer to
 
 **16.10.7**
 
-- gitlab: upgrade CE to v16.10.6
-- gitaly: upgrade to v16.10.6
+- gitlab: upgrade CE to v16.10.7
+- gitaly: upgrade to v16.10.7
 - gitlab-pages: upgrade to v16.10.6
 - golang: upgrade to v1.22.4
 - ubuntu: upgrade to focal-20240530
