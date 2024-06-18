@@ -46,6 +46,7 @@
         - [Crowd](#crowd)
         - [Microsoft Azure](#microsoft-azure)
         - [Generic OAuth2](#Generic-OAuth2)
+        - [OpenID Connect](#OpenID-Connect)
     - [Gitlab Pages](#gitlab-pages)
     - [External Issue Trackers](#external-issue-trackers)
     - [Host UID / GID Mapping](#host-uid--gid-mapping)
@@ -724,6 +725,30 @@ To enable the Generic OAuth2 provider, you must register your application with y
 As an example this code has been tested with Keycloak, with the following variables: `OAUTH2_GENERIC_APP_ID`, `OAUTH2_GENERIC_APP_SECRET`, `OAUTH2_GENERIC_CLIENT_SITE`, `OAUTH2_GENERIC_CLIENT_USER_INFO_URL`, `OAUTH2_GENERIC_CLIENT_AUTHORIZE_URL`, `OAUTH2_GENERIC_CLIENT_TOKEN_URL`, `OAUTH2_GENERIC_CLIENT_END_SESSION_ENDPOINT`, `OAUTH2_GENERIC_ID_PATH`, `OAUTH2_GENERIC_USER_UID`, `OAUTH2_GENERIC_USER_NAME`, `OAUTH2_GENERIC_USER_EMAIL`, `OAUTH2_GENERIC_AUTHORIZE_PARAMS_SCOPE`, `OAUTH2_GENERIC_LABEL` and `OAUTH2_GENERIC_NAME`.
 
 See [GitLab documentation](https://docs.gitlab.com/ee/integration/oauth2_generic.html#sign-into-gitlab-with-almost-any-oauth2-provider) and [Omniauth-oauth2-generic documentation](https://gitlab.com/satorix/omniauth-oauth2-generic) for more details.
+
+##### OpenID Connect
+
+To enable OpenID Connect provider, you must register your application with your provider. You also need to confirm OpenID Connect provider app's ID and secret, the client options and the user's response structure.
+
+To use OIDC set at least `OAUTH_OIDC_ISSUER` and `OAUTH_OIDC_CLIENT_ID`.
+
+| GitLab setting | environment variable |
+|----------------|----------------------|
+| `label` | `OAUTH_OIDC_LABEL` |
+| `icon` | `OAUTH_OIDC_ICON` |
+| `scope`| `OAUTH_OIDC_SCOPE` |
+| `response_type` | `OAUTH_OIDC_RESPONSE_TYPE` |
+| `issuer` | `OAUTH_OIDC_ISSUER` |
+| `discovery` | `OAUTH_OIDC_DISCOVERY` |
+| `client_auth_method` | `OAUTH_OIDC_CLIENT_AUTH_METHOD` |
+| `uid_field` | `OAUTH_OIDC_UID_FIELD` |
+| `send_scope_to_token_endpoint` | `OAUTH_OIDC_SEND_SCOPE_TO_TOKEN_EP` |
+| `pkce` | `OAUTH_OIDC_PKCE` |
+| `client_options.identifier` | `OAUTH_OIDC_CLIENT_ID` |
+| `client_options.secret` | `OAUTH_OIDC_CLIENT_SECRET` |
+| `client_options.redirect_uri` | `OAUTH_OIDC_REDIRECT_URI` |
+
+See [GitLab OIDC documentation](https://docs.gitlab.com/ee/administration/auth/oidc.html) and [OmniAuth OpenID Connect documentation](https://github.com/omniauth/omniauth_openid_connect/).
 
 #### Gitlab Pages
 
