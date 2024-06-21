@@ -56,6 +56,9 @@ make -j"$(nproc)"
 make install
 cd "$PWD_ORG" && rm -rf /tmp/ruby
 
+# upgrade rubygems on demand
+gem update --no-document --system "${RUBYGEMS_VERSION}"
+
 # PaX-mark ruby
 # Applying the mark late here does make the build usable on PaX kernels, but
 # still the build itself must be executed on a non-PaX kernel. It's done here
