@@ -46,7 +46,7 @@
         - [Crowd](#crowd)
         - [Microsoft Azure](#microsoft-azure)
         - [Generic OAuth2](#Generic-OAuth2)
-        - [OpenID Connect](#OpenID-Connect)
+        - [OpenID Connect](#openid-connect)
     - [Gitlab Pages](#gitlab-pages)
     - [External Issue Trackers](#external-issue-trackers)
     - [Host UID / GID Mapping](#host-uid--gid-mapping)
@@ -732,21 +732,21 @@ To enable OpenID Connect provider, you must register your application with your 
 
 To use OIDC set at least `OAUTH_OIDC_ISSUER` and `OAUTH_OIDC_CLIENT_ID`.
 
-| GitLab setting | environment variable |
-|----------------|----------------------|
-| `label` | `OAUTH_OIDC_LABEL` |
-| `icon` | `OAUTH_OIDC_ICON` |
-| `scope`| `OAUTH_OIDC_SCOPE` |
-| `response_type` | `OAUTH_OIDC_RESPONSE_TYPE` |
-| `issuer` | `OAUTH_OIDC_ISSUER` |
-| `discovery` | `OAUTH_OIDC_DISCOVERY` |
-| `client_auth_method` | `OAUTH_OIDC_CLIENT_AUTH_METHOD` |
-| `uid_field` | `OAUTH_OIDC_UID_FIELD` |
-| `send_scope_to_token_endpoint` | `OAUTH_OIDC_SEND_SCOPE_TO_TOKEN_EP` |
-| `pkce` | `OAUTH_OIDC_PKCE` |
-| `client_options.identifier` | `OAUTH_OIDC_CLIENT_ID` |
-| `client_options.secret` | `OAUTH_OIDC_CLIENT_SECRET` |
-| `client_options.redirect_uri` | `OAUTH_OIDC_REDIRECT_URI` |
+| GitLab setting                 | environment variable                | default value                  |
+|--------------------------------|-------------------------------------|--------------------------------|
+| `label`                        | `OAUTH_OIDC_LABEL`                  | `OpenID Connect`               |
+| `icon`                         | `OAUTH_OIDC_ICON`                   |                                |
+| `scope`                        | `OAUTH_OIDC_SCOPE`                  | `['openid','profile','email']` |
+| `response_type`                | `OAUTH_OIDC_RESPONSE_TYPE`          | `code`                         |
+| `issuer`                       | `OAUTH_OIDC_ISSUER`                 |                                |
+| `discovery`                    | `OAUTH_OIDC_DISCOVERY`              | `true`                         |
+| `client_auth_method`           | `OAUTH_OIDC_CLIENT_AUTH_METHOD`     | `basic`                        |
+| `uid_field`                    | `OAUTH_OIDC_UID_FIELD`              | `sub`                          |
+| `send_scope_to_token_endpoint` | `OAUTH_OIDC_SEND_SCOPE_TO_TOKEN_EP` | `false`                        |
+| `pkce`                         | `OAUTH_OIDC_PKCE`                   | `true`                         |
+| `client_options.identifier`    | `OAUTH_OIDC_CLIENT_ID`              |                                |
+| `client_options.secret`        | `OAUTH_OIDC_CLIENT_SECRET`          | `secret`                       |
+| `client_options.redirect_uri`  | `OAUTH_OIDC_REDIRECT_URI`           | `http://${GITLAB_HOST}/users/auth/openid_connect/callback` or `https://${GITLAB_HOST}/users/auth/openid_connect/callback` depending on the value of `GITLAB_HTTPS` |
 
 See [GitLab OIDC documentation](https://docs.gitlab.com/ee/administration/auth/oidc.html) and [OmniAuth OpenID Connect documentation](https://github.com/omniauth/omniauth_openid_connect/).
 
