@@ -269,12 +269,12 @@ jobs:
   release:
     executor:
       name: go/default
-      tag: '1.14'
+      tag: '1.22'
     steps:
       - checkout
       - run:
           name: Installing github-release tool
-          command: go get github.com/meterup/github-release
+          command: go install github.com/meterup/github-release@latest
       - run:
           name: Creating github release
           command: |
