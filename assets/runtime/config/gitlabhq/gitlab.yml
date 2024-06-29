@@ -1031,6 +1031,23 @@ production: &base
             client_id: '{{OAUTH_AZURE_ACTIVEDIRECTORY_V2_CLIENT_ID}}',
             client_secret: '{{OAUTH_AZURE_ACTIVEDIRECTORY_V2_CLIENT_SECRET}}',
             tenant_id: '{{OAUTH_AZURE_ACTIVEDIRECTORY_V2_TENANT_ID}}' } }
+      - { name: 'openid_connect',
+          label: '{{OAUTH_OIDC_LABEL}}',
+          icon: '{{OAUTH_OIDC_ICON}}',
+          args: {
+            name: 'openid_connect',
+            scope: {{OAUTH_OIDC_SCOPE}},
+            response_type: '{{OAUTH_OIDC_RESPONSE_TYPE}}',
+            issuer: '{{OAUTH_OIDC_ISSUER}}',
+            discovery: {{OAUTH_OIDC_DISCOVERY}},
+            client_auth_method: '{{OAUTH_OIDC_CLIENT_AUTH_METHOD}}',
+            uid_field: '{{OAUTH_OIDC_UID_FIELD}}',
+            send_scope_to_token_endpoint: {{OAUTH_OIDC_SEND_SCOPE_TO_TOKEN_EP}},
+            pkce: {{OAUTH_OIDC_PKCE}},
+            client_options: {
+              identifier: '{{OAUTH_OIDC_CLIENT_ID}}',
+              secret: '{{OAUTH_OIDC_CLIENT_SECRET}}',
+              redirect_uri: '{{OAUTH_OIDC_REDIRECT_URI}}' } } }
 
     # SSO maximum session duration in seconds. Defaults to CAS default of 8 hours.
     # cas3:
