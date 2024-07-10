@@ -1664,6 +1664,11 @@ initialize_datadir() {
   chmod u+rwX ${GITLAB_SHARED_DIR}/ci_secure_files
   chown ${GITLAB_USER}: ${GITLAB_SHARED_DIR}/ci_secure_files
 
+  # create external-diffs dir
+  mkdir -p ${GITLAB_SHARED_DIR}/external-diffs
+  chmod u+rwX ${GITLAB_SHARED_DIR}/external-diffs
+  chown ${GITLAB_USER}: ${GITLAB_SHARED_DIR}/external-diffs
+
   # create artifacts dir
   mkdir -p ${GITLAB_ARTIFACTS_DIR}
   chmod u+rwX ${GITLAB_ARTIFACTS_DIR}
