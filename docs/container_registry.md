@@ -36,7 +36,7 @@ the GitLab installation and the registry are:
 
 GitLab needs a certificate ("auth token") to talk to the registry API. The
 tokens must be provided in the `/certs` directory of your container. You could
-use an existing domain ceritificate or create your own with a very long
+use an existing domain certificate or create your own with a very long
 lifetime like this:
 
 ```bash
@@ -224,7 +224,7 @@ Read more about the individual driver's config options in the
 > **Warning** GitLab will not backup Docker images that are not stored on the filesystem. Remember to enable backups with your object storage provider if desired.
 >
 > If you use **filesystem** as storage driver you need to mount the path from `GITLAB_REGISTRY_DIR` of the GitLab container in the registry container. So both container can access the registry data.
-> If you don't change `GITLAB_REGISTRY_DIR` you will find your registry data in the mounted volume from the GitLab Container under `./gitlab/shared/registry`. This don't need to be seprated mounted because `./gitlab` is already mounted in the GitLab Container. If it will be mounted seperated the whole restoring proccess of GitLab backup won't work because gitlab try to create an folder under `./gitlab/shared/registry` /`GITLAB_REGISTRY_DIR` and GitLab can't delete/remove the mount point inside the container so the restoring process of the backup will fail.
+> If you don't change `GITLAB_REGISTRY_DIR` you will find your registry data in the mounted volume from the GitLab Container under `./gitlab/shared/registry`. This don't need to be separated mounted because `./gitlab` is already mounted in the GitLab Container. If it will be mounted separated the whole restoring process of GitLab backup won't work because gitlab try to create an folder under `./gitlab/shared/registry` /`GITLAB_REGISTRY_DIR` and GitLab can't delete/remove the mount point inside the container so the restoring process of the backup will fail.
 > An example how it works is in the `docker-compose`.
 
 ### Example for Amazon Simple Storage Service (s3)
@@ -265,7 +265,7 @@ storage:
     - REGISTRY_STORAGE_DELETE_ENABLED=true
 ```
 
-Generaly for more information about the configuration of the registry container you can find it under [registry configuration](https://docs.docker.com/registry/configuration).
+Generally for more information about the configuration of the registry container you can find it under [registry configuration](https://docs.docker.com/registry/configuration).
 
 
 ## Storage limitations

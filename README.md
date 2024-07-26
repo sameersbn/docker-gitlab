@@ -73,7 +73,7 @@
 
 Dockerfile to build a [GitLab](https://about.gitlab.com/) image for the [Docker](https://www.docker.com/products/docker-engine) opensource container platform.
 
-GitLab CE is set up in the Docker image using the [install from source](https://docs.gitlab.com/ce/install/installation.html) method as documented in the the official GitLab documentation.
+GitLab CE is set up in the Docker image using the [install from source](https://docs.gitlab.com/ce/install/installation.html) method as documented in the official GitLab documentation.
 
 For other methods to install GitLab please refer to the [Official GitLab Installation Guide](https://about.gitlab.com/install/) which includes a [GitLab image for Docker](https://docs.gitlab.com/omnibus/docker/).
 
@@ -106,9 +106,9 @@ wget -qO- https://get.docker.com/ | sh
 
 Fedora and RHEL/CentOS users should try disabling selinux with `setenforce 0` and check if resolves the issue. If it does than there is not much that I can help you with. You can either stick with selinux disabled (not recommended by redhat) or switch to using ubuntu.
 
-You may also set `DEBUG=true` to enable debugging of the entrypoint script, which could help you pin point any configuration issues.
+You may also set `DEBUG=true` to enable debugging of the entrypoint script, which could help you pinpoint any configuration issues.
 
-If using the latest docker version and/or disabling selinux does not fix the issue then please file a issue request on the [issues](https://github.com/sameersbn/docker-gitlab/issues) page.
+If using the latest docker version and/or disabling selinux does not fix the issue then please file an issue request on the [issues](https://github.com/sameersbn/docker-gitlab/issues) page.
 
 In your issue report please make sure you provide the following information:
 
@@ -245,7 +245,7 @@ GitLab uses a database backend to store its data. You can configure this image t
 
 **Important note:** This image is shipped with different versions of the `postgresql-client`.
 
-During the startup of the container, the major version of the database system is checked based on the specified connection destination. Only the version of the `postgresql-client`, that matches the major version of the Postgres database is used. If the major version of any version of the included clients does not match, the latest client is used (but may causes issues). All other versions of the `postgresql-client` are deleted at runtime.
+During the startup of the container, the major version of the database system is checked based on the specified connection destination. Only the version of the `postgresql-client`, that matches the major version of the Postgres database is used. If the major version of any version of the included clients does not match, the latest client is used (but may cause issues). All other versions of the `postgresql-client` are deleted at runtime.
 
 This behavior can be checked using the command `docker logs` and an output like the following should be available:
 
@@ -260,7 +260,7 @@ Configuring gitlab::database
 …
 ````
 
-Please note furthermore, that only compatible versions of the `postgresql-client` to GitLab are shipped with this image. Currently these belong to
+Please note furthermore, that only compatible versions of the `postgresql-client` to GitLab are shipped with this image. Currently, these belong to
 
 - `postgresql-client-13`,
 - `postgresql-client-14`,
@@ -278,7 +278,7 @@ CREATE DATABASE gitlabhq_production;
 GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
 ```
 
-Additionally since GitLab `8.6.0` the `pg_trgm` extension should also be loaded for the `gitlabhq_production` database.
+Additionally, since GitLab `8.6.0` the `pg_trgm` extension should also be loaded for the `gitlabhq_production` database.
 
 We are now ready to start the GitLab application.
 
@@ -301,7 +301,7 @@ If a postgresql container is linked, only the `DB_HOST` and `DB_PORT` settings a
 
 To illustrate linking with a postgresql container, we will use the [sameersbn/postgresql](https://github.com/sameersbn/docker-postgresql) image. When using postgresql image in production you should mount a volume for the postgresql data store. Please refer the [README](https://github.com/sameersbn/docker-postgresql/blob/master/README.md) of docker-postgresql for details.
 
-First, lets pull the postgresql image from the docker index.
+First, let's pull the postgresql image from the docker index.
 
 ```bash
 docker pull sameersbn/postgresql:14-20230628
@@ -382,7 +382,7 @@ You can link this image with a redis container to satisfy gitlab's redis require
 
 To illustrate linking with a redis container, we will use the [redis](https://github.com/docker-library/redis) image. Please refer the [README](https://github.com/docker-library/docs/blob/master/redis/README.md) for details.
 
-First, lets pull the redis image from the docker index.
+First, let's pull the redis image from the docker index.
 
 ```bash
 docker pull redis:6.2
@@ -440,7 +440,7 @@ Please refer the [Available Configuration Parameters](#available-configuration-p
 
 #### SSL
 
-Access to the gitlab application can be secured using SSL so as to prevent unauthorized access to the data in your repositories. While a CA certified SSL certificate allows for verification of trust via the CA, a self signed certificate can also provide an equal level of trust verification as long as each client takes some additional steps to verify the identity of your website. I will provide instructions on achieving this towards the end of this section.
+Access to the gitlab application can be secured using SSL so as to prevent unauthorized access to the data in your repositories. While a CA certified SSL certificate allows for verification of trust via the CA, a self-signed certificate can also provide an equal level of trust verification as long as each client takes some additional steps to verify the identity of your website. I will provide instructions on achieving this towards the end of this section.
 
 Jump to the [Using HTTPS with a load balancer](#using-https-with-a-load-balancer) section if you are using a load balancer such as hipache, haproxy or nginx.
 
@@ -495,7 +495,7 @@ In case use of docker-compose ...
 
 ```$>docker volume inspect```
 
-look for "< user >_gitlab-data" and copy the "certs" directory into the "Mountpoint"
+Look for "< user >_gitlab-data" and copy the "certs" directory into the "Mountpoint"
 
 ```bash
 mkdir -p /srv/docker/gitlab/gitlab/certs
@@ -505,7 +505,7 @@ cp dhparam.pem /srv/docker/gitlab/gitlab/certs/
 chmod 400 /srv/docker/gitlab/gitlab/certs/gitlab.key
 ```
 
-Great! we are now just one step away from having our application secured.
+Great! We are now just one step away from having our application secured.
 
 ##### Enabling HTTPS support
 
@@ -526,7 +526,7 @@ In this configuration, any requests made over the plain http protocol will autom
 
 HSTS if supported by the browsers makes sure that your users will only reach your sever via HTTPS. When the user comes for the first time it sees a header from the server which states for how long from now this site should only be reachable via HTTPS - that's the HSTS max-age value.
 
-With `NGINX_HSTS_MAXAGE` you can configure that value. The default value is `31536000` seconds. If you want to disable a already sent HSTS MAXAGE value, set it to `0`.
+With `NGINX_HSTS_MAXAGE` you can configure that value. The default value is `31536000` seconds. If you want to disable an already sent HSTS MAXAGE value, set it to `0`.
 
 ```bash
 docker run --name gitlab -d \
@@ -542,7 +542,7 @@ If you want to completely disable HSTS set `NGINX_HSTS_ENABLED` to `false`.
 
 Load balancers like nginx/haproxy/hipache talk to backend applications over plain http and as such the installation of ssl keys and certificates are not required and should **NOT** be installed in the container. The SSL configuration has to instead be done at the load balancer.
 
-However, when using a load balancer you **MUST** set `GITLAB_HTTPS` to `true`. Additionally you will need to set the `SSL_SELF_SIGNED` option to `true` if self signed SSL certificates are in use.
+However, when using a load balancer you **MUST** set `GITLAB_HTTPS` to `true`. Additionally, you will need to set the `SSL_SELF_SIGNED` option to `true` if self-signed SSL certificates are in use.
 
 With this in place, you should configure the load balancer to support handling of https requests. But that is out of the scope of this document. Please refer to [Using SSL/HTTPS with HAProxy](http://seanmcgary.com/posts/using-sslhttps-with-haproxy) for information on the subject.
 
@@ -567,7 +567,7 @@ In case GitLab responds to any kind of POST request (login, OAUTH, changing sett
 
 ##### Establishing trust with your server
 
-This section deals will self-signed ssl certificates. If you are using CA certified certificates, your done.
+This section deals will self-signed ssl certificates. If you are using CA certified certificates, you're done.
 
 This section is more of a client side configuration so as to add a level of confidence at the client to be 100 percent sure they are communicating with whom they think they.
 
@@ -596,7 +596,7 @@ By default, our own server certificate [gitlab.crt](#generation-of-self-signed-c
 
 #### Deploy to a subdirectory (relative url root)
 
-By default GitLab expects that your application is running at the root (eg. /). This section explains how to run your application inside a directory.
+By default, GitLab expects that your application is running at the root e.g.. /). This section explains how to run your application inside a directory.
 
 Let's assume we want to deploy our application to '/git'. GitLab needs to know this directory to generate the appropriate routes. This can be specified using the `GITLAB_RELATIVE_URL_ROOT` configuration option like so:
 
@@ -645,7 +645,7 @@ You can also restrict logins to a single domain by adding `--env "OAUTH_GOOGLE_R
 
 ##### Facebook
 
-To enable the Facebook OAuth2 OmniAuth provider you must register your application with Facebook. Facebook will generate a API key and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/facebook.html) for the procedure to generate the API key and secret.
+To enable the Facebook OAuth2 OmniAuth provider you must register your application with Facebook. Facebook will generate an API key and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/facebook.html) for the procedure to generate the API key and secret.
 
 Once you have the API key and secret generated, configure them using the `OAUTH_FACEBOOK_API_KEY` and `OAUTH_FACEBOOK_APP_SECRET` environment variables respectively.
 
@@ -653,7 +653,7 @@ For example, if your API key is `xxx` and the API secret key is `yyy`, then addi
 
 ##### Twitter
 
-To enable the Twitter OAuth2 OmniAuth provider you must register your application with Twitter. Twitter will generate a API key and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/twitter.html) for the procedure to generate the API key and secret with twitter.
+To enable the Twitter OAuth2 OmniAuth provider you must register your application with Twitter. Twitter will generate an API key and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/twitter.html) for the procedure to generate the API key and secret with twitter.
 
 Once you have the API key and secret generated, configure them using the `OAUTH_TWITTER_API_KEY` and `OAUTH_TWITTER_APP_SECRET` environment variables respectively.
 
@@ -727,7 +727,7 @@ See [GitLab documentation](https://docs.gitlab.com/ee/integration/oauth2_generic
 
 #### Gitlab Pages
 
-Gitlab Pages allows a user to host static websites from a project. Gitlab pages can be enabled with setting the envrionment variable `GITLAB_PAGES_ENABLED` to `true`.
+Gitlab Pages allows a user to host static websites from a project. Gitlab pages can be enabled with setting the environment variable `GITLAB_PAGES_ENABLED` to `true`.
 
 #### Gitlab Pages Access Control
 
@@ -735,7 +735,7 @@ Since version `11.5.0` Gitlab pages supports access control. This allows only ac
 
 Gitlab pages access control requires additional configuration before activating it through the variable `GITLAB_PAGES_ACCESS_CONTROL`.
 
-Gitab pages access control makes use of the Gitlab OAuth Module.
+GitLab pages access control makes use of the Gitlab OAuth Module.
 
 - Goto the Gitlab Admin area
 - Select `Applications` in the menu
@@ -746,11 +746,11 @@ Gitab pages access control makes use of the Gitlab OAuth Module.
     - Trusted: NO (Do not select)
     - Redirect URI: `https://projects.<GITLAB_PAGES_DOMAIN>/auth`
 
-Note about the `Redirect URI`; this can be tricky to configure or figure out, What needs to be achieved is to following, the redirect URI needs to end up at the `gitlab-pages` daemon with the `/auth` endpoint.
+Note about the `Redirect URI`; this can be tricky to configure or figure out, What needs to be achieved is the following, the redirect URI needs to end up at the `gitlab-pages` daemon with the `/auth` endpoint.
 
-This means that if you run your gitlab pages at domain `pages.example.io` this will be a wilcard domain where your projects are created based on their namespace. The best trick is to enter a NON-Existing gitlab project pages URI as the redirect URI.
+This means that if you run your gitlab pages at domain `pages.example.io` this will be a wildcard domain where your projects are created based on their namespace. The best trick is to enter a NON-Existing gitlab project pages URI as the redirect URI.
 
-In the example above; the pages domain `projects` has been chosen. This will cause the nginx, either the built in or your own loadbalancer to redirect `*.<GITLAB_PAGES_DOMAIN>` to the `gitlab-pages` daemon. Which will trigger the pages endpoint.
+In the example above; the pages domain `projects` has been chosen. This will cause the nginx, either the built in or your own load balancer to redirect `*.<GITLAB_PAGES_DOMAIN>` to the `gitlab-pages` daemon. Which will trigger the pages endpoint.
 
 Make sure to choose own which does not exist and make sure that the request is routed to the `gitlab-pages` daemon if you are using your own HTTP load balancer in front of Gitlab.
 
@@ -764,10 +764,10 @@ Add to following environment variables to your Gitlab Container.
 | GITLAB_PAGES_ACCESS_SECRET | Optional | Secret Hash, minimal 32 characters, if omitted, it will be auto generated. |
 | GITLAB_PAGES_ACCESS_CONTROL_SERVER | Required | Gitlab instance URI, example: `https://gitlab.example.io` |
 | GITLAB_PAGES_ACCESS_CLIENT_ID | Required | Client ID from earlier generated OAuth application |
-| GITLAB_PAGES_ACCESS_CLIENT_SECRET | Required | Client Secret from earlier genereated OAuth application |
+| GITLAB_PAGES_ACCESS_CLIENT_SECRET | Required | Client Secret from earlier generated OAuth application |
 | GITLAB_PAGES_ACCESS_REDIRECT_URI | Required | Redirect URI, non existing pages domain to redirect to pages daemon, `https://projects.example.io` |
 
-After you have enabled the gitlab pages access control. When you go to a project `General Settings` -> `Permissions` you can choose the pages persmission level for the project.
+After you have enabled the gitlab pages access control. When you go to a project `General Settings` -> `Permissions` you can choose the pages permission level for the project.
 
 #### External Issue Trackers
 
@@ -894,7 +894,7 @@ Encryption key for session secrets. Ensure that your key is at least 64 characte
 
 ##### `GITLAB_TIMEZONE`
 
-Configure the timezone for the gitlab application. This configuration does not effect cron jobs. Defaults to `UTC`. See the list of [acceptable values](http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html). For settings the container timezone which will effect cron, see variable `TZ`
+Configure the timezone for the gitlab application. This configuration does not effect cron jobs. Defaults to `UTC`. See the list of [acceptable values](http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html). For settings the container timezone which will affect cron, see variable `TZ`
 
 ##### `GITLAB_ROOT_PASSWORD`
 
@@ -1230,7 +1230,7 @@ Default Google key file. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_JSO
 
 ##### `GITLAB_PACKAGES_ENABLED`
 
-Enable/Disable Pakages support. Defaults to `true`.
+Enable/Disable Packages support. Defaults to `true`.
 
 ##### `GITLAB_PACKAGES_DIR`
 
@@ -1526,7 +1526,7 @@ Sets GitLab Pages to HTTPS and the gitlab-pages-ssl config will be used. Default
 
 ##### `GITLAB_PAGES_ARTIFACTS_SERVER`
 
-Set to `true` to enable pages artifactsserver, enabled by default.
+Set to `true` to enable pages artifacts server, enabled by default.
 
 ##### `GITLAB_PAGES_ARTIFACTS_SERVER_URL`
 
@@ -1534,11 +1534,11 @@ If `GITLAB_PAGES_ARTIFACTS_SERVER` is enabled, set to API endpoint for GitLab Pa
 
 ##### `GITLAB_PAGES_EXTERNAL_HTTP`
 
-Sets GitLab Pages external http to receive request on an independen port. Disabled by default
+Sets GitLab Pages external http to receive request on an independent port. Disabled by default
 
 ##### `GITLAB_PAGES_EXTERNAL_HTTPS`
 
-Sets GitLab Pages external https to receive request on an independen port. Disabled by default
+Sets GitLab Pages external https to receive request on an independent port. Disabled by default
 
 ##### `GITLAB_PAGES_ACCESS_CONTROL`
 
@@ -1562,7 +1562,7 @@ Client ID from earlier generated OAuth application
 
 ##### `GITLAB_PAGES_ACCESS_CLIENT_SECRET`
 
-Client Secret from earlier genereated OAuth application
+Client Secret from earlier generated OAuth application
 
 ##### `GITLAB_PAGES_ACCESS_REDIRECT_URI`
 
@@ -1685,7 +1685,7 @@ This parameter is the same as [`GITLAB_FEATURE_FLAGS_DISABLE_TARGETS`](#gitlab_f
 
 ##### `SSL_SELF_SIGNED`
 
-Set to `true` when using self signed ssl certificates. `false` by default.
+Set to `true` when using self-signed ssl certificates. `false` by default.
 
 ##### `SSL_CERTIFICATE_PATH`
 
@@ -1873,7 +1873,7 @@ The database database connection pool count. Defaults to `10`.
 
 ##### `DB_PREPARED_STATEMENTS`
 
-Whether use database prepared statements. No defaults. But set to `false` if you want to use with [PgBouncer](https://pgbouncer.github.io/)
+Whether to use database prepared statements. No defaults. But set to `false` if you want to use with [PgBouncer](https://pgbouncer.github.io/)
 
 ##### `SMTP_ENABLED`
 
@@ -2037,7 +2037,7 @@ Attribute fields for the shown mail address. Default to `['mail', 'email', 'user
 
 ##### `LDAP_USER_ATTRIBUTE_NAME`
 
-Attribute field for the used username of a user. Default to `cn`.
+Attribute field for the used username of a user. Defaults to `cn`.
 
 ##### `LDAP_USER_ATTRIBUTE_FIRSTNAME`
 
@@ -2417,7 +2417,7 @@ AWS bucket for backup uploads. No defaults.
 
 ##### `AWS_BACKUP_MULTIPART_CHUNK_SIZE`
 
-Enables mulitpart uploads when file size reaches a defined size. See at [AWS S3 Docs](http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html)
+Enables multipart uploads when file size reaches a defined size. See at [AWS S3 Docs](http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html)
 
 ##### `AWS_BACKUP_ENCRYPTION`
 
@@ -2617,7 +2617,7 @@ The image can be configured to automatically upload the backups to an AWS S3 buc
 
 More details about the appropriate IAM user properties can found on [doc.gitlab.com](http://doc.gitlab.com/ce/raketasks/backup_restore.html#upload-backups-to-remote-cloud-storage)
 
-For remote backup to selfhosted s3 compatible storage, use `AWS_BACKUP_ENDPOINT`.
+For remote backup to self-hosted s3 compatible storage, use `AWS_BACKUP_ENDPOINT`.
 
 AWS uploads are performed alongside normal backups, both through the appropriate `app:rake` command and when an automatic backup is performed.
 
