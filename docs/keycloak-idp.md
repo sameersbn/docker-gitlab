@@ -1,4 +1,4 @@
-# Integrate Keycloak as a IDP with GitLab
+# Integrate Keycloak as an IDP with GitLab
 
 In this document, we will explain how to set up Keycloak and integrate it into GitLab.
 
@@ -73,7 +73,7 @@ Visit the `Users` tab and click on `View all users` to modify the Admin user.
 Modify the `Email`, `First name` and `Last Name` fields.
 ![admin-account](images/keycloak-admin-acc.png)
 
-Deploy GitLab, Reddis and PostgreSQL by running the following command: `docker-compose up -d gitlab redis postgresql`.
+Deploy GitLab, Redis and PostgreSQL by running the following command: `docker-compose up -d gitlab redis postgresql`.
 
 You can now login on the local GitLab instance with with Keycloak on your [local IP](http://localhost:10080).
 

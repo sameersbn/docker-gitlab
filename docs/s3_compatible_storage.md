@@ -1,7 +1,7 @@
 GitLab Backup to s3 compatible storage
 =================================================
 
-Enables automatic backups to selfhosted s3 compatible storage like minio (https://minio.io/) and others.
+Enables automatic backups to self-hosted s3 compatible storage like minio (https://minio.io/) and others.
 This is an extend of AWS Remote Backups.
 
 As explained in [doc.gitlab.com](https://docs.gitlab.com/ce/raketasks/backup_restore.html#upload-backups-to-remote-cloud-storage), it uses [Fog library](http://fog.io) and the module fog-aws. More details on [s3 supported parameters](https://github.com/fog/fog-aws/blob/master/lib/fog/aws/storage.rb)
@@ -41,7 +41,7 @@ where:
 | `AWS_BACKUP_ACCESS_KEY_ID` | AWS access key id. No defaults. |
 | `AWS_BACKUP_SECRET_ACCESS_KEY` | AWS secret access key. No defaults. |
 | `AWS_BACKUP_BUCKET` | AWS bucket for backup uploads. No defaults. |
-| `AWS_BACKUP_MULTIPART_CHUNK_SIZE` | Enables mulitpart uploads when file size reaches a defined size. See at [AWS S3 Docs](http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html) |
+| `AWS_BACKUP_MULTIPART_CHUNK_SIZE` | Enables multipart uploads when file size reaches a defined size. See at [AWS S3 Docs](http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html) |
 
 For more info look at [Available Configuration Parameters](https://github.com/sameersbn/docker-gitlab#available-configuration-parameters).
 
