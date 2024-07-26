@@ -1754,7 +1754,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - gitlab: upgrade CE to v10.4.3
 
 **10.4.2-1**
-- FIXED SSH Host Key generation through droping the support for rsa1
+- FIXED SSH Host Key generation through dropping the support for rsa1
 
 **10.4.2**
 - gitlab: upgrade CE to v10.4.2
@@ -1888,7 +1888,7 @@ This file only reflects the changes that are made in this image. Please refer to
 **9.4.0**
 - gitlab: upgrade to CE v9.4.0
 - Added support for nginx_real_ip module ([#1137](https://github.com/sameersbn/docker-gitlab/pull/1137))
-- Added more security for regenarting certs ([#1288](https://github.com/sameersbn/docker-gitlab/pull/1288))
+- Added more security for regenerating certs ([#1288](https://github.com/sameersbn/docker-gitlab/pull/1288))
 
 **9.3.9**
 - gitlab: upgrade to CE v9.3.9
@@ -1946,7 +1946,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - gitlab: upgrade to CE v9.2.1
 
 **9.2.0**
-- gilab: upgrade to CE v9.2.0
+- gitlab: upgrade to CE v9.2.0
 - Add flexibility to use versions committed into gitlab-ce
 
 **9.1.4**
@@ -2019,7 +2019,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - added `GITLAB_PAGES_EXTERNAL_HTTPS`
 - added `SSL_PAGES_KEY_PATH`
 - added `SSL_PAGES_CERT_PATH`
-- added nodejs 7.x as core dependencie
+- added nodejs 7.x as core dependencies
 - added gitlab-pages daemon
 
 **8.16.6**
@@ -2706,7 +2706,7 @@ When you start to upgrade from `8.10-7` or below use the key of `/home/git/data/
 **7.2.0-1**
 - fix nginx static route handling when GITLAB_RELATIVE_URL_ROOT is used.
 - fix relative root access without the trailing '/' character
-- added seperate server block for http config in gitlab.https.permissive. Fixes #127
+- added separate server block for http config in gitlab.https.permissive. Fixes #127
 - added OAUTH_GOOGLE_RESTRICT_DOMAIN config option.
 
 **7.2.0**
