@@ -64,7 +64,7 @@ class FeatureFlagCLI
     if succeed
       available_flags = self.available_feature_flags
       disable_targets = available_flags & opts[:to_be_disabled]
-      enable_targets = available_flags & opts[:to_be_disabled]
+      enable_targets = available_flags & opts[:to_be_enabled]
 
       disable_targets.each do |feature|
         Feature.disable(feature)
