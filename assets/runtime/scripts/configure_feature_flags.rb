@@ -21,7 +21,7 @@ class FeatureFlagCLI
       feature_flag_yamls.concat(Dir.glob("#{Gitlab.root}/ee/config/feature_flags/**/*.yml"))
     end if
 
-      list = feature_flag_yamls.map { |p| File.basename(p, File.extname(p)) }
+    list = feature_flag_yamls.map { |p| File.basename(p, File.extname(p)) }
     list
   end
 
