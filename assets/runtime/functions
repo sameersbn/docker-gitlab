@@ -1839,7 +1839,7 @@ generate_healthcheck_script() {
   fi
 cat > /usr/local/sbin/healthcheck <<EOF
 #!/bin/bash
-url=${HEALTHCHECK_PROTOCOL}://localhost${GITLAB_RELATIVE_URL_ROOT}/-/liveness
+url=${HEALTHCHECK_PROTOCOL}://127.0.0.1${GITLAB_RELATIVE_URL_ROOT}/-/liveness
 options=( '--insecure' '--silent' )
 curl "\${options[@]}" \$url
 [[ "\$(curl \${options[@]} -o /dev/null -I -w '%{http_code}' \$url)" == "200" ]]
