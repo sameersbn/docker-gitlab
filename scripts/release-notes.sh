@@ -41,8 +41,8 @@ Please note that this version does not yet include any rework as a consequence o
 Don't forget to consider the version specific upgrading instructions for [GitLab CE](https://docs.gitlab.com/ee/update/) **before** upgrading your GitLab CE instance!
 
 Please note:
-- GitLab 16.6.x requires at least PostgreSQL 13.
-- As of GitLab 16.7, PostgreSQL 14 is the default version. However, PostgreSQL 14 isn't supported on Geo deployments and is planned for future releases (see <https://docs.gitlab.com/ee/update/versions/gitlab_16_changes.html#1670>).
+- GitLab 17.x requires at least PostgreSQL 14.
+- See issues to be aware of when upgrading to 17.x : <https://docs.gitlab.com/ee/update/versions/gitlab_17_changes.html>
 
 ## Contributing
 
