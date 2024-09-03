@@ -267,7 +267,7 @@ Please note furthermore, that only compatible versions of the `postgresql-client
 - `postgresql-client-14`,
 - and `postgresql-client-15`.
 
-*NOTE:* Version 13.7.0 and later requires PostgreSQL version 12.x. Version 16.0.0 and later requires PostgreSQL version 13.x
+*NOTE:* Version 13.7.0 and later requires PostgreSQL version 12.x. Version 16.0.0 and later requires PostgreSQL version 13.x. Version 17.0.0 and later requires PostgreSQL version 14.x.
 
 ##### External PostgreSQL Server
 
@@ -1866,7 +1866,7 @@ Sidekiq log format that will be used. Defaults to `json`
 
 ##### `DB_ADAPTER`
 
-The database type. Currently only postgresql is supported. Over 12.1 postgres force. Possible values: `postgresql`. Defaults to `postgresql`.
+The database type. Currently only postgresql is supported. Possible values: `postgresql`. Defaults to `postgresql`.
 
 ##### `DB_ENCODING`
 
@@ -2721,7 +2721,7 @@ Usage when using `docker-compose` can also be found there.
 >
 > If you're using `sameersbn/postgresql` then please upgrade to `sameersbn/postgresql:14-20230628` or later and add `DB_EXTENSION=pg_trgm,btree_gist` to the environment of the PostgreSQL container (see: <https://github.com/sameersbn/docker-gitlab/blob/master/docker-compose.yml#L21>).
 >
-> As of version 13.7.0, the required PostgreSQL is version 12.x. As of version 16.0.0, the required PostgreSQL is version 13.x. If you're using PostgreSQL image other than the above, please review section [Upgrading PostgreSQL](#upgrading-postgresql).
+> As of version 13.7.0, the required PostgreSQL is version 12.x. As of version 16.0.0, the required PostgreSQL is version 13.x. As of version 17.0.0, the required PostgreSQL is version 14.x. If you're using PostgreSQL image other than the above, please review section [Upgrading PostgreSQL](#upgrading-postgresql).
 
 GitLabHQ releases new versions on the 22nd of every month, bugfix releases immediately follow. I update this project almost immediately when a release is made (at least it has been the case so far). If you are using the image in production environments I recommend that you delay updates by a couple of days after the gitlab release, allowing some time for the dust to settle down.
 
