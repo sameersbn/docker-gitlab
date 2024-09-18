@@ -2,6 +2,14 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**16.11.9**
+
+- gitlab: upgrade CE to v16.11.9
+- gitaly: upgrade to v16.11.9
+- gitlab-pages: upgrade to v16.11.9
+- golang: upgrade to v1.23.1
+- ruby: upgrade to v3.2.5
+
 **16.11.6**
 
 - gitlab: upgrade CE to v16.11.6
