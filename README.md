@@ -1580,7 +1580,7 @@ Time between sampling of unicorn socket metrics, in seconds, defaults to `10`
 
 ##### `GITLAB_MONITORING_IP_WHITELIST`
 
-IP whitelist to access monitoring endpoints, defaults to `0.0.0.0/8`
+IP whitelist to access monitoring endpoints. No defaults.
 
 ##### `GITLAB_MONITORING_SIDEKIQ_EXPORTER_ENABLED`
 
