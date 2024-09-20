@@ -1855,7 +1855,7 @@ generate_healthcheck_script() {
   # configure healthcheck script
   ## https://docs.gitlab.com/ee/user/admin_area/monitoring/health_check.html
   local HEALTHCHECK_PROTOCOL="http"
-  if [[ "${GITLAB_HTTPS}" == true ]]; then
+  if [[ "${GITLAB_HTTPS}" == true && "${SSL_SELF_SIGNED}" == false ]]; then
     HEALTHCHECK_PROTOCOL="${HEALTHCHECK_PROTOCOL}s"
   fi
 cat > /usr/local/sbin/healthcheck <<EOF
