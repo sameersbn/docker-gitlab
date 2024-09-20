@@ -1835,7 +1835,7 @@ generate_healthcheck_script() {
 cat > /usr/local/sbin/healthcheck <<EOF
 #!/bin/bash
 url=${HEALTHCHECK_PROTOCOL}://localhost${GITLAB_RELATIVE_URL_ROOT}/-/liveness
-options=( '--insecure' '--location' '--silent' )
+options=( '--insecure' '--silent' )
 curl "\${options[@]}" \$url
 [[ "\$(curl \${options[@]} -o /dev/null -I -w '%{http_code}' \$url)" == "200" ]]
 EOF
