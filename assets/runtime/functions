@@ -983,9 +983,21 @@ gitlab_configure_backups_aws() {
       AWS_BACKUP_PATH_STYLE="true"
     fi
 
-    if [[ -z ${AWS_BACKUP_ACCESS_KEY_ID} || -z ${AWS_BACKUP_SECRET_ACCESS_KEY} || -z ${AWS_BACKUP_BUCKET} ]]; then
-      echo "\nMissing AWS options. Aborting...\n"
+    if [[ ${AWS_BACKUP_USE_IAM_PROFILE} != true ]]; then
+      if [[ -z ${AWS_BACKUP_ACCESS_KEY_ID} || -z ${AWS_BACKUP_SECRET_ACCESS_KEY} || -z ${AWS_BACKUP_BUCKET} ]]; then
+        echo "Missing AWS options. Aborting..."
+        return 1
+      else
+        exec_as_git sed -i "/#start-backup-use-iam-profile-aws/,/#end-backup-use-iam-profile-aws/d" ${GITLAB_CONFIG}
+      fi
+    elif [[ -z ${AWS_BACKUP_BUCKET} ]]; then
+      echo "Missing AWS options. Aborting..."
       return 1
+    elif [[ -n ${AWS_BACKUP_ACCESS_KEY_ID} || -n ${AWS_BACKUP_SECRET_ACCESS_KEY} ]]; then
+      echo "If using an IAM Profile, don't configure aws_access_key_id & aws_secret_access_key. Aborting..."
+      return 1
+    else
+      exec_as_git sed -i "/#start-backup-secret-access-key-aws/,/#end-backup-secret-access-key-aws/d" ${GITLAB_CONFIG}
     fi
 
     update_template ${GITLAB_CONFIG} \
@@ -994,6 +1006,7 @@ gitlab_configure_backups_aws() {
       AWS_BACKUP_PATH_STYLE \
       AWS_BACKUP_ACCESS_KEY_ID \
       AWS_BACKUP_SECRET_ACCESS_KEY \
+      AWS_BACKUP_USE_IAM_PROFILE \
       AWS_BACKUP_BUCKET \
       AWS_BACKUP_MULTIPART_CHUNK_SIZE \
       AWS_BACKUP_STORAGE_CLASS \

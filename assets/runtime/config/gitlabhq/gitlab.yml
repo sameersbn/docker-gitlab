@@ -1096,8 +1096,13 @@ production: &base
         region: {{AWS_BACKUP_REGION}}
         endpoint: {{AWS_BACKUP_ENDPOINT}}
         path_style: {{AWS_BACKUP_PATH_STYLE}}
+        #start-backup-secret-access-key-aws
         aws_access_key_id: {{AWS_BACKUP_ACCESS_KEY_ID}}
         aws_secret_access_key: '{{AWS_BACKUP_SECRET_ACCESS_KEY}}'
+        #end-backup-secret-access-key-aws
+        #start-backup-use-iam-profile-aws
+        use_iam_profile: {{AWS_BACKUP_USE_IAM_PROFILE}}
+        #end-backup-use-iam-profile-aws
         aws_signature_version: {{AWS_BACKUP_SIGNATURE_VERSION}}
       # The remote 'directory' to store your backups. For S3, this would be the bucket name.
       remote_directory: '{{AWS_BACKUP_BUCKET}}'
