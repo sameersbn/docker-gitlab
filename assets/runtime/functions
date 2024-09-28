@@ -351,6 +351,10 @@ gitlab_configure_gitaly() {
 gitlab_configure_monitoring() {
   echo "Configuring gitlab::monitoring..."
 
+  if [ "${GITLAB_MONITORING_IP_WHITELIST}" == "" ]; then
+    exec_as_git sed -i "/{{GITLAB_MONITORING_IP_WHITELIST}}/d" ${GITLAB_CONFIG}
+  fi
+
   update_template ${GITLAB_CONFIG} \
     GITLAB_MONITORING_UNICORN_SAMPLER_INTERVAL \
     GITLAB_MONITORING_IP_WHITELIST \
@@ -1938,13 +1942,13 @@ generate_healthcheck_script() {
   # configure healthcheck script
   ## https://docs.gitlab.com/ee/user/admin_area/monitoring/health_check.html
   local HEALTHCHECK_PROTOCOL="http"
-  if [[ "${GITLAB_HTTPS}" == true ]]; then
+  if [[ "${GITLAB_HTTPS}" == true && "${SSL_SELF_SIGNED}" == false ]]; then
     HEALTHCHECK_PROTOCOL="${HEALTHCHECK_PROTOCOL}s"
   fi
 cat > /usr/local/sbin/healthcheck <<EOF
 #!/bin/bash
-url=${HEALTHCHECK_PROTOCOL}://localhost${GITLAB_RELATIVE_URL_ROOT}/-/liveness
-options=( '--insecure' '--location' '--silent' )
+url=${HEALTHCHECK_PROTOCOL}://127.0.0.1${GITLAB_RELATIVE_URL_ROOT}/-/liveness
+options=( '--insecure' '--silent' )
 curl "\${options[@]}" \$url
 [[ "\$(curl \${options[@]} -o /dev/null -I -w '%{http_code}' \$url)" == "200" ]]
 EOF
