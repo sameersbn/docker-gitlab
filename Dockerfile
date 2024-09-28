@@ -82,6 +82,8 @@ LABEL \
 
 EXPOSE 22/tcp 80/tcp 443/tcp
 
+RUN ln -s /etc/ssl/certs/ca-certificates.crt /usr/lib/ssl/cert.pem
+
 VOLUME ["${GITLAB_DATA_DIR}", "${GITLAB_LOG_DIR}","${GITLAB_HOME}/gitlab/node_modules"]
 WORKDIR ${GITLAB_INSTALL_DIR}
 ENTRYPOINT ["/sbin/entrypoint.sh"]
