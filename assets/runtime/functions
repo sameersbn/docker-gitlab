@@ -993,6 +993,8 @@ gitlab_configure_backups_aws() {
         return 1
       else
         exec_as_git sed -i "/#start-backup-use-iam-profile-aws/,/#end-backup-use-iam-profile-aws/d" ${GITLAB_CONFIG}
+        exec_as_git sed -i "/#start-backup-secret-access-key-aws/d" ${GITLAB_CONFIG}
+        exec_as_git sed -i "/#end-backup-secret-access-key-aws/d" ${GITLAB_CONFIG}
       fi
     elif [[ -z ${AWS_BACKUP_BUCKET} ]]; then
       echo "Missing AWS options. Aborting..."
@@ -1002,6 +1004,8 @@ gitlab_configure_backups_aws() {
       return 1
     else
       exec_as_git sed -i "/#start-backup-secret-access-key-aws/,/#end-backup-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-backup-use-iam-profile-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-backup-use-iam-profile-aws/d" ${GITLAB_CONFIG}
     fi
 
     update_template ${GITLAB_CONFIG} \
