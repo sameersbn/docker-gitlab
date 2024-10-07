@@ -46,7 +46,7 @@ RUN set -ex && \
  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
       sudo supervisor logrotate locales curl \
       nginx openssh-server postgresql-contrib redis-tools \
-      postgresql-client-13 postgresql-client-14 postgresql-client-15 \
+      postgresql-client-13 postgresql-client-14 postgresql-client-15 postgresql-client-16 \
       python3 python3-docutils nodejs yarn gettext-base graphicsmagick \
       libpq5 zlib1g libyaml-0-2 libssl1.1 \
       libgdbm6 libreadline8 libncurses5 libffi7 \

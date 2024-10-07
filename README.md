@@ -265,7 +265,8 @@ Please note furthermore, that only compatible versions of the `postgresql-client
 
 - `postgresql-client-13`,
 - `postgresql-client-14`,
-- and `postgresql-client-15`.
+- `postgresql-client-15`.
+- and `postgresql-client-16`.
 
 *NOTE:* Version 13.7.0 and later requires PostgreSQL version 12.x. Version 16.0.0 and later requires PostgreSQL version 13.x. Version 17.0.0 and later requires PostgreSQL version 14.x.
 
