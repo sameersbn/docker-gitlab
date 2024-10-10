@@ -1594,6 +1594,14 @@ Client Secret from earlier generated OAuth application
 
 Redirect URI, non existing pages domain to redirect to pages daemon, `https://projects.example.io/auth`
 
+##### `GITLAB_PAGES_NAMESPACE_IN_PATH`
+
+Enable namespace-in-path option for gitlab pages, defaults to `false`.
+
+##### `GITLAB_PAGES_LOG_VERBOSE`
+
+Enable verbose logging for gitlab pages, defaults to `falsee`.
+
 ##### `GITLAB_HTTPS`
 
 Set to `true` to enable https support, disabled by default.
