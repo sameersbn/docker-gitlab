@@ -7,6 +7,8 @@ This file only reflects the changes that are made in this image. Please refer to
 - gitlab: upgrade CE to v17.4.2
 - gitaly: upgrade to v17.4.2
 - gitlab-pages: upgrade to v17.4.2
+- golang: upgrade to v1.23.2
+- ubuntu: upgrade to focal-20240918
 
 **17.4.1**
 
