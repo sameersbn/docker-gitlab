@@ -7,6 +7,7 @@ This file only reflects the changes that are made in this image. Please refer to
 - gitlab: upgrade CE to v17.4.5
 - gitaly: upgrade to v17.4.5
 - gitlab-pages: upgrade to v17.4.5
+- update orb versions used by CircleCI
 
 **17.4.4**
 
