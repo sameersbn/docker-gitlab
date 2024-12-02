@@ -45,7 +45,7 @@
         - [SAML](#saml)
         - [Crowd](#crowd)
         - [Microsoft Azure](#microsoft-azure)
-        - [Generic OAuth2](#Generic-OAuth2)
+        - [Generic OAuth2](#generic-oauth2)
         - [OpenID Connect](#openid-connect)
     - [Gitlab Pages](#gitlab-pages)
     - [External Issue Trackers](#external-issue-trackers)
@@ -59,7 +59,7 @@
     - [Restoring Backups](#restoring-backups)
     - [Automated Backups](#automated-backups)
     - [Amazon Web Services (AWS) Remote Backups](#amazon-web-services-aws-remote-backups)
-    - [Google Cloud Storage (GCS) Remote Backups](#google-cloud-storage-gcs-remote-backup)
+    - [Google Cloud Storage (GCS) Remote Backups](#google-cloud-storage-gcs-remote-backups)
     - [Rake Tasks](#rake-tasks)
     - [Import Repositories](#import-repositories)
     - [Upgrading](#upgrading)
@@ -72,7 +72,7 @@
 
 ## Introduction
 
-Dockerfile to build a [GitLab](https://about.gitlab.com/) image for the [Docker](https://www.docker.com/products/docker-engine) opensource container platform.
+Dockerfile to build a [GitLab](https://about.gitlab.com/) image for the [Docker](https://www.docker.com/products/docker-engine) open source container platform.
 
 GitLab CE is set up in the Docker image using the [install from source](https://docs.gitlab.com/ce/install/installation.html) method as documented in the official GitLab documentation.
 
@@ -599,11 +599,11 @@ The default path image is configured to look for the trusted SSL certificates is
 
 Copy the `ca.crt` file into the certs directory on the [datastore](#data-store). The `ca.crt` file should contain the root certificates of all the servers you want to trust. With respect to GitLab CI, this will be the contents of the gitlab_ci.crt file as described in the [README](https://github.com/sameersbn/docker-gitlab-ci/blob/master/README.md#ssl) of the [docker-gitlab-ci](https://github.com/sameersbn/docker-gitlab-ci) container.
 
-By default, our own server certificate [gitlab.crt](#generation-of-self-signed-certificate) is added to the trusted certificates list.
+By default, our own server certificate [gitlab.crt](#generation-of-a-self-signed-certificate) is added to the trusted certificates list.
 
 #### Deploy to a subdirectory (relative url root)
 
-By default, GitLab expects that your application is running at the root e.g.. /). This section explains how to run your application inside a directory.
+By default, GitLab expects that your application is running at the root (e.g.. /). This section explains how to run your application inside a directory.
 
 Let's assume we want to deploy our application to '/git'. GitLab needs to know this directory to generate the appropriate routes. This can be specified using the `GITLAB_RELATIVE_URL_ROOT` configuration option like so:
 
@@ -1876,7 +1876,7 @@ The database type. Currently only postgresql is supported. Possible values: `pos
 
 ##### `DB_ENCODING`
 
-The database encoding. For `DB_ADAPTER` values `postresql` this parameter defaults and `utf8` respectively.
+The database encoding. For `DB_ADAPTER` values `postgresql` this parameter defaults and `utf8` respectively.
 
 ##### `DB_HOST`
 
@@ -1984,7 +1984,7 @@ Enable SSL. Defaults to `true`.
 
 ##### `IMAP_STARTTLS`
 
-Enable STARTSSL. Defaults to `false`.
+Enable STARTTLS. Defaults to `false`.
 
 ##### `IMAP_MAILBOX`
 
@@ -2528,7 +2528,7 @@ Sentry DSN. No defaults.
 
 ##### `SENTRY_CLIENTSIDE_DSN`
 
-Sentry clientside DSN. No defaults.
+Sentry client side DSN. No defaults.
 
 ##### `SENTRY_ENVIRONMENT`
 
@@ -2670,7 +2670,7 @@ docker run --name gitlab -it --rm [OPTIONS] \
     sameersbn/gitlab:18.0.2 app:rake gitlab:env:info
 ```
 
-You can also use `docker exec` to run raketasks on running gitlab instance. For example,
+You can also use `docker exec` to run rake tasks on running gitlab instance. For example,
 
 ```bash
 docker exec --user git -it gitlab bundle exec rake gitlab:env:info RAILS_ENV=production
@@ -2818,7 +2818,7 @@ services:
       start_period: 2m
 ```
 
-Then you will be able to consult the healthcheck log by executing:
+Then you will be able to consult the health check log by executing:
 
 ```bash
 docker inspect --format "{{json .State.Health }}" $(docker-compose ps -q gitlab) | jq
