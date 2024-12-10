@@ -90,6 +90,10 @@ RUN set -ex && \
  && DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales \
  && rm -rf /var/lib/apt/lists/*
 
+# add ${GITLAB_USER} user
+RUN adduser --disabled-login --gecos 'GitLab' $GITLAB_USER \
+ && passwd -d $GITLAB_USER
+
 #----------------------------
 # golang
 #----------------------------
@@ -163,6 +167,33 @@ RUN make -C $GITLAB_GITALY_BUILD_DIR install -j"$(nproc)" \
 RUN make -C $GITLAB_GITALY_BUILD_DIR git GIT_PREFIX=/usr/local -j"$(nproc)"
 
 #----------------------------
+# gitlab-foss-source
+#----------------------------
+FROM base-builder-extended as gitlab-foss-source
+# shallow clone gitlab-foss
+USER git
+RUN echo "Cloning gitlab-foss v.$GITLAB_VERSION..." \
+ && git clone -q -b v$GITLAB_VERSION --depth 1 $GITLAB_CLONE_URL $GITLAB_INSTALL_DIR
+
+RUN find "$GITLAB_BUILD_DIR/patches/gitlabhq" -name "*.patch" | while read -r patch_file; do \
+    printf "Applying patch %s for gitlab-foss...\n" "${patch_file}"; \
+    git -C $GITLAB_INSTALL_DIR apply --ignore-whitespace < "${patch_file}"; \
+  done
+USER root
+
+#----------------------------
+# yarn
+#----------------------------
+FROM gitlab-foss-source as yarn
+
+RUN mkdir node_modules \
+ && chown git node_modules
+
+USER git
+RUN cd $GITLAB_INSTALL_DIR; yarn install --production --pure-lockfile
+USER root
+
+#----------------------------
 # final
 #----------------------------
 FROM base-builder-extended as final
@@ -176,6 +207,10 @@ COPY --from=gitlab-pages /usr/local/bin/gitlab-pages /usr/local/bin
 
 COPY --from=gitaly ${GITLAB_GITALY_BUILD_DIR}/config.toml.example ${GITLAB_GITALY_INSTALL_DIR}/config.toml
 COPY --from=gitaly /usr/local /usr/local
+
+COPY --from=gitlab-foss-source ${GITLAB_INSTALL_DIR} ${GITLAB_INSTALL_DIR}
+
+COPY --from=yarn ${GITLAB_INSTALL_DIR}/node_modules ${GITLAB_INSTALL_DIR}/node_modules
 
 COPY assets/build/ ${GITLAB_BUILD_DIR}/
 RUN bash ${GITLAB_BUILD_DIR}/install2.sh
