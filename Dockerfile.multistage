@@ -106,24 +106,26 @@ RUN echo "Downloading Go $GOLANG_VERSION..." \
 #----------------------------
 # ruby
 #----------------------------
-FROM  base-builder as ruby
-# build ruby from source
-RUN echo "Building ruby v$RUBY_VERSION from source..." \
- && mkdir /tmp/ruby \
- && cd /tmp/ruby \
- && curl --remote-name -Ss "$RUBY_SRC_URL" \
- && printf '%s ruby-%s.tar.gz' "$RUBY_SOURCE_SHA256SUM" "$RUBY_VERSION" | sha256sum -c - \
- && tar xzf ruby-"$RUBY_VERSION".tar.gz && cd ruby-"$RUBY_VERSION" \
- && find "$GITLAB_BUILD_DIR/patches/ruby" -name "*.patch" | while read -r patch_file; do \
-      echo "Applying patch ${patch_file}"; \
-      patch -p1 -i "${patch_file}"; \
-    done \
- && ./configure --disable-install-rdoc --enable-shared \
- && make -j"$(nproc)" \
- && make install
+# FROM  base-builder as ruby
+# # build ruby from source
+# RUN echo "Building ruby v$RUBY_VERSION from source..." \
+#  && mkdir /tmp/ruby \
+#  && cd /tmp/ruby \
+#  && curl --remote-name -Ss "$RUBY_SRC_URL" \
+#  && printf '%s ruby-%s.tar.gz' "$RUBY_SOURCE_SHA256SUM" "$RUBY_VERSION" | sha256sum -c - \
+#  && tar xzf ruby-"$RUBY_VERSION".tar.gz && cd ruby-"$RUBY_VERSION" \
+#  && find "$GITLAB_BUILD_DIR/patches/ruby" -name "*.patch" | while read -r patch_file; do \
+#       echo "Applying patch ${patch_file}"; \
+#       patch -p1 -i "${patch_file}"; \
+#     done \
+#  && ./configure --disable-install-rdoc --enable-shared \
+#  && make -j"$(nproc)" \
+#  && make install
+FROM ruby:3.2.6-bullseye as ruby-inst
 
+ENV RUBYGEMS_VERSION=3.5.14
 # upgrade rubygems on demand
-RUN gem update --no-document --system "${RUBYGEMS_VERSION}"
+RUN gem update --no-document --system "$RUBYGEMS_VERSION"
 
 #----------------------------
 # gitlab-pages
@@ -186,9 +188,6 @@ USER root
 #----------------------------
 FROM gitlab-foss-source as yarn
 
-RUN mkdir node_modules \
- && chown git node_modules
-
 USER git
 RUN cd $GITLAB_INSTALL_DIR; yarn install --production --pure-lockfile
 USER root
@@ -201,7 +200,7 @@ FROM base-builder-extended as final
 RUN mkdir /tmp/go
 COPY --from=golang /tmp/go /tmp/go
 
-COPY --from=ruby /usr/local /usr/local
+COPY --from=ruby-inst /usr/local /usr/local
 
 COPY --from=gitlab-pages /usr/local/bin/gitlab-pages /usr/local/bin
 
