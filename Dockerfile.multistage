@@ -106,21 +106,6 @@ RUN echo "Downloading Go $GOLANG_VERSION..." \
 #----------------------------
 # ruby
 #----------------------------
-# FROM  base-builder as ruby
-# # build ruby from source
-# RUN echo "Building ruby v$RUBY_VERSION from source..." \
-#  && mkdir /tmp/ruby \
-#  && cd /tmp/ruby \
-#  && curl --remote-name -Ss "$RUBY_SRC_URL" \
-#  && printf '%s ruby-%s.tar.gz' "$RUBY_SOURCE_SHA256SUM" "$RUBY_VERSION" | sha256sum -c - \
-#  && tar xzf ruby-"$RUBY_VERSION".tar.gz && cd ruby-"$RUBY_VERSION" \
-#  && find "$GITLAB_BUILD_DIR/patches/ruby" -name "*.patch" | while read -r patch_file; do \
-#       echo "Applying patch ${patch_file}"; \
-#       patch -p1 -i "${patch_file}"; \
-#     done \
-#  && ./configure --disable-install-rdoc --enable-shared \
-#  && make -j"$(nproc)" \
-#  && make install
 FROM ruby:3.2.6-bullseye as ruby-inst
 
 ENV RUBYGEMS_VERSION=3.5.14
@@ -183,6 +168,59 @@ RUN find "$GITLAB_BUILD_DIR/patches/gitlabhq" -name "*.patch" | while read -r pa
   done
 USER root
 
+RUN mkdir -p ${GITLAB_BUILD_DIR}
+
+#----------------------------
+# ruby-inst-extended
+#----------------------------
+FROM  gitlab-foss-source as ruby-inst-extended
+
+COPY --from=ruby-inst /usr/local /usr/local
+
+# install bundler: use version specified in Gemfile.lock
+#RUN BUNDLER_VERSION="$(grep "BUNDLED WITH" $GITLAB_INSTALL_DIR/Gemfile.lock -A 1 | grep -v "BUNDLED WITH" | tr -d "[:space:]")" \
+#    gem install bundler:"$BUNDLER_VERSION"
+
+#----------------------------
+# gitlab-shell
+#----------------------------
+FROM  gitlab-foss-source as gitlab-shell
+
+RUN mkdir /tmp/go
+COPY --from=golang /tmp/go /tmp/go
+
+COPY --from=ruby-inst-extended /usr/local /usr/local
+
+# download gitlab-shell
+RUN echo "Downloading gitlab-shell v.$GITLAB_SHELL_VERSION..." \
+ && mkdir -p $GITLAB_SHELL_INSTALL_DIR \
+ && wget -cq $GITLAB_SHELL_URL -O $GITLAB_BUILD_DIR/gitlab-shell-$GITLAB_SHELL_VERSION.tar.bz2 \
+ && tar xf $GITLAB_BUILD_DIR/gitlab-shell-$GITLAB_SHELL_VERSION.tar.bz2 --strip 1 -C $GITLAB_SHELL_INSTALL_DIR \
+ && rm -rf $GITLAB_BUILD_DIR/gitlab-shell-$GITLAB_SHELL_VERSION.tar.bz2 \
+ && chown -R $GITLAB_USER: $GITLAB_SHELL_INSTALL_DIR
+
+USER git
+
+RUN cd $GITLAB_SHELL_INSTALL_DIR \
+ && cp -a config.yml.example config.yml \
+ && echo "Compiling gitlab-shell golang executables..." \
+ && bundle config set --local deployment 'true' \
+ && bundle config set --local with 'development test' \
+ && bundle install -j"$(nproc)" \
+ && make verify setup
+ 
+ # remove unused repositories directory created by gitlab-shell install
+ #rm -rf ${GITLAB_HOME}/repositories
+ 
+ USER root
+
+ # build gitlab-workhorse
+ RUN echo "Build gitlab-workhorse" \
+  && git config --global --add safe.directory /home/git/gitlab \
+  && make -C $GITLAB_WORKHORSE_BUILD_DIR install -j"$(nproc)"
+ # clean up
+ #rm -rf ${GITLAB_WORKHORSE_BUILD_DIR}
+
 #----------------------------
 # yarn
 #----------------------------
@@ -197,10 +235,12 @@ USER root
 #----------------------------
 FROM base-builder-extended as final
 
+RUN mkdir $GITLAB_CACHE_DIR; mkdir $GITLAB_BUILD_DIR; mkdir $GITLAB_BUILD_DIR/build
+
 RUN mkdir /tmp/go
 COPY --from=golang /tmp/go /tmp/go
 
-COPY --from=ruby-inst /usr/local /usr/local
+COPY --from=ruby-inst-extended /usr/local /usr/local
 
 COPY --from=gitlab-pages /usr/local/bin/gitlab-pages /usr/local/bin
 
@@ -208,6 +248,9 @@ COPY --from=gitaly ${GITLAB_GITALY_BUILD_DIR}/config.toml.example ${GITLAB_GITAL
 COPY --from=gitaly /usr/local /usr/local
 
 COPY --from=gitlab-foss-source ${GITLAB_INSTALL_DIR} ${GITLAB_INSTALL_DIR}
+
+COPY --from=gitlab-shell ${GITLAB_INSTALL_DIR} ${GITLAB_INSTALL_DIR}
+COPY --from=gitlab-shell /usr/local /usr/local
 
 COPY --from=yarn ${GITLAB_INSTALL_DIR}/node_modules ${GITLAB_INSTALL_DIR}/node_modules
 

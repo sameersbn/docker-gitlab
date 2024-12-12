@@ -112,31 +112,31 @@ gem install bundler:"${BUNDLER_VERSION}"
 #tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
 
 # install gitlab-shell
-echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
-mkdir -p ${GITLAB_SHELL_INSTALL_DIR}
-wget -cq ${GITLAB_SHELL_URL} -O ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2
-tar xf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2 --strip 1 -C ${GITLAB_SHELL_INSTALL_DIR}
-rm -rf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2
-chown -R ${GITLAB_USER}: ${GITLAB_SHELL_INSTALL_DIR}
+#echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
+#mkdir -p ${GITLAB_SHELL_INSTALL_DIR}
+#wget -cq ${GITLAB_SHELL_URL} -O ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2
+#tar xf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2 --strip 1 -C ${GITLAB_SHELL_INSTALL_DIR}
+#rm -rf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.bz2
+#chown -R ${GITLAB_USER}: ${GITLAB_SHELL_INSTALL_DIR}
 
-cd ${GITLAB_SHELL_INSTALL_DIR}
-exec_as_git cp -a config.yml.example config.yml
+#cd ${GITLAB_SHELL_INSTALL_DIR}
+#exec_as_git cp -a config.yml.example config.yml
 
-echo "Compiling gitlab-shell golang executables..."
-exec_as_git bundle config set --local deployment 'true'
-exec_as_git bundle config set --local with 'development test'
-exec_as_git bundle install -j"$(nproc)"
-exec_as_git "PATH=$PATH" make verify setup
+#echo "Compiling gitlab-shell golang executables..."
+#exec_as_git bundle config set --local deployment 'true'
+#exec_as_git bundle config set --local with 'development test'
+#exec_as_git bundle install -j"$(nproc)"
+#exec_as_git "PATH=$PATH" make verify setup
 
 # remove unused repositories directory created by gitlab-shell install
-rm -rf ${GITLAB_HOME}/repositories
+#rm -rf ${GITLAB_HOME}/repositories
 
 # build gitlab-workhorse
-echo "Build gitlab-workhorse"
-git config --global --add safe.directory /home/git/gitlab
-make -C ${GITLAB_WORKHORSE_BUILD_DIR} install -j"$(nproc)"
+#echo "Build gitlab-workhorse"
+#git config --global --add safe.directory /home/git/gitlab
+#make -C ${GITLAB_WORKHORSE_BUILD_DIR} install -j"$(nproc)"
 # clean up
-rm -rf ${GITLAB_WORKHORSE_BUILD_DIR}
+#rm -rf ${GITLAB_WORKHORSE_BUILD_DIR}
 
 # download gitlab-pages
 #echo "Downloading gitlab-pages v.${GITLAB_PAGES_VERSION}..."
