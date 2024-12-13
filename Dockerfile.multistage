@@ -231,6 +231,20 @@ RUN cd $GITLAB_INSTALL_DIR; yarn install --production --pure-lockfile
 USER root
 
 #----------------------------
+# gitlab-foss-build
+#----------------------------
+FROM gitlab-foss-source as gitlab-foss-build
+
+COPY --from=ruby-inst-extended /usr/local /usr/local
+
+USER git
+
+RUN  cd $GITLAB_INSTALL_DIR  \
+ && bundle config set --local deployment 'true' \
+ && bundle config set --local without 'development test mysql aws' \
+ && bundle install -j"$(nproc)"
+
+#----------------------------
 # final
 #----------------------------
 FROM base-builder-extended as final
@@ -253,6 +267,9 @@ COPY --from=gitlab-shell ${GITLAB_INSTALL_DIR} ${GITLAB_INSTALL_DIR}
 COPY --from=gitlab-shell /usr/local /usr/local
 
 COPY --from=yarn ${GITLAB_INSTALL_DIR}/node_modules ${GITLAB_INSTALL_DIR}/node_modules
+
+COPY --from=gitlab-foss-build ${GITLAB_INSTALL_DIR} ${GITLAB_INSTALL_DIR}
+COPY --from=gitlab-foss-build /usr/local /usr/local
 
 COPY assets/build/ ${GITLAB_BUILD_DIR}/
 RUN bash ${GITLAB_BUILD_DIR}/install2.sh
