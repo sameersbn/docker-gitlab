@@ -178,8 +178,8 @@ FROM  gitlab-foss-source as ruby-inst-extended
 COPY --from=ruby-inst /usr/local /usr/local
 
 # install bundler: use version specified in Gemfile.lock
-#RUN BUNDLER_VERSION="$(grep "BUNDLED WITH" $GITLAB_INSTALL_DIR/Gemfile.lock -A 1 | grep -v "BUNDLED WITH" | tr -d "[:space:]")" \
-#    gem install bundler:"$BUNDLER_VERSION"
+RUN export BUNDLER_VERSION=$(grep "BUNDLED WITH" $GITLAB_INSTALL_DIR/Gemfile.lock -A 1 | grep -v "BUNDLED WITH" | tr -d "[:space:]"); echo $BUNDLER_VERSION; \
+    gem install bundler:"$BUNDLER_VERSION"
 
 #----------------------------
 # gitlab-shell
