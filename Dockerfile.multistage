@@ -162,6 +162,8 @@ USER git
 RUN echo "Cloning gitlab-foss v.$GITLAB_VERSION..." \
  && git clone -q -b v$GITLAB_VERSION --depth 1 $GITLAB_CLONE_URL $GITLAB_INSTALL_DIR
 
+COPY assets/build/ ${GITLAB_BUILD_DIR}/
+
 RUN find "$GITLAB_BUILD_DIR/patches/gitlabhq" -name "*.patch" | while read -r patch_file; do \
     printf "Applying patch %s for gitlab-foss...\n" "${patch_file}"; \
     git -C $GITLAB_INSTALL_DIR apply --ignore-whitespace < "${patch_file}"; \
@@ -178,7 +180,7 @@ FROM  gitlab-foss-source as ruby-inst-extended
 COPY --from=ruby-inst /usr/local /usr/local
 
 # install bundler: use version specified in Gemfile.lock
-RUN export BUNDLER_VERSION=$(grep "BUNDLED WITH" $GITLAB_INSTALL_DIR/Gemfile.lock -A 1 | grep -v "BUNDLED WITH" | tr -d "[:space:]"); echo $BUNDLER_VERSION; \
+RUN export BUNDLER_VERSION=$(grep "BUNDLED WITH" $GITLAB_INSTALL_DIR/Gemfile.lock -A 1 | grep -v "BUNDLED WITH" | tr -d "[:space:]"); \
     gem install bundler:"$BUNDLER_VERSION"
 
 #----------------------------
@@ -272,6 +274,22 @@ COPY --from=gitlab-foss-build ${GITLAB_INSTALL_DIR} ${GITLAB_INSTALL_DIR}
 COPY --from=gitlab-foss-build /usr/local /usr/local
 
 COPY assets/build/ ${GITLAB_BUILD_DIR}/
+
+# gitlab.yml and database.yml are required for `assets:precompile`
+USER git
+
+RUN cp ${GITLAB_INSTALL_DIR}/config/resque.yml.example ${GITLAB_INSTALL_DIR}/config/resque.yml \
+ && cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+
+USER root
+
+# #
+# # Temporary workaround, see <https://github.com/sameersbn/docker-gitlab/pull/2596>
+# #
+# # exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
+# RUN cp ${GITLAB_BUILD_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml \
+#  && chown ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/config/database.yml
+
 RUN bash ${GITLAB_BUILD_DIR}/install2.sh
 
 COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/

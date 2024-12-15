@@ -202,12 +202,12 @@ fi
 chown -R ${GITLAB_USER}: ${GITLAB_HOME}
 
 # gitlab.yml and database.yml are required for `assets:precompile`
-exec_as_git cp ${GITLAB_INSTALL_DIR}/config/resque.yml.example ${GITLAB_INSTALL_DIR}/config/resque.yml
-exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+#exec_as_git cp ${GITLAB_INSTALL_DIR}/config/resque.yml.example ${GITLAB_INSTALL_DIR}/config/resque.yml
+#exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
 #
 # Temporary workaround, see <https://github.com/sameersbn/docker-gitlab/pull/2596>
 #
-# exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
+#exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
 cp ${GITLAB_BUILD_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
 chown ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/config/database.yml
 
@@ -215,7 +215,7 @@ chown ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/config/database.yml
 #exec_as_git yarn install --production --pure-lockfile
 
 echo "Compiling assets. Please be patient, this could take a while..."
-exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true NODE_OPTIONS="--max-old-space-size=4096"
+exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true NODE_OPTIONS="--max-old-space-size=8192"
 
 # remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
 rm -rf ${GITLAB_DATA_DIR}/config/secrets.yml
