@@ -287,8 +287,8 @@ USER root
 # # Temporary workaround, see <https://github.com/sameersbn/docker-gitlab/pull/2596>
 # #
 # # exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
-# RUN cp ${GITLAB_BUILD_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml \
-#  && chown ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/config/database.yml
+RUN cp ${GITLAB_BUILD_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml \
+ && chown ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/config/database.yml
 
 RUN bash ${GITLAB_BUILD_DIR}/install2.sh
 
