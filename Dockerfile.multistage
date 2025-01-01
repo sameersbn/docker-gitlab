@@ -1,7 +1,7 @@
 #----------------------------
 # base-builder
 #----------------------------
-FROM ubuntu:focal-20241011 as base-builder
+FROM ubuntu:focal-20241011 AS base-builder
 
 ARG VERSION=17.6.0
 
@@ -61,7 +61,7 @@ RUN apt-get update \
 #----------------------------
 # base-builder-extended
 #----------------------------
-FROM base-builder as base-builder-extended
+FROM base-builder AS base-builder-extended
 
 RUN set -ex && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E6030699E45FA1715D88E1DF1F24 \
@@ -97,7 +97,7 @@ RUN adduser --disabled-login --gecos 'GitLab' $GITLAB_USER \
 #----------------------------
 # golang
 #----------------------------
-FROM base-builder as golang
+FROM base-builder AS golang
 
 RUN echo "Downloading Go $GOLANG_VERSION..." \
  && wget -cnv https://storage.googleapis.com/golang/go$GOLANG_VERSION.linux-amd64.tar.gz -P $GITLAB_BUILD_DIR/ \
@@ -106,7 +106,7 @@ RUN echo "Downloading Go $GOLANG_VERSION..." \
 #----------------------------
 # ruby
 #----------------------------
-FROM ruby:3.2.6-bullseye as ruby-inst
+FROM ruby:3.2.6-bullseye AS ruby-inst
 
 ENV RUBYGEMS_VERSION=3.5.14
 # upgrade rubygems on demand
@@ -115,7 +115,7 @@ RUN gem update --no-document --system "$RUBYGEMS_VERSION"
 #----------------------------
 # gitlab-pages
 #----------------------------
-FROM base-builder as gitlab-pages
+FROM base-builder AS gitlab-pages
 
 RUN mkdir /tmp/go
 COPY --from=golang /tmp/go /tmp/go
@@ -131,7 +131,7 @@ RUN make -C $GITLAB_PAGES_BUILD_DIR -j"$(nproc)" \
 #----------------------------
 # gitaly
 #----------------------------
-FROM base-builder as gitaly
+FROM base-builder AS gitaly
 
 RUN mkdir /tmp/go
 COPY --from=golang /tmp/go /tmp/go
@@ -156,7 +156,7 @@ RUN make -C $GITLAB_GITALY_BUILD_DIR git GIT_PREFIX=/usr/local -j"$(nproc)"
 #----------------------------
 # gitlab-foss-source
 #----------------------------
-FROM base-builder-extended as gitlab-foss-source
+FROM base-builder-extended AS gitlab-foss-source
 # shallow clone gitlab-foss
 USER git
 RUN echo "Cloning gitlab-foss v.$GITLAB_VERSION..." \
@@ -175,7 +175,7 @@ RUN mkdir -p ${GITLAB_BUILD_DIR}
 #----------------------------
 # ruby-inst-extended
 #----------------------------
-FROM  gitlab-foss-source as ruby-inst-extended
+FROM  gitlab-foss-source AS ruby-inst-extended
 
 COPY --from=ruby-inst /usr/local /usr/local
 
@@ -186,7 +186,7 @@ RUN export BUNDLER_VERSION=$(grep "BUNDLED WITH" $GITLAB_INSTALL_DIR/Gemfile.loc
 #----------------------------
 # gitlab-shell
 #----------------------------
-FROM  gitlab-foss-source as gitlab-shell
+FROM  gitlab-foss-source AS gitlab-shell
 
 RUN mkdir /tmp/go
 COPY --from=golang /tmp/go /tmp/go
@@ -226,7 +226,7 @@ RUN cd $GITLAB_SHELL_INSTALL_DIR \
 #----------------------------
 # yarn
 #----------------------------
-FROM gitlab-foss-source as yarn
+FROM gitlab-foss-source AS yarn
 
 USER git
 RUN cd $GITLAB_INSTALL_DIR; yarn install --production --pure-lockfile
@@ -235,7 +235,7 @@ USER root
 #----------------------------
 # gitlab-foss-build
 #----------------------------
-FROM gitlab-foss-source as gitlab-foss-build
+FROM gitlab-foss-source AS gitlab-foss-build
 
 COPY --from=ruby-inst-extended /usr/local /usr/local
 
@@ -249,7 +249,7 @@ RUN  cd $GITLAB_INSTALL_DIR  \
 #----------------------------
 # final
 #----------------------------
-FROM base-builder-extended as final
+FROM base-builder-extended AS final
 
 RUN mkdir $GITLAB_CACHE_DIR; mkdir $GITLAB_BUILD_DIR; mkdir $GITLAB_BUILD_DIR/build
 
