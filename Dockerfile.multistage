@@ -3,7 +3,7 @@
 #----------------------------
 FROM ubuntu:focal-20241011 AS base-builder
 
-ARG VERSION=17.6.0
+ARG VERSION=17.6.2
 
 ENV GITLAB_VERSION=${VERSION} \
     RUBY_VERSION=3.2.6 \
@@ -11,8 +11,8 @@ ENV GITLAB_VERSION=${VERSION} \
     RUBYGEMS_VERSION=3.5.14 \
     GOLANG_VERSION=1.23.3 \
     GITLAB_SHELL_VERSION=14.39.0 \
-    GITLAB_PAGES_VERSION=17.6.0 \
-    GITALY_SERVER_VERSION=17.6.0 \
+    GITLAB_PAGES_VERSION=17.6.2 \
+    GITALY_SERVER_VERSION=17.6.2 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
@@ -100,8 +100,9 @@ RUN adduser --disabled-login --gecos 'GitLab' $GITLAB_USER \
 FROM base-builder AS golang
 
 RUN echo "Downloading Go $GOLANG_VERSION..." \
- && wget -cnv https://storage.googleapis.com/golang/go$GOLANG_VERSION.linux-amd64.tar.gz -P $GITLAB_BUILD_DIR/ \
- && tar -xf $GITLAB_BUILD_DIR/go$GOLANG_VERSION.linux-amd64.tar.gz -C /tmp/
+ && dpkgArch="$(dpkg-architecture -qDEB_HOST_ARCH)" \
+ && wget -cnv https://storage.googleapis.com/golang/go$GOLANG_VERSION.linux-${dpkgArch}.tar.gz -P $GITLAB_BUILD_DIR/ \
+ && tar -xf $GITLAB_BUILD_DIR/go$GOLANG_VERSION.linux-${dpkgArch}.tar.gz -C /tmp/
 
 #----------------------------
 # ruby
