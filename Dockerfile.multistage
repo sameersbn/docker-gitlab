@@ -266,6 +266,7 @@ COPY --from=gitaly /usr/local /usr/local
 COPY --from=gitlab-foss-source ${GITLAB_INSTALL_DIR} ${GITLAB_INSTALL_DIR}
 
 COPY --from=gitlab-shell ${GITLAB_INSTALL_DIR} ${GITLAB_INSTALL_DIR}
+COPY --from=gitlab-shell ${GITLAB_SHELL_INSTALL_DIR} ${GITLAB_SHELL_INSTALL_DIR}
 COPY --from=gitlab-shell /usr/local /usr/local
 
 COPY --from=yarn ${GITLAB_INSTALL_DIR}/node_modules ${GITLAB_INSTALL_DIR}/node_modules
