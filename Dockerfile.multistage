@@ -45,6 +45,20 @@ ENV BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
     gettext libkrb5-dev \
     libexpat1-dev libz-dev libpcre2-dev build-essential git"
 
+ARG BUILD_DATE
+ARG VCS_REF
+
+LABEL \
+    maintainer="sameer@damagehead.com" \
+    org.label-schema.schema-version="1.0" \
+    org.label-schema.build-date=${BUILD_DATE} \
+    org.label-schema.name=gitlab \
+    org.label-schema.vendor=damagehead \
+    org.label-schema.url="https://github.com/sameersbn/docker-gitlab" \
+    org.label-schema.vcs-url="https://github.com/sameersbn/docker-gitlab.git" \
+    org.label-schema.vcs-ref=${VCS_REF} \
+    com.damagehead.gitlab.license=MIT
+
 ENV GOROOT=/tmp/go
 ENV PATH=${GOROOT}/bin:$PATH
 
@@ -53,7 +67,7 @@ RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ${BUILD_DEPENDENCIES} \
  && apt-get upgrade -y
 
- RUN apt-get update \
+RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     wget ca-certificates apt-transport-https gnupg2 curl \
  && apt-get upgrade -y
@@ -85,6 +99,7 @@ RUN set -ex && \
       libgdbm6 libreadline8 libncurses5 libffi7 \
       libxml2 libxslt1.1 libcurl4 libicu66 libre2-dev tzdata unzip libimage-exiftool-perl \
       libmagic1 \
+      libpixman-1-dev libcairo2-dev libpango1.0-dev libjpeg8-dev libgif-dev \ 
  && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
  && locale-gen en_US.UTF-8 \
  && DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales \
@@ -254,8 +269,8 @@ FROM base-builder-extended AS final
 
 RUN mkdir $GITLAB_CACHE_DIR; mkdir $GITLAB_BUILD_DIR; mkdir $GITLAB_BUILD_DIR/build
 
-RUN mkdir /tmp/go
-COPY --from=golang /tmp/go /tmp/go
+#RUN mkdir /tmp/go
+#COPY --from=golang /tmp/go /tmp/go
 
 COPY --from=ruby-inst-extended /usr/local /usr/local
 
@@ -299,20 +314,6 @@ COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
 
 ENV prometheus_multiproc_dir="/dev/shm"
-
-ARG BUILD_DATE
-ARG VCS_REF
-
-LABEL \
-    maintainer="sameer@damagehead.com" \
-    org.label-schema.schema-version="1.0" \
-    org.label-schema.build-date=${BUILD_DATE} \
-    org.label-schema.name=gitlab \
-    org.label-schema.vendor=damagehead \
-    org.label-schema.url="https://github.com/sameersbn/docker-gitlab" \
-    org.label-schema.vcs-url="https://github.com/sameersbn/docker-gitlab.git" \
-    org.label-schema.vcs-ref=${VCS_REF} \
-    com.damagehead.gitlab.license=MIT
 
 EXPOSE 22/tcp 80/tcp 443/tcp
 
