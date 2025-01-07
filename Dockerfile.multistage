@@ -269,8 +269,8 @@ FROM base-builder-extended AS final
 
 RUN mkdir $GITLAB_CACHE_DIR; mkdir $GITLAB_BUILD_DIR; mkdir $GITLAB_BUILD_DIR/build
 
-#RUN mkdir /tmp/go
-#COPY --from=golang /tmp/go /tmp/go
+RUN mkdir /tmp/go
+COPY --from=golang /tmp/go /tmp/go
 
 COPY --from=ruby-inst-extended /usr/local /usr/local
 
