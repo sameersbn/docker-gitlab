@@ -1,16 +1,16 @@
 #!/bin/bash
 set -e
 
-GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-foss.git
-GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/-/archive/v${GITLAB_SHELL_VERSION}/gitlab-shell-v${GITLAB_SHELL_VERSION}.tar.bz2
-GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages.git
-GITLAB_GITALY_URL=https://gitlab.com/gitlab-org/gitaly.git
+#GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-foss.git
+#GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/-/archive/v${GITLAB_SHELL_VERSION}/gitlab-shell-v${GITLAB_SHELL_VERSION}.tar.bz2
+#GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages.git
+#GITLAB_GITALY_URL=https://gitlab.com/gitlab-org/gitaly.git
 
-GITLAB_WORKHORSE_BUILD_DIR=${GITLAB_INSTALL_DIR}/workhorse
-GITLAB_PAGES_BUILD_DIR=/tmp/gitlab-pages
-GITLAB_GITALY_BUILD_DIR=/tmp/gitaly
+#GITLAB_WORKHORSE_BUILD_DIR=${GITLAB_INSTALL_DIR}/workhorse
+#GITLAB_PAGES_BUILD_DIR=/tmp/gitlab-pages
+#GITLAB_GITALY_BUILD_DIR=/tmp/gitaly
 
-RUBY_SRC_URL=https://cache.ruby-lang.org/pub/ruby/${RUBY_VERSION%.*}/ruby-${RUBY_VERSION}.tar.gz
+#RUBY_SRC_URL=https://cache.ruby-lang.org/pub/ruby/${RUBY_VERSION%.*}/ruby-${RUBY_VERSION}.tar.gz
 
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
