@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   shellcheck: circleci/shellcheck@3.2.0
-  docker: circleci/docker@2.5.0
+  docker: circleci/docker@2.8.1
   go: circleci/go@1.11.0
 
 commands:
@@ -11,7 +11,7 @@ commands:
       Build and optionally deploy a Docker images
     parameters:
       dockerfile:
-        default: Dockerfile
+        default: Dockerfile.multistage
         description: 'Name of dockerfile to use, defaults to Dockerfile'
         type: string
       extra_build_args:
@@ -50,6 +50,11 @@ commands:
         description: |
           No output timeout for build step
         type: string
+      use-buildkit:
+        default: false
+        description: |
+          Use buildkit to build the image. Available on Docker >= 18.09.0 https://docs.docker.com/develop/develop-images/build_enhancements/
+        type: boolean
     steps:
       - when:
           condition: <<parameters.cache_from>>
@@ -76,7 +81,7 @@ commands:
                     done
                   done
 
-                  docker build
+                  docker buildx build
                   <<#parameters.extra_build_args>><<parameters.extra_build_args>><</parameters.extra_build_args>>
                   \
                     --cache-from <<parameters.cache_from>> \
@@ -102,7 +107,7 @@ commands:
                     done
                   done
 
-                  docker build
+                  docker buildx build
                   <<#parameters.extra_build_args>><<parameters.extra_build_args>><</parameters.extra_build_args>>
                   \
                     -f <<parameters.path>>/<<parameters.dockerfile>> \
@@ -198,7 +203,9 @@ commands:
 
 jobs:
   build:
-    executor: docker/machine
+    machine:
+      image: ubuntu-2404:edge
+    resource_class: large
     steps:
       - checkout
       - docker-build:
@@ -208,6 +215,7 @@ jobs:
           cache_from: docker.io/sameersbn/gitlab:latest
           extra_build_args: '--build-arg VCS_REF=${CIRCLE_TAG:-${CIRCLE_SHA1}} --build-arg BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"'
           no_output_timeout: 45m
+          use-buildkit: true
       - docker-save:
           registry: docker.io,quay.io
           image: sameersbn/gitlab
