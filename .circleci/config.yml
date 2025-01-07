@@ -11,7 +11,7 @@ commands:
       Build and optionally deploy a Docker images
     parameters:
       dockerfile:
-        default: Dockerfile
+        default: Dockerfile.multistage
         description: 'Name of dockerfile to use, defaults to Dockerfile'
         type: string
       extra_build_args:
@@ -76,7 +76,7 @@ commands:
                     done
                   done
 
-                  docker build
+                  docker buildx build
                   <<#parameters.extra_build_args>><<parameters.extra_build_args>><</parameters.extra_build_args>>
                   \
                     --cache-from <<parameters.cache_from>> \
@@ -102,7 +102,7 @@ commands:
                     done
                   done
 
-                  docker build
+                  docker buildx build
                   <<#parameters.extra_build_args>><<parameters.extra_build_args>><</parameters.extra_build_args>>
                   \
                     -f <<parameters.path>>/<<parameters.dockerfile>> \
@@ -199,18 +199,19 @@ commands:
 jobs:
   build:
     executor: docker/machine
+    resource_class: large
     steps:
       - checkout
       - docker-build:
           registry: docker.io,quay.io
-          image: sameersbn/gitlab
+          image: th2021/docker-gitlab
           tag: ${CIRCLE_TAG:-latest}
-          cache_from: docker.io/sameersbn/gitlab:latest
+          cache_from: docker.io/th2021/docker-gitlab:latest
           extra_build_args: '--build-arg VCS_REF=${CIRCLE_TAG:-${CIRCLE_SHA1}} --build-arg BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"'
           no_output_timeout: 45m
       - docker-save:
           registry: docker.io,quay.io
-          image: sameersbn/gitlab
+          image: th2021/docker-gitlab
           tag: ${CIRCLE_TAG:-latest}
 
   test:
