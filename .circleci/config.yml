@@ -207,7 +207,7 @@ jobs:
           image: th2021/docker-gitlab
           tag: ${CIRCLE_TAG:-latest}
           cache_from: docker.io/th2021/docker-gitlab:latest
-          extra_build_args: '--build-arg VCS_REF=${CIRCLE_TAG:-${CIRCLE_SHA1}} --build-arg BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"'
+          extra_build_args: '--build-arg VCS_REF=${CIRCLE_TAG:-${CIRCLE_SHA1}} --build-arg BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")" --build-arg MAX_OLD_SPACE=8192'
           no_output_timeout: 45m
       - docker-save:
           registry: docker.io,quay.io
