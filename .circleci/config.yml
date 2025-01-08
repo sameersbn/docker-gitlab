@@ -81,7 +81,7 @@ commands:
                     done
                   done
 
-                  docker buildx build
+                  DOCKER_BUILDKIT=1 docker buildx build
                   <<#parameters.extra_build_args>><<parameters.extra_build_args>><</parameters.extra_build_args>>
                   \
                     --cache-from <<parameters.cache_from>> \
@@ -107,7 +107,7 @@ commands:
                     done
                   done
 
-                  docker buildx build
+                  DOCKER_BUILDKIT=1 docker buildx build
                   <<#parameters.extra_build_args>><<parameters.extra_build_args>><</parameters.extra_build_args>>
                   \
                     -f <<parameters.path>>/<<parameters.dockerfile>> \
