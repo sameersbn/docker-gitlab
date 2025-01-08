@@ -50,6 +50,11 @@ commands:
         description: |
           No output timeout for build step
         type: string
+      use-buildkit:
+        default: false
+        description: |
+          Use buildkit to build the image. Available on Docker >= 18.09.0 https://docs.docker.com/develop/develop-images/build_enhancements/
+        type: boolean
     steps:
       - when:
           condition: <<parameters.cache_from>>
