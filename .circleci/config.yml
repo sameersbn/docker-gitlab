@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   shellcheck: circleci/shellcheck@3.2.0
-  docker: circleci/docker@2.5.0
+  docker: circleci/docker@2.8.1
   go: circleci/go@1.11.0
 
 commands:
@@ -213,7 +213,6 @@ jobs:
           registry: docker.io,quay.io
           image: th2021/docker-gitlab
           tag: ${CIRCLE_TAG:-latest}
-    parallelism: 3
 
   test:
     executor: docker/machine
