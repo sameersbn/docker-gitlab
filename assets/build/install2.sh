@@ -215,6 +215,7 @@ chown -R ${GITLAB_USER}: ${GITLAB_HOME}
 #exec_as_git yarn install --production --pure-lockfile
 
 echo "Compiling assets. Please be patient, this could take a while..."
+echo "MAX_OLD_SPACE=$MAX_OLD_SPACE"
 exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true NODE_OPTIONS="--max-old-space-size=$MAX_OLD_SPACE"
 
 # remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
