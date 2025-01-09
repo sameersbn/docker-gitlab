@@ -203,7 +203,8 @@ commands:
 
 jobs:
   build:
-    executor: docker/machine
+    machine:
+      image: ubuntu-2404:edge
     resource_class: large
     steps:
       - checkout
