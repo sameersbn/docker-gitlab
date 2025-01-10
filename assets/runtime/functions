@@ -2260,7 +2260,7 @@ migrate_database() {
       chown -R ${GITLAB_USER}: ${GITLAB_HOME}/gitlab/node_modules
       exec_as_git yarn install --production --pure-lockfile
       echo "Recompiling assets (relative_url in use), this could take a while..."
-      exec_as_git bundle exec rake gitlab:assets:compile NODE_OPTIONS="--max-old-space-size=4096" >/dev/null 2>&1
+      exec_as_git bundle exec rake gitlab:assets:compile NODE_OPTIONS="--max-old-space-size=8192" >/dev/null 2>&1
     fi
 
     echo "Clearing cache..."

@@ -210,15 +210,15 @@ jobs:
       - checkout
       - docker-build:
           registry: docker.io,quay.io
-          image: th2021/docker-gitlab
+          image: sameersbn/gitlab
           tag: ${CIRCLE_TAG:-latest}
-          cache_from: docker.io/th2021/docker-gitlab:latest
+          cache_from: docker.io/sameersbn/gitlab:latest
           extra_build_args: '--build-arg VCS_REF=${CIRCLE_TAG:-${CIRCLE_SHA1}} --build-arg BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"'
           no_output_timeout: 45m
           use-buildkit: true
       - docker-save:
           registry: docker.io,quay.io
-          image: th2021/docker-gitlab
+          image: sameersbn/gitlab
           tag: ${CIRCLE_TAG:-latest}
 
   test:
