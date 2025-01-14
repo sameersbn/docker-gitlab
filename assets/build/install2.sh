@@ -14,8 +14,8 @@ set -e
 
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
-GOROOT=/tmp/go
-PATH=${GOROOT}/bin:$PATH
+#GOROOT=/tmp/go
+#PATH=${GOROOT}/bin:$PATH
 
 export GOROOT PATH
 
@@ -173,8 +173,8 @@ GITLAB_PAGES_VERSION=${GITLAB_PAGES_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_
 #rm -rf ${GITLAB_GITALY_BUILD_DIR}
 
 # remove go
-go clean --modcache
-rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz ${GOROOT}
+#go clean --modcache
+#rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz ${GOROOT}
 
 # remove HSTS config from the default headers, we configure it in nginx
 exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
