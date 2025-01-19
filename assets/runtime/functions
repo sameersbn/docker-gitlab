@@ -149,7 +149,7 @@ gitlab_finalize_database_parameters() {
 
 gitlab_check_database_connection() {
 
-  prog=$(find /usr/lib/postgresql/ -name pg_isready -type f | sort | tail -n1)
+  prog=$(command -v pg_isready)
   prog="${prog} -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -t 1"
 
   timeout=60
