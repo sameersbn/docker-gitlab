@@ -1,6 +1,6 @@
-FROM ubuntu:focal-20241011
+FROM ubuntu:jammy-20240911.1
 
-ARG VERSION=17.6.3
+ARG VERSION=17.7.0
 
 ENV GITLAB_VERSION=${VERSION} \
     RUBY_VERSION=3.2.6 \
@@ -8,8 +8,8 @@ ENV GITLAB_VERSION=${VERSION} \
     RUBYGEMS_VERSION=3.5.14 \
     GOLANG_VERSION=1.23.5 \
     GITLAB_SHELL_VERSION=14.39.0 \
-    GITLAB_PAGES_VERSION=17.6.3 \
-    GITALY_SERVER_VERSION=17.6.3 \
+    GITLAB_PAGES_VERSION=17.7.0 \
+    GITALY_SERVER_VERSION=17.7.0 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
@@ -32,11 +32,9 @@ RUN apt-get update \
 
 RUN set -ex && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E6030699E45FA1715D88E1DF1F24 \
- && echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu focal main" >> /etc/apt/sources.list \
- && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 8B3981E7A6852F782CC4951600A6F0A3C300EE8C \
- && echo "deb http://ppa.launchpad.net/nginx/stable/ubuntu focal main" >> /etc/apt/sources.list \
+ && echo "deb https://ppa.launchpadcontent.net/git-core/ppa/ubuntu jammy main" >> /etc/apt/sources.list \
  && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
- && echo 'deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
+ && echo 'deb http://apt.postgresql.org/pub/repos/apt/ jammy-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
  && wget --quiet -O - https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | apt-key add - \
  && echo 'deb https://deb.nodesource.com/node_20.x nodistro main' > /etc/apt/sources.list.d/nodesource.list \
  && wget --quiet -O - https://dl.yarnpkg.com/debian/pubkey.gpg  | apt-key add - \
@@ -46,12 +44,13 @@ RUN set -ex && \
  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
       sudo supervisor logrotate locales curl \
       nginx openssh-server postgresql-contrib redis-tools \
-      postgresql-client-13 postgresql-client-14 postgresql-client-15 postgresql-client-16 \
+      postgresql-client-13 postgresql-client-14 postgresql-client-15 postgresql-client-16 postgresql-client-17 \
       python3 python3-docutils nodejs yarn gettext-base graphicsmagick \
-      libpq5 zlib1g libyaml-0-2 libssl1.1 \
-      libgdbm6 libreadline8 libncurses5 libffi7 \
-      libxml2 libxslt1.1 libcurl4 libicu66 libre2-dev tzdata unzip libimage-exiftool-perl \
-      libmagic1 \
+      libpq5 zlib1g libyaml-dev libssl-dev libgdbm-dev libre2-dev \
+      libreadline-dev libncurses5-dev libffi-dev curl openssh-server libxml2-dev libxslt-dev \
+      libcurl4-openssl-dev libicu-dev libkrb5-dev rsync python3-docutils pkg-config cmake \
+      runit-systemd \
+      tzdata unzip libimage-exiftool-perl libmagic1 \
  && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
  && locale-gen en_US.UTF-8 \
  && DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales \
