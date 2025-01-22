@@ -11,7 +11,7 @@ server {
   server_name  {{GITLAB_REGISTRY_HOST}};
   server_tokens off; ## Don't show the nginx version number, a security best practice
   return 301 https://$http_host:$request_uri;
-  access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_registry_access.log;
+  access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_registry_access.log gitlab_access;
   error_log   {{GITLAB_LOG_DIR}}/nginx/gitlab_registry_error.log;
 }
 
@@ -36,7 +36,7 @@ server {
   ssl_session_cache  builtin:1000  shared:SSL:10m;
   ssl_session_timeout  5m;
 
-  access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_registry_access.log;
+  access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_registry_access.log gitlab_access;
   error_log   {{GITLAB_LOG_DIR}}/nginx/gitlab_registry_error.log;
 
   location / {
