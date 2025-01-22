@@ -1,6 +1,21 @@
 # Changelog
 
-This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
+This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://
+gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
+
+**17.7.1**
+
+- gitlab: upgrade CE to v17.7.1
+- gitaly: upgrade to v17.7.1
+- gitlab-pages: upgrade to v17.7.1
+
+**17.7.0**
+
+- gitlab: upgrade CE to v17.7.0
+- gitaly: upgrade to v17.7.0
+- gitlab-pages: upgrade to v17.7.0
+- ubuntu: upgrade to jammy-20240911.1
+- update healthcheck for postgresql
 
 **17.6.3**
 
