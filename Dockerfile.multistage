@@ -124,7 +124,7 @@ RUN echo "Downloading Go $GOLANG_VERSION..." \
 #----------------------------
 # ruby
 #----------------------------
-FROM ruby:3.2.6-bookworm AS ruby-inst
+FROM ruby:3.2.7-bookworm AS ruby-inst
 
 ENV RUBYGEMS_VERSION=3.5.14
 # upgrade rubygems on demand
