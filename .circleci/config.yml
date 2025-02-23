@@ -11,7 +11,7 @@ commands:
       Build and optionally deploy a Docker images
     parameters:
       dockerfile:
-        default: Dockerfile
+        default: Dockerfile.multistage
         description: 'Name of dockerfile to use, defaults to Dockerfile'
         type: string
       extra_build_args:
