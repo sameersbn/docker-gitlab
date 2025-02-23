@@ -3,6 +3,24 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://
 gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**17.9.0**
+
+- gitlab: upgrade CE to v17.9.0
+- gitaly: upgrade to v17.9.0
+- gitlab-pages: upgrade to v17.9.0
+- gitlab-shell: upgrade to v14.40.0
+- golang: upgrade to v1.24.0
+- rubygems: upgrade to v3.5.23
+- ubuntu: upgrade to jammy-20250126
+
+**17.8.2**
+
+- gitlab: upgrade CE to v17.8.2
+- gitaly: upgrade to v17.8.2
+- gitlab-pages: upgrade to v17.8.2
+- golang: upgrade to v1.23.6
+- ruby: upgrade to v3.2.7
+
 **17.8.1**
 
 - gitlab: upgrade CE to v17.8.1

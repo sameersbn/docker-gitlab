@@ -1,15 +1,15 @@
-FROM ubuntu:jammy-20240911.1
+FROM ubuntu:jammy-20250126
 
-ARG VERSION=17.8.1
+ARG VERSION=17.9.0
 
 ENV GITLAB_VERSION=${VERSION} \
-    RUBY_VERSION=3.2.6 \
-    RUBY_SOURCE_SHA256SUM="d9cb65ecdf3f18669639f2638b63379ed6fbb17d93ae4e726d4eb2bf68a48370" \
-    RUBYGEMS_VERSION=3.5.14 \
-    GOLANG_VERSION=1.23.5 \
-    GITLAB_SHELL_VERSION=14.39.0 \
-    GITLAB_PAGES_VERSION=17.8.1 \
-    GITALY_SERVER_VERSION=17.8.1 \
+    RUBY_VERSION=3.2.7 \
+    RUBY_SOURCE_SHA256SUM="8488fa620ff0333c16d437f2b890bba3b67f8745fdecb1472568a6114aad9741" \
+    RUBYGEMS_VERSION=3.5.23 \
+    GOLANG_VERSION=1.24.0 \
+    GITLAB_SHELL_VERSION=14.40.0 \
+    GITLAB_PAGES_VERSION=17.9.0 \
+    GITALY_SERVER_VERSION=17.9.0 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
@@ -40,6 +40,9 @@ RUN set -ex && \
  && echo 'deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main' > /etc/apt/sources.list.d/nodesource.list \
  && wget --quiet -O - https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /etc/apt/keyrings/yarn.gpg \
  && echo 'deb [signed-by=/etc/apt/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list.d/yarn.list \
+ && wget --quiet -O - https://nginx.org/keys/nginx_signing.key | gpg --dearmor -o /etc/apt/keyrings/nginx-archive-keyring.gpg \
+ && echo "deb [signed-by=/etc/apt/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/ubuntu jammy nginx" >> /etc/apt/sources.list.d/nginx.list \
+ && printf "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" >> /etc/apt/preferences.d/99nginx \
  && set -ex \
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
@@ -55,7 +58,7 @@ RUN set -ex && \
  && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
  && locale-gen en_US.UTF-8 \
  && DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales \
- && rm -rf /var/lib/apt/lists/*
+ && rm -rf /var/lib/apt/lists/* /etc/nginx/conf.d/default.conf
 
 COPY assets/build/ ${GITLAB_BUILD_DIR}/
 RUN bash ${GITLAB_BUILD_DIR}/install.sh

@@ -30,7 +30,7 @@ map $request_uri $obfuscated_request_uri {
     ~(.+\?)(.*&)?(private_token=|access_token=)[^&]*(&.*|$) $1$2$3****$4;
     default $request_uri;
 }
-log_format main '$remote_addr - $remote_user [$time_local] '
+log_format gitlab_access '$remote_addr - $remote_user [$time_local] '
                   '"$request_method $obfuscated_request_uri $server_protocol" $status $body_bytes_sent '
                   '"$http_referer" "$http_user_agent"';
 
@@ -58,7 +58,7 @@ server {
   add_header Strict-Transport-Security "max-age={{NGINX_HSTS_MAXAGE}};";
 
   ## Individual nginx logs for this GitLab vhost
-  access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_access.log main;
+  access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_access.log gitlab_access;
   error_log   {{GITLAB_LOG_DIR}}/nginx/gitlab_error.log;
 
   location / {

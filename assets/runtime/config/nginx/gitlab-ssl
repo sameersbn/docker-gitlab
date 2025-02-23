@@ -34,7 +34,7 @@ map $request_uri $obfuscated_request_uri {
     ~(.+\?)(.*&)?(private_token=|access_token=)[^&]*(&.*|$) $1$2$3****$4;
     default $request_uri;
 }
-log_format main '$remote_addr - $remote_user [$time_local] '
+log_format gitlab_ssl_access '$remote_addr - $remote_user [$time_local] '
                   '"$request_method $obfuscated_request_uri $server_protocol" $status $body_bytes_sent '
                   '"$http_referer" "$http_user_agent"';
 
@@ -49,14 +49,15 @@ server {
   server_name _; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
   return 301 https://$host:{{GITLAB_PORT}}$request_uri;
-  access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_access.log main;
+  access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_access.log gitlab_ssl_access;
   error_log   {{GITLAB_LOG_DIR}}/nginx/gitlab_error.log;
 }
 
 ## HTTPS host
 server {
-  listen 0.0.0.0:443 ssl http2;
-  listen [::]:443 ipv6only=on ssl http2 default_server;
+  listen 0.0.0.0:443 ssl;
+  listen [::]:443 ipv6only=on ssl default_server;
+  http2 on;
   server_name {{GITLAB_HOST}}; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
 
@@ -103,7 +104,7 @@ server {
   ssl_dhparam {{SSL_DHPARAM_PATH}};
 
   ## Individual nginx logs for this GitLab vhost
-  access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_access.log main;
+  access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_access.log gitlab_ssl_access;
   error_log   {{GITLAB_LOG_DIR}}/nginx/gitlab_error.log;
 
   location / {
