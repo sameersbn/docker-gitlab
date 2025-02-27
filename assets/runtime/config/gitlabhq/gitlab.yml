@@ -225,8 +225,13 @@ production: &base
       connection:
         provider: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_PROVIDER}} # Only AWS supported at the moment
         #start-artifacts-aws
+        #start-artifacts-secret-access-key-aws
         aws_access_key_id: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID}}
         aws_secret_access_key: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY}}
+        #end-artifacts-secret-access-key-aws
+        #start-artifacts-use-iam-profile-aws
+        use_iam_profile: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE}}
+        #end-artifacts-use-iam-profile-aws
         region: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_REGION}}
         host: '{{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_HOST}}' # default: s3.amazonaws.com
         aws_signature_version: {{GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_SIGNATURE_VERSION}} # For creation of signed URLs. Set to 2 if provider does not support v4.
@@ -271,8 +276,13 @@ production: &base
       connection:
         provider: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_PROVIDER}}
         #start-lfs-aws
+        #start-lfs-secret-access-key-aws
         aws_access_key_id: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID}}
         aws_secret_access_key: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY}}
+        #end-lfs-secret-access-key-aws
+        #start-lfs-use-iam-profile-aws
+        use_iam_profile: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE}}
+        #end-lfs-use-iam-profile-aws
         aws_signature_version: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_SIGNATURE_VERSION}} # For creation of signed URLs. Set to 2 if provider does not support v4.
         region: {{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_REGION}}
         host: '{{GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_HOST}}' # default: s3.amazonaws.com
@@ -305,8 +315,13 @@ production: &base
       connection:
         provider: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_PROVIDER}}
         #start-uploads-aws
+        #start-uploads-secret-access-key-aws
         aws_access_key_id: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID}}
         aws_secret_access_key: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY}}
+        #end-uploads-secret-access-key-aws
+        #start-uploads-use-iam-profile-aws
+        use_iam_profile: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE}}
+        #end-uploads-use-iam-profile-aws
         aws_signature_version: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_SIGNATURE_VERSION}} # For creation of signed URLs. Set to 2 if provider does not support v4.
         region: {{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_REGION}}
         host: '{{GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_HOST}}' # default: s3.amazonaws.com
@@ -333,8 +348,13 @@ production: &base
       connection:
         provider: {{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_PROVIDER}} # Only AWS supported at the moment
         #start-packages-aws
+        #start-packages-secret-access-key-aws
         aws_access_key_id: {{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID}}
         aws_secret_access_key: {{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY}}
+        #end-packages-secret-access-key-aws
+        #start-packages-use-iam-profile-aws
+        use_iam_profile: {{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE}}
+        #end-packages-use-iam-profile-aws
         region: {{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_REGION}}
         host: '{{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_HOST}}' # default: s3.amazonaws.com
         aws_signature_version: {{GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_SIGNATURE_VERSION}} # For creation of signed URLs. Set to 2 if provider does not support v4.
@@ -380,8 +400,13 @@ production: &base
       connection:
         provider: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_PROVIDER}}
         #start-terraform_state-aws
+        #start-terraform_state-secret-access-key-aws
         aws_access_key_id: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID}}
         aws_secret_access_key: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY}}
+        #end-terraform_state-secret-access-key-aws
+        #start-terraform_state-use-iam-profile-aws
+        use_iam_profile: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE}}
+        #end-terraform_state-use-iam-profile-aws
         region: {{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_REGION}}
         host: '{{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_HOST}}' # default: s3.amazonaws.com
         endpoint: '{{GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_ENDPOINT}}' # default: nil
@@ -1096,8 +1121,13 @@ production: &base
         region: {{AWS_BACKUP_REGION}}
         endpoint: {{AWS_BACKUP_ENDPOINT}}
         path_style: {{AWS_BACKUP_PATH_STYLE}}
+        #start-backup-secret-access-key-aws
         aws_access_key_id: {{AWS_BACKUP_ACCESS_KEY_ID}}
         aws_secret_access_key: '{{AWS_BACKUP_SECRET_ACCESS_KEY}}'
+        #end-backup-secret-access-key-aws
+        #start-backup-use-iam-profile-aws
+        use_iam_profile: {{AWS_BACKUP_USE_IAM_PROFILE}}
+        #end-backup-use-iam-profile-aws
         aws_signature_version: {{AWS_BACKUP_SIGNATURE_VERSION}}
       # The remote 'directory' to store your backups. For S3, this would be the bucket name.
       remote_directory: '{{AWS_BACKUP_BUCKET}}'
