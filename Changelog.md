@@ -5,9 +5,9 @@ gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of chan
 
 **17.7.6**
 
-- gitlab: upgrade CE to v17.7.4
-- gitaly: upgrade to v17.7.4
-- gitlab-pages: upgrade to v17.7.4
+- gitlab: upgrade CE to v17.7.6
+- gitaly: upgrade to v17.7.6
+- gitlab-pages: upgrade to v17.7.6
 - golang: upgrade to v1.24.0
 - rubygems: upgrade to v3.5.23
 - ubuntu: upgrade to jammy-20250126
