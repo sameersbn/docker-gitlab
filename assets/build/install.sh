@@ -105,8 +105,9 @@ gem install bundler:"${BUNDLER_VERSION}"
 
 # download golang
 echo "Downloading Go ${GOLANG_VERSION}..."
-wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
-tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
+dpkgArch="$(dpkg-architecture -qDEB_HOST_ARCH)"
+wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-${dpkgArch}.tar.gz -P ${GITLAB_BUILD_DIR}/
+tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-${dpkgArch}.tar.gz -C /tmp/
 
 # install gitlab-shell
 echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
@@ -171,7 +172,7 @@ rm -rf ${GITLAB_GITALY_BUILD_DIR}
 
 # remove go
 go clean --modcache
-rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz ${GOROOT}
+rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-${dpkgArch}.tar.gz ${GOROOT}
 
 # remove HSTS config from the default headers, we configure it in nginx
 exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
