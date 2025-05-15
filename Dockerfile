@@ -53,7 +53,6 @@ RUN set -ex && \
       libpq5 zlib1g libyaml-dev libssl-dev libgdbm-dev libre2-dev \
       libreadline-dev libncurses5-dev libffi-dev curl openssh-server libxml2-dev libxslt-dev \
       libcurl4-openssl-dev libicu-dev libkrb5-dev rsync python3-docutils pkg-config cmake \
-      runit-systemd \
       tzdata unzip libimage-exiftool-perl libmagic1 \
  && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
  && locale-gen en_US.UTF-8 \
