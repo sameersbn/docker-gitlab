@@ -19,7 +19,9 @@ PATH=${GOROOT}/bin:$PATH
 
 export GOROOT PATH
 
-BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
+# TODO Verify, if this is necessary or not.
+# BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
+BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake \
   libc6-dev \
   libpq-dev zlib1g-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
@@ -59,13 +61,14 @@ cd "$PWD_ORG" && rm -rf /tmp/ruby
 # upgrade rubygems on demand
 gem update --no-document --system "${RUBYGEMS_VERSION}"
 
-# PaX-mark ruby
-# Applying the mark late here does make the build usable on PaX kernels, but
-# still the build itself must be executed on a non-PaX kernel. It's done here
-# only for simplicity.
-paxctl -cvm "$(command -v ruby)"
-# https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
-paxctl -cvm "$(command -v node)"
+# TODO Verify, if this is necessary or not.
+# # PaX-mark ruby
+# # Applying the mark late here does make the build usable on PaX kernels, but
+# # still the build itself must be executed on a non-PaX kernel. It's done here
+# # only for simplicity.
+# paxctl -cvm "$(command -v ruby)"
+# # https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
+# paxctl -cvm "$(command -v node)"
 
 # remove the host keys generated during openssh-server installation
 rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
