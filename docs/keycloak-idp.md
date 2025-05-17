@@ -37,7 +37,7 @@ Set the following in the docker-compose file:
     - OAUTH2_GENERIC_CLIENT_END_SESSION_ENDPOINT=http://<your-ip-address>:10081/auth/realms/master/protocol/openid-connect/logout
 ```
 
-`<your-ip-address>` is the IP address of your keycloak. For this example this would be your IP address, but if your Keycloak existed elsewhere for your deployment `<your-ip-address>` would be different as would the port and the realm. 
+`<your-ip-address>` is the IP address of your keycloak. For this example this would be your IP address, but if your Keycloak existed elsewhere for your deployment `<your-ip-address>` would be different as would the port and the realm.
 
 The following must also be configured:
 
@@ -47,7 +47,7 @@ The following must also be configured:
     - OAUTH2_GENERIC_USER_EMAIL='email'    
 ```
 
-The values will be different for your deployment. Navigate Keycloak's UI, select `Clients`, click `[your client]`, then open the `Client Scopes` tab, then open `Evaluate` sub-tab, enter a username you know in the `User` field, select the match, then `Generate Access Token` to see the values you need to configure. 
+The values will be different for your deployment. Navigate Keycloak's UI, select `Clients`, click `[your client]`, then open the `Client Scopes` tab, then open `Evaluate` sub-tab, enter a username you know in the `User` field, select the match, then `Generate Access Token` to see the values you need to configure.
 
 Also, make sure the following variables are filled in the docker-compose file:
 

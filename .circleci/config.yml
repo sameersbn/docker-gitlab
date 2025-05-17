@@ -1,8 +1,8 @@
 version: 2.1
 
 orbs:
-  shellcheck: circleci/shellcheck@3.2.0
-  docker: circleci/docker@2.8.1
+  shellcheck: circleci/shellcheck@3.4.0
+  docker: circleci/docker@2.8.2
   go: circleci/go@1.11.0
 
 commands:
