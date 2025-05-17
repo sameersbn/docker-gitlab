@@ -11,7 +11,7 @@ services:
 
   postgresql:
     restart: always
-    image: sameersbn/postgresql:14-20230628
+    image: kkimurak/sameersbn-postgresql:16
     volumes:
       - postgresql:/var/lib/postgresql:Z
     environment:
