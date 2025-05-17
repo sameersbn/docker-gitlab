@@ -252,6 +252,11 @@ gitlab_uninstall_unused_database_client() {
   fi
 }
 
+gitlab_apply_dbms_fixes(){
+  echo "- Ensure grants for user gitlab on schema public are correctly set"
+  PGPASSWORD=${DB_PASS} psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d "${DB_NAME}" -Atw -c "GRANT ALL ON SCHEMA public TO gitlab;"
+}
+
 gitlab_configure_database() {
   echo -n "Configuring gitlab::database"
 
@@ -259,6 +264,7 @@ gitlab_configure_database() {
   gitlab_check_database_connection
   gitlab_generate_postgresqlrc
   gitlab_uninstall_unused_database_client
+  gitlab_apply_dbms_fixes
 
   update_template ${GITLAB_DATABASE_CONFIG} \
     DB_ENCODING \
