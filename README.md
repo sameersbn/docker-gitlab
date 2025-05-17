@@ -183,7 +183,7 @@ Step 2. Launch a redis container
 ```bash
 docker run --name gitlab-redis -d \
     --volume /srv/docker/gitlab/redis:/data \
-    redis:6.2
+    redis:7
 ```
 
 Step 3. Launch the gitlab container
@@ -387,7 +387,7 @@ To illustrate linking with a redis container, we will use the [redis](https://gi
 First, let's pull the redis image from the docker index.
 
 ```bash
-docker pull redis:6.2
+docker pull redis:7
 ```
 
 Lets start the redis container
@@ -395,7 +395,7 @@ Lets start the redis container
 ```bash
 docker run --name gitlab-redis -d \
     --volume /srv/docker/gitlab/redis:/data \
-    redis:6.2
+    redis:7
 ```
 
 We are now ready to start the GitLab application.

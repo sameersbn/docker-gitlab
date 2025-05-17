@@ -1,7 +1,7 @@
 version: '3.4'
 services:
   redis:
-    image: redis:6.2
+    image: redis:7
     command:
       - --loglevel warning
     volumes:

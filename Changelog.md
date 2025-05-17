@@ -8,6 +8,7 @@ gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of chan
 - gitlab: upgrade CE to v18.0.0
 - gitaly: upgrade to v18.0.0
 - gitlab-pages: upgrade to v18.0.0
+- redis: upgrade to v7
 - rubygems: upgrade to v3.6.9
 - ubuntu: upgrade to noble-20250415.1
 

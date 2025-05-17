@@ -6,13 +6,12 @@ This is an extend of AWS Remote Backups.
 
 As explained in [doc.gitlab.com](https://docs.gitlab.com/ce/raketasks/backup_restore.html#upload-backups-to-remote-cloud-storage), it uses [Fog library](http://fog.io) and the module fog-aws. More details on [s3 supported parameters](https://github.com/fog/fog-aws/blob/master/lib/fog/aws/storage.rb)
 
-
+- [GitLab Backup to s3 compatible storage](#gitlab-backup-to-s3-compatible-storage)
 - [Available Parameters](#available-parameters)
 - [Installation](#installation)
-- [Maintenance](#maintenance)
-    - [Creating Backups](#creating-backups)
-    - [Restoring Backups](#restoring-backups)
-
+  - [Docker Compose](#docker-compose)
+  - [Creating Backups](#creating-backups)
+  - [Restoring Backups](#restoring-backups)
 
 # Available Parameters
 
@@ -72,7 +71,7 @@ version: '2'
 services:
   redis:
     restart: always
-    image: sameersbn/redis:6.2
+    image: sameersbn/redis:7
     command:
     - --loglevel warning
     volumes:
