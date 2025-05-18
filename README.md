@@ -254,10 +254,10 @@ This behavior can be checked using the command `docker logs` and an output like 
 …
 Configuring gitlab::database
 - Installing postgresql client to avoid version mismatch on dumping
--- Detected server version: 140007
+-- Detected server version: 160009
 - Generating /home/git/.postgresqlrc
-14 postgresql:5432 gitlabhq_production
-- Uninstalling unused client(s): postgresql-client-12 postgresql-client-13 postgresql-client-15
+16 postgresql:5432 gitlabhq_production
+- Uninstalling unused client(s): postgresql-client-13 postgresql-client-14 postgresql-client-15 postgresql-client-17
 …
 ````
 
@@ -265,10 +265,16 @@ Please note furthermore, that only compatible versions of the `postgresql-client
 
 - `postgresql-client-13`,
 - `postgresql-client-14`,
-- `postgresql-client-15`.
-- and `postgresql-client-16`.
+- `postgresql-client-15`,
+- `postgresql-client-16`,
+- and `postgresql-client-17`.
 
-*NOTE:* Version 13.7.0 and later requires PostgreSQL version 12.x. Version 16.0.0 and later requires PostgreSQL version 13.x. Version 17.0.0 and later requires PostgreSQL version 14.x.
+***Notes:***
+
+- GitLab CE version 13.7.0 and later requires PostgreSQL version 12.x.
+- GitLab CE version 16.0.0 and later requires PostgreSQL version 13.x.
+- GitLab CE version 17.0.0 and later requires PostgreSQL version 14.x.
+- GitLab CE version 18.0.0 and later requires PostgreSQL version 16.x.
 
 ##### External PostgreSQL Server
 
@@ -341,10 +347,9 @@ docker run --name gitlab -d --link gitlab-postgresql:postgresql \
 
 Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the postgresql container as they are specified in the `docker run` command for the postgresql container. This is made possible using the magic of docker links and works with the following images:
 
-- [postgres](https://hub.docker.com/_/postgres/)
-- [sameersbn/postgresql](https://quay.io/repository/sameersbn/postgresql/)
-- [orchardup/postgresql](https://hub.docker.com/r/orchardup/postgresql/)
-- [paintedfox/postgresql](https://hub.docker.com/r/paintedfox/postgresql/)
+- [postgres](https://hub.docker.com/_/postgres/),
+- [kkimurak/sameersbn-postgresql](https://hub.docker.com/r/kkimurak/sameersbn-postgresql), or
+- [sameersbn/postgresql](https://quay.io/repository/sameersbn/postgresql/) .
 
 ##### Upgrading PostgreSQL
 
@@ -2722,7 +2727,14 @@ Usage when using `docker-compose` can also be found there.
 >
 > If you're using `sameersbn/postgresql` then please upgrade to `kkimurak/sameersbn-postgresql:16` or later and add `DB_EXTENSION=pg_trgm,btree_gist` to the environment of the PostgreSQL container (see: <https://github.com/sameersbn/docker-gitlab/blob/master/docker-compose.yml#L21>).
 >
-> As of version 13.7.0, the required PostgreSQL is version 12.x. As of version 16.0.0, the required PostgreSQL is version 13.x. As of version 17.0.0, the required PostgreSQL is version 14.x. If you're using PostgreSQL image other than the above, please review section [Upgrading PostgreSQL](#upgrading-postgresql).
+> Please keep in mind that:
+>
+> - As of version 13.7.0, the required PostgreSQL version is 12.x.
+> - As of version 16.0.0, the required PostgreSQL version is 13.x.
+> - As of version 17.0.0, the required PostgreSQL version is 14.x.
+> - As of version 18.0.0, the required PostgreSQL version is 16.x.
+>
+> If you're using PostgreSQL image other than the above, please review section [Upgrading PostgreSQL](#upgrading-postgresql).
 
 GitLabHQ releases new versions on the 22nd of every month, bugfix releases immediately follow. I update this project almost immediately when a release is made (at least it has been the case so far). If you are using the image in production environments I recommend that you delay updates by a couple of days after the gitlab release, allowing some time for the dust to settle down.
 
