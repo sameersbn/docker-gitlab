@@ -1,24 +1,32 @@
-GitLab Container Registry
-=========================
+# GitLab Container Registry
+
 Since `8.8.0` GitLab introduces a container registry. GitLab is helping to authenticate the user against the registry and proxy it via Nginx. By [Registry](https://docs.docker.com/registry) we mean the registry from docker whereas *Container Registry* is the feature in GitLab.
 
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Maintenance](#maintenance)
+- [GitLab Container Registry](#gitlab-container-registry)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+    - [Setup with Nginx as Reverse Proxy](#setup-with-nginx-as-reverse-proxy)
+      - [Create auth tokens](#create-auth-tokens)
+      - [Update docker-compose.yml](#update-docker-composeyml)
+      - [Nginx Site Configuration](#nginx-site-configuration)
+  - [Configuration](#configuration)
+    - [Available Parameters](#available-parameters)
+    - [Container Registry storage driver](#container-registry-storage-driver)
+      - [Example for Amazon Simple Storage Service (s3)](#example-for-amazon-simple-storage-service-s3)
+    - [Storage limitations](#storage-limitations)
+  - [Maintenance](#maintenance)
     - [Creating Backups](#creating-backups)
     - [Restoring Backups](#restoring-backups)
-- [Upgrading from an existing GitLab instance](#Upgrading-from-an-existing-GitLab-instance)
+  - [Upgrading from an existing GitLab installation](#upgrading-from-an-existing-gitlab-installation)
 
-# Prerequisites
+## Prerequisites
 
-  - [Docker Distribution](https://github.com/docker/distribution) >= 2.4
-  - [Docker GitLab](https://github.com/sameersbn/docker-gitlab) >= 8.8.5-1
+- [Docker Distribution](https://github.com/docker/distribution) >= 2.4
+- [Docker GitLab](https://github.com/sameersbn/docker-gitlab) >= 8.8.5-1
 
+## Installation
 
-# Installation
-
-## Setup with Nginx as Reverse Proxy
+### Setup with Nginx as Reverse Proxy
 
 We assume that you already have Nginx installed on your host system and that
 you use a reverse proxy configuration to connect to your GitLab container.
@@ -26,13 +34,13 @@ you use a reverse proxy configuration to connect to your GitLab container.
 In this example we use a dedicated domain for the registry. The URLs for
 the GitLab installation and the registry are:
 
-* git.example.com
-* registry.example.com
+- git.example.com
+- registry.example.com
 
 > Note: You could also run everything on the same domain and use different ports
 > instead. The required configuration changes below should be straightforward.
 
-### Create auth tokens
+#### Create auth tokens
 
 GitLab needs a certificate ("auth token") to talk to the registry API. The
 tokens must be provided in the `/certs` directory of your container. You could
@@ -55,8 +63,7 @@ openssl x509 -in registry.csr -out registry.crt -req -signkey registry.key -days
 It doesn't matter which details (domain name, etc.) you enter during key
 creation. This information is not used at all.
 
-
-### Update docker-compose.yml
+#### Update docker-compose.yml
 
 First add the configuration for the registry container to your `docker-compose.yml`.
 
@@ -108,7 +115,7 @@ Then update the `volumes` and `environment` sections of your `gitlab` container:
             - ./certs:/certs
 ```
 
-### Nginx Site Configuration
+#### Nginx Site Configuration
 
 ```nginx
 server {
@@ -150,9 +157,9 @@ server {
 }
 ```
 
-# Configuration
+## Configuration
 
-## Available Parameters
+### Available Parameters
 
 Here is an example of all configuration parameters that can be used in the GitLab container.
 
@@ -174,15 +181,15 @@ where:
 
 | Parameter | Description |
 | --------- | ----------- |
-| `GITLAB_REGISTRY_ENABLED ` | `true` or `false`. Enables the Registry in GitLab. By default this is `false`. |
-| `GITLAB_REGISTRY_HOST `    | The host URL under which the Registry will run and the users will be able to use. |
-| `GITLAB_REGISTRY_PORT `    | The port under which the external Registry domain will listen on. |
-| `GITLAB_REGISTRY_API_URL ` | The internal API URL under which the Registry is exposed to. |
-| `GITLAB_REGISTRY_KEY_PATH `| The private key location that is a pair of Registry's `rootcertbundle`. Read the [token auth configuration documentation][token-config]. |
-| `GITLAB_REGISTRY_PATH `    | This should be the same directory like specified in Registry's `rootdirectory`. Read the [storage configuration documentation][storage-config]. This path needs to be readable by the GitLab user, the web-server user and the Registry user *if you use filesystem as storage configuration*. Read more in [#container-registry-storage-path](#container-registry-storage-path). |
+| `GITLAB_REGISTRY_ENABLED` | `true` or `false`. Enables the Registry in GitLab. By default this is `false`. |
+| `GITLAB_REGISTRY_HOST`    | The host URL under which the Registry will run and the users will be able to use. |
+| `GITLAB_REGISTRY_PORT`    | The port under which the external Registry domain will listen on. |
+| `GITLAB_REGISTRY_API_URL` | The internal API URL under which the Registry is exposed to. |
+| `GITLAB_REGISTRY_KEY_PATH`| The private key location that is a pair of Registry's `rootcertbundle`. Read the [token auth configuration documentation][token-config]. |
+| `GITLAB_REGISTRY_PATH`    | This should be the same directory like specified in Registry's `rootdirectory`. Read the [storage configuration documentation][storage-config]. This path needs to be readable by the GitLab user, the web-server user and the Registry user *if you use filesystem as storage configuration*. Read more in [#container-registry-storage-path](#container-registry-storage-path). |
 | `GITLAB_REGISTRY_ISSUER`  | This should be the same value as configured in Registry's `issuer`. Otherwise the authentication will not work. For more info read the [token auth configuration documentation][token-config]. |
-| `SSL_REGISTRY_KEY_PATH `    | The private key of the `SSL_REGISTRY_CERT_PATH`. This will be later used in nginx to proxy your registry via https. |
-| `SSL_REGISTRY_CERT_PATH `    | The certificate for the private key of `SSL_REGISTRY_KEY_PATH`. This will be later used in nginx to proxy your registry via https. |
+| `SSL_REGISTRY_KEY_PATH`    | The private key of the `SSL_REGISTRY_CERT_PATH`. This will be later used in nginx to proxy your registry via https. |
+| `SSL_REGISTRY_CERT_PATH`    | The certificate for the private key of `SSL_REGISTRY_KEY_PATH`. This will be later used in nginx to proxy your registry via https. |
 
 For more info look at [Available Configuration Parameters](https://github.com/sameersbn/docker-gitlab#available-configuration-parameters).
 
@@ -200,12 +207,9 @@ gitlab:
 ...
 ```
 
-## Container Registry storage driver
+### Container Registry storage driver
 
-You can configure the Container Registry to use a different storage backend by
-configuring a different storage driver. By default the GitLab Container Registry
-is configured to use the filesystem driver, which makes use of [storage path](#container-registry-storage-path)
-configuration. These configurations will all be done in the registry container.
+You can configure the Container Registry to use a different storage backend by configuring a different storage driver. By default the GitLab Container Registry is configured to use the filesystem driver, which makes use of [storage path](#container-registry-storage-path) configuration. These configurations will all be done in the registry container.
 
 The different supported drivers are:
 
@@ -227,7 +231,7 @@ Read more about the individual driver's config options in the
 > If you don't change `GITLAB_REGISTRY_DIR` you will find your registry data in the mounted volume from the GitLab Container under `./gitlab/shared/registry`. This don't need to be separated mounted because `./gitlab` is already mounted in the GitLab Container. If it will be mounted separated the whole restoring process of GitLab backup won't work because gitlab try to create an folder under `./gitlab/shared/registry` /`GITLAB_REGISTRY_DIR` and GitLab can't delete/remove the mount point inside the container so the restoring process of the backup will fail.
 > An example how it works is in the `docker-compose`.
 
-### Example for Amazon Simple Storage Service (s3)
+#### Example for Amazon Simple Storage Service (s3)
 
 If you want to configure your registry via `/etc/docker/registry/config.yml` your storage part should like this snippet below.
 
@@ -242,8 +246,6 @@ storage:
   delete:
     enabled: true
 ```
-
-
 
 ```yaml
  ...
@@ -267,18 +269,17 @@ storage:
 
 Generally for more information about the configuration of the registry container you can find it under [registry configuration](https://docs.docker.com/registry/configuration).
 
-
-## Storage limitations
+### Storage limitations
 
 Currently, there is no storage limitation, which means a user can upload an
 infinite amount of Docker images with arbitrary sizes. This setting will be
 configurable in future releases.
 
+## Maintenance
 
-# Maintenance
 If you use another storage configuration than filesystem it will have no impact on your Maintenance workflow.
 
-## Creating Backups
+### Creating Backups
 
 Creating Backups is the same like without a container registry. I would recommend to stop your registry container.
 
@@ -287,11 +288,13 @@ docker stop registry gitlab && docker rm registry gitlab
 ```
 
 Execute the rake task with a removeable container.
+
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:17.11.2 app:rake gitlab:backup:create
+    sameersbn/gitlab:18.0.0 app:rake gitlab:backup:create
 ```
-## Restoring Backups
+
+### Restoring Backups
 
 GitLab also defines a rake task to restore a backup.
 
@@ -305,7 +308,7 @@ Execute the rake task to restore a backup. Make sure you run the container in in
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:17.11.2 app:rake gitlab:backup:restore
+    sameersbn/gitlab:18.0.0 app:rake gitlab:backup:restore
 ```
 
 The list of all available backups will be displayed in reverse chronological order. Select the backup you want to restore and continue.
@@ -314,18 +317,17 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:17.11.2 app:rake gitlab:backup:restore BACKUP=1417624827
+    sameersbn/gitlab:18.0.0 app:rake gitlab:backup:restore BACKUP=1417624827
 ```
 
-# Upgrading from an existing GitLab installation
-
+## Upgrading from an existing GitLab installation
 
 If you want enable this feature for an existing instance of GitLab you need to do the following steps.
 
 - **Step 1**: Update the docker image.
 
 ```bash
-docker pull sameersbn/gitlab:17.11.2
+docker pull sameersbn/gitlab:18.0.0
 ```
 
 - **Step 2**: Stop and remove the currently running image
@@ -365,6 +367,7 @@ docker run --name registry -d \
 --env 'REGISTRY_STORAGE_DELETE_ENABLED=true' \
 registry:2.4.1
 ```
+
 - **Step 6**: Start the image
 
 ```bash
@@ -378,14 +381,8 @@ docker run --name gitlab -d [PREVIOUS_OPTIONS] \
 --env 'GITLAB_REGISTRY_CERT_PATH=/certs/registry-auth.crt' \
 --env 'GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key' \
 --link registry:registry
-sameersbn/gitlab:17.11.2
+sameersbn/gitlab:18.0.0
 ```
 
-
-[wildcard certificate]: https://en.wikipedia.org/wiki/Wildcard_certificate
-[ce-4040]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4040
-[docker-insecure]: https://docs.docker.com/registry/insecure/
-[registry-deploy]: https://docs.docker.com/registry/deploying/
 [storage-config]: https://docs.docker.com/registry/configuration/#storage
 [token-config]: https://docs.docker.com/registry/configuration/#token
-[8-8-docs]: https://gitlab.com/gitlab-org/gitlab-foss/blob/8-8-stable/doc/administration/container_registry.md

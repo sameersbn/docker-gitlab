@@ -19,7 +19,9 @@ PATH=${GOROOT}/bin:$PATH
 
 export GOROOT PATH
 
-BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
+# TODO Verify, if this is necessary or not.
+# BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
+BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake \
   libc6-dev \
   libpq-dev zlib1g-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
@@ -59,19 +61,22 @@ cd "$PWD_ORG" && rm -rf /tmp/ruby
 # upgrade rubygems on demand
 gem update --no-document --system "${RUBYGEMS_VERSION}"
 
-# PaX-mark ruby
-# Applying the mark late here does make the build usable on PaX kernels, but
-# still the build itself must be executed on a non-PaX kernel. It's done here
-# only for simplicity.
-paxctl -cvm "$(command -v ruby)"
-# https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
-paxctl -cvm "$(command -v node)"
+# TODO Verify, if this is necessary or not.
+# # PaX-mark ruby
+# # Applying the mark late here does make the build usable on PaX kernels, but
+# # still the build itself must be executed on a non-PaX kernel. It's done here
+# # only for simplicity.
+# paxctl -cvm "$(command -v ruby)"
+# # https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
+# paxctl -cvm "$(command -v node)"
 
 # remove the host keys generated during openssh-server installation
 rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
 
 # add ${GITLAB_USER} user
-adduser --disabled-login --gecos 'GitLab' ${GITLAB_USER}
+deluser --remove-home ubuntu
+addgroup --gid 1000 git
+adduser --uid 1000 --gid 1000 --disabled-password --gecos 'GitLab' ${GITLAB_USER}
 passwd -d ${GITLAB_USER}
 
 # set PATH (fixes cron job PATH issues)
@@ -212,7 +217,7 @@ chown ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/config/database.yml
 exec_as_git yarn install --production --pure-lockfile
 
 echo "Compiling assets. Please be patient, this could take a while..."
-exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true NODE_OPTIONS="--max-old-space-size=4096"
+exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true NODE_OPTIONS="--max-old-space-size=8192"
 
 # remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
 rm -rf ${GITLAB_DATA_DIR}/config/secrets.yml
