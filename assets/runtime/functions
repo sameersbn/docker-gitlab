@@ -987,9 +987,25 @@ gitlab_configure_backups_aws() {
       AWS_BACKUP_PATH_STYLE="true"
     fi
 
-    if [[ -z ${AWS_BACKUP_ACCESS_KEY_ID} || -z ${AWS_BACKUP_SECRET_ACCESS_KEY} || -z ${AWS_BACKUP_BUCKET} ]]; then
-      echo "\nMissing AWS options. Aborting...\n"
+    if [[ ${AWS_BACKUP_USE_IAM_PROFILE} != true ]]; then
+      if [[ -z ${AWS_BACKUP_ACCESS_KEY_ID} || -z ${AWS_BACKUP_SECRET_ACCESS_KEY} || -z ${AWS_BACKUP_BUCKET} ]]; then
+        echo "Missing AWS options. Aborting..."
+        return 1
+      else
+        exec_as_git sed -i "/#start-backup-use-iam-profile-aws/,/#end-backup-use-iam-profile-aws/d" ${GITLAB_CONFIG}
+        exec_as_git sed -i "/#start-backup-secret-access-key-aws/d" ${GITLAB_CONFIG}
+        exec_as_git sed -i "/#end-backup-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      fi
+    elif [[ -z ${AWS_BACKUP_BUCKET} ]]; then
+      echo "Missing AWS options. Aborting..."
       return 1
+    elif [[ -n ${AWS_BACKUP_ACCESS_KEY_ID} || -n ${AWS_BACKUP_SECRET_ACCESS_KEY} ]]; then
+      echo "If using an IAM Profile, don't configure aws_access_key_id & aws_secret_access_key. Aborting..."
+      return 1
+    else
+      exec_as_git sed -i "/#start-backup-secret-access-key-aws/,/#end-backup-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-backup-use-iam-profile-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-backup-use-iam-profile-aws/d" ${GITLAB_CONFIG}
     fi
 
     update_template ${GITLAB_CONFIG} \
@@ -998,6 +1014,7 @@ gitlab_configure_backups_aws() {
       AWS_BACKUP_PATH_STYLE \
       AWS_BACKUP_ACCESS_KEY_ID \
       AWS_BACKUP_SECRET_ACCESS_KEY \
+      AWS_BACKUP_USE_IAM_PROFILE \
       AWS_BACKUP_BUCKET \
       AWS_BACKUP_MULTIPART_CHUNK_SIZE \
       AWS_BACKUP_STORAGE_CLASS \
@@ -1152,6 +1169,19 @@ gitlab_configure_artifacts() {
       exec_as_git sed -i "/#start-artifacts-gcs/,/#end-artifacts-gcs/d" ${GITLAB_CONFIG}
       exec_as_git sed -i "/#start-artifacts-aws/d" ${GITLAB_CONFIG}
       exec_as_git sed -i "/#end-artifacts-aws/d" ${GITLAB_CONFIG}
+
+      if [[ "${GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE}" == true ]]; then
+        echo " -> AWS ARTIFACTS USE IAM PROFILE selected removing access key config"
+        exec_as_git sed -i "/#start-artifacts-secret-access-key-aws/,/#end-artifacts-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      else
+        echo " -> AWS ARTIFACTS USE IAM PROFILE is not selected removing its config"
+        exec_as_git sed -i "/#start-artifacts-use-iam-profile-aws/,/#end-artifacts-use-iam-profile-aws/d" ${GITLAB_CONFIG}
+      fi
+
+      exec_as_git sed -i "/#start-artifacts-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-artifacts-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-artifacts-use-iam-profile-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-artifacts-use-iam-profile-aws/d" ${GITLAB_CONFIG}
     fi
 
     update_template ${GITLAB_CONFIG} \
@@ -1162,6 +1192,7 @@ gitlab_configure_artifacts() {
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_PROVIDER \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY \
+      GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_REGION \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_HOST \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT \
@@ -1171,7 +1202,7 @@ gitlab_configure_artifacts() {
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION
   else
-    exec_as_git sed -i -e "/path: {{GITLAB_ARTIFACTS_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}" ${GITLAB_CONFIG}
+    exec_as_git sed -i -e "/path: {{GITLAB_ARTIFACTS_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}" ${GITLAB_CONFIG}
   fi
 
   echo "Configuring gitlab::artifacts..."
@@ -1199,6 +1230,19 @@ gitlab_configure_packages() {
       exec_as_git sed -i "/#start-packages-gcs/,/#end-packages-gcs/d" ${GITLAB_CONFIG}
       exec_as_git sed -i "/#start-packages-aws/d" ${GITLAB_CONFIG}
       exec_as_git sed -i "/#end-packages-aws/d" ${GITLAB_CONFIG}
+
+      if [[ "${GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE}" == true ]]; then
+        echo " -> AWS PACKAGES USE IAM PROFILE selected removing access key config"
+        exec_as_git sed -i "/#start-packages-secret-access-key-aws/,/#end-packages-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      else
+        echo " -> AWS PACKAGES USE IAM PROFILE is not selected removing its config"
+        exec_as_git sed -i "/#start-packages-use-iam-profile-aws/,/#end-packages-use-iam-profile-aws/d" ${GITLAB_CONFIG}
+      fi
+
+      exec_as_git sed -i "/#start-packages-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-packages-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-packages-use-iam-profile-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-packages-use-iam-profile-aws/d" ${GITLAB_CONFIG}
     fi
 
     update_template ${GITLAB_CONFIG} \
@@ -1209,6 +1253,7 @@ gitlab_configure_packages() {
       GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_PROVIDER \
       GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID \
       GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY \
+      GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE \
       GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_REGION \
       GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_HOST \
       GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_ENDPOINT \
@@ -1218,7 +1263,7 @@ gitlab_configure_packages() {
       GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL \
       GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION
   else
-    exec_as_git sed -i -e "/path: {{GITLAB_PACKAGES_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}" ${GITLAB_CONFIG}
+    exec_as_git sed -i -e "/path: {{GITLAB_PACKAGES_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}" ${GITLAB_CONFIG}
   fi
 
   echo "Configuring gitlab::packages..."
@@ -1245,6 +1290,19 @@ gitlab_configure_terraform_state() {
       exec_as_git sed -i "/#start-terraform_state-gcs/,/#end-terraform_state-gcs/d" ${GITLAB_CONFIG}
       exec_as_git sed -i "/#start-terraform_state-aws/d" ${GITLAB_CONFIG}
       exec_as_git sed -i "/#end-terraform_state-aws/d" ${GITLAB_CONFIG}
+
+      if [[ "${GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE}" == true ]]; then
+        echo " -> AWS TERRAFORM STATE USE IAM PROFILE selected removing access key config"
+        exec_as_git sed -i "/#start-terraform_state-secret-access-key-aws/,/#end-terraform_state-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      else
+        echo " -> AWS TERRAFORM STATE USE IAM PROFILE is not selected removing its config"
+        exec_as_git sed -i "/#start-terraform_state-use-iam-profile-aws/,/#end-terraform_state-use-iam-profile-aws/d" ${GITLAB_CONFIG}
+      fi
+
+      exec_as_git sed -i "/#start-terraform_state-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-terraform_state-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-terraform_state-use-iam-profile-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-terraform_state-use-iam-profile-aws/d" ${GITLAB_CONFIG}
     fi
 
     update_template ${GITLAB_CONFIG} \
@@ -1252,6 +1310,7 @@ gitlab_configure_terraform_state() {
       GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_PROVIDER \
       GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID \
       GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY \
+      GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE \
       GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_REGION \
       GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_HOST \
       GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_ENDPOINT \
@@ -1261,7 +1320,7 @@ gitlab_configure_terraform_state() {
       GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL \
       GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION
   else
-    exec_as_git sed -i -e "/storage_path: {{GITLAB_TERRAFORM_STATE_STORAGE_PATH}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}" ${GITLAB_CONFIG}
+    exec_as_git sed -i -e "/storage_path: {{GITLAB_TERRAFORM_STATE_STORAGE_PATH}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}" ${GITLAB_CONFIG}
   fi
 
   echo "Configuring gitlab::terraform_state..."
@@ -1288,6 +1347,19 @@ gitlab_configure_lfs() {
       exec_as_git sed -i "/#start-lfs-gcs/,/#end-lfs-gcs/d" ${GITLAB_CONFIG}
       exec_as_git sed -i "/#start-lfs-aws/d" ${GITLAB_CONFIG}
       exec_as_git sed -i "/#end-lfs-aws/d" ${GITLAB_CONFIG}
+
+      if [[ "${GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE}" == true ]]; then
+        echo " -> AWS LFS USE IAM PROFILE selected removing access key config"
+        exec_as_git sed -i "/#start-lfs-secret-access-key-aws/,/#end-lfs-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      else
+        echo " -> AWS LFS USE IAM PROFILE is not selected removing its config"
+        exec_as_git sed -i "/#start-lfs-use-iam-profile-aws/,/#end-lfs-use-iam-profile-aws/d" ${GITLAB_CONFIG}
+      fi
+
+      exec_as_git sed -i "/#start-lfs-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-lfs-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-lfs-use-iam-profile-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-lfs-use-iam-profile-aws/d" ${GITLAB_CONFIG}
     fi
 
     update_template ${GITLAB_CONFIG} \
@@ -1298,6 +1370,7 @@ gitlab_configure_lfs() {
       GITLAB_LFS_OBJECT_STORE_CONNECTION_PROVIDER \
       GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID \
       GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY \
+      GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE \
       GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_REGION \
       GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_HOST \
       GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT \
@@ -1307,7 +1380,7 @@ gitlab_configure_lfs() {
       GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL \
       GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION
   else
-    exec_as_git sed -i -e "/path: {{GITLAB_LFS_OBJECTS_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}"  ${GITLAB_CONFIG}
+    exec_as_git sed -i -e "/path: {{GITLAB_LFS_OBJECTS_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}"  ${GITLAB_CONFIG}
   fi
 
   echo "Configuring gitlab::lfs..."
@@ -1334,6 +1407,19 @@ gitlab_configure_uploads() {
       exec_as_git sed -i "/#start-uploads-gcs/,/#end-uploads-gcs/d" ${GITLAB_CONFIG}
       exec_as_git sed -i "/#start-uploads-aws/d" ${GITLAB_CONFIG}
       exec_as_git sed -i "/#end-uploads-aws/d" ${GITLAB_CONFIG}
+
+      if [[ "${GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE}" == true ]]; then
+        echo " -> AWS UPLOADS USE IAM PROFILE selected removing access key config"
+        exec_as_git sed -i "/#start-uploads-secret-access-key-aws/,/#end-uploads-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      else
+        echo " -> AWS UPLOADS USE IAM PROFILE is not selected removing its config"
+        exec_as_git sed -i "/#start-uploads-use-iam-profile-aws/,/#end-uploads-use-iam-profile-aws/d" ${GITLAB_CONFIG}
+      fi
+
+      exec_as_git sed -i "/#start-uploads-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-uploads-secret-access-key-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-uploads-use-iam-profile-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-uploads-use-iam-profile-aws/d" ${GITLAB_CONFIG}
     fi
 
     update_template ${GITLAB_CONFIG} \
@@ -1344,6 +1430,7 @@ gitlab_configure_uploads() {
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_PROVIDER \
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID \
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY \
+      GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE \
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_REGION \
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_HOST \
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT \
@@ -1354,7 +1441,7 @@ gitlab_configure_uploads() {
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION
 
   else
-    exec_as_git sed -i -e "/base_dir: {{GITLAB_UPLOADS_BASE_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}"  ${GITLAB_CONFIG}
+    exec_as_git sed -i -e "/base_dir: {{GITLAB_UPLOADS_BASE_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}"  ${GITLAB_CONFIG}
   fi
 
   echo "Configuring gitlab::uploads..."

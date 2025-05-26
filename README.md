@@ -1087,6 +1087,10 @@ Default AWS access key to be used for object store. Defaults to `AWS_ACCESS_KEY_
 
 Default AWS access key to be used for object store. Defaults to `AWS_SECRET_ACCESS_KEY`
 
+##### `AWS_USE_IAM_PROFILE`
+
+Set to `true` to enable IAM Instance Profile for default authencicating to AWS. Defaults to `false`. Note: If set to `true`, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` configurations will be ignored.
+
 ##### `AWS_REGION`
 
 AWS Region. Defaults to `us-east-1`
@@ -1154,6 +1158,10 @@ AWS Access Key ID for the Bucket. Defaults to `$AWS_ACCESS_KEY_ID`
 ##### `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY`
 
 AWS Secret Access Key. Defaults to `$AWS_SECRET_ACCESS_KEY`
+
+##### `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE`
+
+Set to `true` to enable IAM Instance Profile for authencicating to AWS. Defaults to `$AWS_USE_IAM_PROFILE`. Note: If set to `true`, `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID` and `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY` configurations will be ignored.
 
 ##### `GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_REGION`
 
@@ -1227,6 +1235,10 @@ AWS Access Key ID for the Bucket. Defaults to `AWS_ACCESS_KEY_ID`
 
 AWS Secret Access Key. Defaults to `AWS_SECRET_ACCESS_KEY`
 
+#### `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE`
+
+Set to `true` to enable IAM Instance Profile for authencicating to AWS. Defaults to `$AWS_USE_IAM_PROFILE`. Note: If set to `true`, `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID` and `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE` configurations will be ignored.
+
 ##### `GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_REGION`
 
 AWS Region. Defaults to `$AWS_REGION`
@@ -1299,6 +1311,11 @@ AWS Access Key ID for the Bucket. Defaults to `$AWS_ACCESS_KEY_ID`
 
 AWS Secret Access Key. Defaults to `$AWS_SECRET_ACCESS_KEY`
 
+##### `GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE`
+
+Set to `true` to enable IAM Instance Profile for authencicating to AWS. Defaults to `$AWS_USE_IAM_PROFILE`. Note: If set to `true`, `GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID` and `GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY` configurations will be ignored.
+
+
 ##### `GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_REGION`
 
 AWS Region. Defaults to `$AWS_REGION`
@@ -1354,6 +1371,10 @@ AWS Access Key ID for the Bucket. Defaults to `$AWS_ACCESS_KEY_ID`
 ##### `GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY`
 
 AWS Secret Access Key. Defaults to `$AWS_SECRET_ACCESS_KEY`
+
+##### `GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_USE_IAM_PROFILE`
+
+Set to `true` to enable IAM Instance Profile for authencicating to AWS. Defaults to `$AWS_USE_IAM_PROFILE`. Note: If set to `true`, `GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID` and `GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY` configurations will be ignored.
 
 ##### `GITLAB_TERRAFORM_STATE_OBJECT_STORE_CONNECTION_AWS_REGION`
 
@@ -2436,11 +2457,15 @@ AWS endpoint. No defaults.
 
 ##### `AWS_BACKUP_ACCESS_KEY_ID`
 
-AWS access key id. No defaults.
+AWS access key id. No defaults. Don't configure this value if you enable `AWS_BACKUP_USE_IAM_PROFILE`.
 
 ##### `AWS_BACKUP_SECRET_ACCESS_KEY`
 
-AWS secret access key. No defaults.
+AWS secret access key. No defaults. Don't configure this value if you enable `AWS_BACKUP_USE_IAM_PROFILE`.
+
+##### `AWS_BACKUP_USE_IAM_PROFILE`
+
+Set to `true` to enable IAM Instance Profile for authencicating to AWS for backup. Defaults to `false`. Don't configure this value if you enable `AWS_BACKUP_ACCESS_KEY_ID` and `AWS_BACKUP_SECRET_ACCESS_KEY`.
 
 ##### `AWS_BACKUP_BUCKET`
 
@@ -2644,9 +2669,11 @@ By default, when automated backups are enabled, backups are held for a period of
 
 #### Amazon Web Services (AWS) Remote Backups
 
-The image can be configured to automatically upload the backups to an AWS S3 bucket. To enable automatic AWS backups first add `--env 'AWS_BACKUPS=true'` to the docker run command. In addition `AWS_BACKUP_REGION` and `AWS_BACKUP_BUCKET` must be properly configured to point to the desired AWS location. Finally an IAM user must be configured with appropriate access permission and their AWS keys exposed through `AWS_BACKUP_ACCESS_KEY_ID` and `AWS_BACKUP_SECRET_ACCESS_KEY`.
+The image can be configured to automatically upload the backups to an AWS S3 bucket. To enable automatic AWS backups first add `--env 'AWS_BACKUPS=true'` to the docker run command. In addition `AWS_BACKUP_REGION` and `AWS_BACKUP_BUCKET` must be properly configured to point to the desired AWS location. Finally, either an IAM user or IAM instance profile (IAM role) must be configured with appropriate access permission. 
 
-More details about the appropriate IAM user properties can found on [doc.gitlab.com](http://doc.gitlab.com/ce/raketasks/backup_restore.html#upload-backups-to-remote-cloud-storage)
+If you use IAM user to execute remote backup, their AWS keys exposed through `AWS_BACKUP_ACCESS_KEY_ID` and `AWS_BACKUP_SECRET_ACCESS_KEY`. Or, if you use IAM instance profile (IAM role), add `--env 'AWS_BACKUP_USE_IAM_PROFILE=true'` to the docker run command.
+
+More details about the appropriate properties of IAM user and IAM instance profile can found on [docs.gitlab.com](https://docs.gitlab.com/ee/administration/backup_restore/backup_gitlab.html#upload-backups-to-a-remote-cloud-storage)
 
 For remote backup to self-hosted s3 compatible storage, use `AWS_BACKUP_ENDPOINT`.
 
