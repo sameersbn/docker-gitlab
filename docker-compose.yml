@@ -1,4 +1,4 @@
-
+---
 services:
   redis:
     restart: always
