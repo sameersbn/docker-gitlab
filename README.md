@@ -2795,8 +2795,6 @@ To do that you will need to set the environment variable `GITLAB_MONITORING_IP_W
 You can also set your `docker-compose.yml` [healthcheck](https://docs.docker.com/compose/compose-file/compose-file-v2/#healthcheck) configuration to make periodic checks:
 
 ```yml
-version: '2.3'
-
 services:
   gitlab:
     image: sameersbn/gitlab:17.10.7
