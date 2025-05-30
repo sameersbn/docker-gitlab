@@ -65,8 +65,6 @@ Starting a fresh installation with GitLab would be like the `docker-compose` fil
 This is an example with minio.
 
 ```yml
-version: '2'
-
 services:
   redis:
     restart: always
