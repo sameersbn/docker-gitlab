@@ -123,6 +123,9 @@ services:
       - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alphanumeric-string
       - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alphanumeric-string
       - GITLAB_SECRETS_ENCRYPTED_SETTINGS_KEY_BASE=long-and-random-alphanumeric-string
+      - GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY=["long-and-random-alphanumeric-string"]
+      - GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY=["long-and-random-alphanumeric-string"]
+      - GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT=long-and-random-alphanumeric-string
 
       - GITLAB_ROOT_PASSWORD=
       - GITLAB_ROOT_EMAIL=
