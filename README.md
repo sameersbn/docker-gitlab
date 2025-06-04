@@ -1600,7 +1600,7 @@ Enable namespace-in-path option for gitlab pages, defaults to `false`.
 
 ##### `GITLAB_PAGES_LOG_VERBOSE`
 
-Enable verbose logging for gitlab pages, defaults to `falsee`.
+Enable verbose logging for gitlab pages, defaults to `false`.
 
 ##### `GITLAB_HTTPS`
 
