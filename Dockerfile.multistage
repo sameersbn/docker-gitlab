@@ -1,0 +1,327 @@
+#----------------------------
+# base-builder
+#----------------------------
+FROM ubuntu:jammy-20250126 AS base-builder
+
+ARG VERSION=17.9.0
+
+ENV GITLAB_VERSION=${VERSION} \
+    RUBY_VERSION=3.2.6 \
+    RUBY_SOURCE_SHA256SUM="d9cb65ecdf3f18669639f2638b63379ed6fbb17d93ae4e726d4eb2bf68a48370" \
+    RUBYGEMS_VERSION=3.5.23 \
+    GOLANG_VERSION=1.24.0 \
+    GITLAB_SHELL_VERSION=14.40.0 \
+    GITLAB_PAGES_VERSION=17.9.0 \
+    GITALY_SERVER_VERSION=17.9.0 \
+    GITLAB_USER="git" \
+    GITLAB_HOME="/home/git" \
+    GITLAB_LOG_DIR="/var/log/gitlab" \
+    GITLAB_CACHE_DIR="/etc/docker-gitlab" \
+    RAILS_ENV=production \
+    NODE_ENV=production
+
+ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
+    GITLAB_SHELL_INSTALL_DIR="${GITLAB_HOME}/gitlab-shell" \
+    GITLAB_GITALY_INSTALL_DIR="${GITLAB_HOME}/gitaly" \
+    GITLAB_DATA_DIR="${GITLAB_HOME}/data" \
+    GITLAB_BUILD_DIR="${GITLAB_CACHE_DIR}/build" \
+    GITLAB_RUNTIME_DIR="${GITLAB_CACHE_DIR}/runtime"
+
+ENV GITLAB_CLONE_URL="https://gitlab.com/gitlab-org/gitlab-foss.git" \
+    GITLAB_SHELL_URL="https://gitlab.com/gitlab-org/gitlab-shell/-/archive/v${GITLAB_SHELL_VERSION}/gitlab-shell-v${GITLAB_SHELL_VERSION}.tar.bz2" \
+    GITLAB_PAGES_URL="https://gitlab.com/gitlab-org/gitlab-pages.git" \
+    GITLAB_GITALY_URL="https://gitlab.com/gitlab-org/gitaly.git" \
+    GITLAB_WORKHORSE_BUILD_DIR="${GITLAB_INSTALL_DIR}/workhorse" \
+    GITLAB_PAGES_BUILD_DIR="/tmp/gitlab-pages" \
+    GITLAB_GITALY_BUILD_DIR="/tmp/gitaly" \  
+    GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache" \
+    RUBY_SRC_URL="https://cache.ruby-lang.org/pub/ruby/3.2/ruby-${RUBY_VERSION}.tar.gz"
+
+ENV BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
+    libc6-dev \
+    libpq-dev zlib1g-dev libssl-dev \
+    libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
+    libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
+    gettext libkrb5-dev \
+    libexpat1-dev libz-dev libpcre2-dev build-essential git"
+
+ARG BUILD_DATE
+ARG VCS_REF
+
+LABEL \
+    maintainer="sameer@damagehead.com" \
+    org.label-schema.schema-version="1.0" \
+    org.label-schema.build-date=${BUILD_DATE} \
+    org.label-schema.name=gitlab \
+    org.label-schema.vendor=damagehead \
+    org.label-schema.url="https://github.com/sameersbn/docker-gitlab" \
+    org.label-schema.vcs-url="https://github.com/sameersbn/docker-gitlab.git" \
+    org.label-schema.vcs-ref=${VCS_REF} \
+    com.damagehead.gitlab.license=MIT
+
+ENV GOROOT=/tmp/go
+ENV PATH=${GOROOT}/bin:$PATH
+
+# install build dependencies for gem installation
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ${BUILD_DEPENDENCIES} \
+ && apt-get upgrade -y
+
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+    wget ca-certificates apt-transport-https gnupg2 curl \
+ && apt-get upgrade -y
+
+#----------------------------
+# base-builder-extended
+#----------------------------
+FROM base-builder AS base-builder-extended
+
+RUN set -ex && \
+ mkdir -p /etc/apt/keyrings \
+ && wget --quiet -O - https://keyserver.ubuntu.com/pks/lookup?op=get\&search=0xe1dd270288b4e6030699e45fa1715d88e1df1f24 | gpg --dearmor -o /etc/apt/keyrings/git-core.gpg \
+ && echo "deb [signed-by=/etc/apt/keyrings/git-core.gpg] http://ppa.launchpad.net/git-core/ppa/ubuntu jammy main" >> /etc/apt/sources.list \
+ && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/keyrings/postgres.gpg \
+ && echo 'deb [signed-by=/etc/apt/keyrings/postgres.gpg] http://apt.postgresql.org/pub/repos/apt/ jammy-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
+ && wget --quiet -O - https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+ && echo 'deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main' > /etc/apt/sources.list.d/nodesource.list \
+ && wget --quiet -O - https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /etc/apt/keyrings/yarn.gpg \
+ && echo 'deb [signed-by=/etc/apt/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list.d/yarn.list \
+ && wget --quiet -O - https://nginx.org/keys/nginx_signing.key | gpg --dearmor -o /etc/apt/keyrings/nginx-archive-keyring.gpg \
+ && echo "deb [signed-by=/etc/apt/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/ubuntu jammy nginx" >> /etc/apt/sources.list.d/nginx.list \
+ && printf "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" >> /etc/apt/preferences.d/99nginx \
+ && set -ex \
+ && apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+      sudo supervisor logrotate locales curl \
+      nginx openssh-server postgresql-contrib redis-tools \
+      postgresql-client-13 postgresql-client-14 postgresql-client-15 postgresql-client-16 postgresql-client-17 \
+      python3 python3-docutils nodejs yarn gettext-base graphicsmagick \
+      libpq5 zlib1g libyaml-dev libssl-dev libgdbm-dev libre2-dev \
+      libreadline-dev libncurses5-dev libffi-dev curl openssh-server libxml2-dev libxslt-dev \
+      libcurl4-openssl-dev libicu-dev libkrb5-dev rsync python3-docutils pkg-config cmake \
+      runit-systemd \
+      tzdata unzip libimage-exiftool-perl libmagic1 \
+ && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
+ && locale-gen en_US.UTF-8 \
+ && DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales \
+ && rm -rf /var/lib/apt/lists/* /etc/nginx/conf.d/default.conf
+
+# add ${GITLAB_USER} user
+RUN adduser --disabled-login --gecos 'GitLab' $GITLAB_USER \
+ && passwd -d $GITLAB_USER
+
+#----------------------------
+# golang
+#----------------------------
+FROM base-builder AS golang
+
+RUN echo "Downloading Go $GOLANG_VERSION..." \
+ && dpkgArch="$(dpkg-architecture -qDEB_HOST_ARCH)" \
+ && wget -cnv https://storage.googleapis.com/golang/go$GOLANG_VERSION.linux-${dpkgArch}.tar.gz -P $GITLAB_BUILD_DIR/ \
+ && tar -xf $GITLAB_BUILD_DIR/go$GOLANG_VERSION.linux-${dpkgArch}.tar.gz -C /tmp/
+
+#----------------------------
+# ruby
+#----------------------------
+FROM ruby:3.2.7-bookworm AS ruby-inst
+
+ENV RUBYGEMS_VERSION=3.5.14
+# upgrade rubygems on demand
+RUN gem update --no-document --system "$RUBYGEMS_VERSION"
+
+#----------------------------
+# gitlab-pages
+#----------------------------
+FROM base-builder AS gitlab-pages
+
+RUN mkdir /tmp/go
+COPY --from=golang /tmp/go /tmp/go
+
+# download gitlab-pages
+RUN echo "Downloading gitlab-pages v.$GITLAB_PAGES_VERSION..." \
+ && git clone -q -b v$GITLAB_PAGES_VERSION --depth 1 $GITLAB_PAGES_URL $GITLAB_PAGES_BUILD_DIR
+
+# install gitlab-pages
+RUN make -C $GITLAB_PAGES_BUILD_DIR -j"$(nproc)" \
+ && cp -a ${GITLAB_PAGES_BUILD_DIR}/gitlab-pages /usr/local/bin/
+
+#----------------------------
+# gitaly
+#----------------------------
+FROM base-builder AS gitaly
+
+RUN mkdir /tmp/go
+COPY --from=golang /tmp/go /tmp/go
+
+# download and build gitaly
+RUN echo "Downloading gitaly v.$GITALY_SERVER_VERSION..." \
+ && git clone -q -b v$GITALY_SERVER_VERSION --depth 1 $GITLAB_GITALY_URL $GITLAB_GITALY_BUILD_DIR
+
+# install gitaly
+RUN make -C $GITLAB_GITALY_BUILD_DIR install -j"$(nproc)" \
+ && mkdir -p ${GITLAB_GITALY_INSTALL_DIR}
+# The following line causes some issues. However, according to
+# <https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5512> and
+# <https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5671> there seems to
+# be some attempts to remove ruby from gitaly.
+#
+# cp -a ${GITLAB_GITALY_BUILD_DIR}/ruby ${GITLAB_GITALY_INSTALL_DIR}/
+
+# install git bundled with gitaly.
+RUN make -C $GITLAB_GITALY_BUILD_DIR git GIT_PREFIX=/usr/local -j"$(nproc)"
+
+#----------------------------
+# gitlab-foss-source
+#----------------------------
+FROM base-builder-extended AS gitlab-foss-source
+# shallow clone gitlab-foss
+USER git
+RUN echo "Cloning gitlab-foss v.$GITLAB_VERSION..." \
+ && git clone -q -b v$GITLAB_VERSION --depth 1 $GITLAB_CLONE_URL $GITLAB_INSTALL_DIR
+
+COPY assets/build/ ${GITLAB_BUILD_DIR}/
+
+RUN find "$GITLAB_BUILD_DIR/patches/gitlabhq" -name "*.patch" | while read -r patch_file; do \
+    printf "Applying patch %s for gitlab-foss...\n" "${patch_file}"; \
+    git -C $GITLAB_INSTALL_DIR apply --ignore-whitespace < "${patch_file}"; \
+  done
+USER root
+
+RUN mkdir -p ${GITLAB_BUILD_DIR}
+
+#----------------------------
+# ruby-inst-extended
+#----------------------------
+FROM  gitlab-foss-source AS ruby-inst-extended
+
+COPY --from=ruby-inst /usr/local /usr/local
+
+# install bundler: use version specified in Gemfile.lock
+RUN export BUNDLER_VERSION=$(grep "BUNDLED WITH" $GITLAB_INSTALL_DIR/Gemfile.lock -A 1 | grep -v "BUNDLED WITH" | tr -d "[:space:]"); \
+    gem install bundler:"$BUNDLER_VERSION"
+
+#----------------------------
+# gitlab-shell
+#----------------------------
+FROM  gitlab-foss-source AS gitlab-shell
+
+RUN mkdir /tmp/go
+COPY --from=golang /tmp/go /tmp/go
+
+COPY --from=ruby-inst-extended /usr/local /usr/local
+
+# download gitlab-shell
+RUN echo "Downloading gitlab-shell v.$GITLAB_SHELL_VERSION..." \
+ && mkdir -p $GITLAB_SHELL_INSTALL_DIR \
+ && wget -cq $GITLAB_SHELL_URL -O $GITLAB_BUILD_DIR/gitlab-shell-$GITLAB_SHELL_VERSION.tar.bz2 \
+ && tar xf $GITLAB_BUILD_DIR/gitlab-shell-$GITLAB_SHELL_VERSION.tar.bz2 --strip 1 -C $GITLAB_SHELL_INSTALL_DIR \
+ && rm -rf $GITLAB_BUILD_DIR/gitlab-shell-$GITLAB_SHELL_VERSION.tar.bz2 \
+ && chown -R $GITLAB_USER: $GITLAB_SHELL_INSTALL_DIR
+
+USER git
+
+RUN cd $GITLAB_SHELL_INSTALL_DIR \
+ && cp -a config.yml.example config.yml \
+ && echo "Compiling gitlab-shell golang executables..." \
+ && bundle config set --local deployment 'true' \
+ && bundle config set --local with 'development test' \
+ && bundle install -j"$(nproc)" \
+ && make verify setup
+ 
+ # remove unused repositories directory created by gitlab-shell install
+ #rm -rf ${GITLAB_HOME}/repositories
+ 
+ USER root
+
+ # build gitlab-workhorse
+ RUN echo "Build gitlab-workhorse" \
+  && git config --global --add safe.directory /home/git/gitlab \
+  && make -C $GITLAB_WORKHORSE_BUILD_DIR install -j"$(nproc)"
+ # clean up
+ #rm -rf ${GITLAB_WORKHORSE_BUILD_DIR}
+
+#----------------------------
+# yarn
+#----------------------------
+FROM gitlab-foss-source AS yarn
+
+USER git
+RUN cd $GITLAB_INSTALL_DIR; yarn install --production --pure-lockfile
+USER root
+
+#----------------------------
+# gitlab-foss-build
+#----------------------------
+FROM gitlab-foss-source AS gitlab-foss-build
+
+COPY --from=ruby-inst-extended /usr/local /usr/local
+
+USER git
+
+RUN  cd $GITLAB_INSTALL_DIR  \
+ && bundle config set --local deployment 'true' \
+ && bundle config set --local without 'development test mysql aws' \
+ && bundle install -j"$(nproc)"
+
+#----------------------------
+# final
+#----------------------------
+FROM base-builder-extended AS final
+
+RUN mkdir $GITLAB_CACHE_DIR; mkdir $GITLAB_BUILD_DIR; mkdir $GITLAB_BUILD_DIR/build
+
+COPY --from=ruby-inst-extended /usr/local/bin /usr/local/bin
+COPY --from=ruby-inst-extended /usr/local/lib /usr/local/lib
+
+COPY --from=gitlab-pages /usr/local/bin/gitlab-pages /usr/local/bin
+
+COPY --from=gitaly ${GITLAB_GITALY_BUILD_DIR}/config.toml.example ${GITLAB_GITALY_INSTALL_DIR}/config.toml
+COPY --from=gitaly /usr/local /usr/local
+
+COPY --from=gitlab-foss-source ${GITLAB_INSTALL_DIR} ${GITLAB_INSTALL_DIR}
+
+#COPY --from=gitlab-shell ${GITLAB_INSTALL_DIR} ${GITLAB_INSTALL_DIR}
+COPY --from=gitlab-shell ${GITLAB_SHELL_INSTALL_DIR} ${GITLAB_SHELL_INSTALL_DIR}
+COPY --from=gitlab-shell /usr/local /usr/local
+
+COPY --from=yarn ${GITLAB_INSTALL_DIR}/node_modules ${GITLAB_INSTALL_DIR}/node_modules
+
+COPY --from=gitlab-foss-build ${GITLAB_INSTALL_DIR} ${GITLAB_INSTALL_DIR}
+COPY --from=gitlab-foss-build /usr/local /usr/local
+
+COPY assets/build/ ${GITLAB_BUILD_DIR}/
+
+# gitlab.yml and database.yml are required for `assets:precompile`
+USER git
+
+RUN cp ${GITLAB_INSTALL_DIR}/config/resque.yml.example ${GITLAB_INSTALL_DIR}/config/resque.yml \
+ && cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
+
+USER root
+
+# #
+# # Temporary workaround, see <https://github.com/sameersbn/docker-gitlab/pull/2596>
+# #
+# # exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
+RUN cp ${GITLAB_BUILD_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml \
+ && chown ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/config/database.yml
+
+#=======================================
+RUN bash ${GITLAB_BUILD_DIR}/install2.sh
+#=======================================
+
+COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/
+COPY entrypoint.sh /sbin/entrypoint.sh
+RUN chmod 755 /sbin/entrypoint.sh
+
+ENV prometheus_multiproc_dir="/dev/shm"
+
+EXPOSE 22/tcp 80/tcp 443/tcp
+
+RUN ln -s /etc/ssl/certs/ca-certificates.crt /usr/lib/ssl/cert.pem
+
+VOLUME ["${GITLAB_DATA_DIR}", "${GITLAB_LOG_DIR}","${GITLAB_HOME}/gitlab/node_modules"]
+WORKDIR ${GITLAB_INSTALL_DIR}
+ENTRYPOINT ["/sbin/entrypoint.sh"]
+CMD ["app:start"]
