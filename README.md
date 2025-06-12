@@ -159,7 +159,13 @@ Generate random strings that are at least `64` characters long for each of `GITL
 
 > **Tip**: You can generate a random string using `pwgen -Bsv1 64` and assign it as the value of `GITLAB_SECRETS_DB_KEY_BASE`.
 
-Also generate random strings that are typically `32` characters long for each of `GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`, `GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` and `GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT`. These values are used for `ActiveRecord::Encryption` encrypted columns.
+Also generate random strings that are typically `32` characters long for each of:
+
+- `GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`
+- `GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY`
+- `GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT`
+
+These values are used for `ActiveRecord::Encryption` encrypted columns. Details can be found under [Active Record Encryption](https://guides.rubyonrails.org/active_record_encryption.html).
 
 Start GitLab using:
 
@@ -190,8 +196,6 @@ docker run --name gitlab-redis -d \
 
 Step 3. Launch the gitlab container
 
-TODO: fix and verify command line option to set newly created keys (especially primary_key and deterministic_key : they must be an array)
-
 ```bash
 docker run --name gitlab -d \
     --link gitlab-postgresql:postgresql --link gitlab-redis:redisio \
@@ -201,8 +205,8 @@ docker run --name gitlab -d \
     --env 'GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alpha-numeric-string' \
     --env 'GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alpha-numeric-string' \
     --env 'GITLAB_SECRETS_ENCRYPTED_SETTINGS_KEY_BASE=long-and-random-alpha-numeric-string' \
-    --env 'GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY=long-and-random-alpha-numeric-string' \
-    --env 'GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY=long-and-random-alpha-numeric-string' \
+    --env 'GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY=["long-and-random-alpha-numeric-string"]' \
+    --env 'GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY=["long-and-random-alpha-numeric-string"]' \
     --env 'GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT=long-and-random-alpha-numeric-string' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
     sameersbn/gitlab:18.0.2
@@ -932,23 +936,15 @@ Encryption key for session secrets. Ensure that your key is at least 64 characte
 
 ##### `GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`
 
-The base key to non-deterministically-encrypt data for `ActiveRecord::Encryption` encrypted columns. It can be used to set value for `active_record_encryption_primary_key` in config/secrets.yml.  
-Ensure that your key is alphanumeric string. Preferred to be 32 characters long.  
-If you need to set multiple keys, set this parameter like `["thisisfirstprimarykey","thisissecondprimarykey"]` for example. In docker-compose.yml, you have to quote whole value.  
-No defaults.
+The base key used to encrypt data for non-deterministic `ActiveRecord::Encryption` encrypted columns. This value is used to set `active_record_encryption_primary_key` in `config/secrets.yml`. Ensure that your key is an alphanumeric string. Preferred to be 32 characters long. If you need to set multiple keys, set this parameter in the format `["first_primary_key","second_primary_key"]`. In `docker-compose.yml`, the value must NOT have additional quotes! **If you lose or change this secret, encrypted settings will not work and might cause errors in the API and the web interface.** No defaults.
 
 ##### `GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY`
 
-The base key to deterministically-encrypt data for `ActiveRecord::Encryption` encrypted columns. It can be used to set value for `active_record_encryption_deterministic_key` in config/secrets.yml.  
-Ensure that your key is alphanumeric string. Preferred to be 32 characters long.  
-If you need to set multiple keys, set this parameter like `["thisisfirstprimarykey","thisissecondprimarykey"]` for example. In docker-compose.yml, you have to quote whole value.  
-No defaults.
+The base key used to encrypt data for deterministic `ActiveRecord::Encryption` encrypted columns. This value is used to set `active_record_encryption_deterministic_key` in `config/secrets.yml`. Ensure that your key is an alphanumeric string. Preferred to be 32 characters long. If you need to set multiple keys, set this parameter in the format `["first_deterministic_key","second_deterministic_key"]`. In `docker-compose.yml`, the value must NOT have additional quotes! **If you lose or change this secret, encrypted settings will not work and might cause errors in the API and the web interface.** No defaults.
 
 ##### `GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT`
 
-The derivation salt to encrypt data for ActiveRecord::Encryption encrypted columns. It can be used to set value for `active_record_encryption_key_derivation_salt` in config/secrets.yml.  
-Ensure that your key is alphanumeric string. Preferred to be 32 characters long.  
-No defaults.
+The salt used to encrypt data for `ActiveRecord::Encryption` encrypted columns. This value is used to set `active_record_encryption_key_derivation_salt` in `config/secrets.yml`. Ensure that your salt is an alphanumeric string. Preferred to be 32 characters long. **If you lose or change this secret, encrypted settings will not work and might cause errors in the API and the web interface.** No defaults.
 
 ##### `GITLAB_TIMEZONE`
 
@@ -2796,9 +2792,12 @@ Replace `x.x.x` with the version you are upgrading from. For example, if you are
 - **Step 4**: Start the image
 
 > **Note**: Since GitLab `8.0.0` you need to provide the `GITLAB_SECRETS_DB_KEY_BASE` parameter while starting the image.
+
 > **Note**: Since GitLab `8.11.0` you need to provide the `GITLAB_SECRETS_SECRET_KEY_BASE` and `GITLAB_SECRETS_OTP_KEY_BASE` parameters while starting the image. These should initially both have the same value as the contents of the `/home/git/data/.secret` file. See [Available Configuration Parameters](#available-configuration-parameters) for more information on these parameters.
+
 > **Note**: Since Gitlab 13.7 you need to provide the `GITLAB_SECRETS_ENCRYPTED_SETTINGS_KEY_BASE` parameter while starting the image.  If not provided, the key will be generated by gitlab. So you can start the image without setting this parameter. But you will lose the key when you shutting down the container without taking a backup of `secrets.yml`.
-> **Note**: Since Gitlab 17.8 you need to provide `GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`,`GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` and `GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT`. If not provided, these keys will be generated by gitlab. So you can start the image without setting this parameter. But you will lose the key when you shutting down the container without taking a backup of `secrets.yml` and result to unusable stage of some features such as dependency proxy.
+
+> **Note**: Since Gitlab 17.8 you need to provide `GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`,`GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` and `GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT`. If not provided, these keys will be generated by gitlab. The image can be started without setting these parameters, **but you will lose the settings when you shutting down the container without taking a backup of `secrets.yml` and settings stored securely (such as the Dependency Proxy) will be unusable and unrecoverable.**
 
 ```bash
 docker run --name gitlab -d [OPTIONS] sameersbn/gitlab:18.0.2
