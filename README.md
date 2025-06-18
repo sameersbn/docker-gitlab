@@ -47,6 +47,7 @@
         - [Microsoft Azure](#microsoft-azure)
         - [Generic OAuth2](#Generic-OAuth2)
         - [OpenID Connect](#openid-connect)
+        - [JWT](#jwt)
     - [Gitlab Pages](#gitlab-pages)
     - [External Issue Trackers](#external-issue-trackers)
     - [Host UID / GID Mapping](#host-uid--gid-mapping)
@@ -755,6 +756,27 @@ To use OIDC set at least `OAUTH_OIDC_ISSUER` and `OAUTH_OIDC_CLIENT_ID`.
 | `client_options.redirect_uri`  | `OAUTH_OIDC_REDIRECT_URI`           | `http://${GITLAB_HOST}/users/auth/openid_connect/callback` or `https://${GITLAB_HOST}/users/auth/openid_connect/callback` depending on the value of `GITLAB_HTTPS` |
 
 See [GitLab OIDC documentation](https://docs.gitlab.com/ee/administration/auth/oidc.html) and [OmniAuth OpenID Connect documentation](https://github.com/omniauth/omniauth_openid_connect/).
+
+##### JWT
+
+To enable the JWT OmniAuth provider, you must register your application with JWT. JWT provides you with a secret key for you to use.
+
+To use JWT set at least `OAUTH_JWT_SECRET` and `OAUTH_JWT_AUTH_URL`.
+
+| GitLab setting                 | environment variable                | default value                  |
+| ------------------------------ | ----------------------------------- | -------------------------------|
+| `label`                        | `OAUTH_JWT_LABEL`                   | `Jwt`                          |
+| `secret`                       | `OAUTH_JWT_SECRET`                  |                                |
+| `algorithm`                    | `OAUTH_JWT_ALGORITHM`               | `HS256`                        |
+| `uid_claim`                    | `OAUTH_JWT_UID_CLAIM`               | `email`                        |
+| `required_claims`              | `OAUTH_JWT_REQUIRED_CLAIMS`         | `["name", "email"]`            |
+| `info_map.name`                | `OAUTH_JWT_INFO_MAP_NAME`           | `name`                         |
+| `info_map.email`               | `OAUTH_JWT_INFO_MAP_EMAIL`          | `email`                        |
+| `auth_url`                     | `OAUTH_JWT_AUTH_URL`                |                                |
+| `valid_within`                 | `OAUTH_JWT_VALID_WITHIN`            | `3600`                         |
+
+
+See [OmniAuth JWT documentation](https://docs.gitlab.com/administration/auth/jwt/).
 
 #### Gitlab Pages
 
