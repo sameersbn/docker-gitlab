@@ -2490,14 +2490,14 @@ Enable/disable rack middleware for blocking & throttling abusive requests Defaul
 
 Always allow requests from whitelisted host.
 This should be a valid yaml sequence of host address. Each host address string must be a valid IP address that can be passed to `IPAddr.new` of ruby. See [ruby-lang reference](https://docs.ruby-lang.org/en/3.0/IPAddr.html#method-c-new) for detail.
-If you need to set multiple hosts, set this parameter like `["1.1.1.1","192.168.0.0/24"]` for example. In docker-compose.yml, you have to quote whole value like below:
+If you need to set multiple hosts, set this parameter like `["1.1.1.1","192.168.0.0/24"]` for example.
 
 ````yaml
 environment:
-# pattern 1: surround with single quote, double quote each IP address
-- RACK_ATTACK_WHITELIST='["1.1.1.1","192.168.0.0/24"]'
-# pattern 2: surround with double quote, single quote each IP address
-- RACK_ATTACK_WHITELIST="['1.1.1.1','192.168.0.0/24']"
+# pattern 1: `- key=value` style : you can specify array of hosts as is
+- RACK_ATTACK_WHITELIST=["1.1.1.1","192.168.0.0/24"]
+# pattern 2: `key: value` style : you must surround with quote, as the value of environment variable must not be an array
+  RACK_ATTACK_WHITELIST: "['1.1.1.1','192.168.0.0/24']"
 ````
 
 Defaults to `["127.0.0.1"]`
