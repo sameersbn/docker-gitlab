@@ -286,7 +286,7 @@ Please note furthermore, that only compatible versions of the `postgresql-client
 - GitLab CE version 13.7.0 and later requires PostgreSQL version 12.x.
 - GitLab CE version 16.0.0 and later requires PostgreSQL version 13.x.
 - GitLab CE version 17.0.0 and later requires PostgreSQL version 14.x.
-- GitLab CE version 18.1.0 and later requires PostgreSQL version 16.x.
+- GitLab CE version 18.0.0 and later requires PostgreSQL version 16.x.
 
 ##### External PostgreSQL Server
 
