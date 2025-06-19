@@ -2732,7 +2732,7 @@ Usage when using `docker-compose` can also be found there.
 > - As of version 13.7.0, the required PostgreSQL version is 12.x.
 > - As of version 16.0.0, the required PostgreSQL version is 13.x.
 > - As of version 17.0.0, the required PostgreSQL version is 14.x.
-> - As of version 18.0.2, the required PostgreSQL version is 16.x.
+> - As of version 18.0.0, the required PostgreSQL version is 16.x.
 >
 > If you're using PostgreSQL image other than the above, please review section [Upgrading PostgreSQL](#upgrading-postgresql).
 
