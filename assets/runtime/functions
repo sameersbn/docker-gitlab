@@ -821,6 +821,26 @@ gitlab_configure_oauth_oidc() {
   fi
 }
 
+gitlab_configure_oauth_jwt() {
+  if [[ -n ${OAUTH_JWT_SECRET} && \
+        -n ${OAUTH_JWT_AUTH_URL} ]]; then
+    echo "Configuring gitlab::oauth::jwt..."
+    OAUTH_ENABLED=${OAUTH_ENABLED:-true}
+    update_template ${GITLAB_CONFIG} \
+      OAUTH_JWT_LABEL \
+      OAUTH_JWT_SECRET \
+      OAUTH_JWT_ALGORITHM \
+      OAUTH_JWT_UID_CLAIM \
+      OAUTH_JWT_REQUIRED_CLAIMS \
+      OAUTH_JWT_INFO_MAP_NAME \
+      OAUTH_JWT_INFO_MAP_EMAIL \
+      OAUTH_JWT_AUTH_URL \
+      OAUTH_JWT_VALID_WITHIN
+  else
+    exec_as_git sed -i "/name: 'jwt'/,/{{OAUTH_JWT_VALID_WITHIN}}/d" ${GITLAB_CONFIG}
+  fi
+}
+
 gitlab_configure_oauth() {
   echo "Configuring gitlab::oauth..."
 
@@ -839,6 +859,7 @@ gitlab_configure_oauth() {
   gitlab_configure_oauth_azure
   gitlab_configure_oauth_azure_ad_v2
   gitlab_configure_oauth_oidc
+  gitlab_configure_oauth_jwt
 
   OAUTH_ENABLED=${OAUTH_ENABLED:-false}
   update_template ${GITLAB_CONFIG} \
@@ -852,7 +873,7 @@ gitlab_configure_oauth() {
     OAUTH_ALLOW_BYPASS_TWO_FACTOR
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
-    cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2|azure_activedirectory_v2|oauth2_generic|$OAUTH2_GENERIC_NAME|oidc)
+    cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2|azure_activedirectory_v2|oauth2_generic|$OAUTH2_GENERIC_NAME|oidc|jwt)
       update_template ${GITLAB_CONFIG} OAUTH_AUTO_SIGN_IN_WITH_PROVIDER
       ;;
     *)
