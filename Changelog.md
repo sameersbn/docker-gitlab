@@ -3,6 +3,14 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://
 gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**17.11.6**
+
+- gitlab: upgrade CE to v17.11.6
+- gitaly: upgrade to v17.11.6
+- gitlab-pages: upgrade to v17.11.6
+- golang: upgrade to v1.24.5
+- ubuntu: upgrade to jammy-20250619
+
 **17.11.5**
 
 - gitlab: upgrade CE to v17.11.5
