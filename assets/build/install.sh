@@ -125,9 +125,6 @@ cd ${GITLAB_SHELL_INSTALL_DIR}
 exec_as_git cp -a config.yml.example config.yml
 
 echo "Compiling gitlab-shell golang executables..."
-exec_as_git bundle config set --local deployment 'true'
-exec_as_git bundle config set --local with 'development test'
-exec_as_git bundle install -j"$(nproc)"
 exec_as_git "PATH=$PATH" make verify setup
 
 # remove unused repositories directory created by gitlab-shell install
