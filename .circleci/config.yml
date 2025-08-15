@@ -277,7 +277,7 @@ jobs:
   release:
     executor:
       name: go/default
-      tag: '1.22'
+      tag: '1.24'
     steps:
       - checkout
       - run:
