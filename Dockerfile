@@ -15,7 +15,8 @@ ENV GITLAB_VERSION=${VERSION} \
     GITLAB_LOG_DIR="/var/log/gitlab" \
     GITLAB_CACHE_DIR="/etc/docker-gitlab" \
     RAILS_ENV=production \
-    NODE_ENV=production
+    NODE_ENV=production \
+    NO_SOURCEMAPS=true
 
 ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
     GITLAB_SHELL_INSTALL_DIR="${GITLAB_HOME}/gitlab-shell" \
