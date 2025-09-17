@@ -1,6 +1,21 @@
 #!/bin/bash
 set -e
 
+# auto-detect architecture and set GOARCH accordingly
+ARCH=$(uname -m)
+case "$ARCH" in
+  x86_64|amd64) GOARCH=amd64 ;;
+  aarch64|arm64) GOARCH=arm64 ;;
+  armv7l|armv7) GOARCH=arm ;;
+  *)
+    echo "Unsupported architecture: $ARCH"
+    exit 1
+    ;;
+esac
+
+export GOARCH
+
+
 GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-foss.git
 GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/-/archive/v${GITLAB_SHELL_VERSION}/gitlab-shell-v${GITLAB_SHELL_VERSION}.tar.bz2
 GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages.git
@@ -110,8 +125,8 @@ gem install bundler:"${BUNDLER_VERSION}"
 
 # download golang
 echo "Downloading Go ${GOLANG_VERSION}..."
-wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
-tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
+wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-${GOARCH}.tar.gz -P ${GITLAB_BUILD_DIR}/
+tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-${GOARCH}.tar.gz -C /tmp/
 
 # install gitlab-shell
 echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
@@ -173,7 +188,7 @@ rm -rf ${GITLAB_GITALY_BUILD_DIR}
 
 # remove go
 go clean --modcache
-rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz ${GOROOT}
+rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-${GOARCH}.tar.gz ${GOROOT}
 
 # revert `rake gitlab:setup` changes from gitlabhq/gitlabhq@a54af831bae023770bf9b2633cc45ec0d5f5a66a
 exec_as_git sed -i 's/db:reset/db:setup/' ${GITLAB_INSTALL_DIR}/lib/tasks/gitlab/setup.rake
