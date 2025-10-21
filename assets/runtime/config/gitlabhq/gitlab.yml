@@ -1178,7 +1178,7 @@ production: &base
     enabled: {{GITLAB_KAS_ENABLED}}
     # File that contains the secret key for verifying access for gitlab-kas.
     # Default is '.gitlab_kas_secret' relative to Rails.root (i.e. root of the GitLab app).
-    secret_file: {{GITLAB_KAS_SECRET}} # /home/git/gitlab/.gitlab_kas_secret
+    secret_file: {{GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE}} # /home/git/gitlab/.gitlab_kas_secret
 
     # The URL to the external KAS API (used by the Kubernetes agents)
     external_url: {{GITLAB_KAS_EXTERNAL}} # wss://kas.example.com
@@ -1374,7 +1374,7 @@ test:
         region: us-east-1
 
   gitlab:
-    host: localhost
+    host: 127.0.0.1
     port: 80
 
     content_security_policy:
