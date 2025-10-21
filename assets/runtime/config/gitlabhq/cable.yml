@@ -2,11 +2,11 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/cable.yml.example
 development:
   adapter: redis
-  url: redis://localhost:6379
+  url: redis://127.0.0.1:6379
   channel_prefix: gitlab_development
 test:
   adapter: redis
-  url: redis://localhost:6379
+  url: redis://127.0.0.1:6379
   channel_prefix: gitlab_test
 production:
   adapter: redis
