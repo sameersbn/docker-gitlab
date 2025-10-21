@@ -1,99 +1,95 @@
-# Import from gitlab-org/cluster-integration/gitlab-agent/pkg/kascfg/config_example.yaml
-#
-# This is a sample configuration file for kas. The source of truth is pkg/kascfg/kascfg.proto. It contains documentation
-# for all the fields. Configuration values in this file are the defaults (if set) that are used by kas.
+# This is a configuration file for kas that contains the default values for the settings.
+# It DOES NOT contain all the possible configuration knobs.
+# The source of truth is kascfg.proto.
+# It contains all the fields and documentation them.
+# If you are looking for a setting, start from the ConfigurationFile message in:
+# - the proto file kascfg.proto.
+# - the generated documentation in kascfg_proto_docs.md.
+# Correctness of this file is enforced by a unit test in kascfg_defaults_test.go.
 
+agent:
+  configuration:
+    max_configuration_file_size: 131072
+    poll_period: 300s
+  info_cache_error_ttl: 60s
+  info_cache_ttl: 300s
+  kubernetes_api:
+    allowed_agent_cache_error_ttl: 10s
+    allowed_agent_cache_ttl: 60s
+    listen:
+      address: 127.0.0.1:8154
+      listen_grace_period: 5s
+      network: tcp
+      shutdown_grace_period: 3600s
+    url_path_prefix: /{{GITLAB_RELATIVE_URL_ROOT}}
+    websocket_token_secret_file: {{GITLAB_AGENT_KAS_WEBSOCKET_TOKEN_SECRET_FILE}}
+  listen:
+    address: 127.0.0.1:8150
+    connections_per_token_per_minute: 40000
+    listen_grace_period: 5s
+    max_connection_age: 7200s
+    network: tcp
+    websocket: true
+  receptive_agent:
+    poll_period: 60s
+  redis_conn_info_gc: 600s
+  redis_conn_info_refresh: 240s
+  redis_conn_info_ttl: 300s
+api:
+  listen:
+    address: 127.0.0.1:8153
+    listen_grace_period: 5s
+    max_connection_age: 7200s
+    network: tcp
+    authentication_secret_file: {{GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE}}  # required
+gitaly:
+  global_api_rate_limit:
+    bucket_size: 70
+    refill_rate_per_second: 30
+  per_server_api_rate_limit:
+    bucket_size: 40
+    refill_rate_per_second: 15
 gitlab:
-  address: http://localhost:8080{{GITLAB_RELATIVE_URL_ROOT}} # required
+  address: http://127.0.0.1:8080{{GITLAB_RELATIVE_URL_ROOT}}
   authentication_secret_file: {{GITLAB_AGENT_KAS_GITLAB_AUTHENTICATION_SECRET_FILE}} # required
-  # ca_certificate_file: /server-ca.pem
   api_rate_limit:
     bucket_size: 250
     refill_rate_per_second: 50
-agent:
-  listen:
-    network: tcp
-    address: 127.0.0.1:8150
-    websocket: false
-    # certificate_file: /server-cert.pem
-    # key_file: /server-key.pem
-    connections_per_token_per_minute: 40000
-    max_connection_age: "7200s"
-    listen_grace_period: "5s"
-  configuration:
-    poll_period: "300s"
-    max_configuration_file_size: 131072
-  kubernetes_api:
-    listen:
-      network: tcp
-      address: 0.0.0.0:8154
-      # certificate_file: /server-cert.pem
-      # key_file: /server-key.pem
-      listen_grace_period: "5s"
-      shutdown_grace_period: "3600s"
-    url_path_prefix: /
-    allowed_agent_cache_ttl: "60s"
-    allowed_agent_cache_error_ttl: "10s"
-  info_cache_ttl: "300s"
-  info_cache_error_ttl: "60s"
-  redis_conn_info_ttl: "300s"
-  redis_conn_info_refresh: "240s"
-  redis_conn_info_gc: "600s"
 observability:
-  usage_reporting_period: "10s"
+  event_reporting_period: 300s
+  google_profiler: {}
   listen:
-    network: tcp
     address: 127.0.0.1:8151
-  prometheus:
-    url_path: /metrics
-  # tracing:
-  #   otlp_endpoint: "https://localhost:4317/traces/foo/bar"
-  #   otlp_token_secret_file: "/some/path"
-  #   otlp_ca_certificate_file: "/some/path/ca.crt"
-  sentry:
-    dsn: ""
-    environment: ""
-  logging:
-    level: info
-    grpc_level: error
-  google_profiler:
-    enabled: false
-    # project_id: ""
-    # credentials_file: /some/file
-    # debug_logging: false
+    network: tcp
   liveness_probe:
     url_path: /liveness
+  logging:
+    level: debug
+    grpc_level: debug
+  prometheus:
+    url_path: /metrics
   readiness_probe:
     url_path: /readiness
-  event_reporting_period: "10s"
-gitaly:
-  global_api_rate_limit:
-    refill_rate_per_second: 30.0
-    bucket_size: 70
-  per_server_api_rate_limit:
-    refill_rate_per_second: 15.0
-    bucket_size: 40
+  sentry: {}
+  usage_reporting_period: 10s
 private_api:
   listen:
-    network: tcp
-    address: 127.0.0.1:8155
-    authentication_secret_file: {{GITLAB_AGENT_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE}}
+    address: 0.0.0.0:8155
+    listen_grace_period: 5s
     max_connection_age: 7200s
-    listen_grace_period: "5s"
+    network: tcp
+    authentication_secret_file: {{GITLAB_AGENT_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE}}
 redis:
+  dial_timeout: 5s
+  key_prefix: gitlab-kas
+  network: tcp
+  write_timeout: 3s
   server:
     address: "{{REDIS_HOST}}:{{REDIS_PORT}}" # required
-  dial_timeout: "5s"
-  write_timeout: "3s"
-  key_prefix: gitlab-kas
-  password_file: {{GITLAB_AGENT_KAS_REDIS_PASSWORD_FILE}}
-  network: "tcp"
-api:
+workspaces:
   listen:
+    address: 127.0.0.1:8160
+    listen_grace_period: 5s
     network: tcp
-    address: 127.0.0.1:8153
-    authentication_secret_file: {{GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE}} # required
-    # certificate_file: /server-cert.pem
-    # key_file: /server-key.pem
-    max_connection_age: "7200s"
-    listen_grace_period: "5s"
+    shutdown_grace_period: 3600s
+
