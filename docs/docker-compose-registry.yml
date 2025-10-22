@@ -20,7 +20,7 @@ services:
 
   gitlab:
     restart: always
-    image: sameersbn/gitlab:18.5.0
+    image: sameersbn/gitlab:18.5.1
     volumes:
       - gitlab-data:/home/git/data:Z
       - gitlab-logs:/var/log/gitlab
