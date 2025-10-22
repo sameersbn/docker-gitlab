@@ -1600,12 +1600,19 @@ nginx_configure_gitlab_real_ip() {
 
 nginx_configure_gitlab() {
   echo "Configuring nginx::gitlab..."
+  if [[ ! ${GITLAB_AGENT_BUILTIN_KAS_ENABLED} == true ]]; then
+    sed -i "/#start-builtin-kas/,/#end-builtin-kas/d" ${GITLAB_NGINX_CONFIG}
+  else
+    sed -i "/#start-builtin-kas/d" ${GITLAB_NGINX_CONFIG}
+    sed -i "/#end-builtin-kas/d" ${GITLAB_NGINX_CONFIG}
+  fi
   update_template ${GITLAB_NGINX_CONFIG} \
     GITLAB_HOME \
     GITLAB_INSTALL_DIR \
     GITLAB_LOG_DIR \
     GITLAB_HOST \
     GITLAB_PORT \
+    GITLAB_RELATIVE_URL_ROOT \
     NGINX_PROXY_BUFFERING \
     NGINX_ACCEL_BUFFERING \
     NGINX_X_FORWARDED_PROTO \
