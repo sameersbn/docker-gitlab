@@ -925,7 +925,7 @@ You can specify custom secret file by setting [`GITLAB_KAS_SECRET`](#gitlab_kas_
 
 #### Built-in GitLab-Agent KAS
 
-To control whether launch built-in `gitlab-kas` on container startup or not, you can use configuration parameter [`GITLAB_AGENT_KAS_ENABLED`](#gitlab_agent_kas_enabled).
+To control whether launch built-in `gitlab-kas` on container startup or not, you can use configuration parameter [`GITLAB_AGENT_BUILTIN_KAS_ENABLED`](#gitlab_agent_builtin_kas_enabled).
 
 You can specify custom secret file by setting [`GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE`](#gitlab_agent_kas_api_listen_authentication_secret_file) and [`GITLAB_AGENT_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE`](#gitlab_agent_kas_private_api_listen_authentication_secret_file). These secret files also be generated if they don't exist.  
 Authentication secret file will be set to same value of `GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE` but you can overwrite it by setting [`GITLAB_AGENT_KAS_GITLAB_AUTHENTICATION_SECRET_FILE`](#gitlab_agent_kas_gitlab_authentication_secret_file).
@@ -1279,7 +1279,7 @@ Internal URL for the GitLab backend. Defaults to `"grpc://localhost:8153"`
 
 The URL to the Kubernetes API proxy (used by GitLab users). No default.
 
-##### `GITLAB_AGENT_KAS_ENABLED`
+##### `GITLAB_AGENT_BUILTIN_KAS_ENABLED`
 
 Control startup behavior of built-in KAS. `autostart` value in supervisor configuration for KAS will be set to this value. Default to [`GITLAB_KAS_ENABLED`](#gitlab_kas_enabled)
 
