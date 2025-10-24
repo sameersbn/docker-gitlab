@@ -21,7 +21,7 @@ agent:
       listen_grace_period: 5s
       network: tcp
       shutdown_grace_period: 3600s
-    url_path_prefix: {{GITLAB_RELATIVE_URL_ROOT}}/
+    url_path_prefix: {{GITLAB_RELATIVE_URL_ROOT}}/-/kubernetes-agent/k8s-proxy/
     websocket_token_secret_file: {{GITLAB_AGENT_KAS_WEBSOCKET_TOKEN_SECRET_FILE}}
   listen:
     address: 127.0.0.1:8150
