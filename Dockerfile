@@ -50,7 +50,6 @@ RUN set -ex && \
       sudo supervisor logrotate locales curl \
       meson \
       nginx openssh-server redis-tools \
-      postgresql-client-13 postgresql-client-14 postgresql-client-15 \
       postgresql-client-16 postgresql-client-17 postgresql-client-18 \
       python3 python3-docutils nodejs yarn gettext-base graphicsmagick \
       libpq5 zlib1g libyaml-dev libssl-dev libgdbm-dev libre2-dev \
