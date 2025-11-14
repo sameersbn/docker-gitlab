@@ -196,7 +196,7 @@ gitlab_generate_postgresqlrc() {
   DB_CLIENT_VERSION_PACKAGE_NAME=
 
   if [[ "${DB_SERVER_VERSION_MAJOR}" -ge 10 ]]; then
-    # v10 or later: use "rought major version" as version number in package name
+    # v10 or later: use "rough major version" as version number in package name
     DB_CLIENT_VERSION_PACKAGE_NAME=${DB_SERVER_VERSION_MAJOR}
   else
     # prior to v10: convert
