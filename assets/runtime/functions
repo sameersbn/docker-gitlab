@@ -190,10 +190,22 @@ gitlab_generate_postgresqlrc() {
 
   echo "- Detected server version: ${DB_SERVER_VERSION}"
 
+  # remove leading zero (prior to 10.x it was like "090605" so that cannot treated as number)
+  DB_SERVER_VERSION="${DB_SERVER_VERSION##+(0)}"
+
   # Anyway, we can get major version (8, 9, 10 and so on) by dividing by 10000.
   # DB_SERVER_VERSION_MAJOR=${DB_SERVER_VERSION%%.*}
   DB_SERVER_VERSION_MAJOR=$((DB_SERVER_VERSION/10000))
   DB_CLIENT_VERSION_PACKAGE_NAME=
+
+  # Check version requirement
+  if [[ "${DB_SERVER_VERSION}" -lt "${POSTGRESQL_SERVER_REQUIRED_VERSION_MINIMUM}" 
+     || "${DB_SERVER_VERSION}" -gt "${POSTGRESQL_SERVER_REQUIRED_VERSION_MAXIMUM}"
+  ]]; then
+    echo "  Version requirement mismatch! (${POSTGRESQL_SERVER_REQUIRED_VERSION_MINIMUM} < ${DB_SERVER_VERSION} < ${POSTGRESQL_SERVER_REQUIRED_VERSION_MAXIMUM})"
+    echo "  Aborting.."
+    return 1
+  fi
 
   if [[ "${DB_SERVER_VERSION_MAJOR}" -ge 10 ]]; then
     # v10 or later: use "rough major version" as version number in package name

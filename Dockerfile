@@ -16,7 +16,10 @@ ENV GITLAB_VERSION=${VERSION} \
     GITLAB_CACHE_DIR="/etc/docker-gitlab" \
     RAILS_ENV=production \
     NODE_ENV=production \
-    NO_SOURCEMAPS=true
+    NO_SOURCEMAPS=true \
+    # v18.5.2 : minimum = 16.5, maximum = 17.x (currently 17.6, is 170006)
+    POSTGRESQL_SERVER_REQUIRED_VERSION_MINIMUM=160005 \
+    POSTGRESQL_SERVER_REQUIRED_VERSION_MAXIMUM=170100
 
 ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
     GITLAB_SHELL_INSTALL_DIR="${GITLAB_HOME}/gitlab-shell" \
