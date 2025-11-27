@@ -10,15 +10,15 @@ if ! id -u git >> /dev/null 2>&1; then
 fi
 su git -c "mkdir -p /home/git/.ssh/"
 
-su git -c "if [ ! -f /home/git/.ssh/id_rsa ]; then ssh-keygen -t rsa -b 4096 -N \"\" -f /home/git/.ssh/id_rsa; fi"
-su git -c "if [ -f /home/git/.ssh/id_rsa.pub ]; then mv /home/git/.ssh/id_rsa.pub /home/git/.ssh/authorized_keys_proxy; fi"
+su git -c "if [ ! -f /home/git/.ssh/id_ed25519 ]; then ssh-keygen -t ed25519 -N \"\" -f /home/git/.ssh/id_ed25519; fi"
+su git -c "if [ -f /home/git/.ssh/id_ed25519.pub ]; then mv /home/git/.ssh/id_ed25519.pub /home/git/.ssh/authorized_keys_proxy; fi"
 
 mkdir -p /home/git/gitlab-shell/bin/
 rm -f /home/git/gitlab-shell/bin/gitlab-shell
 tee -a /home/git/gitlab-shell/bin/gitlab-shell > /dev/null <<EOF
 #!/bin/sh
 
-ssh -i /home/git/.ssh/id_rsa -p ${GITLAB_SSH_PORT} -o StrictHostKeyChecking=no git@127.0.0.1 "SSH_ORIGINAL_COMMAND=\"\$SSH_ORIGINAL_COMMAND\" \$0 \$@"
+ssh -i /home/git/.ssh/id_ed25519 -p ${GITLAB_SSH_PORT} -o StrictHostKeyChecking=no git@127.0.0.1 "SSH_ORIGINAL_COMMAND=\"\$SSH_ORIGINAL_COMMAND\" \$0 \$@"
 EOF
 chown git:git /home/git/gitlab-shell/bin/gitlab-shell
 chmod u+x /home/git/gitlab-shell/bin/gitlab-shell

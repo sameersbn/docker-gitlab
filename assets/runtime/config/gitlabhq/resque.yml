@@ -2,7 +2,7 @@
 # a Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
 #
 development:
-  url: redis://localhost:6379
+  url: redis://127.0.0.1:6379
   # sentinels:
   #   -
   #     host: localhost
@@ -11,7 +11,7 @@ development:
   #     host: slave2
   #     port: 26381 # point to sentinel, not to redis port
 test:
-  url: redis://localhost:6379
+  url: redis://127.0.0.1:6379
 production:
   # Redis (single instance)
   url: redis://{{REDIS_HOST}}:{{REDIS_PORT}}/{{REDIS_DB_NUMBER}}

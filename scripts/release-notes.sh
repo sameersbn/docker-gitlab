@@ -41,8 +41,10 @@ Please note that this version does not yet include any rework as a consequence o
 Don't forget to consider the version specific upgrading instructions for [GitLab CE](https://docs.gitlab.com/ee/update/) **before** upgrading your GitLab CE instance!
 
 Please note:
-- GitLab 17.x requires at least PostgreSQL 14.
-- See issues to be aware of when upgrading to 17.x : <https://docs.gitlab.com/ee/update/versions/gitlab_17_changes.html>
+
+- Before upgrading to GitLab 18 make sure to read and understand the [notes about breaking changes](https://about.gitlab.com/blog/2025/04/18/a-guide-to-the-breaking-changes-in-gitlab-18-0/).
+- In GitLab 18.0 and later, [PostgreSQL 16 or later is required](https://docs.gitlab.com/install/installation/#software-requirements).
+- See issues to be aware of when upgrading: <https://docs.gitlab.com/update/>.
 
 ## Contributing
 

@@ -23,10 +23,10 @@ GITLAB_ACTIONCABLE_CONFIG="${GITLAB_INSTALL_DIR}/config/cable.yml"
 GITLAB_SECRETS_CONFIG="${GITLAB_INSTALL_DIR}/config/secrets.yml"
 GITLAB_ROBOTS_CONFIG="${GITLAB_INSTALL_DIR}/public/robots.txt"
 GITLAB_SHELL_CONFIG="${GITLAB_SHELL_INSTALL_DIR}/config.yml"
-GITLAB_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab"
-GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
-GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
-GITLAB_PAGES_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-pages"
+GITLAB_NGINX_CONFIG="/etc/nginx/conf.d/gitlab.conf"
+GITLAB_CI_NGINX_CONFIG="/etc/nginx/conf.d/gitlab_ci.conf"
+GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/conf.d/gitlab-registry.conf"
+GITLAB_PAGES_NGINX_CONFIG="/etc/nginx/conf.d/gitlab-pages.conf"
 GITLAB_PAGES_CONFIG="${GITLAB_INSTALL_DIR}/gitlab-pages-config"
 GITLAB_GITALY_CONFIG="${GITLAB_GITALY_INSTALL_DIR}/config.toml"
 
@@ -149,7 +149,7 @@ gitlab_finalize_database_parameters() {
 
 gitlab_check_database_connection() {
 
-  prog=$(find /usr/lib/postgresql/ -name pg_isready -type f | sort | tail -n1)
+  prog=$(command -v pg_isready)
   prog="${prog} -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -t 1"
 
   timeout=60
@@ -821,6 +821,26 @@ gitlab_configure_oauth_oidc() {
   fi
 }
 
+gitlab_configure_oauth_jwt() {
+  if [[ -n ${OAUTH_JWT_SECRET} && \
+        -n ${OAUTH_JWT_AUTH_URL} ]]; then
+    echo "Configuring gitlab::oauth::jwt..."
+    OAUTH_ENABLED=${OAUTH_ENABLED:-true}
+    update_template ${GITLAB_CONFIG} \
+      OAUTH_JWT_LABEL \
+      OAUTH_JWT_SECRET \
+      OAUTH_JWT_ALGORITHM \
+      OAUTH_JWT_UID_CLAIM \
+      OAUTH_JWT_REQUIRED_CLAIMS \
+      OAUTH_JWT_INFO_MAP_NAME \
+      OAUTH_JWT_INFO_MAP_EMAIL \
+      OAUTH_JWT_AUTH_URL \
+      OAUTH_JWT_VALID_WITHIN
+  else
+    exec_as_git sed -i "/name: 'jwt'/,/{{OAUTH_JWT_VALID_WITHIN}}/d" ${GITLAB_CONFIG}
+  fi
+}
+
 gitlab_configure_oauth() {
   echo "Configuring gitlab::oauth..."
 
@@ -839,6 +859,7 @@ gitlab_configure_oauth() {
   gitlab_configure_oauth_azure
   gitlab_configure_oauth_azure_ad_v2
   gitlab_configure_oauth_oidc
+  gitlab_configure_oauth_jwt
 
   OAUTH_ENABLED=${OAUTH_ENABLED:-false}
   update_template ${GITLAB_CONFIG} \
@@ -852,7 +873,7 @@ gitlab_configure_oauth() {
     OAUTH_ALLOW_BYPASS_TWO_FACTOR
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
-    cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2|azure_activedirectory_v2|oauth2_generic|$OAUTH2_GENERIC_NAME|oidc)
+    cas3|google_oauth2|facebook|twitter|github|gitlab|bitbucket|saml|crowd|azure_oauth2|azure_activedirectory_v2|oauth2_generic|$OAUTH2_GENERIC_NAME|oidc|jwt)
       update_template ${GITLAB_CONFIG} OAUTH_AUTO_SIGN_IN_WITH_PROVIDER
       ;;
     *)
@@ -888,7 +909,10 @@ gitlab_configure_secrets() {
   GITLAB_SECRETS_DB_KEY_BASE \
   GITLAB_SECRETS_SECRET_KEY_BASE \
   GITLAB_SECRETS_OTP_KEY_BASE \
-  GITLAB_SECRETS_ENCRYPTED_SETTINGS_KEY_BASE
+  GITLAB_SECRETS_ENCRYPTED_SETTINGS_KEY_BASE \
+  GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY \
+  GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY \
+  GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT
 
   local shell_secret="${GITLAB_INSTALL_DIR}/.gitlab_shell_secret"
   if [[ ! -f "${shell_secret}" ]]; then
@@ -1757,25 +1781,6 @@ initialize_datadir() {
   chmod 700 ${GITLAB_DATA_DIR}/.ssh
   chmod 600 ${GITLAB_DATA_DIR}/.ssh/authorized_keys
   chown -R ${GITLAB_USER}: ${GITLAB_DATA_DIR}/.ssh
-
-  # recompile and persist assets when relative_url is in use
-  if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
-    mkdir -p ${GITLAB_TEMP_DIR}/cache
-    chmod 755 ${GITLAB_TEMP_DIR}/cache
-    chown ${GITLAB_USER}: ${GITLAB_TEMP_DIR}/cache
-
-    mkdir -p ${GITLAB_TEMP_DIR}/assets
-    chmod 755 ${GITLAB_TEMP_DIR}/assets
-    chown ${GITLAB_USER}: ${GITLAB_TEMP_DIR}/assets
-
-    # symlink ${GITLAB_INSTALL_DIR}/tmp/cache -> ${GITLAB_TEMP_DIR}/cache
-    rm -rf ${GITLAB_INSTALL_DIR}/tmp/cache
-    exec_as_git ln -s ${GITLAB_TEMP_DIR}/cache ${GITLAB_INSTALL_DIR}/tmp/cache
-
-    # symlink ${GITLAB_INSTALL_DIR}/public/assets -> ${GITLAB_TEMP_DIR}/assets
-    rm -rf ${GITLAB_INSTALL_DIR}/public/assets
-    exec_as_git ln -s ${GITLAB_TEMP_DIR}/assets ${GITLAB_INSTALL_DIR}/public/assets
-  fi
 }
 
 sanitize_datadir() {
@@ -2256,19 +2261,6 @@ migrate_database() {
   # clear cache if relative_url has changed.
   [[ -f ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT ]] && CACHE_GITLAB_RELATIVE_URL_ROOT=$(cat ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT)
   if [[ ! -f ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT || ${GITLAB_RELATIVE_URL_ROOT} != ${CACHE_GITLAB_RELATIVE_URL_ROOT} ]]; then
-    # assets need to be recompiled when GITLAB_RELATIVE_URL_ROOT is used
-    if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
-      if [[ ! -d ${GITLAB_HOME}/gitlab/node_modules ]]; then
-        mkdir -p ${GITLAB_HOME}/gitlab/node_modules
-        chown -R ${GITLAB_USER}: ${GITLAB_HOME}/gitlab/node_modules
-      fi
-      echo "Prepare recompile assets... Installing missing node_modules for assets"
-      chown -R ${GITLAB_USER}: ${GITLAB_HOME}/gitlab/node_modules
-      exec_as_git yarn install --production --pure-lockfile
-      echo "Recompiling assets (relative_url in use), this could take a while..."
-      exec_as_git bundle exec rake gitlab:assets:compile NODE_OPTIONS="--max-old-space-size=4096" >/dev/null 2>&1
-    fi
-
     echo "Clearing cache..."
     exec_as_git bundle exec rake cache:clear >/dev/null 2>&1
     echo "${GITLAB_RELATIVE_URL_ROOT}" > ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT

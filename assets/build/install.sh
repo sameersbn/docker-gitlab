@@ -19,9 +19,11 @@ PATH=${GOROOT}/bin:$PATH
 
 export GOROOT PATH
 
-BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
+# TODO Verify, if this is necessary or not.
+# BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
+BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake \
   libc6-dev \
-  libpq-dev zlib1g-dev libyaml-dev libssl-dev \
+  libpq-dev zlib1g-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
   libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
   gettext libkrb5-dev \
@@ -59,19 +61,22 @@ cd "$PWD_ORG" && rm -rf /tmp/ruby
 # upgrade rubygems on demand
 gem update --no-document --system "${RUBYGEMS_VERSION}"
 
-# PaX-mark ruby
-# Applying the mark late here does make the build usable on PaX kernels, but
-# still the build itself must be executed on a non-PaX kernel. It's done here
-# only for simplicity.
-paxctl -cvm "$(command -v ruby)"
-# https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
-paxctl -cvm "$(command -v node)"
+# TODO Verify, if this is necessary or not.
+# # PaX-mark ruby
+# # Applying the mark late here does make the build usable on PaX kernels, but
+# # still the build itself must be executed on a non-PaX kernel. It's done here
+# # only for simplicity.
+# paxctl -cvm "$(command -v ruby)"
+# # https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
+# paxctl -cvm "$(command -v node)"
 
 # remove the host keys generated during openssh-server installation
 rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
 
 # add ${GITLAB_USER} user
-adduser --disabled-login --gecos 'GitLab' ${GITLAB_USER}
+deluser --remove-home ubuntu
+addgroup --gid 1000 git
+adduser --uid 1000 --gid 1000 --disabled-password --gecos 'GitLab' ${GITLAB_USER}
 passwd -d ${GITLAB_USER}
 
 # set PATH (fixes cron job PATH issues)
@@ -105,7 +110,7 @@ gem install bundler:"${BUNDLER_VERSION}"
 
 # download golang
 echo "Downloading Go ${GOLANG_VERSION}..."
-wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
+wget -cnv https://go.dev/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
 tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
 
 # install gitlab-shell
@@ -120,9 +125,6 @@ cd ${GITLAB_SHELL_INSTALL_DIR}
 exec_as_git cp -a config.yml.example config.yml
 
 echo "Compiling gitlab-shell golang executables..."
-exec_as_git bundle config set --local deployment 'true'
-exec_as_git bundle config set --local with 'development test'
-exec_as_git bundle install -j"$(nproc)"
 exec_as_git "PATH=$PATH" make verify setup
 
 # remove unused repositories directory created by gitlab-shell install
@@ -173,9 +175,6 @@ rm -rf ${GITLAB_GITALY_BUILD_DIR}
 go clean --modcache
 rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz ${GOROOT}
 
-# remove HSTS config from the default headers, we configure it in nginx
-exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
-
 # revert `rake gitlab:setup` changes from gitlabhq/gitlabhq@a54af831bae023770bf9b2633cc45ec0d5f5a66a
 exec_as_git sed -i 's/db:reset/db:setup/' ${GITLAB_INSTALL_DIR}/lib/tasks/gitlab/setup.rake
 
@@ -212,7 +211,7 @@ chown ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/config/database.yml
 exec_as_git yarn install --production --pure-lockfile
 
 echo "Compiling assets. Please be patient, this could take a while..."
-exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true NODE_OPTIONS="--max-old-space-size=4096"
+exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true NODE_OPTIONS="--max-old-space-size=8192"
 
 # remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
 rm -rf ${GITLAB_DATA_DIR}/config/secrets.yml

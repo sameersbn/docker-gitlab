@@ -10,7 +10,7 @@ server {
   listen *:80;
   server_name  {{GITLAB_REGISTRY_HOST}};
   server_tokens off; ## Don't show the nginx version number, a security best practice
-  return 301 https://$http_host:$request_uri;
+  return 301 https://$http_host$request_uri;
   access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_registry_access.log;
   error_log   {{GITLAB_LOG_DIR}}/nginx/gitlab_registry_error.log;
 }
@@ -18,7 +18,8 @@ server {
 server {
   # If a different port is specified in https://gitlab.com/gitlab-org/gitlab-foss/blob/8-8-stable/config/gitlab.yml.example#L182,
   # it should be declared here as well
-  listen *:{{GITLAB_REGISTRY_PORT}} ssl http2;
+  listen *:{{GITLAB_REGISTRY_PORT}} ssl;
+  http2 on;
   server_name  {{GITLAB_REGISTRY_HOST}};
   server_tokens off; ## Don't show the nginx version number, a security best practice
 
