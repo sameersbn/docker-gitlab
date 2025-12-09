@@ -154,10 +154,11 @@ services:
       - OAUTH2_GENERIC_APP_ID=git
       - OAUTH2_GENERIC_APP_SECRET=<your-client-secret>
       - OAUTH2_GENERIC_CLIENT_SITE=http://<your-ip-address>:10081
-      - OAUTH2_GENERIC_CLIENT_USER_INFO_URL=http://<your-ip-address>:10081/auth/realms/master/protocol/openid-connect/userinfo
-      - OAUTH2_GENERIC_CLIENT_AUTHORIZE_URL=http://<your-ip-address>:10081/auth/realms/master/protocol/openid-connect/auth
-      - OAUTH2_GENERIC_CLIENT_TOKEN_URL=http://<your-ip-address>:10081/auth/realms/master/protocol/openid-connect/token
-      - OAUTH2_GENERIC_CLIENT_END_SESSION_ENDPOINT=http://<your-ip-address>:10081/auth/realms/master/protocol/openid-connect/logout
+      - OAUTH2_GENERIC_CLIENT_USER_INFO_URL=http://<your-ip-address>:10081/realms/master/protocol/openid-connect/userinfo
+      - OAUTH2_GENERIC_CLIENT_AUTHORIZE_URL=http://<your-ip-address>:10081/realms/master/protocol/openid-connect/auth
+      - OAUTH2_GENERIC_CLIENT_TOKEN_URL=http://<your-ip-address>:10081/realms/master/protocol/openid-connect/token
+      - OAUTH2_GENERIC_CLIENT_END_SESSION_ENDPOINT=http://<your-ip-address>:10081/realms/master/protocol/openid-connect/logout
+      - OAUTH2_GENERIC_AUTHORIZE_PARAMS_SCOPE=openid
       - OAUTH2_GENERIC_ID_PATH=sub
       - OAUTH2_GENERIC_USER_UID=sub
       - OAUTH2_GENERIC_USER_NAME=preferred_username
@@ -166,13 +167,14 @@ services:
 
   keycloak:
     restart: always
-    image: jboss/keycloak:8.0.1
+    image: quay.io/keycloak/keycloak:26.4
     ports:
       - "10081:8080"
     environment:
       - DEBUG=false
-      - KEYCLOAK_PASSWORD=admin
-      - KEYCLOAK_USER=admin
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+    command: start-dev
 
 volumes:
   redis-data:
