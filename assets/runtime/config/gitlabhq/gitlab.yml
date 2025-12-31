@@ -410,6 +410,7 @@ production: &base
     artifacts_server: {{GITLAB_PAGES_ARTIFACTS_SERVER}} # Set to false if you want to disable online view of HTML artifacts
     external_http: {{GITLAB_PAGES_EXTERNAL_HTTP}} # If defined, enables custom domain support in GitLab Pages
     external_https: {{GITLAB_PAGES_EXTERNAL_HTTPS}} # If defined, enables custom domain and certificate support in GitLab Pages
+    namespace_in_path: {{GITLAB_PAGES_NAMESPACE_IN_PATH}}
 
     # File that contains the shared secret key for verifying access for gitlab-pages.
     # Default is '.gitlab_pages_secret' relative to Rails.root (i.e. root of the GitLab app).
