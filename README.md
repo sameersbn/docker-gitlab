@@ -1,4 +1,4 @@
-# sameersbn/gitlab:18.6.2
+# sameersbn/gitlab:18.7.0
 
 [![CircleCI](https://circleci.com/gh/sameersbn/docker-gitlab/tree/master.svg?style=svg)](https://circleci.com/gh/sameersbn/docker-gitlab/tree/master)
 
@@ -54,6 +54,7 @@
     - [Piwik](#piwik)
     - [Feature flags](#feature-flags)
     - [Exposing ssh port in dockerized gitlab-ce](docs/exposing-ssh-port.md)
+    - [Gitlab KAS](#gitlab-kas)
     - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
     - [Creating Backups](#creating-backups)
@@ -128,7 +129,7 @@ Your docker host needs to have 1GB or more of available RAM to run GitLab. Pleas
 Automated builds of the image are available on [Dockerhub](https://hub.docker.com/r/sameersbn/gitlab) and is the recommended method of installation.
 
 ```bash
-docker pull sameersbn/gitlab:18.6.2
+docker pull sameersbn/gitlab:18.7.0
 ```
 
 You can also pull the `latest` tag which is built from the repository *HEAD*
@@ -210,7 +211,7 @@ docker run --name gitlab -d \
     --env 'GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY=["long-and-random-alpha-numeric-string"]' \
     --env 'GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT=long-and-random-alpha-numeric-string' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:18.6.2
+    sameersbn/gitlab:18.7.0
 ```
 
 *Please refer to [Available Configuration Parameters](#available-configuration-parameters) to understand `GITLAB_PORT` and other configuration options*
@@ -245,7 +246,7 @@ Volumes can be mounted in docker by specifying the `-v` option in the docker run
 ```bash
 docker run --name gitlab -d \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:18.6.2
+    sameersbn/gitlab:18.7.0
 ```
 
 ### Database
@@ -310,7 +311,7 @@ docker run --name gitlab -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:18.6.2
+    sameersbn/gitlab:18.7.0
 ```
 
 ##### Linking to PostgreSQL Container
@@ -354,7 +355,7 @@ We are now ready to start the GitLab application.
 ```bash
 docker run --name gitlab -d --link gitlab-postgresql:postgresql \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:18.6.2
+    sameersbn/gitlab:18.7.0
 ```
 
 Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the postgresql container as they are specified in the `docker run` command for the postgresql container. This is made possible using the magic of docker links and works with the following images:
@@ -392,7 +393,7 @@ The image can be configured to use an external redis server. The configuration s
 ```bash
 docker run --name gitlab -it --rm \
     --env 'REDIS_HOST=192.168.1.100' --env 'REDIS_PORT=6379' \
-    sameersbn/gitlab:18.6.2
+    sameersbn/gitlab:18.7.0
 ```
 
 #### Linking to Redis Container
@@ -419,7 +420,7 @@ We are now ready to start the GitLab application.
 
 ```bash
 docker run --name gitlab -d --link gitlab-redis:redisio \
-    sameersbn/gitlab:18.6.2
+    sameersbn/gitlab:18.7.0
 ```
 
 #### Mail
@@ -432,7 +433,7 @@ If you are using Gmail then all you need to do is:
 docker run --name gitlab -d \
     --env 'SMTP_USER=USER@gmail.com' --env 'SMTP_PASS=PASSWORD' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:18.6.2
+    sameersbn/gitlab:18.7.0
 ```
 
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of SMTP parameters that can be specified.
@@ -452,7 +453,7 @@ docker run --name gitlab -d \
     --env 'IMAP_USER=USER@gmail.com' --env 'IMAP_PASS=PASSWORD' \
     --env 'GITLAB_INCOMING_EMAIL_ADDRESS=USER+%{key}@gmail.com' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:18.6.2
+    sameersbn/gitlab:18.7.0
 ```
 
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of IMAP parameters that can be specified.
@@ -536,7 +537,7 @@ docker run --name gitlab -d \
     --env 'GITLAB_SSH_PORT=10022' --env 'GITLAB_PORT=10443' \
     --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:18.6.2
+    sameersbn/gitlab:18.7.0
 ```
 
 In this configuration, any requests made over the plain http protocol will automatically be redirected to use the https protocol. However, this is not optimal when using a load balancer.
@@ -552,7 +553,7 @@ docker run --name gitlab -d \
  --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
  --env 'NGINX_HSTS_MAXAGE=2592000' \
  --volume /srv/docker/gitlab/gitlab:/home/git/data \
- sameersbn/gitlab:18.6.2
+ sameersbn/gitlab:18.7.0
 ```
 
 If you want to completely disable HSTS set `NGINX_HSTS_ENABLED` to `false`.
@@ -575,7 +576,7 @@ docker run --name gitlab -d \
     --env 'GITLAB_SSH_PORT=10022' --env 'GITLAB_PORT=443' \
     --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:18.6.2
+    sameersbn/gitlab:18.7.0
 ```
 
 Again, drop the `--env 'SSL_SELF_SIGNED=true'` option if you are using CA certified SSL certificates.
@@ -623,7 +624,7 @@ Let's assume we want to deploy our application to '/git'. GitLab needs to know t
 docker run --name gitlab -it --rm \
     --env 'GITLAB_RELATIVE_URL_ROOT=/git' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    sameersbn/gitlab:18.6.2
+    sameersbn/gitlab:18.7.0
 ```
 
 GitLab will now be accessible at the `/git` path, e.g. `http://www.example.com/git`.
@@ -850,14 +851,14 @@ Also the container processes seem to be executed as the host's user/group `1000`
 ```bash
 docker run --name gitlab -it --rm [options] \
     --env "USERMAP_UID=$(id -u git)" --env "USERMAP_GID=$(id -g git)" \
-    sameersbn/gitlab:18.6.2
+    sameersbn/gitlab:18.7.0
 ```
 
 When changing this mapping, all files and directories in the mounted data volume `/home/git/data` have to be re-owned by the new ids. This can be achieved automatically using the following command:
 
 ```bash
 docker run --name gitlab -d [OPTIONS] \
-    sameersbn/gitlab:18.6.2 app:sanitize
+    sameersbn/gitlab:18.7.0 app:sanitize
 ```
 
 #### Piwik
@@ -913,6 +914,80 @@ Configuring gitlab::feature_flags...
 - git_push_create_all_pipelines : on
 ...
 ````
+
+#### Gitlab KAS
+
+GitLab agent server for Kubernetes (KAS) is disabled by default, but you can enable it by setting configuration parameter [`GITLAB_KAS_ENABLED`](#gitlab_kas_enabled) to true.  
+By default, built-in `gitlab-kas` is also enabled once you enable KAS feature. But you can use an external installation of KAS by setting internal URL for the GitLab backend. Corresponding configuration parameter is [`GITLAB_KAS_INTERNAL`](#gitlab_kas_internal).  
+You can specify user-facing URL by setting [`GITLAB_KAS_EXTERNAL`](#gitlab_kas_external). If you set up proxy URL, use `GITLAB_KAS_PROXY`.
+
+You can specify custom secret file by setting [`GITLAB_KAS_SECRET`](#gitlab_kas_secret). This secret file will be generated if they don't exist.
+
+Here is an example settings for kubernetes rc.yml:
+
+```yaml
+spec:
+  containers:
+  - name: gitlab
+  image: sameersbn/gitlab:latest
+  env:
+  - name: GITLAB_KAS_ENABLED
+    value: "true"
+  - name: GITLAB_AGENT_BUILTIN_KAS_ENABLED
+    value: "true"
+  - name: GITLAB_KAS_EXTERNAL
+    value: wss://gitlab.example.com/gitlab/-/kubernetes-agent/
+  - name: GITLAB_KAS_INTERNAL
+    value: grpc://127.0.0.1:8153
+  - name: GITLAB_KAS_PROXY
+    value: https://gitlab.example.com/gitlab/-/kubernetes-agent/k8s-proxy/
+  - name: OWN_PRIVATE_API_URL
+    value: grpc://127.0.0.1:8155
+```
+
+and for docker-compose.yml:
+
+```yaml
+services:
+  gitlab:
+    image: sameersbn/gitlab:latest
+  environment:
+    - GITLAB_KAS_ENABLED=true
+    - GITLAB_AGENT_BUILTIN_KAS_ENABLED=true
+    - GITLAB_KAS_EXTERNAL=wss://gitlab.example.com/gitlab/-/kubernetes-agent/
+    - GITLAB_KAS_INTERNAL=grpc://127.0.0.1:8153
+    - GITLAB_KAS_PROXY=https://gitlab.example.com/gitlab/-/kubernetes-agent/k8s-proxy/
+    - OWN_PRIVATE_API_URL=grpc://127.0.0.1:8155
+```
+
+or in another style:
+
+```yaml
+services:
+  gitlab:
+    image: sameersbn/gitlab:latest
+  environment:
+    GITLAB_KAS_ENABLED: "true"
+    GITLAB_AGENT_BUILTIN_KAS_ENABLED: "true"
+    GITLAB_KAS_EXTERNAL: wss://gitlab.example.com/gitlab/-/kubernetes-agent/
+    GITLAB_KAS_INTERNAL: grpc://127.0.0.1:8153
+    GITLAB_KAS_PROXY: https://gitlab.example.com/gitlab/-/kubernetes-agent/k8s-proxy/
+    OWN_PRIVATE_API_URL: grpc://127.0.0.1:8155
+```
+
+#### Built-in GitLab-Agent KAS
+
+To control whether launch built-in `gitlab-kas` on container startup or not, you can use configuration parameter [`GITLAB_AGENT_BUILTIN_KAS_ENABLED`](#gitlab_agent_builtin_kas_enabled).
+
+You can specify custom secret file by setting [`GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE`](#gitlab_agent_kas_api_listen_authentication_secret_file) and [`GITLAB_AGENT_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE`](#gitlab_agent_kas_private_api_listen_authentication_secret_file). These secret files also be generated if they don't exist.  
+Authentication secret file will be set to same value of `GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE` but you can overwrite it by setting [`GITLAB_AGENT_KAS_GITLAB_AUTHENTICATION_SECRET_FILE`](#gitlab_agent_kas_gitlab_authentication_secret_file).
+
+Built-in KAS communicates to redis. The host and ports are set using `REDIS_HOST` and `REDIS_PORT`.  
+You can specify the password file path in `GITLAB_AGENT_KAS_REDIS_PASSWORD_FILE`, but please do not set the parameter. We still do not support password authentication for Redis. The password file should contain the redis authentication password, but this is not currently done because there is no way to specify the redis password. So please let this parameter empty. See [sameersbn/gitlab#1026](https://github.com/sameersbn/docker-gitlab/pull/1026)
+
+Also note that KAS requires that environment variable `OWN_PRIVATE_API_URL` is set (e.g. `OWN_PRIVATE_API_URL=grpc://127.0.0.1:8155`). If not, the KAS service will keep restarting.
+
+See [official documentation](https://docs.gitlab.com/ee/administration/clusters/kas.html) for more detail.
 
 #### Available Configuration Parameters
 
@@ -1235,6 +1310,52 @@ Default Google key file. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_JSO
 ##### `GITLAB_PIPELINE_SCHEDULE_WORKER_CRON`
 
 Cron notation for the GitLab pipeline schedule worker. Defaults to `'19 * * * *'`
+
+##### `GITLAB_KAS_ENABLED`
+
+Enable/Disable GitLab agent server for Kubernetes (KAS). See details on [official documentation](https://docs.gitlab.com/ee/administration/clusters/kas.html). Defaults to `false`
+
+##### `GITLAB_KAS_SECRET`
+
+File that contains the secret key for verifying access for GitLab KAS. This value will be used for `production.gitlab_kas.secret_file` in gitlab.yml. Defaults to `${GITLAB_AGENT_KAS_GITLAB_AUTHENTICATION_SECRET_FILE}`
+
+##### `GITLAB_KAS_EXTERNAL`
+
+User-facing URL for the in-cluster agent. Defaults to `"wss://kas.example.com"`
+
+##### `GITLAB_KAS_INTERNAL`
+
+Internal URL for the GitLab backend. Defaults to `"grpc://localhost:8153"`
+
+##### `GITLAB_KAS_PROXY`
+
+The URL to the Kubernetes API proxy (used by GitLab users). No default.
+
+##### `GITLAB_AGENT_BUILTIN_KAS_ENABLED`
+
+Control startup behavior of built-in KAS. `autostart` value in supervisor configuration for KAS will be set to this value. Default to [`GITLAB_KAS_ENABLED`](#gitlab_kas_enabled)
+
+##### `GITLAB_AGENT_KAS_WEBSOCKET_TOKEN_SECRET_FILE`
+
+Websocket token secret file. Default to `${GITLAB_INSTALL_DIR}/.gitlab_kas_websocket_token_secret`
+
+##### `GITLAB_AGENT_KAS_GITLAB_AUTHENTICATION_SECRET_FILE`
+
+An authentication secret file used to connect to gitlab from KAS. Defaults to `${GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE}`.
+
+##### `GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE`
+
+An authentication secret file to verify JWT token, for built-in KAS API. If not exist, an secret file will be generated on startup. Defaults to `${GITLAB_INSTALL_DIR}/.gitlab_kas_api_secret`
+
+##### `GITLAB_AGENT_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE`
+
+An authentication secret file to verify JWT token, for built-in KAS internal API. If not exists, an secret file will be generated on startup. This is not "required", so please leave blank if you don't need it. No default.
+
+##### `GITLAB_AGENT_KAS_REDIS_PASSWORD_FILE`
+
+Path for the file that contains redis password to be used by built-in KAS. This is not "required", so please leave blank if you don't need it. No default.
+
+NOTE: We currently do not support password authentication between gitlab and redis. See [sameersbn/gitlab#1026](https://github.com/sameersbn/docker-gitlab/pull/1026)
 
 ##### `GITLAB_LFS_ENABLED`
 
@@ -2620,7 +2741,7 @@ Execute the rake task to create a backup.
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:18.6.2 app:rake gitlab:backup:create
+    sameersbn/gitlab:18.7.0 app:rake gitlab:backup:create
 ```
 
 A backup will be created in the backups folder of the [Data Store](#data-store). You can change the location of the backups using the `GITLAB_BACKUP_DIR` configuration parameter.
@@ -2655,14 +2776,14 @@ you need to prepare the database:
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:18.6.2 app:rake db:setup
+    sameersbn/gitlab:18.7.0 app:rake db:setup
 ```
 
 Execute the rake task to restore a backup. Make sure you run the container in interactive mode `-it`.
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:18.6.2 app:rake gitlab:backup:restore
+    sameersbn/gitlab:18.7.0 app:rake gitlab:backup:restore
 ```
 
 The list of all available backups will be displayed in reverse chronological order. Select the backup you want to restore and continue.
@@ -2671,7 +2792,7 @@ To avoid user interaction in the restore operation, specify the timestamp, date 
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:18.6.2 app:rake gitlab:backup:restore BACKUP=1515629493_2020_12_06_13.0.6
+    sameersbn/gitlab:18.7.0 app:rake gitlab:backup:restore BACKUP=1515629493_2020_12_06_13.0.6
 ```
 
 When using `docker-compose` you may use the following command to execute the restore.
@@ -2720,7 +2841,7 @@ The `app:rake` command allows you to run gitlab rake tasks. To run a rake task s
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:18.6.2 app:rake gitlab:env:info
+    sameersbn/gitlab:18.7.0 app:rake gitlab:env:info
 ```
 
 You can also use `docker exec` to run rake tasks on running gitlab instance. For example,
@@ -2733,7 +2854,7 @@ Similarly, to import bare repositories into GitLab project instance
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:18.6.2 app:rake gitlab:import:repos
+    sameersbn/gitlab:18.7.0 app:rake gitlab:import:repos
 ```
 
 Or
@@ -2764,7 +2885,7 @@ Copy all the **bare** git repositories to the `repositories/` directory of the [
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:18.6.2 app:rake gitlab:import:repos
+    sameersbn/gitlab:18.7.0 app:rake gitlab:import:repos
 ```
 
 Watch the logs and your repositories should be available into your new gitlab container.
@@ -2795,12 +2916,12 @@ To upgrade to newer gitlab releases, simply follow this 4 step upgrade procedure
 
 > **Note**
 >
-> Upgrading to `sameersbn/gitlab:18.6.2` from `sameersbn/gitlab:7.x.x` can cause issues. It is therefore required that you first upgrade to `sameersbn/gitlab:8.0.5-1` before upgrading to `sameersbn/gitlab:8.1.0` or higher.
+> Upgrading to `sameersbn/gitlab:18.7.0` from `sameersbn/gitlab:7.x.x` can cause issues. It is therefore required that you first upgrade to `sameersbn/gitlab:8.0.5-1` before upgrading to `sameersbn/gitlab:8.1.0` or higher.
 
 - **Step 1**: Update the docker image.
 
 ```bash
-docker pull sameersbn/gitlab:18.6.2
+docker pull sameersbn/gitlab:18.7.0
 ```
 
 - **Step 2**: Stop and remove the currently running image
@@ -2830,7 +2951,7 @@ Replace `x.x.x` with the version you are upgrading from. For example, if you are
 > **Note**: Since Gitlab 17.8 you need to provide `GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`,`GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` and `GITLAB_SECRETS_ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT`. If not provided, these keys will be generated by gitlab. The image can be started without setting these parameters, **but you will lose the settings when you shutting down the container without taking a backup of `secrets.yml` and settings stored securely (such as the Dependency Proxy) will be unusable and unrecoverable.**
 
 ```bash
-docker run --name gitlab -d [OPTIONS] sameersbn/gitlab:18.6.2
+docker run --name gitlab -d [OPTIONS] sameersbn/gitlab:18.7.0
 ```
 
 ### Shell Access
@@ -2866,7 +2987,7 @@ You can also set your `docker-compose.yml` [healthcheck](https://docs.docker.com
 ```yml
 services:
   gitlab:
-    image: sameersbn/gitlab:18.6.2
+    image: sameersbn/gitlab:18.7.0
     healthcheck:
       test: ["CMD", "/usr/local/sbin/healthcheck"]
       interval: 1m
