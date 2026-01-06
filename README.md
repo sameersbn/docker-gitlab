@@ -1283,6 +1283,10 @@ The URL to the Kubernetes API proxy (used by GitLab users). No default.
 
 Control startup behavior of built-in KAS. `autostart` value in supervisor configuration for KAS will be set to this value. Default to [`GITLAB_KAS_ENABLED`](#gitlab_kas_enabled)
 
+##### `GITLAB_AGENT_KAS_WEBSOCKET_TOKEN_SECRET_FILE`
+
+Websocket token secret file. Default to `${GITLAB_INSTALL_DIR}/.gitlab_kas_websocket_token_secret`
+
 ##### `GITLAB_AGENT_KAS_GITLAB_AUTHENTICATION_SECRET_FILE`
 
 An authentication secret file used to connect to gitlab from KAS. Defaults to `${GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE}`.
