@@ -1317,7 +1317,7 @@ Enable/Disable GitLab agent server for Kubernetes (KAS). See details on [officia
 
 ##### `GITLAB_KAS_SECRET`
 
-File that contains the secret key for verifying access for GitLab KAS. Defaults to `${GITLAB_INSTALL_DIR}/.gitlab_kas_secret`
+File that contains the secret key for verifying access for GitLab KAS. This value will be used for `production.gitlab_kas.secret_file` in gitlab.yml. Defaults to `${GITLAB_AGENT_KAS_GITLAB_AUTHENTICATION_SECRET_FILE}`
 
 ##### `GITLAB_KAS_EXTERNAL`
 
