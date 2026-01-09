@@ -40,28 +40,45 @@ workers {{PUMA_WORKERS}}
 
 require_relative "{{GITLAB_INSTALL_DIR}}/lib/gitlab/cluster/lifecycle_events"
 
-on_restart do
-  # Signal application hooks that we're about to restart
-  Gitlab::Cluster::LifecycleEvents.do_before_master_restart
+if Gem::Version.new(Puma::Const::PUMA_VERSION) < Gem::Version.new('7.0')
+  Gitlab::Cluster::LifecycleEvents.set_puma_options @config.options
+
+  on_restart do
+    # Signal application hooks that we're about to restart
+    Gitlab::Cluster::LifecycleEvents.do_before_master_restart
+  end
+
+  on_worker_boot do
+    # Signal application hooks of worker start
+    Gitlab::Cluster::LifecycleEvents.do_worker_start
+  end
+
+  on_worker_shutdown do
+    # Signal application hooks that a worker is shutting down
+    Gitlab::Cluster::LifecycleEvents.do_worker_stop
+  end
+else
+  Gitlab::Cluster::LifecycleEvents.set_puma_worker_count(3)
+
+  before_restart do
+    # Signal application hooks that we're about to restart
+    Gitlab::Cluster::LifecycleEvents.do_before_master_restart
+  end
+
+  before_worker_boot do
+    # Signal application hooks of worker start
+    Gitlab::Cluster::LifecycleEvents.do_worker_start
+  end
+
+  before_worker_shutdown do
+    # Signal application hooks that a worker is shutting down
+    Gitlab::Cluster::LifecycleEvents.do_worker_stop
+  end
 end
 
 before_fork do
-  # Signal to the puma killer
-  Gitlab::Cluster::PumaWorkerKillerInitializer.start(@config.options, puma_per_worker_max_memory_mb: {{PUMA_PER_WORKER_MAX_MEMORY_MB}}, puma_master_max_memory_mb: {{PUMA_MASTER_MAX_MEMORY_MB}}) unless ENV['DISABLE_PUMA_WORKER_KILLER']
-
   # Signal application hooks that we're about to fork
   Gitlab::Cluster::LifecycleEvents.do_before_fork
-end
-
-Gitlab::Cluster::LifecycleEvents.set_puma_options @config.options
-on_worker_boot do
-  # Signal application hooks of worker start
-  Gitlab::Cluster::LifecycleEvents.do_worker_start
-end
-
-on_worker_shutdown do
-  # Signal application hooks that a worker is shutting down
-  Gitlab::Cluster::LifecycleEvents.do_worker_stop
 end
 
 # Preload the application before starting the workers; this conflicts with
@@ -87,11 +104,10 @@ log_formatter do |str|
   json_formatter.call(str)
 end
 
-lowlevel_error_handler do |ex, env|
-  if Raven.configuration.capture_allowed?
-    Raven.capture_exception(ex, tags: { 'handler': 'puma_low_level' }, extra: { puma_env: env })
-  end
+require_relative "{{GITLAB_INSTALL_DIR}}/lib/gitlab/puma/error_handler"
 
-  # note the below is just a Rack response
-  [500, {}, ["An error has occurred and reported in the system's low-level error handler."]]
+error_handler = Gitlab::Puma::ErrorHandler.new(ENV['RAILS_ENV'] == 'production')
+
+lowlevel_error_handler do |ex, env, status_code|
+  error_handler.execute(ex, env, status_code)
 end
