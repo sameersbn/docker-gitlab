@@ -65,11 +65,18 @@ creation. This information is not used at all.
 
 #### Update docker-compose.yml
 
+> [!important]
+> Docker Registry v3 is currently not compatible with the JWT tokens signed by GitLab.
+> The example below uses `registry:2` to avoid issues in validating the token.
+> 
+> Alternatively, you can generate a JWKS file and specify it as `REGISTRY_AUTH_TOKEN_JWKS`
+> to run `registry:latest`. Further information can be found [here](https://github.com/cesanta/docker_auth/issues/386).
+
 First add the configuration for the registry container to your `docker-compose.yml`.
 
 ```yaml
     registry:
-        image: registry
+        image: registry:2
         restart: always
         expose:
             - "5000"
@@ -251,7 +258,7 @@ storage:
  ...
  registry:
     restart: always
-    image: registry:2.4.1
+    image: registry:2.8.3
     volumes:
      - ./certs:/certs
     environment:
@@ -365,7 +372,7 @@ docker run --name registry -d \
 --env 'REGISTRY_AUTH_TOKEN_ISSUER=gitlab-issuer' \
 --env 'REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/certs/registry-auth.crt' \
 --env 'REGISTRY_STORAGE_DELETE_ENABLED=true' \
-registry:2.4.1
+registry:2.8.3
 ```
 
 - **Step 6**: Start the image
