@@ -354,7 +354,6 @@ command=bundle exec puma --config ${GITLAB_INSTALL_DIR}/config/puma.rb --environ
 user=git
 autostart=true
 autorestart=true
-stopsignal=QUIT
 stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 EOF
