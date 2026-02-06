@@ -16,7 +16,10 @@ ENV GITLAB_VERSION=${VERSION} \
     GITLAB_CACHE_DIR="/etc/docker-gitlab" \
     RAILS_ENV=production \
     NODE_ENV=production \
-    NO_SOURCEMAPS=true
+    NO_SOURCEMAPS=true \
+    # v18.5.2 : minimum = 16.5, maximum = 17.x (currently 17.6, is 170006)
+    POSTGRESQL_SERVER_REQUIRED_VERSION_MINIMUM=160005 \
+    POSTGRESQL_SERVER_REQUIRED_VERSION_MAXIMUM=170100
 
 ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
     GITLAB_SHELL_INSTALL_DIR="${GITLAB_HOME}/gitlab-shell" \
@@ -49,7 +52,7 @@ RUN set -ex && \
  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
       sudo supervisor logrotate locales curl \
       nginx openssh-server redis-tools \
-      postgresql-client-13 postgresql-client-14 postgresql-client-15 postgresql-client-16 postgresql-client-17 \
+      postgresql-client-16 postgresql-client-17 postgresql-client-18 \
       python3 python3-docutils nodejs yarn gettext-base graphicsmagick \
       libpq5 zlib1g libyaml-dev libssl-dev libgdbm-dev libre2-dev \
       libreadline-dev libncurses5-dev libffi-dev curl openssh-server libxml2-dev libxslt-dev \
