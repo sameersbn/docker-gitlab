@@ -455,6 +455,19 @@ docker run --name gitlab -d \
     sameersbn/gitlab:18.8.3
 ```
 
+With [Microsoft deprecating basic authentication](https://techcommunity.microsoft.com/t5/exchange-team-blog/basic-authentication-deprecation-in-exchange-online-may-2022/ba-p/3301866), you may want to configure IMAP using the Microsoft Graph API. See details on [GitLab documentation for "incoming email with Microsoft Graph"](https://docs.gitlab.com/ee/administration/incoming_email.html#microsoft-graph)
+
+Here is a example command: 
+
+```bash
+docker run --name gitlab -d \
+    --env 'GITLAB_INCOMING_EMAIL_ENABLED=true' --env `IMAP_USER=incoming@example.onmicrosoft.com' \
+    --env 'GITLAB_INCOMING_EMAIL_ADDRESS=incoming+%{key}@example.onmicrosoft.com' \
+    --env 'IMAP_METHOD=microsoft_graph' \
+    --env 'IMAP_TENANT_ID=<YOUR-TENANT-ID>' --env 'IMAP_CLIENT_ID=<YOUR-CLIENT-ID>' \
+    --env 'IMAP_CLIENT_SECRET=<YOUR-CLIENT-SECRET>'
+```
+
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of IMAP parameters that can be specified.
 
 #### SSL
@@ -2042,6 +2055,22 @@ Enable STARTTLS. Defaults to `false`.
 ##### `IMAP_MAILBOX`
 
 The name of the mailbox where incoming mail will end up. Defaults to `inbox`.
+
+##### `IMAP_METHOD`
+
+If you want to use Microsoft Graph API, set to `microsoft_graph`. No default
+
+##### `IMAP_TENANT_ID`
+
+Azure AD Tenant ID. No default
+
+##### `IMAP_CLIENT_ID`
+
+Azure AD App Client ID. No default
+
+##### `IMAP_CLIENT_SECRET`
+
+Azure AD App Client Secret. No default
 
 ##### `LDAP_ENABLED`
 
