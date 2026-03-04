@@ -1,0 +1,45 @@
+From a39aef6cf81149d940061d56f358d220dbf90159 Mon Sep 17 00:00:00 2001
+From: Vasilii Iakliushin <viakliushin@gitlab.com>
+Date: Mon, 2 Mar 2026 15:21:34 +0100
+Subject: [PATCH 1/2] Fix gitlab:setup failure on fresh database
+
+Contributes to https://gitlab.com/gitlab-org/gitlab/-/issues/591292
+
+**Problem**
+
+Running `gitlab:setup` on a fresh PostgreSQL database fails with
+`PG::UndefinedTable: ERROR: relation "feature_gates" does not exist`.
+
+This regression was introduced in 18.9 by
+https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220200 which added
+a circuit breaker to the Gitaly client. The `CircuitBreaker#enabled?`
+method calls `Feature.enabled?` before the database schema is
+initialized, causing Flipper to query the non-existent `feature_gates`
+table.
+
+**Solution**
+
+Check `Feature::FlipperFeature.table_exists?` before calling
+`Feature.enabled?` in `CircuitBreaker#enabled?`. This follows the
+established pattern used in `lib/feature/gitaly.rb`.
+
+Changelog: fixed
+---
+ lib/gitlab/gitaly_client/circuit_breaker.rb     |  2 ++
+ .../gitaly_client/circuit_breaker_spec.rb       | 17 +++++++++++++++++
+ 2 files changed, 19 insertions(+)
+
+diff --git a/lib/gitlab/gitaly_client/circuit_breaker.rb b/lib/gitlab/gitaly_client/circuit_breaker.rb
+index f7f2a79b5d7a..05924b641581 100644
+--- a/lib/gitlab/gitaly_client/circuit_breaker.rb
++++ b/lib/gitlab/gitaly_client/circuit_breaker.rb
+@@ -39,6 +39,8 @@ def check!
+       attr_reader :service, :rpc, :storage
+ 
+       def enabled?
++        return false unless Feature::FlipperFeature.table_exists?
++
+         Feature.enabled?(:add_circuit_breaker_to_gitaly, Feature.current_request)
+       end
+ 
+

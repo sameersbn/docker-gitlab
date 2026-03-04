@@ -20,6 +20,13 @@ case ${1} in
       app:start)
         /usr/bin/supervisord -nc /etc/supervisor/supervisord.conf &
         SUPERVISOR_PID=$!
+        while ! test -e "/var/run/supervisor.sock" 2>/dev/null; do
+          echo "waiting supervisor to start"
+          sleep 1
+        done
+        set +e
+        supervisorctl stop sidekiq gitlab:puma
+        set -e
         migrate_database
         kill -15 $SUPERVISOR_PID
         if ps h -p $SUPERVISOR_PID > /dev/null ; then

@@ -1,15 +1,15 @@
-FROM ubuntu:noble-20260113
+FROM ubuntu:noble-20260210.1
 
-ARG VERSION=18.8.4
+ARG VERSION=18.9.0
 
 ENV GITLAB_VERSION=${VERSION} \
-    RUBY_VERSION=3.2.10 \
-    RUBY_SOURCE_SHA256SUM="880acb05e08da8c559c56a13e512bae1b472da67c72ebb750c765f9c2134e689" \
+    RUBY_VERSION=3.3.10 \
+    RUBY_SOURCE_SHA256SUM="b555baa467a306cfc8e6c6ed24d0d27b27e9a1bed1d91d95509859eac6b0e928" \
     RUBYGEMS_VERSION=4.0.6 \
     GOLANG_VERSION=1.25.7 \
-    GITLAB_SHELL_VERSION=14.45.5 \
-    GITLAB_PAGES_VERSION=18.8.4 \
-    GITALY_SERVER_VERSION=18.8.4 \
+    GITLAB_SHELL_VERSION=14.45.6 \
+    GITLAB_PAGES_VERSION=18.9.0 \
+    GITALY_SERVER_VERSION=18.9.0 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
@@ -48,6 +48,7 @@ RUN set -ex && \
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
       sudo supervisor logrotate locales curl \
+      meson \
       nginx openssh-server redis-tools \
       postgresql-client-13 postgresql-client-14 postgresql-client-15 postgresql-client-16 postgresql-client-17 \
       python3 python3-docutils nodejs yarn gettext-base graphicsmagick \
