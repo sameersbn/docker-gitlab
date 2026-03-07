@@ -210,6 +210,13 @@ production: &base
 
     # Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
     expunge_deleted: false
+    
+    # For Microsoft Graph support
+    inbox_method: {{IMAP_METHOD}}
+    inbox_options:
+      tenant_id: "{{IMAP_TENANT_ID}}"
+      client_id: "{{IMAP_CLIENT_ID}}"
+      client_secret: "{{IMAP_CLIENT_SECRET}}"
 
   ## Build Artifacts
   artifacts:
