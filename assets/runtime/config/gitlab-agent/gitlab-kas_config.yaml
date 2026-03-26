@@ -17,7 +17,7 @@ agent:
     allowed_agent_cache_error_ttl: 10s
     allowed_agent_cache_ttl: 60s
     listen:
-      address: 127.0.0.1:8154
+      address: :8154
       listen_grace_period: 5s
       network: tcp
       shutdown_grace_period: 3600s
@@ -74,7 +74,7 @@ observability:
   usage_reporting_period: 10s
 private_api:
   listen:
-    address: 0.0.0.0:8155
+    address: :8155
     listen_grace_period: 5s
     max_connection_age: 7200s
     network: tcp
@@ -88,8 +88,7 @@ redis:
     address: "{{REDIS_HOST}}:{{REDIS_PORT}}" # required
 workspaces:
   listen:
-    address: 127.0.0.1:8160
+    address: :8160
     listen_grace_period: 5s
     network: tcp
     shutdown_grace_period: 3600s
-
