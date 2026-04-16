@@ -1093,6 +1093,18 @@ gitlab_configure_cron_jobs() {
   else
     exec_as_git sed -i "/{{GITLAB_PIPELINE_SCHEDULE_WORKER_CRON}}/d" ${GITLAB_CONFIG}
   fi
+
+  if [[ -n "${GITLAB_ADMIN_EMAIL_WORKER_CRON}" ]]; then
+    update_template ${GITLAB_CONFIG} GITLAB_ADMIN_EMAIL_WORKER_CRON
+  else
+    exec_as_git sed -i "/{{GITLAB_ADMIN_EMAIL_WORKER_CRON}}/d" ${GITLAB_CONFIG}
+  fi
+
+  if [[ -n "${GITLAB_PERSONAL_ACCESS_TOKEN_EXPIRING_WORKER_CRON}" ]]; then
+    update_template ${GITLAB_CONFIG} GITLAB_PERSONAL_ACCESS_TOKEN_EXPIRING_WORKER_CRON
+  else
+    exec_as_git sed -i "/{{GITLAB_PERSONAL_ACCESS_TOKEN_EXPIRING_WORKER_CRON}}/d" ${GITLAB_CONFIG}
+  fi
 }
 
 gitlab_configure_analytics_google() {
