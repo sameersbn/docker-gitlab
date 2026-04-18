@@ -440,6 +440,11 @@ production: &base
   # Periodically executed jobs, to self-heal GitLab, do external synchronizations, etc.
   # Please read here for more information: https://github.com/ondrejbartas/sidekiq-cron#adding-cron-job
   cron_jobs:
+    # Interval, in seconds, for each Sidekiq process to check for scheduled cron jobs that need to be enqueued. If not
+    # set, the interval scales dynamically with the number of Sidekiq processes. If set to 0, disable polling for cron
+    # jobs entirely.
+    # poll_interval: 30
+
     # Flag stuck CI jobs as failed
     stuck_ci_jobs_worker:
       cron: "0 * * * *"
@@ -449,9 +454,18 @@ production: &base
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
+    # Remove expired pipeline artifacts
+    ci_pipelines_expire_artifacts_worker:
+      cron: "*/23 * * * *"
+    # Remove files from object storage
+    ci_schedule_delete_objects_worker:
+      cron: "*/16 * * * *"
     # Stop expired environments
     environments_auto_stop_cron_worker:
       cron: "24 * * * *"
+    # Delete stopped environments
+    environments_auto_delete_cron_worker:
+      cron: "34 * * * *"
     # Periodically run 'git fsck' on all repositories. If started more than
     # once per hour you will have concurrent 'git fsck' jobs.
     repository_check_worker:
@@ -461,10 +475,10 @@ production: &base
       cron: "17 * * * *"
     # Send admin emails once a week
     admin_email_worker:
-      cron: "0 0 * * 0"
+      cron: "{{GITLAB_ADMIN_EMAIL_WORKER_CRON}}"
     # Send emails for personal tokens which are about to expire
     personal_access_tokens_expiring_worker:
-      cron: "0 1 * * *"
+      cron: "{{GITLAB_PERSONAL_ACCESS_TOKEN_EXPIRING_WORKER_CRON}}"
 
     # Remove outdated repository archives
     repository_archive_cache_worker:
@@ -477,6 +491,18 @@ production: &base
     # Periodically migrate diffs from the database to external storage
     schedule_migrate_external_diffs_worker:
       cron: "15 * * * *"
+
+    # Periodically update ci_runner_versions table with up-to-date versions and status.
+    ci_runner_versions_reconciliation_worker:
+      cron: "@daily"
+
+    # Periodically clean up stale runner machines.
+    ci_runners_stale_machines_cleanup_worker:
+      cron: "36 * * * *"
+
+    # Periodically queue syncing of finished pipelines from p_ci_finished_pipeline_ch_sync_events to ClickHouse
+    ci_click_house_finished_pipelines_sync_worker:
+      cron: "*/4 * * * *"
 
   # GitLab EE only jobs. These jobs are automatically enabled for an EE
   # installation, and ignored for a CE installation.

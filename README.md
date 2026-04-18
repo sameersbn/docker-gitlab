@@ -1236,6 +1236,14 @@ Default Google key file. Defaults to `$GITLAB_OBJECT_STORE_CONNECTION_GOOGLE_JSO
 
 Cron notation for the GitLab pipeline schedule worker. Defaults to `'19 * * * *'`
 
+##### `GITLAB_ADMIN_EMAIL_WORKER_CRON`
+
+Cron notation for the GitLab admin email worker. Defaults to `'0 0 * * 0'`
+
+##### `GITLAB_PERSONAL_ACCESS_TOKEN_EXPIRING_WORKER_CRON`
+
+Cron notation for the GitLab personal access tokens expiring worker. Defaults to `'0 1 * * *'`
+
 ##### `GITLAB_LFS_ENABLED`
 
 Enable/Disable Git LFS support. Defaults to `true`.
