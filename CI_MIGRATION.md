@@ -122,4 +122,3 @@ If you are using a reverse proxy, update the configuration such that `ci.example
 ## Step 7 - Done!
 
 You can now start the GitLab server normally. Make sure that `GITLAB_CI_HOST` and `GITLAB_SECRETS_DB_KEY_BASE` are defined in your containers environment.
-

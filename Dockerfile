@@ -1,15 +1,15 @@
-FROM ubuntu:noble-20260324
+FROM ubuntu:noble-20260410
 
-ARG VERSION=18.10.3
+ARG VERSION=18.11.0
 
 ENV GITLAB_VERSION=${VERSION} \
     RUBY_VERSION=3.3.11 \
     RUBY_SOURCE_SHA256SUM="59f0fafb1a59a05dc3765117af3fa68e153eb48254708549f321c1e9e078d7a0" \
     RUBYGEMS_VERSION=4.0.10 \
-    GOLANG_VERSION=1.25.9 \
-    GITLAB_SHELL_VERSION=14.47.0 \
-    GITLAB_PAGES_VERSION=18.10.3 \
-    GITALY_SERVER_VERSION=18.10.3 \
+    GOLANG_VERSION=1.26.2 \
+    GITLAB_SHELL_VERSION=14.49.0 \
+    GITLAB_PAGES_VERSION=18.11.0 \
+    GITALY_SERVER_VERSION=18.11.0 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
@@ -38,7 +38,7 @@ RUN set -ex && \
  && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/keyrings/postgres.gpg \
  && echo 'deb [signed-by=/etc/apt/keyrings/postgres.gpg] http://apt.postgresql.org/pub/repos/apt/ noble-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
  && wget --quiet -O - https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
- && echo 'deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main' > /etc/apt/sources.list.d/nodesource.list \
+ && echo 'deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main' > /etc/apt/sources.list.d/nodesource.list \
  && wget --quiet -O - https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /etc/apt/keyrings/yarn.gpg \
  && echo 'deb [signed-by=/etc/apt/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list.d/yarn.list \
  && wget --quiet -O - https://nginx.org/keys/nginx_signing.key | gpg --dearmor -o /etc/apt/keyrings/nginx-archive-keyring.gpg \
