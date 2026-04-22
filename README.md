@@ -23,6 +23,7 @@
         - [External Redis Server](#external-redis-server)
         - [Linking to Redis Container](#linking-to-redis-container)
     - [Mail](#mail)
+        - [Microsoft Graph Mailer](#microsoft-graph-mailer)
         - [Reply by email](#reply-by-email)
     - [SSL](#ssl)
         - [Generation of a Self Signed Certificate](#generation-of-a-self-signed-certificate)
