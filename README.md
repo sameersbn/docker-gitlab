@@ -437,6 +437,26 @@ docker run --name gitlab -d \
 
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of SMTP parameters that can be specified.
 
+##### Microsoft Graph Mailer
+
+As Microsoft is retiring basic authentication for SMTP AUTH on Exchange Online, mail delivery via SMTP using a Microsoft 365 mailbox is no longer viable for many tenants. The image supports GitLab's native Microsoft Graph Mailer, which sends emails via the Microsoft Graph API using OAuth 2.0 client credentials.
+
+To enable it, register an application in Azure AD, grant it the `Mail.Send` **Application** permission (not Delegated), and have an administrator consent to it. Then start the container with:
+
+```bash
+docker run --name gitlab -d \
+    --env 'MICROSOFT_GRAPH_MAILER_ENABLED=true' \
+    --env 'MICROSOFT_GRAPH_MAILER_USER_ID=00000000-0000-0000-0000-000000000000' \
+    --env 'MICROSOFT_GRAPH_MAILER_TENANT=contoso.onmicrosoft.com' \
+    --env 'MICROSOFT_GRAPH_MAILER_CLIENT_ID=11111111-1111-1111-1111-111111111111' \
+    --env 'MICROSOFT_GRAPH_MAILER_CLIENT_SECRET=YOUR_CLIENT_SECRET' \
+    --env 'GITLAB_EMAIL=sender@contoso.com' \
+    --volume /srv/docker/gitlab/gitlab:/home/git/data \
+    sameersbn/gitlab:18.11.0
+```
+
+`MICROSOFT_GRAPH_MAILER_USER_ID` is the Object ID of the Microsoft 365 user whose mailbox will be used, and `GITLAB_EMAIL` must be that user's primary email address. `SMTP_ENABLED` should stay at its default (`false`) when Graph Mailer is used. Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of Microsoft Graph Mailer parameters that can be specified.
+
 ##### Reply by email
 
 Since version `8.0.0` GitLab adds support for commenting on issues by replying to emails.
@@ -2018,6 +2038,34 @@ Specify the `ca_path` parameter for SMTP email configuration. Defaults to `/home
 ##### `SMTP_CA_FILE`
 
 Specify the `ca_file` parameter for SMTP email configuration. Defaults to `/home/git/data/certs/ca.crt`.
+
+##### `MICROSOFT_GRAPH_MAILER_ENABLED`
+
+Enable mail delivery via Microsoft Graph API. Defaults to `false`. When enabled, emails are sent using OAuth 2.0 client credentials via the Microsoft Graph `sendMail` endpoint instead of SMTP. Requires an Azure App Registration with the `Mail.Send` Application permission granted and admin-consented. When both `SMTP_ENABLED` and `MICROSOFT_GRAPH_MAILER_ENABLED` are `false`, GitLab mail delivery is disabled.
+
+##### `MICROSOFT_GRAPH_MAILER_USER_ID`
+
+The Object ID (GUID) of the Microsoft 365 user to send mail as. This must match the user whose mailbox the emails are sent from. `GITLAB_EMAIL` should match the primary email address of this user.
+
+##### `MICROSOFT_GRAPH_MAILER_TENANT`
+
+The Azure AD tenant ID (GUID) or tenant domain (e.g. `contoso.onmicrosoft.com`).
+
+##### `MICROSOFT_GRAPH_MAILER_CLIENT_ID`
+
+The Application (client) ID from the Azure App Registration.
+
+##### `MICROSOFT_GRAPH_MAILER_CLIENT_SECRET`
+
+The client secret value from the Azure App Registration.
+
+##### `MICROSOFT_GRAPH_MAILER_AZURE_AD_ENDPOINT`
+
+Azure AD authority endpoint used to obtain an access token. Defaults to `https://login.microsoftonline.com`. Override for sovereign clouds (e.g. `https://login.microsoftonline.us` for Azure Government).
+
+##### `MICROSOFT_GRAPH_MAILER_GRAPH_ENDPOINT`
+
+Microsoft Graph API endpoint. Defaults to `https://graph.microsoft.com`. Override for sovereign clouds (e.g. `https://graph.microsoft.us` for Azure Government).
 
 ##### `IMAP_ENABLED`
 
