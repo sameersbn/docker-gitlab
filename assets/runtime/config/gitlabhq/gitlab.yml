@@ -170,6 +170,24 @@ production: &base
     ## Disable jQuery and CSS animations
     # disable_animations: true
 
+  #start-microsoft-graph-mailer
+  # Allows delivery of emails using Microsoft Graph API with OAuth 2.0 client credentials flow.
+  microsoft_graph_mailer:
+    enabled: {{MICROSOFT_GRAPH_MAILER_ENABLED}}
+    # The unique identifier for the user. To use Microsoft Graph on behalf of the user.
+    user_id: "{{MICROSOFT_GRAPH_MAILER_USER_ID}}"
+    # The directory tenant the application plans to operate against, in GUID or domain-name format.
+    tenant: "{{MICROSOFT_GRAPH_MAILER_TENANT}}"
+    # The application ID that's assigned to your app. You can find this information in the portal where you registered your app.
+    client_id: "{{MICROSOFT_GRAPH_MAILER_CLIENT_ID}}"
+    # The client secret that you generated for your app in the app registration portal.
+    client_secret: "{{MICROSOFT_GRAPH_MAILER_CLIENT_SECRET}}"
+    # Defaults to "https://login.microsoftonline.com".
+    azure_ad_endpoint: "{{MICROSOFT_GRAPH_MAILER_AZURE_AD_ENDPOINT}}"
+    # Defaults to "https://graph.microsoft.com".
+    graph_endpoint: "{{MICROSOFT_GRAPH_MAILER_GRAPH_ENDPOINT}}"
+  #end-microsoft-graph-mailer
+
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
   # For documentation on how to set this up, see http://doc.gitlab.com/ce/administration/reply_by_email.html
@@ -210,19 +228,6 @@ production: &base
 
     # Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
     expunge_deleted: false
-
-  #start-microsoft-graph-mailer
-  ## Microsoft Graph Mailer
-  # Send emails via Microsoft Graph API with OAuth 2.0 client credentials.
-  microsoft_graph_mailer:
-    enabled: {{MICROSOFT_GRAPH_MAILER_ENABLED}}
-    user_id: "{{MICROSOFT_GRAPH_MAILER_USER_ID}}"
-    tenant: "{{MICROSOFT_GRAPH_MAILER_TENANT}}"
-    client_id: "{{MICROSOFT_GRAPH_MAILER_CLIENT_ID}}"
-    client_secret: "{{MICROSOFT_GRAPH_MAILER_CLIENT_SECRET}}"
-    azure_ad_endpoint: "{{MICROSOFT_GRAPH_MAILER_AZURE_AD_ENDPOINT}}"
-    graph_endpoint: "{{MICROSOFT_GRAPH_MAILER_GRAPH_ENDPOINT}}"
-  #end-microsoft-graph-mailer
 
   ## Build Artifacts
   artifacts:
