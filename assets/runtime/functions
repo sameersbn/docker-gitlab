@@ -473,6 +473,24 @@ gitlab_configure_mail_delivery() {
   fi
 }
 
+gitlab_configure_microsoft_graph_mailer() {
+  if [[ ${MICROSOFT_GRAPH_MAILER_ENABLED} == true ]]; then
+    echo "Configuring gitlab::microsoft_graph_mailer..."
+    exec_as_git sed -i "/#start-microsoft-graph-mailer/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/#end-microsoft-graph-mailer/d" ${GITLAB_CONFIG}
+    update_template ${GITLAB_CONFIG} \
+      MICROSOFT_GRAPH_MAILER_ENABLED \
+      MICROSOFT_GRAPH_MAILER_USER_ID \
+      MICROSOFT_GRAPH_MAILER_TENANT \
+      MICROSOFT_GRAPH_MAILER_CLIENT_ID \
+      MICROSOFT_GRAPH_MAILER_CLIENT_SECRET \
+      MICROSOFT_GRAPH_MAILER_AZURE_AD_ENDPOINT \
+      MICROSOFT_GRAPH_MAILER_GRAPH_ENDPOINT
+  else
+    exec_as_git sed -i "/#start-microsoft-graph-mailer/,/#end-microsoft-graph-mailer/d" ${GITLAB_CONFIG}
+  fi
+}
+
 gitlab_configure_mailroom() {
   if [[ ${IMAP_ENABLED} == true ]]; then
     echo "Configuring gitlab::incoming_email..."
@@ -2041,6 +2059,7 @@ configure_gitlab() {
   gitlab_configure_mattermost
   gitlab_configure_project_features
   gitlab_configure_mail_delivery
+  gitlab_configure_microsoft_graph_mailer
   gitlab_configure_mailroom
   gitlab_configure_oauth
   gitlab_configure_ldap
