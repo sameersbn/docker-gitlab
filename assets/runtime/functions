@@ -401,7 +401,14 @@ gitlab_configure_gitlab_kas() {
 
   printf "Configuring gitlab-agent::KAS (enabled: %s)\n" "${GITLAB_AGENT_BUILTIN_KAS_ENABLED}"
   if [[ ${GITLAB_AGENT_BUILTIN_KAS_ENABLED} == true ]]; then
+    if [[ "${GITLAB_HTTPS}" == true ]]; then
+      GITLAB_SCHEME=https
+    else
+      GITLAB_SCHEME=http
+    fi
     update_template ${GITLAB_KAS_CONFIG} \
+      GITLAB_SCHEME \
+      GITLAB_HOST \
       GITLAB_RELATIVE_URL_ROOT \
       GITLAB_AGENT_KAS_API_LISTEN_AUTHENTICATION_SECRET_FILE \
       GITLAB_AGENT_KAS_PRIVATE_API_LISTEN_AUTHENTICATION_SECRET_FILE \
