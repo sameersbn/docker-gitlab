@@ -8,6 +8,7 @@ gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of chan
 - gitlab: upgrade CE to v18.11.3
 - gitaly: upgrade to v18.11.3
 - gitlab-pages: upgrade to v18.11.3
+- golang: upgrade to v1.26.3
 
 ## 18.11.2
 
