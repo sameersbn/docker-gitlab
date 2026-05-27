@@ -191,7 +191,7 @@ gitlab_generate_postgresqlrc() {
   echo "- Detected server version: ${DB_SERVER_VERSION}"
 
   # remove leading zero (prior to 10.x it was like "090605" so that cannot treated as number)
-  DB_SERVER_VERSION="${DB_SERVER_VERSION##+(0)}"
+  DB_SERVER_VERSION="${DB_SERVER_VERSION#0}"
 
   # Anyway, we can get major version (8, 9, 10 and so on) by dividing by 10000.
   # DB_SERVER_VERSION_MAJOR=${DB_SERVER_VERSION%%.*}
