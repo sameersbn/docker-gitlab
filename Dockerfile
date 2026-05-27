@@ -17,7 +17,7 @@ ENV GITLAB_VERSION=${VERSION} \
     RAILS_ENV=production \
     NODE_ENV=production \
     NO_SOURCEMAPS=true \
-    # v19.0.0 : minimum = 17.0, maximum = 17.x (currently 17.10, is 170010)
+    # v19.x : minimum = 17.0, maximum = 17.x (currently 17.10, is 170010)
     POSTGRESQL_SERVER_REQUIRED_VERSION_MINIMUM=170000 \
     POSTGRESQL_SERVER_TESTED_VERSION_MAXIMUM=170010
 
