@@ -62,7 +62,7 @@ services:
       - traefik-public
 
   gitlab:
-    image: sameersbn/gitlab:18.8.8
+    image: sameersbn/gitlab:18.8.10
     depends_on:
       - redis
       - postgresql
