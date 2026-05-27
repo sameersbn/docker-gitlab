@@ -76,7 +76,7 @@ services:
 
   postgresql:
     restart: always
-    image: sameersbn/postgresql:10-2
+    image: kkimurak/sameersbn-postgresql:17
     volumes:
     - /tmp/docker/gitlab/postgresql:/var/lib/postgresql:Z
     environment:

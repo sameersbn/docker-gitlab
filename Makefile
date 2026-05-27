@@ -25,7 +25,7 @@ quickstart:
 	@docker run --name=gitlab-postgresql -d \
 		--env='DB_NAME=gitlabhq_production' \
 		--env='DB_USER=gitlab' --env='DB_PASS=password' \
-		sameersbn/postgresql:latest
+		kkimurak/sameersbn-postgresql:17
 	@echo "Starting redis container..."
 	@docker run --name=gitlab-redis -d \
 		sameersbn/redis:latest

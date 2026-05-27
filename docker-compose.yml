@@ -10,7 +10,7 @@ services:
 
   postgresql:
     restart: always
-    image: kkimurak/sameersbn-postgresql:16
+    image: kkimurak/sameersbn-postgresql:17
     volumes:
       - postgresql-data:/var/lib/postgresql:Z
     environment:

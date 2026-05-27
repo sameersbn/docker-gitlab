@@ -5,11 +5,14 @@ gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of chan
 
 ## 19.0.0
 
+**Important note:** In GitLab 19.0 and later, [PostgreSQL 17 is the minimum supported version](https://docs.gitlab.com/releases/19/gitlab-19-0-released/#postgresql-17-minimum-requirement).
+
 - gitlab: upgrade CE to v19.0.0
 - gitaly: upgrade to v19.0.0
 - gitlab-pages: upgrade to v19.0.0
 - gitlab-shell: upgrade to v14.51.0
 - rubygems: upgrade to v4.0.12
+- postgresql: upgrade to postgresql 17
 
 ## 18.11.3
 

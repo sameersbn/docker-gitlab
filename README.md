@@ -185,7 +185,7 @@ docker run --name gitlab-postgresql -d \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --env 'DB_EXTENSION=pg_trgm,btree_gist' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
-    kkimurak/sameersbn-postgresql:16
+    kkimurak/sameersbn-postgresql:17
 ```
 
 Step 2. Launch a redis container
@@ -276,11 +276,8 @@ Configuring gitlab::database
 
 Please note furthermore, that only compatible versions of the `postgresql-client` to GitLab are shipped with this image. Currently, these belong to
 
-- `postgresql-client-13`,
-- `postgresql-client-14`,
-- `postgresql-client-15`,
-- `postgresql-client-16`,
-- and `postgresql-client-17`.
+- `postgresql-client-17` and 
+- `postgresql-client-18` (not officially supported).
 
 ***Notes:***
 
@@ -288,6 +285,7 @@ Please note furthermore, that only compatible versions of the `postgresql-client
 - GitLab CE version 16.0.0 and later requires PostgreSQL version 13.x.
 - GitLab CE version 17.0.0 and later requires PostgreSQL version 14.x.
 - GitLab CE version 18.0.0 and later requires PostgreSQL version 16.x.
+- GitLab CE version 19.0.0 and later requires PostgreSQL version 17.x.
 
 ##### External PostgreSQL Server
 
@@ -325,7 +323,7 @@ To illustrate linking with a postgresql container, we will use the [sameersbn/po
 First, let's pull the postgresql image from the docker index.
 
 ```bash
-docker pull kkimurak/sameersbn-postgresql:16
+docker pull kkimurak/sameersbn-postgresql:17
 ```
 
 For data persistence lets create a store for the postgresql and start the container.
@@ -345,7 +343,7 @@ docker run --name gitlab-postgresql -d \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --env 'DB_EXTENSION=pg_trgm' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
-    kkimurak/sameersbn-postgresql:16
+    kkimurak/sameersbn-postgresql:17
 ```
 
 The above command will create a database named `gitlabhq_production` and also create a user named `gitlab` with the password `password` with access to the `gitlabhq_production` database.
@@ -2843,6 +2841,7 @@ Usage when using `docker-compose` can also be found there.
 > - As of version 16.0.0, the required PostgreSQL version is 13.x.
 > - As of version 17.0.0, the required PostgreSQL version is 14.x.
 > - As of version 18.0.0, the required PostgreSQL version is 16.x.
+> - As of version 19.0.0, the required PostgreSQL version is 17.x.
 >
 > If you're using PostgreSQL image other than the above, please review section [Upgrading PostgreSQL](#upgrading-postgresql).
 
