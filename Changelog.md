@@ -3,6 +3,12 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://
 gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+## 19.0.1
+
+- gitlab: upgrade CE to v19.0.1
+- gitaly: upgrade to v19.0.1
+- gitlab-pages: upgrade to v19.0.1
+
 ## 19.0.0
 
 **Important note:** In GitLab 19.0 and later, [PostgreSQL 17 is the minimum supported version](https://docs.gitlab.com/releases/19/gitlab-19-0-released/#postgresql-17-minimum-requirement).
