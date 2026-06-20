@@ -30,7 +30,7 @@ case ${1} in
         migrate_database
         kill -15 $SUPERVISOR_PID
         if ps h -p $SUPERVISOR_PID > /dev/null ; then
-        wait $SUPERVISOR_PID || true
+          wait $SUPERVISOR_PID || true
         fi
         rm -rf /var/run/supervisor.sock
         configure_gitlab_requires_db
