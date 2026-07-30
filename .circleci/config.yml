@@ -274,6 +274,45 @@ jobs:
           image: sameersbn/gitlab
           tag: ${CIRCLE_TAG}
 
+  publish-latest:
+    machine:
+      image: ubuntu-2404:edge
+    steps:
+      - checkout
+      - docker-load
+
+      - run:
+          name: Check if this is newest master tag
+          command: |
+            git fetch --tags origin master
+
+            CURRENT=$(git rev-list -n1 "${CIRCLE_TAG}")
+            MASTER=$(git rev-parse origin/master)
+
+            if [ "$CURRENT" != "$MASTER" ]; then
+              echo "Current tag is not on HEAD of master."
+              circleci-agent step halt
+            fi
+
+      - docker/check:
+          registry: docker.io
+          docker-username: DOCKER_LOGIN
+          docker-password: DOCKER_PASSWORD
+
+      - docker/check:
+          registry: quay.io
+          docker-username: DOCKER_LOGIN
+          docker-password: DOCKER_PASSWORD
+
+      - run:
+          name: Tag latest
+          command: |
+            docker tag docker.io/sameersbn/gitlab:${CIRCLE_TAG} docker.io/sameersbn/gitlab:latest
+            docker push docker.io/sameersbn/gitlab:latest
+
+            docker tag quay.io/sameersbn/gitlab:${CIRCLE_TAG} quay.io/sameersbn/gitlab:latest
+            docker push quay.io/sameersbn/gitlab:latest
+
   release:
     executor:
       name: go/default
@@ -331,6 +370,18 @@ workflows:
               only: /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
             branches:
               only: master
+      - publish-latest:
+          context:
+            - dockerhub
+            - quay
+          requires:
+            - publish-dockerhub
+            - publish-quay
+          filters:
+            tags:
+              only: /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
+            branches:
+              ignore: /.*/
       - release:
           context: github
           requires:
