@@ -211,7 +211,7 @@ jobs:
       - docker-build:
           registry: docker.io,quay.io
           image: sameersbn/gitlab
-          tag: ${CIRCLE_TAG}
+          tag: ${CIRCLE_TAG:-${CIRCLE_SHA1}}
           cache_from: docker.io/sameersbn/gitlab:latest
           extra_build_args: '--build-arg VCS_REF=${CIRCLE_TAG:-${CIRCLE_SHA1}} --build-arg BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"'
           no_output_timeout: 45m
@@ -219,7 +219,7 @@ jobs:
       - docker-save:
           registry: docker.io,quay.io
           image: sameersbn/gitlab
-          tag: ${CIRCLE_TAG}
+          tag: ${CIRCLE_TAG:-${CIRCLE_SHA1}}
 
   test:
     executor: docker/machine
@@ -229,7 +229,7 @@ jobs:
       - run:
           name: Update tag in docker-compose.yml
           command: |
-            sed -i "s|image: sameersbn/gitlab:.*|image: sameersbn/gitlab:${CIRCLE_TAG}|" docker-compose.yml
+            sed -i "s|image: sameersbn/gitlab:.*|image: sameersbn/gitlab:${CIRCLE_TAG:-${CIRCLE_SHA1}}|" docker-compose.yml
       - run:
           name: Launch gitlab stack
           command: docker-compose up -d --quiet-pull
