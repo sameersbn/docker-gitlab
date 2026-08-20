@@ -9,6 +9,7 @@ server {
   ## Individual nginx logs for GitLab pages
   access_log  {{GITLAB_LOG_DIR}}/nginx/gitlab_pages_access.log;
   error_log   {{GITLAB_LOG_DIR}}/nginx/gitlab_pages_error.log;
+  add_header Strict-Transport-Security "max-age={{NGINX_HSTS_MAXAGE}}";
   location / {
     proxy_set_header    Host                $http_host;
     proxy_set_header    X-Real-IP           $remote_addr;
