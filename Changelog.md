@@ -11,6 +11,7 @@ gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of chan
 - golang: upgrade to v1.26.7
 - rubygems: upgrade to v4.0.19
 - ubuntu: upgrade to 20260810
+- postgresql: add PG_PARAM_MAX_LOCKS_PER_TRANSACTION
 
 ## 19.1.6
 
