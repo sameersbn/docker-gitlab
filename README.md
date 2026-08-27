@@ -184,6 +184,7 @@ docker run --name gitlab-postgresql -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --env 'DB_EXTENSION=pg_trgm,btree_gist' \
+    --env 'PG_PARAM_MAX_LOCKS_PER_TRANSACTION=128' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
     kkimurak/sameersbn-postgresql:17
 ```
@@ -341,7 +342,8 @@ The run command looks like this.
 docker run --name gitlab-postgresql -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
-    --env 'DB_EXTENSION=pg_trgm' \
+    --env 'DB_EXTENSION=pg_trgm,btree_gist' \
+    --env 'PG_PARAM_MAX_LOCKS_PER_TRANSACTION=128'
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
     kkimurak/sameersbn-postgresql:17
 ```
