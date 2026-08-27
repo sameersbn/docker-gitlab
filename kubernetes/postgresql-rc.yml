@@ -23,7 +23,9 @@ spec:
         - name: DB_NAME
           value: gitlab_production
         - name: DB_EXTENSION
-          value: pg_trgm
+          value: pg_trgm,btree_gist
+        - name: PG_PARAM_MAX_LOCKS_PER_TRANSACTION
+          value: 128
         ports:
         - name: postgres
           containerPort: 5432
