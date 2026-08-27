@@ -17,10 +17,11 @@ services:
       - DB_PASS=password
       - DB_NAME=gitlabhq_production
       - DB_EXTENSION=pg_trgm,btree_gist
+      - PG_PARAM_MAX_LOCKS_PER_TRANSACTION=128
 
   gitlab:
     restart: always
-    image: sameersbn/gitlab:19.1.6
+    image: sameersbn/gitlab:19.1.7
     volumes:
       - gitlab-data:/home/git/data:Z
       - gitlab-logs:/var/log/gitlab
