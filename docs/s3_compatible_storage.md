@@ -83,7 +83,8 @@ services:
     - DB_USER=gitlab
     - DB_PASS=password
     - DB_NAME=gitlabhq_production
-    - DB_EXTENSION=pg_trgm
+    - DB_EXTENSION=pg_trgm,btree_gist
+    - PG_PARAM_MAX_LOCKS_PER_TRANSACTION=128
 
   gitlab:
     restart: always
