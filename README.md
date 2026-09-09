@@ -2786,19 +2786,6 @@ You can also use `docker exec` to run rake tasks on running gitlab instance. For
 docker exec --user git -it gitlab bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
 
-Similarly, to import bare repositories into GitLab project instance
-
-```bash
-docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:19.3.1 app:rake gitlab:import:repos
-```
-
-Or
-
-```bash
-docker exec -it gitlab sudo -HEu git bundle exec rake gitlab:import:repos RAILS_ENV=production
-```
-
 For a complete list of available rake tasks please refer <https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks> or the help section of your gitlab installation.
 
 *P.S. Please avoid running the rake tasks for backup and restore operations on a running gitlab instance.*
@@ -2808,26 +2795,43 @@ To use the `app:rake` command with `docker-compose` use the following command.
 ```bash
 ## For stopped instances
 docker-compose run --rm gitlab app:rake gitlab:env:info
-docker-compose run --rm gitlab app:rake gitlab:import:repos
 
 ## For running instances
 docker-compose exec --user git gitlab bundle exec rake gitlab:env:info RAILS_ENV=production
-docker-compose exec gitlab sudo -HEu git bundle exec rake gitlab:import:repos RAILS_ENV=production
 ```
 
-### Import Repositories
+### Import Project Exports
 
-Copy all the **bare** git repositories to the `repositories/` directory of the [data store](#data-store) and execute the `gitlab:import:repos` rake task like so:
+GitLab 16.0 removed the Rake task for importing bare repositories. To import a project, use a project export archive created by a compatible GitLab instance. Copy the archive to the [data store](#data-store), ensure that it is readable by the `git` user, and run the `gitlab:import_export:import` task with the username, namespace, project path, and archive path:
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:19.3.1 app:rake gitlab:import:repos
+    sameersbn/gitlab:19.3.1 app:rake \
+    "gitlab:import_export:import[root,group/subgroup,project,/home/git/data/project.tar.gz]"
 ```
 
-Watch the logs and your repositories should be available into your new gitlab container.
+To import into a running container:
 
-See [Rake Tasks](#rake-tasks) for more information on executing rake tasks.
-Usage when using `docker-compose` can also be found there.
+```bash
+docker exec --user git -it gitlab bundle exec rake \
+    "gitlab:import_export:import[root,group/subgroup,project,/home/git/data/project.tar.gz]" \
+    RAILS_ENV=production
+```
+
+With `docker-compose`, use:
+
+```bash
+## For stopped instances
+docker-compose run --rm gitlab app:rake \
+    "gitlab:import_export:import[root,group/subgroup,project,/home/git/data/project.tar.gz]"
+
+## For running instances
+docker-compose exec --user git gitlab bundle exec rake \
+    "gitlab:import_export:import[root,group/subgroup,project,/home/git/data/project.tar.gz]" \
+    RAILS_ENV=production
+```
+
+See the [GitLab project import and export Rake task documentation](https://docs.gitlab.com/administration/raketasks/project_import_export/) for parameter details and compatibility requirements.
 
 ### Upgrading
 
