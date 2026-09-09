@@ -1779,6 +1779,9 @@ initialize_datadir() {
   chmod u+rwX ${GITLAB_SHARED_DIR}/external-diffs
   chown ${GITLAB_USER}: ${GITLAB_SHARED_DIR}/external-diffs
 
+  # create agent plan content directory required by GitLab backup
+  install -d -o ${GITLAB_USER} -g ${GITLAB_USER} -m 0700 ${GITLAB_SHARED_DIR}/agent_plan_content
+
   # create artifacts dir
   mkdir -p ${GITLAB_ARTIFACTS_DIR}
   chmod u+rwX ${GITLAB_ARTIFACTS_DIR}
