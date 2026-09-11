@@ -3,6 +3,15 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://
 gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+## 19.3.2
+
+- gitlab: upgrade CE to v19.3.2
+- gitaly: upgrade to v19.3.2
+- gitlab-pages: upgrade to v19.3.2
+- golang: upgrade to v1.26.8
+- rubygems: upgrade to v4.0.20
+- ubuntu: upgrade to 20260905
+
 ## 19.3.1
 
 - gitlab: upgrade CE to v19.3.1
