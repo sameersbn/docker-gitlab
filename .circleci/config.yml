@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   shellcheck: circleci/shellcheck@3.4.0
   docker: circleci/docker@2.8.2
-  go: circleci/go@1.11.0
+  go: circleci/go@1.12.0
 
 commands:
   docker-build:
@@ -211,7 +211,7 @@ jobs:
       - docker-build:
           registry: docker.io,quay.io
           image: sameersbn/gitlab
-          tag: ${CIRCLE_TAG:-latest}
+          tag: ${CIRCLE_TAG:-${CIRCLE_SHA1}}
           cache_from: docker.io/sameersbn/gitlab:latest
           extra_build_args: '--build-arg VCS_REF=${CIRCLE_TAG:-${CIRCLE_SHA1}} --build-arg BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S%:z")"'
           no_output_timeout: 45m
@@ -219,7 +219,7 @@ jobs:
       - docker-save:
           registry: docker.io,quay.io
           image: sameersbn/gitlab
-          tag: ${CIRCLE_TAG:-latest}
+          tag: ${CIRCLE_TAG:-${CIRCLE_SHA1}}
 
   test:
     executor: docker/machine
@@ -229,7 +229,7 @@ jobs:
       - run:
           name: Update tag in docker-compose.yml
           command: |
-            sed -i "s|image: sameersbn/gitlab:.*|image: sameersbn/gitlab:${CIRCLE_TAG:-latest}|" docker-compose.yml
+            sed -i "s|image: sameersbn/gitlab:.*|image: sameersbn/gitlab:${CIRCLE_TAG:-${CIRCLE_SHA1}}|" docker-compose.yml
       - run:
           name: Launch gitlab stack
           command: docker-compose up -d --quiet-pull
@@ -259,7 +259,7 @@ jobs:
       - docker-publish:
           registry: docker.io
           image: sameersbn/gitlab
-          tag: ${CIRCLE_TAG:-latest}
+          tag: ${CIRCLE_TAG}
 
   publish-quay:
     executor: docker/machine
@@ -272,7 +272,69 @@ jobs:
       - docker-publish:
           registry: quay.io
           image: sameersbn/gitlab
-          tag: ${CIRCLE_TAG:-latest}
+          tag: ${CIRCLE_TAG}
+
+  publish-dockerhub-latest:
+    machine:
+      image: ubuntu-2404:edge
+    steps:
+      - checkout
+      - docker-load
+
+      - run:
+          name: Check if this is newest master tag
+          command: |
+            git fetch --tags origin master
+
+            CURRENT=$(git rev-list -n1 "${CIRCLE_TAG}")
+            MASTER=$(git rev-parse origin/master)
+
+            if [ "$CURRENT" != "$MASTER" ]; then
+              echo "Current tag is not on HEAD of master."
+              circleci-agent step halt
+            fi
+
+      - docker/check:
+          registry: docker.io
+          docker-username: DOCKER_LOGIN
+          docker-password: DOCKER_PASSWORD
+
+      - run:
+          name: Tag latest
+          command: |
+            docker tag docker.io/sameersbn/gitlab:${CIRCLE_TAG} docker.io/sameersbn/gitlab:latest
+            docker push docker.io/sameersbn/gitlab:latest
+
+  publish-quay-latest:
+    machine:
+      image: ubuntu-2404:edge
+    steps:
+      - checkout
+      - docker-load
+
+      - run:
+          name: Check if this is newest master tag
+          command: |
+            git fetch --tags origin master
+
+            CURRENT=$(git rev-list -n1 "${CIRCLE_TAG}")
+            MASTER=$(git rev-parse origin/master)
+
+            if [ "$CURRENT" != "$MASTER" ]; then
+              echo "Current tag is not on HEAD of master."
+              circleci-agent step halt
+            fi
+
+      - docker/check:
+          registry: quay.io
+          docker-username: DOCKER_LOGIN
+          docker-password: DOCKER_PASSWORD
+
+      - run:
+          name: Tag latest
+          command: |
+            docker tag quay.io/sameersbn/gitlab:${CIRCLE_TAG} quay.io/sameersbn/gitlab:latest
+            docker push quay.io/sameersbn/gitlab:latest
 
   release:
     executor:
@@ -331,6 +393,24 @@ workflows:
               only: /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
             branches:
               only: master
+      - publish-dockerhub-latest:
+          context: dockerhub
+          requires:
+            - publish-dockerhub
+          filters:
+            tags:
+              only: /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
+            branches:
+              ignore: /.*/
+      - publish-quay-latest:
+          context: quay
+          requires:
+            - publish-quay
+          filters:
+            tags:
+              only: /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
+            branches:
+              ignore: /.*/
       - release:
           context: github
           requires:
