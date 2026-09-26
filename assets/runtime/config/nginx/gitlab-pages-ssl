@@ -30,6 +30,8 @@ server {
   server_name ~^.*{{GITLAB_PAGES_DOMAIN}};
   server_tokens off; ## Don't show the nginx version number, a security best practice
 
+  add_header Strict-Transport-Security "max-age={{NGINX_HSTS_MAXAGE}}";
+
   ## Strong SSL Security
   ## https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html & https://cipherli.st/
   ssl_certificate {{SSL_PAGES_CERT_PATH}};
