@@ -1769,6 +1769,11 @@ initialize_datadir() {
   chmod u+rwX ${GITLAB_SHARED_DIR}
   chown ${GITLAB_USER}: ${GITLAB_SHARED_DIR}
 
+  # create ci_catalog_bundles dir
+  mkdir -p "${GITLAB_SHARED_DIR}/ci_catalog_bundles"
+  chmod u+rwX "${GITLAB_SHARED_DIR}/ci_catalog_bundles"
+  chown "${GITLAB_USER}:" "${GITLAB_SHARED_DIR}/ci_catalog_bundles"
+
   # create the ci_secure_files directory
   mkdir -p ${GITLAB_SHARED_DIR}/ci_secure_files
   chmod u+rwX ${GITLAB_SHARED_DIR}/ci_secure_files
