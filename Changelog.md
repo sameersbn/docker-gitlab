@@ -12,6 +12,9 @@ gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of chan
 - golang: upgrade to v1.26.10
 - rubygems: upgrade to v4.0.23
 - ubuntu: upgrade to noble-20260930.1
+- import ruby patches from upstream
+    - regexp-program-size-3.3.patch
+    - regexp-repeat-id-overflow-3.3.patch
 
 ## 19.1.8
 

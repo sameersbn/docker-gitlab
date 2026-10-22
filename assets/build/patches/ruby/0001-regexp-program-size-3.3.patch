@@ -1,0 +1,177 @@
+From 173f92afb4a303595a7327e4926f4e0fdacabe61 Mon Sep 17 00:00:00 2001
+From: Hiroshi SHIBATA <hsbt@ruby-lang.org>
+Date: Fri, 25 Sep 2026 11:44:12 +0900
+Subject: [PATCH 1/2] Avoid overflow in the quantifier expansion size check
+
+Nested bounded repeats let the int product tlen * qn->lower overflow, so
+the check that keeps the compiler from unrolling a large repeat could pass
+for an enormous one, hanging the compile or emitting wrapped jump offsets.
+Compare against the limit by division instead.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+(cherry picked from commit 7cfe8dc82f9f1b3f9c37c78e362fcbdf3c0b84f4)
+---
+ regcomp.c                | 16 ++++++++++------
+ test/ruby/test_regexp.rb | 12 ++++++++++++
+ 2 files changed, 22 insertions(+), 6 deletions(-)
+
+diff --git a/regcomp.c b/regcomp.c
+index 24d38395..50755406 100644
+--- a/regcomp.c
++++ b/regcomp.c
+@@ -739,6 +739,10 @@ is_anychar_star_quantifier(QtfrNode* qn)
+ }
+ 
+ #define QUANTIFIER_EXPAND_LIMIT_SIZE   50
++/* (tlen * n <= QUANTIFIER_EXPAND_LIMIT_SIZE) without overflowing int: tlen
++   and n are each bounded by ONIG_MAX_REPEAT_NUM, but their product is not. */
++#define IS_EXPAND_LIMIT_OK(tlen, n) \
++  ((n) <= 0 || (tlen) <= QUANTIFIER_EXPAND_LIMIT_SIZE / (n))
+ #define CKN_ON   (ckn > 0)
+ 
+ #ifdef USE_COMBINATION_EXPLOSION_CHECK
+@@ -1003,7 +1007,7 @@ compile_length_quantifier_node(QtfrNode* qn, regex_t* reg)
+     mod_tlen = tlen;
+ 
+   if (infinite &&
+-      (qn->lower <= 1 || tlen * qn->lower <= QUANTIFIER_EXPAND_LIMIT_SIZE)) {
++      (qn->lower <= 1 || IS_EXPAND_LIMIT_OK(tlen, qn->lower))) {
+     if (qn->lower == 1 && tlen > QUANTIFIER_EXPAND_LIMIT_SIZE) {
+       len = SIZE_OP_JUMP;
+     }
+@@ -1029,8 +1033,8 @@ compile_length_quantifier_node(QtfrNode* qn, regex_t* reg)
+     len = SIZE_OP_JUMP + tlen;
+   }
+   else if (!infinite && qn->greedy &&
+-           (qn->upper == 1 || (tlen + SIZE_OP_PUSH) * qn->upper
+-                                      <= QUANTIFIER_EXPAND_LIMIT_SIZE)) {
++           (qn->upper == 1 ||
++            IS_EXPAND_LIMIT_OK(tlen + SIZE_OP_PUSH, qn->upper))) {
+     len = tlen * qn->lower;
+     len += (SIZE_OP_PUSH + tlen) * (qn->upper - qn->lower);
+   }
+@@ -1080,7 +1084,7 @@ compile_quantifier_node(QtfrNode* qn, regex_t* reg)
+     mod_tlen = tlen;
+ 
+   if (infinite &&
+-      (qn->lower <= 1 || tlen * qn->lower <= QUANTIFIER_EXPAND_LIMIT_SIZE)) {
++      (qn->lower <= 1 || IS_EXPAND_LIMIT_OK(tlen, qn->lower))) {
+     if (qn->lower == 1 && tlen > QUANTIFIER_EXPAND_LIMIT_SIZE) {
+       if (qn->greedy) {
+ #ifdef USE_OP_PUSH_OR_JUMP_EXACT
+@@ -1150,8 +1154,8 @@ compile_quantifier_node(QtfrNode* qn, regex_t* reg)
+     r = compile_tree(qn->target, reg);
+   }
+   else if (!infinite && qn->greedy &&
+-           (qn->upper == 1 || (tlen + SIZE_OP_PUSH) * qn->upper
+-                                  <= QUANTIFIER_EXPAND_LIMIT_SIZE)) {
++           (qn->upper == 1 ||
++            IS_EXPAND_LIMIT_OK(tlen + SIZE_OP_PUSH, qn->upper))) {
+     int n = qn->upper - qn->lower;
+ 
+     r = compile_tree_n_times(qn->target, qn->lower, reg);
+diff --git a/test/ruby/test_regexp.rb b/test/ruby/test_regexp.rb
+index cab60ee3..41f865a0 100644
+--- a/test/ruby/test_regexp.rb
++++ b/test/ruby/test_regexp.rb
+@@ -2134,4 +2134,16 @@ class TestRegexp < Test::Unit::TestCase
+       re =~ s
+     end
+   end
++
++  def test_nested_repeat_expansion_overflow
++    assert_separately([], "#{<<-"begin;"}\n#{<<-'end;'}", timeout: 30)
++    begin;
++      # A nested repeat whose expanded size overflows int must not be
++      # unrolled: the compiler used to hang or emit wrapped jump offsets.
++      ["(?:.{90000,}){90000}", "(?:.{46341,}){46341}"].each do |src|
++        re = Regexp.new(src)
++        assert_nil(re.match("x" * 10), src)
++      end
++    end;
++  end
+ end
+-- 
+2.54.0
+
+
+From dd16609b84a5781de388ae7f0620b9c02af636ba Mon Sep 17 00:00:00 2001
+From: Hiroshi SHIBATA <hsbt@ruby-lang.org>
+Date: Fri, 25 Sep 2026 12:10:25 +0900
+Subject: [PATCH 2/2] Reject a compiled program too big for its offset type
+
+Concatenated large repeats reach a program past INT_MAX from a few hundred
+kilobytes of source, and the offsets emitted into it wrap.  Cap the size
+while the program is emitted, which does not depend on the length pass that
+overflows along with it.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+
+(cherry picked from commit cf35145fc46bc278e0ab0003478fc4afe6564819)
+---
+ include/ruby/onigmo.h | 1 +
+ regcomp.c             | 4 ++++
+ regerror.c            | 2 ++
+ regint.h              | 5 +++++
+ 4 files changed, 12 insertions(+)
+
+diff --git a/include/ruby/onigmo.h b/include/ruby/onigmo.h
+index db290cd4..8c8ee5a7 100644
+--- a/include/ruby/onigmo.h
++++ b/include/ruby/onigmo.h
+@@ -687,6 +687,7 @@ ONIG_EXTERN const OnigSyntaxType*   OnigDefaultSyntax;
+ #define ONIGERR_NEVER_ENDING_RECURSION                       -221
+ #define ONIGERR_GROUP_NUMBER_OVER_FOR_CAPTURE_HISTORY        -222
+ #define ONIGERR_INVALID_CHAR_PROPERTY_NAME                   -223
++#define ONIGERR_TOO_BIG_COMPILED_PROGRAM                     -226
+ #define ONIGERR_INVALID_CODE_POINT_VALUE                     -400
+ #define ONIGERR_INVALID_WIDE_CHAR_VALUE                      -400
+ #define ONIGERR_TOO_BIG_WIDE_CHAR_VALUE                      -401
+diff --git a/regcomp.c b/regcomp.c
+index 50755406..41fd2583 100644
+--- a/regcomp.c
++++ b/regcomp.c
+@@ -223,6 +223,10 @@ unset_addr_list_add(UnsetAddrList* uslist, int offset, struct _Node* node)
+ static int
+ add_opcode(regex_t* reg, int opcode)
+ {
++  /* Every instruction passes here, so this is where a program that would
++     outgrow its offset type is stopped, while it is still being emitted. */
++  if (reg->used > MAX_COMPILED_PROGRAM_SIZE)
++    return ONIGERR_TOO_BIG_COMPILED_PROGRAM;
+   BBUF_ADD1(reg, opcode);
+   return 0;
+ }
+diff --git a/regerror.c b/regerror.c
+index 599af698..ff8e6b98 100644
+--- a/regerror.c
++++ b/regerror.c
+@@ -165,6 +165,8 @@ onig_error_code_to_format(OnigPosition code)
+     p = "group number is too big for capture history"; break;
+   case ONIGERR_INVALID_CHAR_PROPERTY_NAME:
+     p = "invalid character property name {%n}"; break;
++  case ONIGERR_TOO_BIG_COMPILED_PROGRAM:
++    p = "too big compiled program"; break;
+   case ONIGERR_TOO_MANY_CAPTURE_GROUPS:
+     p = "too many capture groups are specified"; break;
+   case ONIGERR_INVALID_CODE_POINT_VALUE:
+diff --git a/regint.h b/regint.h
+index 9924e5f6..4d50d02c 100644
+--- a/regint.h
++++ b/regint.h
+@@ -393,6 +393,11 @@ typedef unsigned int  BitStatusType;
+ #define INT_MAX_LIMIT           ((1UL << (SIZEOF_INT * 8 - 1)) - 1)
+ #define LONG_MAX_LIMIT           ((1UL << (SIZEOF_LONG * 8 - 1)) - 1)
+ 
++/* Program offsets are RelAddrType, and the compile_length_*() functions sum
++   into int, so a larger program would wrap both.  The quarter leaves room
++   for the sums the offset arithmetic makes out of those lengths. */
++#define MAX_COMPILED_PROGRAM_SIZE  ((unsigned int )(INT_MAX_LIMIT / 4))
++
+ #define DIGITVAL(code)    ((code) - '0')
+ #define ODIGITVAL(code)   DIGITVAL(code)
+ #define XDIGITVAL(enc,code) \
+-- 
+2.54.0
+
