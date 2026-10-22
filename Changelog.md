@@ -10,6 +10,9 @@ gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of chan
 - gitlab-pages: upgrade to v19.2.9
 - golang: upgrade to v1.26.10
 - ubuntu: upgrade to noble-20260930.1
+- import ruby patches from upstream
+    - regexp-program-size-3.3.patch
+    - regexp-repeat-id-overflow-3.3.patch
 
 ## 19.2.8
 
