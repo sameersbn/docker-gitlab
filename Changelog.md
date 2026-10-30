@@ -9,6 +9,7 @@ gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of chan
 - gitaly: upgrade to v19.5.3
 - gitlab-pages: upgrade to v19.5.3
 - ruby: upgrade to v3.3.13
+- ruby: remove regexp overflow security patches for CVE-2026-110264
 - golang: upgrade to v1.27.3
 
 
