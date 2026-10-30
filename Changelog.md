@@ -3,6 +3,17 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://
 gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+## 19.4.5
+
+- gitlab: upgrade CE to v19.4.5
+- gitaly: upgrade to v19.4.5
+- gitlab-pages: upgrade to v19.4.5
+- ruby: upgrade to v3.3.13
+- ruby: deactivate ruby patches from upstream 
+    - regexp-program-size-3.3.patch
+    - regexp-repeat-id-overflow-3.3.patch
+- ubuntu: upgrade to noble-20261024.1
+
 ## 19.4.3
 
 - gitlab: upgrade CE to v19.4.3
