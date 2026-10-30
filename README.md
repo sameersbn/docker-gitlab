@@ -1870,11 +1870,11 @@ Sets the bucket size for the server names hash tables. This is needed when you h
 
 ##### `NGINX_HSTS_ENABLED`
 
-Advanced configuration option for turning off the HSTS configuration. Applicable only when SSL is in use. Defaults to `true`. See [#138](https://github.com/sameersbn/docker-gitlab/issues/138) for use case scenario.
+Advanced configuration option for turning off HSTS for the GitLab and GitLab Pages nginx virtual hosts. Applicable only when SSL is in use. Defaults to `true`. See [#138](https://github.com/sameersbn/docker-gitlab/issues/138) for use case scenario.
 
 ##### `NGINX_HSTS_MAXAGE`
 
-Advanced configuration option for setting the HSTS max-age in the gitlab nginx vHost configuration. Applicable only when SSL is in use. Defaults to `31536000`.
+Advanced configuration option for setting the HSTS max-age in the GitLab and GitLab Pages nginx virtual hosts. Applicable only when SSL is in use. Defaults to `31536000`.
 
 ##### `NGINX_PROXY_BUFFERING`
 
