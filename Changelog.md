@@ -3,6 +3,16 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://
 gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+## 19.5.3
+
+- gitlab: upgrade CE to v19.5.3
+- gitaly: upgrade to v19.5.3
+- gitlab-pages: upgrade to v19.5.3
+- ruby: upgrade to v3.3.13
+- ruby: remove regexp overflow security patches for CVE-2026-110264
+- golang: upgrade to v1.27.3
+- ubuntu: upgrade to noble-20261024.1
+
 ## 19.5.1
 
 - gitlab: upgrade CE to v19.5.1
