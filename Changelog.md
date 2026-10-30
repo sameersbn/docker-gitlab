@@ -11,7 +11,7 @@ gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of chan
 - ruby: upgrade to v3.3.13
 - ruby: remove regexp overflow security patches for CVE-2026-110264
 - golang: upgrade to v1.27.3
-
+- ubuntu: upgrade to noble-20261024.1
 
 ## 19.5.1
 
