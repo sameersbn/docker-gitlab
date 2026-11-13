@@ -1656,6 +1656,9 @@ nginx_configure_pages(){
   if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
     echo "Configuring nginx::gitlab-pages..."
     if [[ ${GITLAB_PAGES_NGINX_PROXY} == true ]]; then
+      if [[ ${GITLAB_PAGES_HTTPS} != true || ${NGINX_HSTS_ENABLED} != true ]]; then
+        sed -i "/{{NGINX_HSTS_MAXAGE}}/d" ${GITLAB_PAGES_NGINX_CONFIG}
+      fi
       if [[ ${GITLAB_PAGES_HTTPS} == true ]]; then
         update_template ${GITLAB_PAGES_NGINX_CONFIG} \
           GITLAB_PORT \
@@ -1668,6 +1671,7 @@ nginx_configure_pages(){
           SSL_PAGES_CIPHERS \
           SSL_PAGES_PROTOCOLS \
           SSL_DHPARAM_PATH \
+          NGINX_HSTS_MAXAGE \
           GITLAB_LOG_DIR
       else
         update_template ${GITLAB_PAGES_NGINX_CONFIG} \
