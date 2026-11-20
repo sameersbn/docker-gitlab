@@ -3,6 +3,15 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://
 gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+## 19.5.8
+
+- gitlab: upgrade CE to v19.5.8
+- gitaly: upgrade to v19.5.8
+- gitlab-pages: upgrade to v19.5.8
+- rubygems: upgrade to v4.1.0
+- ruby: upgrade to v3.3.14
+- ubuntu: upgrade to noble-20261110.1
+
 ## 19.5.6
 
 - gitlab: upgrade CE to v19.5.6
@@ -1182,7 +1191,7 @@ gitlab.com/gitlab-org/gitlab-foss/blob/master/CHANGELOG.md) for the list of chan
 ## 15.6.1
 
 - gitlab: upgrade CE to v15.6.1
-- gitaly: upgrade to v15.6.1
+- gitaly: upgrade to v15ruby .6.1
 
 ## 15.6.0
 
